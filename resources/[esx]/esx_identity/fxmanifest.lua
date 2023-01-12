@@ -7,8 +7,8 @@ lua54 'yes'
 version '1.9.0'
 
 shared_scripts {
-	'@es_extended/imports.lua',
-	'@es_extended/locale.lua',
+	'@believer/imports.lua',
+	'@believer/locale.lua',
 }
 
 server_scripts {
@@ -32,4 +32,4 @@ files {
 	'html/css/style.css',
 }
 
-dependency 'es_extended'
+dependency 'believer'

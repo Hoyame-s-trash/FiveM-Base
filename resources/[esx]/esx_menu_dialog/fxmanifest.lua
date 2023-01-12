@@ -7,8 +7,8 @@ lua54 'yes'
 version '1.9.0'
 
 client_scripts {
-	'@es_extended/imports.lua',
-	'@es_extended/client/wrapper.lua',
+	'@believer/imports.lua',
+	'@believer/client/wrapper.lua',
 	'client/main.lua'
 }
 
@@ -26,4 +26,4 @@ files {
 	'html/fonts/bankgothic.ttf'
 }
 
-dependency 'es_extended'
+dependency 'believer'
