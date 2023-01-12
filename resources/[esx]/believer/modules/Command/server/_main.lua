@@ -1,20 +1,20 @@
-ESX.Command = ESX.Command or {}
+GM.Command = GM.Command or {}
 
-ESX.Command.List = {}
+GM.Command.List = {}
 
-ESX.Command.Callback = {}
+GM.Command.Callback = {}
 
-function ESX.Command:register(commandData, func)
+function GM.Command:register(commandData, func)
     if (not func or type(func) ~= "function") then return end
     
-    if (not ESX.Command.List[commandData.name]) then
-        ESX.Command.List[commandData.name] = {
+    if (not GM.Command.List[commandData.name]) then
+        GM.Command.List[commandData.name] = {
             name = commandData.name,
             label = commandData.label,
             description = commandData.description,
             keys = commandData.keys or nil,
         }
-        ESX.Command.Callback[commandData.name] = func
+        GM.Command.Callback[commandData.name] = func
         --TriggerClientEvent("chat:addSuggestion", -1, "/"..commandData.name, commandData.description, {})
     end
 
@@ -34,9 +34,9 @@ function ESX.Command:register(commandData, func)
     end)
 end
 
-function ESX.Command:getCommandsKeys()
+function GM.Command:getCommandsKeys()
     local commandsKeys = {}
-    for commandName, commandValues in pairs(ESX.Command.List) do
+    for commandName, commandValues in pairs(GM.Command.List) do
         if (commandValues.keys) then
             commandsKeys[commandName] = commandValues
         end
@@ -51,7 +51,7 @@ RegisterNetEvent("Believer:command:execute", function(commandName, commandArgs)
     -- local playerSelected = GM.Player:getFromSource(playerSrc)
     -- if (not playerSelected) then return end
 
-    if (not commandName or not ESX.Command.List[commandName]) then return end
+    if (not commandName or not GM.Command.List[commandName]) then return end
 
     -- local playerRank = GM.Admin.Ranks:getFromId(playerSelected:getMetadata("rank_id"))
     -- if (not playerRank) then return end
@@ -60,7 +60,7 @@ RegisterNetEvent("Believer:command:execute", function(commandName, commandArgs)
 
 	-- Todo check if player got enough permissions to execute this command
 
-    ESX.Command.Callback[commandName](playerSrc, table.unpack(commandArgs or {}))
+    GM.Command.Callback[commandName](playerSrc, table.unpack(commandArgs or {}))
 end)
 
 AddEventHandler("esx:playerLoaded", function(playerSrc)
@@ -69,7 +69,7 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
     -- local playerSelected = GM.Player:getFromSource(playerSrc)
     -- if (not playerSelected) then return end
 
-    local keysCommands = ESX.Command:getCommandsKeys()
+    local keysCommands = GM.Command:getCommandsKeys()
     if (not keysCommands) then return end
 
     for commandName, commandValues in pairs(keysCommands) do
@@ -77,7 +77,7 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
     end
 end)
 
-ESX.Command:register({
+GM.Command:register({
     name = "car",
     label = "Faire apparaître un véhicule",
     description = "Permet de faire apparaître un véhicule",
@@ -93,8 +93,17 @@ ESX.Command:register({
 		local vehicle = NetworkGetEntityFromNetworkId(networkId)
 		Wait(250)
 		TaskWarpPedIntoVehicle(PlayerPed, vehicle, -1)
-        playerSelected.showNotification("Véhicule ~g~"..args[1].."~s~ apparu")
+        playerSelected.showNotification("Véhicule ~g~"..args[1].."~s~ apparu.")
 	end)
+end)
+
+GM.Command:register({
+    name = "creator",
+    label = "Ouvrir le menu du créateur",
+    description = "Permet d'ouvrir le menu du créateur",
+    keys = {"keyboard", "F10"}
+}, function(playerSrc)
+    TriggerClientEvent("Believer:creator:openMenu", playerSrc)
 end)
 
 -- ESX.RegisterCommand('setcoords', 'admin', function(xPlayer, args, showError)

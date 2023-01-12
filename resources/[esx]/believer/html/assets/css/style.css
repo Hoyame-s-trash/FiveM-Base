@@ -561,7 +561,7 @@
 .hud__gps {
     position: absolute;
     right: calc(var(--piv) * 32);
-    bottom: calc(var(--piv) * 36);
+    bottom: calc(var(--piv) * 60);
 
     display: inline-flex;
     align-items: center;

@@ -374,28 +374,28 @@ else
 	ESX.RegisterServerCallback('esx_identity:registerIdentity', function(source, cb, data)
 		local xPlayer = ESX.GetPlayerFromId(source)
 		if not checkNameFormat(data.firstname) then
-	            	TriggerClientEvent('esx:showNotification',source,TranslateCap('invalid_firstname_format'), "error")
+	            	TriggerClientEvent('esx:showNotification',source, TranslateCap('invalid_firstname_format'))
             		return cb(false)
         	end
         	if not checkNameFormat(data.lastname) then
-            		TriggerClientEvent('esx:showNotification',source,TranslateCap('invalid_lastname_format'), "error")
+            		TriggerClientEvent('esx:showNotification',source, TranslateCap('invalid_lastname_format'))
             		return cb(false)
         	end
         	if not checkSexFormat(data.sex) then
-            		TriggerClientEvent('esx:showNotification',source,TranslateCap('invalid_sex_format'), "error")
+            		TriggerClientEvent('esx:showNotification',source, TranslateCap('invalid_sex_format'))
             		return cb(false)
         	end
         	if not checkDOBFormat(data.dateofbirth) then
-            		TriggerClientEvent('esx:showNotification',source,TranslateCap('invalid_dob_format'), "error")
+            		TriggerClientEvent('esx:showNotification',source, TranslateCap('invalid_dob_format'))
             		return cb(false)
         	end
         	if not checkHeightFormat(data.height) then
-            		TriggerClientEvent('esx:showNotification',source,TranslateCap('invalid_height_format'), "error")
+            		TriggerClientEvent('esx:showNotification',source, TranslateCap('invalid_height_format'))
             		return cb(false)
         	end
 		if xPlayer then	
 			if alreadyRegistered[xPlayer.identifier] then
-				xPlayer.showNotification(TranslateCap('already_registered'), "error")
+				xPlayer.showNotification(TranslateCap('already_registered'))
 				return cb(false)
             end
 

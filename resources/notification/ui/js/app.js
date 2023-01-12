@@ -404,7 +404,7 @@ class Notification {
         const regexStop = /~s~/g;
         const regexLine = /\n/g;
 
-        message = twemoji.parse(message.replace(regexColor, "<span class='$1'>$2</span>").replace(regexBold, "<span class='$1'>$2</span>").replace(regexStop, "").replace(regexLine, "<br />"));
+        message = message.replace(regexColor, "<span class='$1'>$2</span>").replace(regexBold, "<span class='$1'>$2</span>").replace(regexStop, "").replace(regexLine, "<br />");
 
         return message;
     }

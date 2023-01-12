@@ -565,8 +565,8 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		end
 	end
 
-	function self.showNotification(msg)
-		self.triggerEvent('esx:showNotification', msg)
+	function self.showNotification(msg, options)
+		self.triggerEvent('esx:showNotification', msg, options)
 	end
 
 	function self.showHelpNotification(msg, thisFrame, beep, duration)

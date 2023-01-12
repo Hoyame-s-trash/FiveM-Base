@@ -1,10 +1,10 @@
-ESX.Connexion = ESX.Connexion or {}
+GM.Connecting = GM.Connecting or {}
 
-ESX.Connexion["Identifiers"] = ESX.Connexion["Identifiers"] or {}
+GM.Connecting["Identifiers"] = GM.Connecting["Identifiers"] or {}
 
-ESX.Connexion["Identifiers"].List = {}
-ESX.Connexion["Identifiers"].List["users"] = {}
-ESX.Connexion["Identifiers"].List["identifiers"] = {}
+GM.Connecting["Identifiers"].List = {}
+GM.Connecting["Identifiers"].List["users"] = {}
+GM.Connecting["Identifiers"].List["identifiers"] = {}
 
 CreateThread(function()
     MySQL.query("SELECT * FROM user_identifiers", {
@@ -14,8 +14,8 @@ CreateThread(function()
             
             selectedResult.data = json.decode(selectedResult.data)
 
-            if (not ESX.Connexion["Identifiers"].List["users"][selectedResult.owner]) then
-                ESX.Connexion["Identifiers"].List["users"][selectedResult.owner] = {
+            if (not GM.Connecting["Identifiers"].List["users"][selectedResult.owner]) then
+                GM.Connecting["Identifiers"].List["users"][selectedResult.owner] = {
                     identifier = selectedResult.owner,
                     isBanned = json.decode(selectedResult.currentBan),
                     identifiers = {}
@@ -24,16 +24,16 @@ CreateThread(function()
 
             for i = 1, #selectedResult.data do
                 local currentIdentifier = selectedResult.data[i]
-                ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier] = {
+                GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier] = {
                     owner = selectedResult.owner
                 }
-                ESX.Connexion["Identifiers"].List["users"][selectedResult.owner].identifiers[currentIdentifier] = true
+                GM.Connecting["Identifiers"].List["users"][selectedResult.owner].identifiers[currentIdentifier] = true
             end
         end
     end)
 end)
 
-function ESX.Connexion:getIdentifiers(playerSrc)
+function GM.Connecting:getIdentifiers(playerSrc)
     if (playerSrc == nil) then return end
 
     local playerNumIdentifiers = GetNumPlayerIdentifiers(playerSrc)
@@ -48,7 +48,7 @@ function ESX.Connexion:getIdentifiers(playerSrc)
     return playerIdentifiers
 end
 
-function ESX.Connexion:getIdentifier(playerSrc, nameToSearch)
+function GM.Connecting:getIdentifier(playerSrc, nameToSearch)
     if (playerSrc == nil) then return end
 
     local playerIdentifiers = self:getIdentifiers(playerSrc)
@@ -64,7 +64,7 @@ function ESX.Connexion:getIdentifier(playerSrc, nameToSearch)
     end
 end
 
-function ESX.Connexion:getTokens(playerSrc)
+function GM.Connecting:getTokens(playerSrc)
     if (playerSrc == nil) then return end
 
     local playerNumTokens = GetNumPlayerTokens(playerSrc)
@@ -79,7 +79,7 @@ function ESX.Connexion:getTokens(playerSrc)
     return playerTokens
 end
 
-function ESX.Connexion:ban(playerIdentifier, banData)
+function GM.Connecting:ban(playerIdentifier, banData)
     if (not banData or not banData.reason or not banData.expiration or type(banData.expiration) ~= "number") then
         return
     end
@@ -93,12 +93,12 @@ function ESX.Connexion:ban(playerIdentifier, banData)
         type = banData.type or "normal"
     }
 
-    if (ESX.Connexion["Identifiers"].List["users"][playerIdentifier] ~= nil) then
+    if (GM.Connecting["Identifiers"].List["users"][playerIdentifier] ~= nil) then
         MySQL.update("UPDATE user_identifiers set currentBan = ? WHERE owner = ?", {
             json.encode(currentBan),
             playerIdentifier
         }, function()
-            ESX.Connexion["Identifiers"].List["users"][playerIdentifier].isBanned = currentBan
+            GM.Connecting["Identifiers"].List["users"][playerIdentifier].isBanned = currentBan
             if (playerSelected ~= nil) then
                 DropPlayer(playerSelected.source, "Vous êtes banni de BlueStark !\nRaison : "..banData.reason..".")
             end
@@ -106,8 +106,8 @@ function ESX.Connexion:ban(playerIdentifier, banData)
     end
 end
 
-function ESX.Connexion:unban(author, playerIdentifier)
-    if (ESX.Connexion["Identifiers"].List["users"][playerIdentifier].isBanned == nil) then
+function GM.Connecting:unban(author, playerIdentifier)
+    if (GM.Connecting["Identifiers"].List["users"][playerIdentifier].isBanned == nil) then
         -- Todo mettre un vrai print ici
         return
     end
@@ -120,12 +120,12 @@ function ESX.Connexion:unban(author, playerIdentifier)
         author = GetPlayerName(author)
     end
 
-    if (ESX.Connexion["Identifiers"].List["users"][playerIdentifier] ~= nil) then
+    if (GM.Connecting["Identifiers"].List["users"][playerIdentifier] ~= nil) then
         MySQL.update("UPDATE user_identifiers set currentBan = ? WHERE owner = ?", {
             nil,
             playerIdentifier
         }, function()
-            ESX.Connexion["Identifiers"].List["users"][playerIdentifier].isBanned = nil
+            GM.Connecting["Identifiers"].List["users"][playerIdentifier].isBanned = nil
         end)
     end
 end
@@ -137,7 +137,7 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
     deferrals.defer()
     Wait(0)
 
-    local playerIdentifier = ESX.Connexion:getIdentifier(playerSrc, "main")
+    local playerIdentifier = GM.Connecting:getIdentifier(playerSrc, "main")
     if (playerIdentifier == nil) then
         deferrals.done("Votre identifiant qui permet de vous enregistrer n'est pas valide.")
         CancelEvent()
@@ -291,16 +291,16 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
         --end
     end
 
-    local playerIdentifiers = ESX.Connexion:getIdentifiers(playerSrc)
-    local playerTokens = ESX.Connexion:getTokens(playerSrc)
+    local playerIdentifiers = GM.Connecting:getIdentifiers(playerSrc)
+    local playerTokens = GM.Connecting:getTokens(playerSrc)
 
-    if (ESX.Connexion["Identifiers"].List["users"][playerIdentifier] == nil) then
+    if (GM.Connecting["Identifiers"].List["users"][playerIdentifier] == nil) then
         MySQL.insert("INSERT INTO user_identifiers (owner, currentBan, data) VALUES (?, ?, ?)", {
             playerIdentifier,
             nil,
             json.encode({})
         }, function()
-            ESX.Connexion["Identifiers"].List["users"][playerIdentifier] = {
+            GM.Connecting["Identifiers"].List["users"][playerIdentifier] = {
                 identifier = playerIdentifier,
                 isBanned = nil,
                 identifiers = {}
@@ -310,9 +310,9 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
 
     for i = 1, #playerIdentifiers do
         local currentIdentifier = playerIdentifiers[i]
-        if (currentIdentifier ~= nil and ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier] ~= nil) then
-            local ownerData = ESX.Connexion["Identifiers"].List["users"][ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier].owner]
-            if ((ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier].owner ~= playerIdentifier) or (ownerData.isConnected == true)) then
+        if (currentIdentifier ~= nil and GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier] ~= nil) then
+            local ownerData = GM.Connecting["Identifiers"].List["users"][GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier].owner]
+            if ((GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier].owner ~= playerIdentifier) or (ownerData.isConnected == true)) then
                 deferrals.done("Désolé, un de vos identifiants est déjà utilisé par une autre personne.")
                 return
                 CancelEvent()
@@ -474,23 +474,23 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
                         nil,
                         ownerData.identifier
                     }, function()
-                        ESX.Connexion["Identifiers"].List["users"][ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier].owner].isBanned = nil
+                        GM.Connecting["Identifiers"].List["users"][GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier].owner].isBanned = nil
                     end)
                 end
             end
         else
-            while (not ESX.Connexion["Identifiers"].List["users"][playerIdentifier]) do
+            while (not GM.Connecting["Identifiers"].List["users"][playerIdentifier]) do
                 Wait(150)
             end
 
-            ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier] = {
+            GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier] = {
                 owner = playerIdentifier
             }
-            ESX.Connexion["Identifiers"].List["users"][playerIdentifier].identifiers[currentIdentifier] = true
+            GM.Connecting["Identifiers"].List["users"][playerIdentifier].identifiers[currentIdentifier] = true
             
             local newIdentifiers = {}
 
-            for currentIdentifier, _ in pairs(ESX.Connexion["Identifiers"].List["users"][playerIdentifier].identifiers) do
+            for currentIdentifier, _ in pairs(GM.Connecting["Identifiers"].List["users"][playerIdentifier].identifiers) do
                 table.insert(newIdentifiers, currentIdentifier)
             end
 
@@ -503,9 +503,9 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
 
     for i = 1, #playerTokens do
         local currentIdentifier = playerIdentifiers[i]
-        if (currentIdentifier ~= nil and ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier] ~= nil) then
-            local ownerData = ESX.Connexion["Identifiers"].List["users"][ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier].owner]
-            if ((ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier].owner ~= playerIdentifier) or (ownerData.isConnected == true)) then
+        if (currentIdentifier ~= nil and GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier] ~= nil) then
+            local ownerData = GM.Connecting["Identifiers"].List["users"][GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier].owner]
+            if ((GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier].owner ~= playerIdentifier) or (ownerData.isConnected == true)) then
                 deferrals.done("Désolé, un de vos identifiants est déjà utilisé par une autre personne.")
                 return
                 CancelEvent()
@@ -661,24 +661,24 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
                         nil,
                         ownerData.identifier
                     }, function()
-                        ESX.Connexion["Identifiers"].List["users"][ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier].owner].isBanned = nil
+                        GM.Connecting["Identifiers"].List["users"][GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier].owner].isBanned = nil
                     end)
                 end
             end
         else
-            while (not ESX.Connexion["Identifiers"].List["users"][playerIdentifier]) do
+            while (not GM.Connecting["Identifiers"].List["users"][playerIdentifier]) do
                 Wait(150)
             end
 
-            ESX.Connexion["Identifiers"].List["identifiers"][currentIdentifier] = {
+            GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier] = {
                 owner = playerIdentifier
             }
             
-            ESX.Connexion["Identifiers"].List["users"][playerIdentifier].identifiers[currentIdentifier] = true
+            GM.Connecting["Identifiers"].List["users"][playerIdentifier].identifiers[currentIdentifier] = true
             
             local newIdentifiers = {}
 
-            for currentIdentifier, _ in pairs(ESX.Connexion["Identifiers"].List["users"][playerIdentifier].identifiers) do
+            for currentIdentifier, _ in pairs(GM.Connecting["Identifiers"].List["users"][playerIdentifier].identifiers) do
                 table.insert(newIdentifiers, currentIdentifier)
             end
 
@@ -715,14 +715,14 @@ end)
 --         end
     
 --         if (type(targetPlayer) == "number") then
---             local selectedPlayer = ESX.Connexion:getFromSource(targetPlayer)
+--             local selectedPlayer = GM.Connecting:getFromSource(targetPlayer)
 --             if (not selectedPlayer) then
 --                 return
 --             end
 
 --             selectedPlayer:ban(reason, finishTimer, "Anticheat")
 --         else
---             ESX.Connexion:ban(targetPlayer, {
+--             GM.Connecting:ban(targetPlayer, {
 --                 reason = reason,
 --                 expiration = finishTimer or -1,
 --                 author = "Console"
@@ -746,14 +746,14 @@ end)
 --         end
     
 --         if (type(targetPlayer) == "number") then
---             local selectedPlayer = ESX.Connexion:getFromSource(targetPlayer)
+--             local selectedPlayer = GM.Connecting:getFromSource(targetPlayer)
 --             if (not selectedPlayer) then
 --                 return
 --             end
             
 --             selectedPlayer:ban(reason, finishTimer, GetPlayerName(playerSrc))
 --         else
---             ESX.Connexion:ban(targetPlayer, {
+--             GM.Connecting:ban(targetPlayer, {
 --                 reason = reason,
 --                 expiration = finishTimer or -1,
 --                 author = GetPlayerName(playerSrc)
@@ -768,7 +768,7 @@ end)
 --             return
 --         end
     
---         ESX.Connexion:unban(source, args[1])
+--         GM.Connecting:unban(source, args[1])
 --     else
 --         -- Todo check if player is admin or with the command module
 
@@ -776,6 +776,6 @@ end)
 --             return
 --         end
     
---         ESX.Connexion:unban(source, args[1])
+--         GM.Connecting:unban(source, args[1])
 --     end
 -- end)
