@@ -15,7 +15,7 @@ function GM.Command:register(commandData, func)
             keys = commandData.keys or nil,
         }
         GM.Command.Callback[commandData.name] = func
-        --TriggerClientEvent("chat:addSuggestion", -1, "/"..commandData.name, commandData.description, {})
+        TriggerClientEvent("chat:addSuggestion", -1, "/"..commandData.name, commandData.description, {})
     end
 
     RegisterCommand(commandData.name, function(source, args)
@@ -66,9 +66,6 @@ end)
 AddEventHandler("esx:playerLoaded", function(playerSrc)
     if (not playerSrc) then return end
 
-    -- local playerSelected = GM.Player:getFromSource(playerSrc)
-    -- if (not playerSelected) then return end
-
     local keysCommands = GM.Command:getCommandsKeys()
     if (not keysCommands) then return end
 
@@ -106,119 +103,201 @@ GM.Command:register({
     TriggerClientEvent("Believer:creator:openMenu", playerSrc)
 end)
 
--- ESX.RegisterCommand('setcoords', 'admin', function(xPlayer, args, showError)
--- 	xPlayer.setCoords({x = args.x, y = args.y, z = args.z})
--- end, false, {help = TranslateCap('command_setcoords'), validate = true, arguments = {
--- 	{name = 'x', help = TranslateCap('command_setcoords_x'), type = 'number'},
--- 	{name = 'y', help = TranslateCap('command_setcoords_y'), type = 'number'},
--- 	{name = 'z', help = TranslateCap('command_setcoords_z'), type = 'number'}
--- }})
+GM.Command:register({
+    name = "setcoords",
+    label = "Se téléporter à des coordonnées",
+    description = "Permet de se téléporter à des coordonnées",
+}, function(playerSrc, args)
+    if (playerSrc) == 0 then return end
 
--- ESX.RegisterCommand('setjob', 'admin', function(xPlayer, args, showError)
--- 	if ESX.DoesJobExist(args.job, args.grade) then
--- 		args.playerId.setJob(args.job, args.grade)
--- 	else
--- 		showError(TranslateCap('command_setjob_invalid'))
--- 	end
--- 	ESX.DiscordLogFields("UserActions", "/setjob Triggered", "pink", {
--- 		{name = "Player", value = xPlayer.name, inline = true},
--- 		{name = "Job", value = args.job, inline = true},
---     {name = "Grade", value = args.grade, inline = true}
--- 	})
--- end, true, {help = TranslateCap('command_setjob'), validate = true, arguments = {
--- 	{name = 'playerId', help = TranslateCap('commandgeneric_playerid'), type = 'player'},
--- 	{name = 'job', help = TranslateCap('command_setjob_job'), type = 'string'},
--- 	{name = 'grade', help = TranslateCap('command_setjob_grade'), type = 'number'}
--- }})
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
 
--- ESX.RegisterCommand('car', 'admin', function(xPlayer, args, showError)
--- 	local GameBuild = tonumber(GetConvar("sv_enforceGameBuild", 1604))
--- 	if not args.car then args.car = GameBuild >= 2699 and "draugur" or "prototipo" end
--- 	ESX.DiscordLogFields("UserActions", "/car Triggered", "pink", {
--- 		{name = "Player", value = xPlayer.name, inline = true},
--- 		{name = "ID", value = xPlayer.source, inline = true},
---     {name = "Vehicle", value = args.car, inline = true}
--- 	})
--- 	local upgrades = Config.MaxAdminVehicles and {
--- 		plate = "ADMINCAR", 
--- 		modEngine = 3,
--- 		modBrakes = 2,
--- 		modTransmission = 2,
--- 		modSuspension = 3,
--- 		modArmor = true,
--- 		windowTint = 1,
--- 	} or {}
--- 	local coords = xPlayer.getCoords(true)
--- 	local PlayerPed = GetPlayerPed(xPlayer.source)
--- 	ESX.OneSync.SpawnVehicle(args.car, coords - vector3(0,0, 0.9), GetEntityHeading(PlayerPed), upgrades, function(networkId)
--- 		local vehicle = NetworkGetEntityFromNetworkId(networkId)
--- 		Wait(250)
--- 		TaskWarpPedIntoVehicle(PlayerPed, vehicle, -1)
--- 	end)
--- end, false, {help = TranslateCap('command_car'), validate = false, arguments = {
--- 	{name = 'car',validate = false, help = TranslateCap('command_car_car'), type = 'string'}
--- }}) 
+    playerSelected.setCoords({x = args[1], y = args[2], z = args[3]})
+end)
 
--- ESX.RegisterCommand({'cardel', 'dv'}, 'admin', function(xPlayer, args, showError)
--- 	local PedVehicle = GetVehiclePedIsIn(GetPlayerPed(xPlayer.source), false)
--- 	if DoesEntityExist(PedVehicle) then
--- 		DeleteEntity(PedVehicle)
--- 	end
--- 	local Vehicles = ESX.OneSync.GetVehiclesInArea(GetEntityCoords(GetPlayerPed(xPlayer.source)), tonumber(args.radius) or 5.0)
--- 	for i=1, #Vehicles do 
--- 		local Vehicle = NetworkGetEntityFromNetworkId(Vehicles[i])
--- 		if DoesEntityExist(Vehicle) then
--- 			DeleteEntity(Vehicle)
--- 		end
--- 	end
--- end, false, {help = TranslateCap('command_cardel'), validate = false, arguments = {
--- 	{name = 'radius',validate = false, help = TranslateCap('command_cardel_radius'), type = 'number'}
--- }})
+GM.Command:register({
+    name = "setjob",
+    label = "Changer de métier",
+    description = "Permet de changer de métier",
+}, function(playerSrc, args)
+    if (playerSrc == 0) then
+        local targetSelected = ESX.GetPlayerFromId(args[1])
+        if (not targetSelected) then return end
 
--- ESX.RegisterCommand('setaccountmoney', 'admin', function(xPlayer, args, showError)
--- 	if args.playerId.getAccount(args.account) then
--- 		args.playerId.setAccountMoney(args.account, args.amount, "Government Grant")
--- 	else
--- 		showError(TranslateCap('command_giveaccountmoney_invalid'))
--- 	end
--- end, true, {help = TranslateCap('command_setaccountmoney'), validate = true, arguments = {
--- 	{name = 'playerId', help = TranslateCap('commandgeneric_playerid'), type = 'player'},
--- 	{name = 'account', help = TranslateCap('command_giveaccountmoney_account'), type = 'string'},
--- 	{name = 'amount', help = TranslateCap('command_setaccountmoney_amount'), type = 'number'}
--- }})
+        if (ESX.DoesJobExist(args[2], args[3])) then
+            targetSelected.setJob(args[2], args[3])
+            print("Le métier de ~g~"..targetSelected.getName().."~s~ a été changé en ~g~"..args[2].."~s~.")
+        else
+            print("Le métier ~r~"..args[2].."~s~ n'existe pas.")
+            return
+        end
+    else
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
 
--- ESX.RegisterCommand('giveaccountmoney', 'admin', function(xPlayer, args, showError)
--- 	if args.playerId.getAccount(args.account) then
--- 		args.playerId.addAccountMoney(args.account, args.amount, "Government Grant")
--- 	else
--- 		showError(TranslateCap('command_giveaccountmoney_invalid'))
--- 	end
--- end, true, {help = TranslateCap('command_giveaccountmoney'), validate = true, arguments = {
--- 	{name = 'playerId', help = TranslateCap('commandgeneric_playerid'), type = 'player'},
--- 	{name = 'account', help = TranslateCap('command_giveaccountmoney_account'), type = 'string'},
--- 	{name = 'amount', help = TranslateCap('command_giveaccountmoney_amount'), type = 'number'}
--- }})
+        local targetSelected = ESX.GetPlayerFromId(args[1])
+        if (not targetSelected) then return end
 
--- if not Config.OxInventory then
--- 	ESX.RegisterCommand('giveitem', 'admin', function(xPlayer, args, showError)
--- 		args.playerId.addInventoryItem(args.item, args.count)
--- 	end, true, {help = TranslateCap('command_giveitem'), validate = true, arguments = {
--- 		{name = 'playerId', help = TranslateCap('commandgeneric_playerid'), type = 'player'},
--- 		{name = 'item', help = TranslateCap('command_giveitem_item'), type = 'item'},
--- 		{name = 'count', help = TranslateCap('command_giveitem_count'), type = 'number'}
--- 	}})
+        if (ESX.DoesJobExist(args[2], args[3])) then
+            targetSelected.setJob(args[2], args[3])
+            playerSelected.showNotification("Le métier de ~g~"..targetSelected.getName().."~s~ a été changé en ~g~"..args[2].."~s~.")
+        else
+            playerSelected.showNotification("Le métier ~r~"..args[2].."~s~ n'existe pas.")
+            return
+        end
+    end
+end)
 
--- 	ESX.RegisterCommand('giveweapon', 'admin', function(xPlayer, args, showError)
--- 		if args.playerId.hasWeapon(args.weapon) then
--- 			showError(TranslateCap('command_giveweapon_hasalready'))
--- 		else
--- 			args.playerId.addWeapon(args.weapon, args.ammo)
--- 		end
--- 	end, true, {help = TranslateCap('command_giveweapon'), validate = true, arguments = {
--- 		{name = 'playerId', help = TranslateCap('commandgeneric_playerid'), type = 'player'},
--- 		{name = 'weapon', help = TranslateCap('command_giveweapon_weapon'), type = 'weapon'},
--- 		{name = 'ammo', help = TranslateCap('command_giveweapon_ammo'), type = 'number'}
--- 	}})
+GM.Command:register({
+    name = "cardel",
+    label = "Supprimer des véhicules",
+    description = "Permet de supprimer des véhicules",
+}, function(playerSrc, args)
+    if (playerSrc == 0) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local playerVehicle = GetVehiclePedIsIn(GetPlayerPed(playerSelected.source), false)
+	if DoesEntityExist(playerVehicle) then
+		DeleteEntity(playerVehicle)
+	end
+
+	local vehicles = ESX.OneSync.GetVehiclesInArea(GetEntityCoords(GetPlayerPed(playerSelected.source)), tonumber(args[1]) or 5.0)
+
+	for i=1, #vehicles do 
+		local currentVehicle = NetworkGetEntityFromNetworkId(vehicles[i])
+		if DoesEntityExist(currentVehicle) then
+			DeleteEntity(currentVehicle)
+		end
+	end
+end)
+
+GM.Command:register({
+    name = "setaccountmoney",
+    label = "Definir de l'argent sur un compte",
+    description = "Permet de definir de l'argent sur un compte",
+}, function(playerSrc, args)
+    if (playerSrc == 0) then
+        local targetSelected = ESX.GetPlayerFromId(args[1])
+        if (not targetSelected) then return end
+
+        if (targetSelected.getAccount(args[2])) then
+            targetSelected.setAccountMoney(args[2], args[3])
+            print("L'argent du compte ~g~"..args[2].."~s~ de ~g~"..targetSelected.getName().."~s~ a été modifié.")
+        else
+            print("Le compte ~r~"..args[2].."~s~ n'existe pas.")
+            return
+        end
+    else
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        local targetSelected = ESX.GetPlayerFromId(args[1])
+        if (not targetSelected) then return end
+
+        if (targetSelected.getAccount(args[2])) then
+            targetSelected.setAccountMoney(args[2], args[3])
+            playerSelected.showNotification("L'argent du compte ~g~"..args[2].."~s~ de ~g~"..targetSelected.getName().."~s~ a été modifié.")
+        else
+            playerSelected.showNotification("Le compte ~r~"..args[2].."~s~ n'existe pas.")
+            return
+        end
+    end
+end)
+
+GM.Command:register({
+    name = "giveaccountmoney",
+    label = "Ajouter de l'argent sur un compte",
+    description = "Permet d'ajouter de l'argent sur un compte",
+}, function(playerSrc, args)
+    if (playerSrc == 0) then
+        local targetSelected = ESX.GetPlayerFromId(args[1])
+        if (not targetSelected) then return end
+
+        if (targetSelected.getAccount(args[2])) then
+            targetSelected.addAccountMoney(args[2], args[3])
+            print("L'argent du compte ~g~"..args[2].."~s~ de ~g~"..targetSelected.getName().."~s~ a été modifié.")
+        else
+            print("Le compte ~r~"..args[2].."~s~ n'existe pas.")
+            return
+        end
+    else
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        local targetSelected = ESX.GetPlayerFromId(args[1])
+        if (not targetSelected) then return end
+
+        if (targetSelected.getAccount(args[2])) then
+            targetSelected.addAccountMoney(args[2], args[3])
+            playerSelected.showNotification("L'argent du compte ~g~"..args[2].."~s~ de ~g~"..targetSelected.getName().."~s~ a été modifié.")
+        else
+            playerSelected.showNotification("Le compte ~r~"..args[2].."~s~ n'existe pas.")
+            return
+        end
+    end
+end)
+
+GM.Command:register({
+    name = "giveitem",
+    label = "Ajouter un item",
+    description = "Permet d'ajouter un item",
+}, function(playerSrc, args)
+    if (playerSrc == 0) then
+        local targetSelected = ESX.GetPlayerFromId(args[1])
+        if (not targetSelected) then return end
+
+        targetSelected.addInventoryItem(args[2], args[3])
+        print("L'item ~g~"..args[2].."~s~ de ~g~"..targetSelected.getName().."~s~ a été ajouté.")
+    else
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        local targetSelected = ESX.GetPlayerFromId(args[1])
+        if (not targetSelected) then return end
+
+        targetSelected.addInventoryItem(args[2], args[3])
+        playerSelected.showNotification("L'item ~g~"..args[2].."~s~ de ~g~"..targetSelected.getName().."~s~ a été ajouté.")
+    end
+end)
+
+GM.Command:register({
+    name = "giveweapon",
+    label = "Ajouter une arme",
+    description = "Permet d'ajouter une arme",
+}, function(playerSrc, args)
+    if (playerSrc == 0) then
+        local targetSelected = ESX.GetPlayerFromId(args[1])
+        if (not targetSelected) then return end
+
+
+        if (targetSelected.hasWeapon(args[2])) then
+            print("Le joueur possède déjà cette arme.")
+            return
+        else
+            targetSelected.addWeapon(args[2], args[3])
+            print("L'arme ~g~"..args[2].."~s~ de ~g~"..targetSelected.getName().."~s~ a été ajouté.")
+        end
+    else
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        local targetSelected = ESX.GetPlayerFromId(args[1])
+        if (not targetSelected) then return end
+
+        if (targetSelected.hasWeapon(args[2])) then
+            playerSelected.showNotification("Le joueur possède déjà cette arme.")
+            return
+        else
+            targetSelected.addWeapon(args[2], args[3])
+            playerSelected.showNotification("L'arme ~g~"..args[2].."~s~ de ~g~"..targetSelected.getName().."~s~ a été ajouté.")
+        end
+    end
+end)
+
+
 
 -- 	ESX.RegisterCommand('giveammo', 'admin', function(xPlayer, args, showError)
 -- 		if args.playerId.hasWeapon(args.weapon) then
@@ -253,7 +332,6 @@ end)
 -- 		{name = 'weaponName', help = TranslateCap('command_giveweapon_weapon'), type = 'weapon'},
 -- 		{name = 'componentName', help = TranslateCap('command_giveweaponcomponent_component'), type = 'string'}
 -- 	}})
--- end
 
 -- ESX.RegisterCommand({'clear', 'cls'}, 'user', function(xPlayer, args, showError)
 -- 	xPlayer.triggerEvent('chat:clear')
@@ -267,7 +345,6 @@ end)
 -- 	ESX.RefreshJobs()
 -- end, true, {help = TranslateCap('command_clearall')})
 
--- if not Config.OxInventory then
 -- 	ESX.RegisterCommand('clearinventory', 'admin', function(xPlayer, args, showError)
 -- 		for k,v in ipairs(args.playerId.inventory) do
 -- 			if v.count > 0 then
@@ -287,7 +364,6 @@ end)
 -- 	end, true, {help = TranslateCap('command_clearloadout'), validate = true, arguments = {
 -- 		{name = 'playerId', help = TranslateCap('commandgeneric_playerid'), type = 'player'}
 -- 	}})
--- end
 
 -- ESX.RegisterCommand('setgroup', 'admin', function(xPlayer, args, showError)
 -- 	if not args.playerId then args.playerId = xPlayer.source end
