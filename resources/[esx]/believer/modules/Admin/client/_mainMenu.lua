@@ -6,6 +6,7 @@ GM.Admin = {
     },
     data = {
         ranks = {},
+        reports = {},
     },
     inAdmin = false
 }
@@ -43,6 +44,11 @@ GM.Admin.menu.main:isVisible(function(Items)
             end
         end,
     })
+    Items:Button("Report", nil, {}, GM.Admin.inAdmin, {
+        onSelected = function()
+            TriggerServerEvent("Admin:requestReports")
+        end
+    }, GM.Admin.menu.submenus["report"])
     Items:Button("Serveur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["server"])
 end)
 
@@ -58,10 +64,24 @@ RegisterNetEvent("Admin:openMenu", function()
     GM.Admin.menu.main:toggle()
 end)
 
-RegisterNetEvent("Admin:updateValue", function(adminData, adminKey, adminValue)
-    if (not adminValue) then
-        GM.Admin.data[adminData] = adminKey
+RegisterNetEvent("Admin:updateValue", function(ADMIN_DATA, ADMIN_KEY, ADMIN_VALUE)
+    if (not ADMIN_VALUE) then
+        GM.Admin.data[ADMIN_DATA] = ADMIN_KEY
     else
-        GM.Admin.data[adminData][adminKey] = adminValue
+        GM.Admin.data[ADMIN_DATA][ADMIN_KEY] = ADMIN_VALUE
+    end
+end)
+
+RegisterNetEvent("Admin:removeValue", function(ADMIN_DATA, ADMIN_KEY)
+    if (not ADMIN_KEY) then
+        GM.Admin.data[ADMIN_DATA] = nil
+    else
+        GM.Admin.data[ADMIN_DATA][ADMIN_KEY] = nil
+    end
+end)
+
+RegisterNetEvent("Admin:playSound", function(SOUND_NAME)
+    if (SOUND_NAME == "new_report") then
+        PlaySoundFrontend(-1, "Menu_Accept", "Phone_SoundSet_Default", 1)
     end
 end)

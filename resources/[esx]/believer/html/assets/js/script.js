@@ -215,8 +215,11 @@ const app = new Vue({
                     this.reports.currentReports = data.currentReports;
                     this.reports.totalReports = data.totalReports;
                     break;
-                case "updateReports":
+                case "updateCurrentReports":
                     this.reports.currentReports = data.currentReports;
+                    break;
+                case "updateTotalReports":
+                    this.reports.totalReports = data.totalReports;
                     break;
                 case "updateNoclip":
                     this.noclip.show = data.noclip

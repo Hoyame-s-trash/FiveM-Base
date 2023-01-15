@@ -26,7 +26,8 @@ function GM.Admin.Ranks:new(id, name, players, commands, permissions)
         GM.Admin.Ranks["players"][playerIdentifier] = {
             rankId = newAdminRanks.id,
             name = newAdminRanks.name,
-            reports = playerValues.reports
+            reports = playerValues.reports,
+            staffName = playerValues.name
         }
     end
 
@@ -35,8 +36,6 @@ function GM.Admin.Ranks:new(id, name, players, commands, permissions)
     end
 
     GM.Admin.Ranks["list"][newAdminRanks.id] = newAdminRanks
-
-    print("Admin rank created: " .. newAdminRanks.name .. " (" .. newAdminRanks.id .. ")")
 
     return newAdminRanks
 end
@@ -51,6 +50,20 @@ function GM.Admin.Ranks:getFromName(rankName)
             return rankValues
         end
     end
+end
+
+function GM.Admin.Ranks:canInteract(rankId)
+    rankId = tonumber(rankId)
+
+    if (self.name == "founder") then return true end
+
+    if (self.id == rankId) then return false end
+
+    if (self.id < rankId) then 
+        return true 
+    end
+
+    return false
 end
 
 function GM.Admin.Ranks:getCommandValue(commandName, playerSrc)
@@ -82,8 +95,8 @@ function GM.Admin.Ranks:getPermissionsValue(permissionName, playerSrc)
     if (not self.permissions[permissionName]) then
 
         if (not GM.Admin.Permissions[permissionName]) then
-            print("Permission not found: " .. permissionName)
-            return true
+            TriggerClientEvent("esx:showNotification", playerSrc, "~r~La permission "..permissionName.." n'existe pas\nValeur false par default.")
+            return false
         end
 
         self.permissions[permissionName] = GM.Admin.Permissions[permissionName]
@@ -192,7 +205,6 @@ GM:newThread(function()
     while (not loadAllRanks) do
         Wait(50)
     end
-    print("Admin: Ranks loaded !")
     for rankId, _ in pairs(GM.Admin.Ranks["list"]) do
         local selectedRank = GM.Admin.Ranks:getFromId(rankId)
         selectedRank:actualizeCommands()
@@ -209,6 +221,8 @@ RegisterServerEvent("Admin:requestRanks", function()
 
     if (playerSelected.getGroup() == "user") then return end
 
+    print("debug admin ranks 1")
+
     TriggerClientEvent("Admin:updateValue", playerSrc, "ranks", GM.Admin.Ranks["list"])
 end)
 
@@ -224,7 +238,7 @@ RegisterServerEvent("Admin:createRank", function(rankName)
     local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
-    if (not selectedRank:getPermissionsValue("CREATE_RANKS", playerSelected.source)) then return end
+    if (not selectedRank:getPermissionsValue("CREATE_RANK", playerSelected.source)) then return end
 
     if (GM.Admin.Ranks:getFromName(rankName) ~= nil) then
         TriggerClientEvent("esx:showNotification", playerSrc, "~r~Un rank existe déjà avec ce nom.")
@@ -239,8 +253,6 @@ RegisterServerEvent("Admin:createRank", function(rankName)
     for commandName, commandValues in pairs(GM.Command.List) do
         GM.Command.List[commandName].value = false
     end
-
-    print("debug admin 1")
 
     MySQL.insert('INSERT INTO user_admin (name, players, commands, permissions) VALUES (?, ?, ?, ?)', {
         rankName,
@@ -262,25 +274,29 @@ RegisterServerEvent("Admin:deleteRank", function(rankId, input)
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
 
-    if (playerSelected.getGroup() == "user") then return end
+    if (playerSelected.getGroup() ~= "founder") then return playerSelected.showNotification("~r~Vous n'avez pas la permission de supprimer un rank.") end
 
-    local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (input["0"] ~= "oui" or input["0"] ~= "OUI") then return playerSelected.showNotification("~r~Vous n'avez pas correctement rempli la demande de suppression.") end
+
+    local selectedRank = GM.Admin.Ranks:getFromId(rankId)
     if (not selectedRank) then return end
 
-    if (not selectedRank:getPermissionsValue("DELETE_RANKS", playerSelected.source)) then return end
-
-    -- Todo check if rank exist 
-
-    if (GM.Admin.Ranks["list"][rankId] == nil) then return end
+    if (selectedRank.name == "user") then return playerSelected.showNotification("~r~Vous ne pouvez pas supprimer le rank user.") end
 
     MySQL.Async.execute("DELETE FROM user_admin WHERE id = ?", {
         rankId
     }, function()
+        for playerIdentifier, _ in pairs(selectedRank.players) do
+            local player = ESX.GetPlayerFromIdentifier(playerIdentifier)
+            if (player) then
+                player.setGroup("user")
+                player.set("rank_id", GM.Admin.Ranks["rank_user"])
+            end
+        end
         GM.Admin.Ranks["list"][rankId] = nil
         for adminSrc,_ in pairs(GM.Admin.inAdmin) do
             TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", GM.Admin.Ranks["list"])
         end
-        -- Todo refresh for all admin present in the current rank and refresh
     end)
 end)
 
@@ -296,11 +312,9 @@ RegisterServerEvent("Admin:recruitPlayerRank", function(rankId, input)
     local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
-    if (not selectedRank:getPermissionsValue("RECRUIT_PLAYER_RANKS", playerSelected.source)) then return end
+    if (not selectedRank:getPermissionsValue("RECRUIT_PLAYER_RANK", playerSelected.source)) then return end
 
-    -- Todo check if rank exist 
-
-    -- Todo check if input is license
+    if (not selectedRank:canInteract(rankId)) then return playerSelected.showNotification("~r~Vous ne pouvez pas recruter un joueur dans un rank plus haut que vous.") end
 
     local selectedRank = GM.Admin.Ranks:getFromId(rankId)
     if (not selectedRank) then return end
@@ -311,12 +325,7 @@ RegisterServerEvent("Admin:recruitPlayerRank", function(rankId, input)
     local targetIdentifier = targetSelected.getIdentifier()
     if (not targetIdentifier) then return end
 
-    -- Todo check if player is already in rank
-
-    if (GM.Admin.Ranks["players"][targetIdentifier]) then
-        print("Player already in rank")
-        return
-    end
+    if (GM.Admin.Ranks["players"][targetIdentifier]) then return playerSelected.showNotification("~r~Ce joueur est déjà présent dans un rank") end
 
     selectedRank.players[targetIdentifier] = {
         name = targetSelected.getName(),
@@ -346,15 +355,12 @@ RegisterServerEvent("Admin:updateRankCommands", function(rankId, commandName, co
     local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
-    if (not selectedRank:getPermissionsValue("UPDATE_RANK_COMMANDS", playerSelected.source)) then return end
+    if (not selectedRank:getPermissionsValue("MANAGE_RANK_COMMANDS", playerSelected.source)) then return end
+
+    if (not selectedRank:canInteract(rankId)) then return playerSelected.showNotification("~r~Vous ne pouvez pas changer les commandes d'un rank au dessus de vous.") end
 
     local selectedRank = GM.Admin.Ranks:getFromId(rankId)
     if (not selectedRank) then return end
-
-    -- if (selectedRank.name == "founder") then
-    --     print("You can't change founder rank")
-    --     return
-    -- end
 
     selectedRank.commands[commandName].value = commandValue
 
@@ -381,15 +387,12 @@ RegisterServerEvent("Admin:updateRankPermissions", function(rankId, permissionNa
     local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
-    if (not selectedRank:getPermissionsValue("UPDATE_RANK_PERMISSIONS", playerSelected.source)) then return end
+    if (not selectedRank:getPermissionsValue("MANAGE_RANK_PERMISSIONS", playerSelected.source)) then return end
+
+    if (not selectedRank:canInteract(rankId)) then return playerSelected.showNotification("~r~Vous ne pouvez pas changer les permissions d'un rank au dessus de vous.") end
 
     local selectedRank = GM.Admin.Ranks:getFromId(rankId)
     if (not selectedRank) then return end
-
-    -- if (selectedRank.name == "founder") then
-    --     print("You can't change founder rank")
-    --     return
-    -- end
 
     selectedRank.permissions[permissionName].value = permissionValue
 
@@ -417,17 +420,16 @@ RegisterServerEvent("Admin:kickPlayerRank", function(rankId, playerIdentifier)
     local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
-    if (not selectedRank:getPermissionsValue("KICK_PLAYER_RANKS", playerSelected.source)) then return end
+    if (not selectedRank:getPermissionsValue("KICK_PLAYER_RANK", playerSelected.source)) then return end
+
+    if (not selectedRank:canInteract(rankId)) then return playerSelected.showNotification("~r~Vous ne pouvez pas kick un staff plus haut que vous.") end
 
     local selectedRank = GM.Admin.Ranks:getFromId(rankId)
     if (not selectedRank) then return end
 
-    local selectedPlayer = GM.Player:getFromIdentifier(playerIdentifier)
+    local selectedPlayer = ESX.GetPlayerFromIdentifier(playerIdentifier)
 
-    if (not selectedRank.players[playerIdentifier]) then
-        print("Player not in rank")
-        return
-    end
+    if (not selectedRank.players[playerIdentifier]) then return end
 
     selectedRank.players[playerIdentifier] = nil
     GM.Admin.Ranks["players"][playerIdentifier] = nil

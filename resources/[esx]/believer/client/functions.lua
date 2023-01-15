@@ -878,10 +878,9 @@ AddEventHandler('esx:showNotification', function(msg, options)
 end)
 
 RegisterNetEvent('esx:showAdvancedNotification')
-AddEventHandler('esx:showAdvancedNotification',
-    function(sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)
-        ESX.ShowAdvancedNotification(sender, subject, msg, textureDict, iconType, flash, saveToBrief, hudColorIndex)
-    end)
+AddEventHandler('esx:showAdvancedNotification', function(sender, subject, msg, textureDict, options)
+    ESX.ShowAdvancedNotification(sender, subject, msg, textureDict, options)
+end)
 
 RegisterNetEvent('esx:showHelpNotification')
 AddEventHandler('esx:showHelpNotification', function(msg, thisFrame, beep, duration)

@@ -213,6 +213,10 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		return self.name
 	end
 
+	function self.getPed()
+		return GetPlayerPed(self.source)
+	end
+
 	function self.setName(newName)
 		self.name = newName
 		Player(self.source).state:set("name", self.name, true)
@@ -586,6 +590,10 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 
 	function self.showNotification(msg, options)
 		self.triggerEvent('esx:showNotification', msg, options)
+	end
+
+	function self.showAdvancedNotification(sender, subject, msg, textureDict, options)
+		self.triggerEvent('esx:showAdvancedNotification', sender, subject, msg, textureDict, options)
 	end
 
 	function self.showHelpNotification(msg, thisFrame, beep, duration)

@@ -275,7 +275,7 @@ function GM.Admin.Noclip:Spectate(pPos)
     local player = PlayerPedId()
     local pPed = player
     GM.Admin.Noclip.InSpec = not GM.Admin.Noclip.InSpec
-    TriggerEvent("Believer:interface:noclip", {
+    TriggerEvent("Interface:noclip", {
         type = "updateNoclip",
         noclip = GM.Admin.Noclip.InSpec
     })

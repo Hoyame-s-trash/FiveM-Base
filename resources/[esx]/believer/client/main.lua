@@ -594,3 +594,19 @@ RegisterNetEvent("esx:GetVehicleType", function(Model, Request)
 
 	TriggerServerEvent("esx:ReturnVehicleType", types[VehicleType] or "automobile", Request)
 end)
+
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(100) -- Wait 0 seconds to prevent crashing.
+        ClearOverrideWeather()
+        ClearWeatherTypePersist()
+        SetWeatherTypePersist("EXTRASUNNY")
+        SetWeatherTypeNow("EXTRASUNNY")
+        SetWeatherTypeNowPersist("EXTRASUNNY")
+        NetworkOverrideClockTime(12, 0, 0)
+    end
+end)
+
+SetAmbientZoneStatePersistent("collision_ybmrar", false, true)
+SetFlashLightKeepOnWhileMoving(true)
+SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)

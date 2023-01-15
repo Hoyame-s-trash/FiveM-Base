@@ -35,7 +35,7 @@ GM:newThread(function()
     end
 end)
 
-RegisterNetEvent("Believer:interface:updatePlayerCount", function(playerCount)
+RegisterNetEvent("Interface:updatePlayerCount", function(playerCount)
     GM.Interface.PlayerCount = playerCount
     SendNUIMessage({
         type = "updatePlayers",
@@ -43,7 +43,7 @@ RegisterNetEvent("Believer:interface:updatePlayerCount", function(playerCount)
     })
 end)
 
-RegisterNetEvent("Believer:interface:updateTime", function(date, time)
+RegisterNetEvent("Interface:updateTime", function(date, time)
     GM.Interface.Hours = time
     GM.Interface.Date = date
     SendNUIMessage({
@@ -114,7 +114,7 @@ AddEventHandler('esx:setAccountMoney', function(account)
     end
 end)
 
-RegisterNetEvent("Believer:interface:updateId", function(playerId)
+RegisterNetEvent("Interface:updateId", function(playerId)
     if (not playerId) then return end
 
     SendNUIMessage({
@@ -203,40 +203,50 @@ AddEventHandler("gameEventTriggered", function(eventName, eventArguments)
 	end
 end)
 
-RegisterNetEvent("Believer:interface:safeZone")
-AddEventHandler("Believer:interface:safeZone", function(boolean)
+RegisterNetEvent("Interface:safeZone")
+AddEventHandler("Interface:safeZone", function(boolean)
     SendNUIMessage({
         type = "updateSafeZone",
         show = boolean,
     })
 end)
 
-RegisterNetEvent("Believer:interface:admin")
-AddEventHandler("Believer:interface:admin", function(admin)
+RegisterNetEvent("Interface:admin")
+AddEventHandler("Interface:admin", function(admin)
     if (not admin) then return end
 
     SendNUIMessage(admin)
 end)
 
-RegisterNetEvent("Believer:interface:reportCount")
-AddEventHandler("Believer:interface:reportCount", function(report)
+RegisterNetEvent("Interface:currentReportCount")
+AddEventHandler("Interface:currentReportCount", function(report)
     if (not report) then return end
 
     SendNUIMessage({
-        type = "updateReports",
+        type = "updateCurrentReports",
         currentReports = report,
     })
 end)
 
-RegisterNetEvent("Believer:interface:noclip")
-AddEventHandler("Believer:interface:noclip", function(noclip)
+RegisterNetEvent("Interface:totalReportCount")
+AddEventHandler("Interface:totalReportCount", function(report)
+    if (not report) then return end
+
+    SendNUIMessage({
+        type = "updateTotalReports",
+        totalReports = report,
+    })
+end)
+
+RegisterNetEvent("Interface:noclip")
+AddEventHandler("Interface:noclip", function(noclip)
     if (not noclip) then return end
 
     SendNUIMessage(noclip)
 end)
 
-RegisterNetEvent("Believer:interface:announce")
-AddEventHandler("Believer:interface:announce", function(announce)
+RegisterNetEvent("Interface:announce")
+AddEventHandler("Interface:announce", function(announce)
     if (not announce) then return end
 
     SendNUIMessage(announce)
@@ -251,8 +261,8 @@ AddEventHandler("Believer:interface:announce", function(announce)
     })
 end)
 
-RegisterNetEvent("Believer:interface:slots")
-AddEventHandler("Believer:interface:slots", function(slots)
+RegisterNetEvent("Interface:slots")
+AddEventHandler("Interface:slots", function(slots)
     SendNUIMessage({
         type = "updateSlots",
         slots = slots

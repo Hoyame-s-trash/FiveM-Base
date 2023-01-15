@@ -13,14 +13,30 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
     if (not playerIdentifier) then return end
 
     if (GM.Admin.Ranks["players"][playerIdentifier]) then
+        if (GM.Admin.Ranks["players"][playerIdentifier].staffName ~= playerSelected.getName()) then
+
+            local playerRank = GM.Admin.Ranks:getFromId(GM.Admin.Ranks["players"][playerIdentifier].rankId)
+            if (not playerRank) then return end
+
+            playerRank.players[playerIdentifier].name = playerSelected.getName()
+
+            GM.Admin.Ranks["players"][playerIdentifier].staffName = playerSelected.getName()
+
+            MySQL.update('UPDATE user_admin SET players = ? WHERE id = ?', {
+                json.encode(playerRank.players), 
+                GM.Admin.Ranks["players"][playerIdentifier].rankId
+            }, function()
+                for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+                    TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", GM.Admin.Ranks["players"][playerIdentifier].rankId, playerRank)
+                end
+            end)
+        end
         playerSelected.set("rank_id", GM.Admin.Ranks["players"][playerIdentifier].rankId)
         playerSelected.setGroup(GM.Admin.Ranks["players"][playerIdentifier].name)
     else
         playerSelected.set("rank_id", GM.Admin.Ranks["rank_user"])
         playerSelected.setGroup("user")
     end
-
-    print("Player " .. playerSelected.getName() .. " (" .. playerIdentifier .. ") has been loaded with group " .. playerSelected.getGroup() .. " and rank " .. playerSelected.get("rank_id"))
 
     --GM.Admin.Players:new(playerSelected.source, playerSelected:getNickname(), playerIdentifier)
 end)
@@ -40,7 +56,7 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
     if (boolean == true) then
         if (not GM.Admin.inAdmin[playerSelected.source]) then
             GM.Admin.inAdmin[playerSelected.source] = true
-            TriggerClientEvent("Believer:interface:admin", playerSelected.source, {
+            TriggerClientEvent("Interface:admin", playerSelected.source, {
                 type = "updateAdmin",
                 admin = true,
                 reports = true,
@@ -54,9 +70,10 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
             end
         end
     elseif (boolean == false) then
+        -- Todo check if number report increase and if it's the case updat in DB number report of player
         if (GM.Admin.inAdmin[playerSelected.source]) then
             GM.Admin.inAdmin[playerSelected.source] = nil
-            TriggerClientEvent("Believer:interface:admin", playerSelected.source, {
+            TriggerClientEvent("Interface:admin", playerSelected.source, {
                 type = "updateAdmin",
                 admin = false,
                 reports = false,
