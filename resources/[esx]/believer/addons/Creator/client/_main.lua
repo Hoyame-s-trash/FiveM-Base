@@ -307,11 +307,16 @@ GM.Creator.menu.submenus["character"]:isVisible(function(Items)
         end
     })
 
-    Items:Button("Valider son visage", nil, {}, true, {
+    Items:Button("Valider son personnage", nil, {}, true, {
         onSelected = function ()
-            -- Todo change camera to clothes
+            SetPlayerControl(PlayerId(), true, 12)
+            TriggerEvent('skinchanger:getSkin', function(skin)
+                TriggerServerEvent('esx_skin:save', skin)
+            end)
+            GM.Creator.menu.main:close()
+            DisplayRadar(true)
         end
-    }, GM.Creator.menu.submenus["clothes"])
+    })
 end, function()
     Panels:ColourPanel("Couleur Principale", RageUI.PanelColour.HairCut, GM.Creator.data.ColorHair.primary[1], GM.Creator.data.ColorHair.primary[2], {
         onColorChange = function(MinimumIndex, CurrentIndex)
@@ -361,6 +366,8 @@ end, function()
 end)
 
 RegisterNetEvent("Believer:creator:openMenu", function()
-    -- Todo remove minimap and interface
+    -- Todo set camera and clothes bluestark to everyone
+    DisplayRadar(false)
+    SetPlayerControl(PlayerId(), false, 12)
     GM.Creator.menu.main:toggle()
 end)

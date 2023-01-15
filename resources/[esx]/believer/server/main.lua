@@ -563,6 +563,14 @@ AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
   end
 end)
 
+AddEventHandler("onResourceStop", function(rscName)
+  if (rscName ~= GetCurrentResourceName()) then
+      return
+  end
+
+  Core.SavePlayers()
+end)
+
 AddEventHandler('txAdmin:events:serverShuttingDown', function()
   Core.SavePlayers()
 end)

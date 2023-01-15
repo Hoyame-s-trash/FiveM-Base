@@ -98,7 +98,6 @@ GM.Command:register({
     name = "creator",
     label = "Ouvrir le menu du créateur",
     description = "Permet d'ouvrir le menu du créateur",
-    keys = {"keyboard", "F10"}
 }, function(playerSrc)
     TriggerClientEvent("Believer:creator:openMenu", playerSrc)
 end)
