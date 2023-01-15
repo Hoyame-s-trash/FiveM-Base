@@ -50,6 +50,7 @@ GM.Admin.menu.main:isVisible(function(Items)
         end
     }, GM.Admin.menu.submenus["report"])
     Items:Button("Serveur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["server"])
+    Items:Button("Options", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["options"])
 end)
 
 GM.Admin.menu.submenus["server"]:isVisible(function(Items)

@@ -63,11 +63,7 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
                 currentReports = tostring(GM.Admin.Reports:count()),
                 totalReports = tostring(GM.Admin.Ranks["players"][playerIdentifier].reports)
             })
-            if (playerSelected.getGroup() ~= "founder") then
-                TriggerEvent('::{IlIIIlIIllllIIlIlI}::esx_skin:getPlayerSkinSv', playerIdentifier, function(skin)
-                    TriggerClientEvent("Beliver:admin:setPed", playerSrc, "u_m_y_chip")
-                end)
-            end
+            -- Todo change clothes for staff with configurate clothes
         end
     elseif (boolean == false) then
         -- Todo check if number report increase and if it's the case updat in DB number report of player
@@ -80,13 +76,7 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
                 currentReports = "0",
                 totalReports = "0"
             })
-            if (playerSelected.getGroup() ~= "founder") then
-                TriggerEvent('::{IlIIIlIIllllIIlIlI}::esx_skin:getPlayerSkinSv', playerIdentifier, function(skin)
-                    local ped = skin.sex == 0 and 'mp_m_freemode_01' or 'mp_f_freemode_01'
-                    TriggerClientEvent("Beliver:admin:setPed", playerSrc, ped)
-                    TriggerClientEvent('::{IlIIIlIIllllIIlIlI}::skinchanger:loadSkin', playerSrc, skin)
-                end)
-            end
+            -- Todo reset clothes for staff
         end
     end
 end)

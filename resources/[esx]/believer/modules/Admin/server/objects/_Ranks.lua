@@ -221,8 +221,6 @@ RegisterServerEvent("Admin:requestRanks", function()
 
     if (playerSelected.getGroup() == "user") then return end
 
-    print("debug admin ranks 1")
-
     TriggerClientEvent("Admin:updateValue", playerSrc, "ranks", GM.Admin.Ranks["list"])
 end)
 
