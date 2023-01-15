@@ -1,8 +1,8 @@
-ESX.Whitelist = ESX.Whitelist or {}
+GM.Whitelist = GM.Whitelist or {}
 
 
-ESX.Whitelist.Enable = Config.Whitelist or false
-ESX.Whitelist.List = {}
+GM.Whitelist.Enable = Config.Whitelist or false
+GM.Whitelist.List = {}
 
 CreateThread(function()
     MySQL.query("SELECT * FROM user_whitelist", {
@@ -10,8 +10,8 @@ CreateThread(function()
         for i = 1, #results do
             local selectedResult = results[i]
             
-            if (not ESX.Whitelist.List[selectedResult.identifier]) then
-                ESX.Whitelist.List[selectedResult.identifier] = {
+            if (not GM.Whitelist.List[selectedResult.identifier]) then
+                GM.Whitelist.List[selectedResult.identifier] = {
                     identifier = selectedResult.identifier,
                     id = selectedResult.id,
                 }
@@ -21,8 +21,8 @@ CreateThread(function()
 end)
 
 RegisterCommand("whitelist", function(source, args)
-    ESX.Whitelist.Enable = not ESX.Whitelist.Enable
-    print("Whitelist is now " .. (ESX.Whitelist.Enable and "enabled" or "disabled"))
+    GM.Whitelist.Enable = not GM.Whitelist.Enable
+    print("Whitelist is now " .. (GM.Whitelist.Enable and "enabled" or "disabled"))
 end)
 
 -- Todo securize this command and add it on the admin menu

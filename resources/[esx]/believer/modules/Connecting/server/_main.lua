@@ -144,8 +144,8 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
         return
     end
     
-    if (ESX.Whitelist.Enable == true) then
-        if (ESX.Whitelist.List[playerIdentifier] == nil) then
+    if (GM.Whitelist.Enable == true) then
+        if (GM.Whitelist.List[playerIdentifier] == nil) then
             local WHITELIST_CARD = {
                 type = "AdaptiveCard",
                 ["$schema"] = "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -217,9 +217,9 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
         end
     end 
 
-    if (ESX.Maintenance.Enable == true) then
+    if (GM.Maintenance.Enable == true) then
         -- Todo check with admin system if player is admin
-        --if (ESX.Whitelist.List[playerIdentifier] == nil) then
+        --if (GM.Whitelist.List[playerIdentifier] == nil) then
             local MAINTENANCE_CARD = {
                 type = "AdaptiveCard",
                 ["$schema"] = "http://adaptivecards.io/schemas/adaptive-card.json",

@@ -38,8 +38,6 @@ server_scripts {
 	"server/paycheck.lua",
 	"server/main.lua",
 	"server/cron.lua",
-	"server/whitelist.lua",
-	"server/maintenance.lua",
 
 	"common/modules/math.lua",
 	"common/modules/table.lua",
