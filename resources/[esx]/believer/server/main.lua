@@ -51,16 +51,9 @@ function createESXPlayer(identifier, playerId, data)
     accounts[account] = money
   end
 
-  if Core.IsPlayerAdmin(playerId) then
-    print(('[^2INFO^0] Player ^5%s^0 Has been granted admin permissions via ^5Ace Perms^7.'):format(playerId))
-    defaultGroup = "admin"
-  else
-    defaultGroup = "user"
-  end
-
-    MySQL.prepare(newPlayer, {json.encode(accounts), identifier, defaultGroup}, function()
-      loadESXPlayer(identifier, playerId, true)
-    end)
+  MySQL.prepare(newPlayer, {json.encode(accounts), identifier, "user"}, function()
+    loadESXPlayer(identifier, playerId, true)
+  end)
 end
 
 
@@ -155,12 +148,7 @@ function loadESXPlayer(identifier, playerId, isNew)
 
   -- Group
   if result.group then
-    if result.group == "superadmin" then
-      userData.group = "admin"
-      print("[^3WARNING^7] ^5Superadmin^7 detected, setting group to ^5admin^7")
-    else
-      userData.group = result.group
-    end
+    userData.group = result.group
   else
     userData.group = 'user'
   end
@@ -521,10 +509,6 @@ ESX.RegisterServerCallback('esx:getPlayerData', function(source, cb)
 
   cb({identifier = xPlayer.identifier, accounts = xPlayer.getAccounts(), inventory = xPlayer.getInventory(), job = xPlayer.getJob(),
       loadout = xPlayer.getLoadout(), money = xPlayer.getMoney(), position = xPlayer.getCoords(true)})
-end)
-
-ESX.RegisterServerCallback('esx:isUserAdmin', function(source, cb)
-  cb(Core.IsPlayerAdmin(source))
 end)
 
 ESX.RegisterServerCallback('esx:getGameBuild', function(source, cb)

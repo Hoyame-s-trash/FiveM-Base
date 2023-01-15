@@ -76,6 +76,25 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		DropPlayer(self.source, reason)
 	end
 
+	function self.ban(reason, expiration, author)
+		if (not reason or not expiration or type(expiration) ~= "number") then
+			return
+		end
+		
+		local playerIdentifier = self:getIdentifier()
+		if (not playerIdentifier) then
+			return
+		end
+	
+		local currentBan = {
+			reason = reason,
+			expiration = expiration,
+			author = author
+		}
+	
+		return GM.Connecting:ban(playerIdentifier, currentBan)
+	end
+
 	function self.setMoney(money)
 		money = ESX.Math.Round(money)
 		self.setAccountMoney('money', money)

@@ -1,0 +1,67 @@
+GM.Admin = GM.Admin or {}
+
+GM.Admin = {
+    menu = {
+        submenus = {}
+    },
+    data = {
+        ranks = {},
+    },
+    inAdmin = false
+}
+
+GM.Admin.menu.main = RageUI.CreateMenu("", "Administration", 0, 0, "banner", "bluestark")
+GM.Admin.menu.main["Closed"] = function()
+    -- Todo event when menu closed
+end
+
+GM.Admin.menu.submenus["server"] = RageUI.CreateSubMenu(GM.Admin.menu.main, "", "Serveur")
+
+GM.Admin.menu.main:isVisible(function(Items)
+    if (GM.Admin.inAdmin == true) then
+        GM.Admin.CheckboxActivate = "Désactiver le mode admin"
+    else
+        GM.Admin.CheckboxActivate = "Activer le mode admin"
+    end
+
+    Items:Checkbox(GM.Admin.CheckboxActivate, nil, adminCheckbox, {}, {
+        onSelected = function(Checked)
+            adminCheckbox = Checked
+        end,
+        onChecked = function()
+            GM.Admin.inAdmin = true
+            TriggerServerEvent("Admin:updatePlayerStaff", true)
+        end,
+        onUnChecked = function()
+            GM.Admin.inAdmin = false
+            TriggerServerEvent("Admin:updatePlayerStaff", false)
+            if (GM.Admin.data["gamertag_bool"] == true) then
+                Usegamertag(false)
+            end
+            if (GM.Admin.data["blips_bool"] == true) then
+                GM.Admin.data["blips_bool"] = false
+            end
+        end,
+    })
+    Items:Button("Serveur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["server"])
+end)
+
+GM.Admin.menu.submenus["server"]:isVisible(function(Items)
+    Items:Button("Ranks", nil, {}, true,{
+        onSelected = function()
+            TriggerServerEvent("Admin:requestRanks")
+        end
+    }, GM.Admin.menu.submenus["server_ranks"])
+end)
+
+RegisterNetEvent("Admin:openMenu", function()
+    GM.Admin.menu.main:toggle()
+end)
+
+RegisterNetEvent("Admin:updateValue", function(adminData, adminKey, adminValue)
+    if (not adminValue) then
+        GM.Admin.data[adminData] = adminKey
+    else
+        GM.Admin.data[adminData][adminKey] = adminValue
+    end
+end)
