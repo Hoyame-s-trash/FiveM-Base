@@ -12,6 +12,10 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
     local playerIdentifier = playerSelected.getIdentifier()
     if (not playerIdentifier) then return end
 
+    for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+        TriggerClientEvent("chatMessage", adminSrc, "", { 255, 255, 255 }, "^2" .. playerSelected.getName() .. " à rejoint le serveur.")
+    end
+
     if (GM.Admin.Ranks["players"][playerIdentifier]) then
         if (GM.Admin.Ranks["players"][playerIdentifier].staffName ~= playerSelected.getName()) then
 
@@ -22,7 +26,7 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
 
             GM.Admin.Ranks["players"][playerIdentifier].staffName = playerSelected.getName()
 
-            MySQL.update('UPDATE user_admin SET players = ? WHERE id = ?', {
+            MySQL.update("UPDATE user_admin SET players = ? WHERE id = ?", {
                 json.encode(playerRank.players), 
                 GM.Admin.Ranks["players"][playerIdentifier].rankId
             }, function()
@@ -32,13 +36,15 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
             end)
         end
         playerSelected.set("rank_id", GM.Admin.Ranks["players"][playerIdentifier].rankId)
+        playerSelected.set("rank_label", GM.Admin.Ranks["players"][playerIdentifier].label)
         playerSelected.setGroup(GM.Admin.Ranks["players"][playerIdentifier].name)
     else
         playerSelected.set("rank_id", GM.Admin.Ranks["rank_user"])
+        playerSelected.set("rank_label", "Joueur")
         playerSelected.setGroup("user")
     end
 
-    --GM.Admin.Players:new(playerSelected.source, playerSelected:getNickname(), playerIdentifier)
+    GM.Admin.Players:new(playerSelected.getUniqueId(), playerSelected.source, playerSelected.getName(), playerSelected.get("rank_label"))
 end)
 
 RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
@@ -66,7 +72,7 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
             -- Todo change clothes for staff with configurate clothes
         end
     elseif (boolean == false) then
-        -- Todo check if number report increase and if it's the case updat in DB number report of player
+        -- Todo check if number report increase and if it"s the case updat in DB number report of player
         if (GM.Admin.inAdmin[playerSelected.source]) then
             GM.Admin.inAdmin[playerSelected.source] = nil
             TriggerClientEvent("Interface:admin", playerSelected.source, {
@@ -78,5 +84,11 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
             })
             -- Todo reset clothes for staff
         end
+    end
+end)
+
+AddEventHandler("playerDropped", function(reason)
+    for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+        TriggerClientEvent("chatMessage", -1, "", { 255, 255, 255 }, "^2* " .. GetPlayerName(source) .." s'est déconnecté  (" .. reason .. ")")
     end
 end)

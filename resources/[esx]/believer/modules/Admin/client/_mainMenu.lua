@@ -7,6 +7,7 @@ GM.Admin = {
     data = {
         ranks = {},
         reports = {},
+        players = {}
     },
     inAdmin = false
 }
@@ -44,6 +45,7 @@ GM.Admin.menu.main:isVisible(function(Items)
             end
         end,
     })
+    Items:Button("Joueurs", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["players"])
     Items:Button("Report", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
             TriggerServerEvent("Admin:requestReports")

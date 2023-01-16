@@ -4,11 +4,12 @@ local DoesEntityExist = DoesEntityExist
 local GetEntityCoords = GetEntityCoords
 local GetEntityHeading = GetEntityHeading
 
-function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, weight, job, loadout, name, coords)
+function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, weight, job, loadout, name, coords, uniqueId)
 	local targetOverrides = Config.PlayerFunctionOverride and Core.PlayerFunctionOverrides[Config.PlayerFunctionOverride] or {}
 	
 	local self = {}
 
+	self.uniqueId = uniqueId
 	self.accounts = accounts
 	self.coords = coords
 	self.group = group
@@ -26,11 +27,16 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 
 	ExecuteCommand(('add_principal identifier.%s group.%s'):format(self.license, self.group))
 	
+	Player(self.source).state:set("uniqueId", self.uniqueId, true)
 	Player(self.source).state:set("identifier", self.identifier, true)
 	Player(self.source).state:set("license", self.license, true)
 	Player(self.source).state:set("job", self.job, true)
 	Player(self.source).state:set("group", self.group, true)
 	Player(self.source).state:set("name", self.name, true)
+
+	function self.getUniqueId()
+		return self.uniqueId
+	end
 
 	function self.triggerEvent(eventName, ...)
 		TriggerClientEvent(eventName, self.source, ...)

@@ -4,7 +4,7 @@ GM.Admin.Ranks["list"] = {}
 GM.Admin.Ranks["players"] = {}
 GM.Admin.Ranks["rank_user"] = 0
 
-function GM.Admin.Ranks:new(id, name, players, commands, permissions)
+function GM.Admin.Ranks:new(id, name, label, players, commands, permissions)
     local newAdminRanks = {}
 
     setmetatable(newAdminRanks, self)
@@ -15,6 +15,7 @@ function GM.Admin.Ranks:new(id, name, players, commands, permissions)
     newAdminRanks.id = id
 
     newAdminRanks.name = name
+    newAdminRanks.label = label
     newAdminRanks.players = players
     newAdminRanks.commands = commands
     newAdminRanks.permissions = permissions
@@ -26,6 +27,7 @@ function GM.Admin.Ranks:new(id, name, players, commands, permissions)
         GM.Admin.Ranks["players"][playerIdentifier] = {
             rankId = newAdminRanks.id,
             name = newAdminRanks.name,
+            label = newAdminRanks.label,
             reports = playerValues.reports,
             staffName = playerValues.name
         }
@@ -136,7 +138,7 @@ GM:newThread(function()
     MySQL.query("SELECT * FROM user_admin", {}, function(results)
         if (results[1]) then
             for _, rankValues in pairs(results) do
-                GM.Admin.Ranks:new(rankValues.id, rankValues.name, json.decode(rankValues.players), json.decode(rankValues.commands), json.decode(rankValues.permissions))
+                GM.Admin.Ranks:new(rankValues.id, rankValues.name, rankValues.label, json.decode(rankValues.players), json.decode(rankValues.commands), json.decode(rankValues.permissions))
             end
             loadAllRanks = true
         end
@@ -224,7 +226,7 @@ RegisterServerEvent("Admin:requestRanks", function()
     TriggerClientEvent("Admin:updateValue", playerSrc, "ranks", GM.Admin.Ranks["list"])
 end)
 
-RegisterServerEvent("Admin:createRank", function(rankName)
+RegisterServerEvent("Admin:createRank", function(rankName, rankLabel)
     local playerSrc = source
     if (not playerSrc) then return end
 
@@ -248,17 +250,23 @@ RegisterServerEvent("Admin:createRank", function(rankName)
         return
     end
 
+    if (rankLabel == nil or rankLabel == "") then
+        TriggerClientEvent("esx:showNotification", playerSrc, "~r~Vous devez entrer un label de rank valide.")
+        return
+    end
+
     for commandName, commandValues in pairs(GM.Command.List) do
         GM.Command.List[commandName].value = false
     end
 
-    MySQL.insert('INSERT INTO user_admin (name, players, commands, permissions) VALUES (?, ?, ?, ?)', {
+    MySQL.insert('INSERT INTO user_admin (name, label, players, commands, permissions) VALUES (?, ?, ?, ?, ?)', {
         rankName,
+        rankLabel,
         json.encode({}),
         json.encode(GM.Command.List),
         json.encode(GM.Admin.Permissions)
     }, function(rankId)
-        local newRank = GM.Admin.Ranks:new(rankId, rankName, {}, GM.Command.List, {})
+        local newRank = GM.Admin.Ranks:new(rankId, rankName, rankLabel, {}, GM.Command.List, {})
         for adminSrc,_ in pairs(GM.Admin.inAdmin) do
             TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", rankId, newRank)
         end
@@ -274,7 +282,7 @@ RegisterServerEvent("Admin:deleteRank", function(rankId, input)
 
     if (playerSelected.getGroup() ~= "founder") then return playerSelected.showNotification("~r~Vous n'avez pas la permission de supprimer un rank.") end
 
-    if (input["0"] ~= "oui" or input["0"] ~= "OUI") then return playerSelected.showNotification("~r~Vous n'avez pas correctement rempli la demande de suppression.") end
+    if (input ~= "oui" and input ~= "OUI") then return playerSelected.showNotification("~r~Vous n'avez pas correctement rempli la demande de suppression.") end
 
     local selectedRank = GM.Admin.Ranks:getFromId(rankId)
     if (not selectedRank) then return end

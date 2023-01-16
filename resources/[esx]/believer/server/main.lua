@@ -2,7 +2,7 @@ SetMapName('San Andreas')
 SetGameType('ESX Legacy')
 
 local newPlayer = 'INSERT INTO `users` SET `accounts` = ?, `identifier` = ?, `group` = ?'
-local loadPlayer = 'SELECT `accounts`, `job`, `job_grade`, `group`, `position`, `inventory`, `skin`, `loadout`'
+local loadPlayer = 'SELECT `uniqueId`, `accounts`, `job`, `job_grade`, `group`, `position`, `inventory`, `skin`, `loadout`'
 
 if Config.Identity then
   loadPlayer = loadPlayer .. ', `firstname`, `lastname`, `dateofbirth`, `sex`, `height`'
@@ -58,11 +58,17 @@ end
 
 
 function loadESXPlayer(identifier, playerId, isNew)
-  local userData = {accounts = {}, inventory = {}, job = {}, loadout = {}, playerName = GetPlayerName(playerId), weight = 0}
+  local userData = {uniqueId = 0, accounts = {}, inventory = {}, job = {}, loadout = {}, playerName = GetPlayerName(playerId), weight = 0}
 
   local result = MySQL.prepare.await(loadPlayer, {identifier})
   local job, grade, jobObject, gradeObject = result.job, tostring(result.job_grade)
   local foundAccounts, foundItems = {}, {}
+
+  -- UniqueId
+
+  if result.uniqueId then
+    userData.uniqueId = result.uniqueId
+  end
 
   -- Accounts
   if result.accounts and result.accounts ~= '' then
@@ -210,7 +216,7 @@ function loadESXPlayer(identifier, playerId, isNew)
   end
 
   local xPlayer = CreateExtendedPlayer(playerId, identifier, userData.group, userData.accounts, userData.inventory, userData.weight, userData.job,
-    userData.loadout, userData.playerName, userData.coords)
+    userData.loadout, userData.playerName, userData.coords, userData.uniqueId)
   ESX.Players[playerId] = xPlayer
 
   if userData.firstname then
@@ -251,7 +257,7 @@ function loadESXPlayer(identifier, playerId, isNew)
   xPlayer.triggerEvent('esx:createMissingPickups', Core.Pickups)
   xPlayer.updateCoords()
   xPlayer.triggerEvent('esx:registerSuggestions', Core.RegisteredCommands)
-  print(('[^2INFO^0] Player ^5"%s"^0 group : %s has connected to the server. ID: ^5%s^7'):format(xPlayer.getName(), xPlayer.getGroup(), playerId))
+  print(('[^2INFO^0] Player ^5"%s"^0 group : %s has connected to the server. UNIQUE ID: ^5%s^7 ID: ^5%s^7'):format(xPlayer.getName(), xPlayer.getGroup(), xPlayer.getUniqueId(), playerId))
 end
 
 AddEventHandler('chatMessage', function(playerId, author, message)

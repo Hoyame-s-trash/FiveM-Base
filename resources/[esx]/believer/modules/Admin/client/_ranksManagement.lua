@@ -15,13 +15,14 @@ GM.Admin.menu.submenus["server_ranks"]:isVisible(function(Items)
                 submitLabel = "Créer un rank",
                 placeHolders = {
                     {label = "NOM"},
+                    {label = "LABEL"},
                 }
             })
-            TriggerServerEvent("Admin:createRank", input["0"])
+            TriggerServerEvent("Admin:createRank", input["0"], input["1"])
         end
     })
     for rankId,rankValues in pairs(GM.Admin.data["ranks"]) do
-        Items:Button(rankValues.name, "ID - "..rankValues.id, {}, true,{
+        Items:Button(rankValues.label.." - "..rankValues.name, "ID - "..rankValues.id, {}, true,{
             onSelected = function()
                 GM.Admin.data["selectedRank"] = rankValues.id
             end
