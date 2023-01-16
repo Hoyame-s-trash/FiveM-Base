@@ -36,4 +36,37 @@ GM.Admin.menu.submenus["options"]:isVisible(function(Items)
             GM.Admin.data["report_count_bool"] = false
         end,
     }
+    Items:Checkbox("Notification sonore lors d'un report", nil, CHECKED_REPORT_SOUND, {}, {
+        onSelected = function(Checked)
+            CHECKED_REPORT_SOUND = Checked
+        end,
+        onChecked = function()
+            GM.Admin.data["report_sound_bool"] = true
+        end,
+        onUnChecked = function()
+            GM.Admin.data["report_sound_bool"] = false
+        end,
+    }
+    Items:Checkbox("Notification actions report chat", nil, CHECKED_REPORT_CHAT, {}, {
+        onSelected = function(Checked)
+            CHECKED_REPORT_CHAT = Checked
+        end,
+        onChecked = function()
+            GM.Admin.data["report_chat_bool"] = true
+        end,
+        onUnChecked = function()
+            GM.Admin.data["report_chat_bool"] = false
+        end,
+    }
+    Items:Checkbox("Invisible par les admins", nil, CHECKED_INVISIBLE_STAFF, {}, {
+        onSelected = function(Checked)
+            CHECKED_INVISIBLE_STAFF = Checked
+        end,
+        onChecked = function()
+            GM.Admin.data["invisible_staff_bool"] = true
+        end,
+        onUnChecked = function()
+            GM.Admin.data["invisible_staff_bool"] = false
+        end,
+    }
 end)
