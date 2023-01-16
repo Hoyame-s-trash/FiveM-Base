@@ -1,23 +1,65 @@
-.color-0{color: #ffffff;}
-.color-1{color: #ff4444;}
-.color-2{color: #99cc00;}
-.color-3{color: #ffbb33;}
-.color-4{color: #0099cc;}
-.color-5{color: #33b5e5;}
-.color-6{color: #aa66cc;}
-.color-8{color: #cc0000;}
-.color-9{color: #cc0068;}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
 
-.gameColor-w{color: #ffffff;}
-.gameColor-r{color: #ff4444;}
-.gameColor-g{color: #99cc00;}
-.gameColor-y{color: #ffbb33;}
-.gameColor-b{color: #33b5e5;}
+.color-0 {
+  color: #ffffff;
+}
+
+.color-1 {
+  color: #ff4444;
+}
+
+.color-2 {
+  color: #99cc00;
+}
+
+.color-3 {
+  color: #ffbb33;
+}
+
+.color-4 {
+  color: #0099cc;
+}
+
+.color-5 {
+  color: #33b5e5;
+}
+
+.color-6 {
+  color: #aa66cc;
+}
+
+.color-8 {
+  color: #cc0000;
+}
+
+.color-9 {
+  color: #cc0068;
+}
+
+.gameColor-w {
+  color: #ffffff;
+}
+
+.gameColor-r {
+  color: #ff4444;
+}
+
+.gameColor-g {
+  color: #99cc00;
+}
+
+.gameColor-y {
+  color: #ffbb33;
+}
+
+.gameColor-b {
+  color: #33b5e5;
+}
 
 /* todo: more game colors */
 
 * {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -31,7 +73,7 @@ em {
 }
 
 #app {
-  font-family: 'Lato', Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: white;
@@ -44,7 +86,7 @@ em {
   width: 38%;
   height: 22%;
   max-width: 1000px;
-  background-color: rgba(52, 73, 94, 0.7);
+  background-color: rgba(4, 5, 7, 0.7);
   -webkit-animation-duration: 2s;
 }
 
@@ -71,12 +113,12 @@ em {
   box-sizing: border-box;
 }
 
-.chat-input > div.input {
+.chat-input>div.input {
   position: relative;
   display: flex;
   align-items: stretch;
   width: 100%;
-  background-color: rgba(44, 62, 80, 1.0);
+  background-color: rgb(10, 13, 17);
 }
 
 .chat-hide-state {
@@ -114,8 +156,9 @@ textarea {
   background-color: transparent;
 }
 
-textarea:focus, input:focus {
-    outline: none;
+textarea:focus,
+input:focus {
+  outline: none;
 }
 
 .msg {
@@ -135,7 +178,7 @@ textarea:focus, input:focus {
   font-size: 1.65vh;
   box-sizing: border-box;
   color: white;
-  background-color: rgba(44, 62, 80, 1.0);
+  background-color: rgb(13, 18, 24);
   width: 100%;
 }
 
