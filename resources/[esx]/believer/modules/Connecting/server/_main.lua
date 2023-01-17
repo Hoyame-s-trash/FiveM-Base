@@ -83,7 +83,7 @@ function GM.Connecting:ban(playerIdentifier, banData)
     if (not banData or not banData.reason or not banData.expiration or type(banData.expiration) ~= "number") then
         return
     end
-    
+
     local playerSelected = ESX.GetPlayerFromIdentifier(playerIdentifier)
 
     local currentBan = {
@@ -137,7 +137,7 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
     deferrals.defer()
     Wait(0)
 
-    local playerIdentifier = GM.Connecting:getIdentifier(playerSrc, "main")
+    local playerIdentifier = ESX.GetIdentifier(playerSrc)
     if (playerIdentifier == nil) then
         deferrals.done("Votre identifiant qui permet de vous enregistrer n'est pas valide.")
         CancelEvent()
@@ -697,85 +697,3 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
 
     deferrals.done();
 end)
-
--- RegisterCommand("believer_ban", function(source, args)
---     if (source == 0) then
---         if (not args[1] or not args[2] or not args[3]) then
---             return
---         end
-    
---         local targetPlayer = tonumber(args[1]) or args[1]
---         local reason = table.concat(args, " ", 3)
-      
---         local finishTimer
---         if (tonumber(args[2]) == 0) then
---             finishTimer = -1
---         else
---             finishTimer = (os.time() + (tonumber(args[2]) * 60)) * 1000
---         end
-    
---         if (type(targetPlayer) == "number") then
---             local selectedPlayer = GM.Connecting:getFromSource(targetPlayer)
---             if (not selectedPlayer) then
---                 return
---             end
-
---             selectedPlayer:ban(reason, finishTimer, "Anticheat")
---         else
---             GM.Connecting:ban(targetPlayer, {
---                 reason = reason,
---                 expiration = finishTimer or -1,
---                 author = "Console"
---             })
---         end
---     else
---         -- Todo check if player is admin or with the command module
-
---         if (not args[1] or not args[2] or not args[3]) then
---             return
---         end
-    
---         local targetPlayer = tonumber(args[1]) or args[1]
---         local reason = table.concat(args, " ", 3)
-      
---         local finishTimer
---         if (tonumber(args[2]) == 0) then
---             finishTimer = -1
---         else
---             finishTimer = (os.time() + (tonumber(args[2]) * 60)) * 1000
---         end
-    
---         if (type(targetPlayer) == "number") then
---             local selectedPlayer = GM.Connecting:getFromSource(targetPlayer)
---             if (not selectedPlayer) then
---                 return
---             end
-            
---             selectedPlayer:ban(reason, finishTimer, GetPlayerName(playerSrc))
---         else
---             GM.Connecting:ban(targetPlayer, {
---                 reason = reason,
---                 expiration = finishTimer or -1,
---                 author = GetPlayerName(playerSrc)
---             })
---         end
---     end
--- end)
-
--- RegisterCommand("believer_unban", function(source, args)
---     if (source == 0) then
---         if (not args[1]) then
---             return
---         end
-    
---         GM.Connecting:unban(source, args[1])
---     else
---         -- Todo check if player is admin or with the command module
-
---         if (not args[1]) then
---             return
---         end
-    
---         GM.Connecting:unban(source, args[1])
---     end
--- end)

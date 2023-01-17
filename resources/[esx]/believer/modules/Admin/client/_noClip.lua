@@ -343,3 +343,20 @@ RegisterNetEvent("Admin:setCameraCoords", function(coords)
         SetCamCoord(Admin.Cam, coords)
     end
 end)
+
+RegisterNetEvent("Admin:spectatePlayer", function(player)
+    if (not GM.Admin.NoclipActive) then
+        GM.Admin.Noclip:Spectate()
+    end
+    GM.Admin.Noclip.CamTarget = player
+    GM.Admin.Noclip.CamTarget.PedHandle = GetPlayerPed(player.id)
+    if not DoesEntityExist(GM.Admin.Noclip.CamTarget.PedHandle) then
+        ESX.ShowNotification("~r~Vous etes trop loin de la cible.")
+        return
+    end
+    NetworkSetInSpectatorMode(1, GM.Admin.Noclip.CamTarget.PedHandle)
+    SetCamActive(GM.Admin.Noclip.Cam, false)
+    RenderScriptCams(false, false, 0, false, false)
+    GM.Admin.Noclip.SetScaleformParams(GM.Admin.Noclip.Scalform, GM.Admin.Noclip:ActiveScalform(true))
+    ClearFocus()
+end)

@@ -111,64 +111,36 @@ GM:newThread(function()
         label = "Ban un joueur",
         description = "Permet de bannir temporairement ou définitivement une personne.",
     }, function(playerSrc, args)
-        if (playerSrc == 0) then
-            if (not args[1] or not args[2] or not args[3]) then
-                return
-            end
+        if (not args[1] or not args[2] or not args[3]) then
+            return
+        end
+
+        local targetPlayer = tonumber(args[1]) or args[1]
+        local reason = table.concat(args, " ", 3)
         
-            local targetPlayer = tonumber(args[1]) or args[1]
-            local reason = table.concat(args, " ", 3)
-          
-            local finishTimer
-            if (tonumber(args[2]) == 0) then
-                finishTimer = -1
-            else
-                finishTimer = (os.time() + (tonumber(args[2]) * 60)) * 1000
-            end
-        
-            if (type(targetPlayer) == "number") then
-                local selectedPlayer = ESX.GetPlayerFromId(targetPlayer)
-                if (not selectedPlayer) then
-                    return
-                end
-                
-                selectedPlayer.ban(reason, finishTimer, "Console")
-            else
-                GM.Connecting:ban(targetPlayer, {
-                    reason = reason,
-                    expiration = finishTimer or -1,
-                    author = "Console"
-                })
-            end
+        local finishTimer
+        if (tonumber(args[2]) == 0) then
+            finishTimer = -1
         else
-            if (not args[1] or not args[2] or not args[3]) then
+            finishTimer = (os.time() + (tonumber(args[2]) * 60)) * 1000
+        end
+
+        print(reason)
+        print(finishTimer)
+    
+        if (type(targetPlayer) == "number") then
+            local selectedPlayer = ESX.GetPlayerFromId(targetPlayer)
+            if (not selectedPlayer) then
                 return
             end
-        
-            local targetPlayer = tonumber(args[1]) or args[1]
-            local reason = table.concat(args, " ", 3)
-          
-            local finishTimer
-            if (tonumber(args[2]) == 0) then
-                finishTimer = -1
-            else
-                finishTimer = (os.time() + (tonumber(args[2]) * 60)) * 1000
-            end
-        
-            if (type(targetPlayer) == "number") then
-                local selectedPlayer = ESX.GetPlayerFromId(targetPlayer)
-                if (not selectedPlayer) then
-                    return
-                end
-                
-                selectedPlayer.ban(reason, finishTimer, GetPlayerName(playerSrc))
-            else
-                GM.Connecting:ban(targetPlayer, {
-                    reason = reason,
-                    expiration = finishTimer or -1,
-                    author = GetPlayerName(playerSrc)
-                })
-            end
+            
+            selectedPlayer.ban(reason, finishTimer, GetPlayerName(playerSrc))
+        else
+            GM.Connecting:ban(targetPlayer, {
+                reason = reason,
+                expiration = finishTimer or -1,
+                author = GetPlayerName(playerSrc)
+            })
         end
     end)
 

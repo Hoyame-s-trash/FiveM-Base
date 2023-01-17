@@ -11,7 +11,7 @@ function GM.Admin.Players:new(uniqueId, source, name, rank)
     if (GM.Admin.Players["list"][id] ~= nil) then return end
 
     newAdminPlayer.id = (source or (#GM.Admin.Players["list"] + 1))
-
+    newAdminPlayer.uniqueId = uniqueId
     newAdminPlayer.source = source
     newAdminPlayer.name = name
     newAdminPlayer.rank = rank

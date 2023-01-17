@@ -46,6 +46,7 @@ GM.Admin.menu.main:isVisible(function(Items)
         end,
     })
     Items:Button("Joueurs", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["players"])
+    Items:Button("Mon joueur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["my_player"])
     Items:Button("Report", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
             TriggerServerEvent("Admin:requestReports")
