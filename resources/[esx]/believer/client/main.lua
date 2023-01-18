@@ -223,25 +223,9 @@ AddEventHandler('esx:removeInventoryItem', function(item, count, showNotificatio
 	end
 end)
 
-RegisterNetEvent('esx:addWeapon')
-AddEventHandler('esx:addWeapon', function(weapon, ammo)
-	print("[^1ERROR^7] event ^5'esx:addWeapon'^7 Has Been Removed. Please use ^5xPlayer.addWeapon^7 Instead!")
-end)
-
-RegisterNetEvent('esx:addWeaponComponent')
-AddEventHandler('esx:addWeaponComponent', function(weapon, weaponComponent)
-	print("[^1ERROR^7] event ^5'esx:addWeaponComponent'^7 Has Been Removed. Please use ^5xPlayer.addWeaponComponent^7 Instead!")
-end)
-
-RegisterNetEvent('esx:setWeaponAmmo')
-AddEventHandler('esx:setWeaponAmmo', function(weapon, weaponAmmo)
-	print("[^1ERROR^7] event ^5'esx:setWeaponAmmo'^7 Has Been Removed. Please use ^5xPlayer.addWeaponAmmo^7 Instead!")
-end)
-
 RegisterNetEvent('esx:setWeaponTint')
 AddEventHandler('esx:setWeaponTint', function(weapon, weaponTintIndex)
 	SetPedWeaponTintIndex(ESX.PlayerData.ped, joaat(weapon), weaponTintIndex)
-	
 end)
 
 RegisterNetEvent('esx:removeWeapon')

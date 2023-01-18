@@ -7,7 +7,9 @@ GM.Admin = {
     data = {
         ranks = {},
         reports = {},
-        players = {}
+        players = {},
+        blips = {},
+        blips_list = {},
     },
     inAdmin = false
 }
@@ -40,6 +42,20 @@ GM.Admin.menu.main:isVisible(function(Items)
             if (GM.Admin.data["all_weapons_bool"] == true) then
                 GM.Admin.data["all_weapons_bool"] = false
                 TriggerServerEvent("Admin:removeAllWeapons")
+            end
+            if (GM.Admin.data["gamertag_bool"] == true) then
+                GM.Admin.data["gamertag_bool"] = false
+                CHECKED_GAMERTAG = false
+                TriggerEvent("Admin:gamerTag", false)
+            end
+            if (GM.Admin.data["blips_bool"] == true) then
+                GM.Admin.data["blips_bool"] = false
+                CHECKED_BLIPS = false
+                TriggerEvent("Admin:blipsManager", false)
+            end
+            if (GM.Admin.data["gamertag_myself_bool"] == true) then
+                CHECKED_GAMERTAG_MYSELF = false
+                GM.Admin.data["gamertag_myself_bool"] = false
             end
         end,
     })

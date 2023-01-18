@@ -1,1 +1,1 @@
-C:\Users\Administrator\Desktop\Bluestark_V2\src\FXServer.exe +exec serverdev.cfg +set onesync on +set onesync legacy +set onesync_enableInfinity 1 +set sv_enforceGameBuild 2699
+E:\LocalhostBlueStarkV2\FXServer.exe +exec serverdev.cfg +set onesync on +set onesync legacy +set onesync_enableInfinity 1 +set sv_enforceGameBuild 2699

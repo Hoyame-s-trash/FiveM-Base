@@ -44,7 +44,9 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
         playerSelected.setGroup("user")
     end
 
-    GM.Admin.Players:new(playerSelected.getUniqueId(), playerSelected.source, playerSelected.getName(), playerSelected.get("rank_label"))
+    -- Todo get actual vip for player
+
+    GM.Admin.Players:new(playerSelected.getUniqueId(), playerSelected.source, playerSelected.getName(), playerSelected.get("rank_label"), 0)
 end)
 
 RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
@@ -59,6 +61,11 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
     local playerIdentifier = playerSelected:getIdentifier("main")
     if (not playerIdentifier) then return end
 
+    local staffSelected = GM.Admin.Players:getFromId(playerSelected.source)
+    if (not staffSelected) then return end
+
+    staffSelected.admin = boolean
+
     if (boolean == true) then
         if (not GM.Admin.inAdmin[playerSelected.source]) then
             GM.Admin.inAdmin[playerSelected.source] = true
@@ -69,6 +76,9 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
                 currentReports = tostring(GM.Admin.Reports:count()),
                 totalReports = tostring(GM.Admin.Ranks["players"][playerIdentifier].reports)
             })
+            for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+                TriggerClientEvent("Admin:updateValue", adminSrc, "players", staffSelected.id, staffSelected)
+            end
             -- Todo change clothes for staff with configurate clothes
         end
     elseif (boolean == false) then
@@ -82,6 +92,9 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
                 currentReports = "0",
                 totalReports = "0"
             })
+            for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+                TriggerClientEvent("Admin:updateValue", adminSrc, "players", staffSelected.id, staffSelected)
+            end
             -- Todo reset clothes for staff
         end
     end

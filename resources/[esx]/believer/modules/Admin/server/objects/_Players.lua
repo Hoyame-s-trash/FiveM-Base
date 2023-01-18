@@ -2,7 +2,7 @@ GM.Admin = GM.Admin or {}
 GM.Admin.Players = {}
 GM.Admin.Players["list"] = {}
 
-function GM.Admin.Players:new(uniqueId, source, name, rank)
+function GM.Admin.Players:new(uniqueId, source, name, rank, vip)
     local newAdminPlayer = {}
 
     setmetatable(newAdminPlayer, self)
@@ -15,6 +15,9 @@ function GM.Admin.Players:new(uniqueId, source, name, rank)
     newAdminPlayer.source = source
     newAdminPlayer.name = name
     newAdminPlayer.rank = rank
+    newAdminPlayer.vip = vip
+    newAdminPlayer.admin = false
+    newAdminPlayer.invisible = false
     newAdminPlayer.connected_date = os.date("%H:%M")
 
     GM.Admin.Players["list"][newAdminPlayer.id] = newAdminPlayer
@@ -26,8 +29,15 @@ function GM.Admin.Players:new(uniqueId, source, name, rank)
     return newAdminPlayer
 end
 
-function GM.Admin.Players:getFromId(reportId)
-    return GM.Admin.Players["list"][reportId]
+function GM.Admin.Players:getFromId(playerId)
+    return GM.Admin.Players["list"][playerId]
+end
+
+function GM.Admin.Players:set(KEY, VALUE)
+    if (not KEY) then return end
+    if (not VALUE) then return end
+
+    self[KEY] = VALUE
 end
 
 RegisterServerEvent("Admin:requestPlayers", function()

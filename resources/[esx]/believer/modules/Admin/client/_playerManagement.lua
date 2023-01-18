@@ -29,12 +29,14 @@ GM.Admin.menu.submenus["players_online"]:isVisible(function(Items)
         end
     })
     for playerSrc, playersValues in pairs(GM.Admin.data["players"]) do
-        if GM.Admin.data["filterValue"] == nil or string.find(playersValues.id, GM.Admin.data["filterValue"]) or string.find(playersValues.name, GM.Admin.data["filterValue"]) or string.find(playersValues.rank, GM.Admin.data["filterValue"]) or string.find(playersValues.uniqueId, GM.Admin.data["filterValue"]) then
-            Items:Button("("..playersValues.id..") - "..playersValues.name, "ID UNIQUE : "..playersValues.uniqueId, { RightLabel = playersValues.rank}, GM.Admin.inAdmin, {
-                onSelected = function()
-                    GM.Admin.data["selectedPlayer"] = playersValues.id
-                end
-            }, GM.Admin.menu.submenus["players_online_management"])
+        if (playersValues.invisible == false) then
+            if GM.Admin.data["filterValue"] == nil or string.find(playersValues.id, GM.Admin.data["filterValue"]) or string.find(playersValues.name, GM.Admin.data["filterValue"]) or string.find(playersValues.rank, GM.Admin.data["filterValue"]) or string.find(playersValues.uniqueId, GM.Admin.data["filterValue"]) then
+                Items:Button("("..playersValues.id..") - "..playersValues.name, "ID UNIQUE : "..playersValues.uniqueId, { RightLabel = playersValues.rank}, GM.Admin.inAdmin, {
+                    onSelected = function()
+                        GM.Admin.data["selectedPlayer"] = playersValues.id
+                    end
+                }, GM.Admin.menu.submenus["players_online_management"])
+            end
         end
     end
 end)

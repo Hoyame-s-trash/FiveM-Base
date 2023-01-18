@@ -45,4 +45,22 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission de retirer toutes les armes.",
         value = false
     },
+    ["MY_PLAYER_GAMERTAG"] = {
+        label = "Afficher les gamertags",
+        description = "Permet d'afficher les gamertags",
+        error = "~r~Vous n'avez pas la permission d'afficher les gamertags.",
+        value = false
+    },
+    ["MY_PLAYER_BLIPS"] = {
+        label = "Afficher les blips",
+        description = "Permet d'afficher les blips",
+        error = "~r~Vous n'avez pas la permission d'afficher les blips.",
+        value = false
+    },
+    ["MY_PLAYER_INVISIBLESTAFF"] = {
+        label = "Invisible par les admins",
+        description = "Permet de ne pas être vu par les admins",
+        error = "~r~Vous n'avez pas la permission d'être invisible par les admins.",
+        value = false
+    },
 }
