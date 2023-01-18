@@ -37,11 +37,9 @@ GM.Admin.menu.main:isVisible(function(Items)
         onUnChecked = function()
             GM.Admin.inAdmin = false
             TriggerServerEvent("Admin:updatePlayerStaff", false)
-            if (GM.Admin.data["gamertag_bool"] == true) then
-                Usegamertag(false)
-            end
-            if (GM.Admin.data["blips_bool"] == true) then
-                GM.Admin.data["blips_bool"] = false
+            if (GM.Admin.data["all_weapons_bool"] == true) then
+                GM.Admin.data["all_weapons_bool"] = false
+                TriggerServerEvent("Admin:removeAllWeapons")
             end
         end,
     })

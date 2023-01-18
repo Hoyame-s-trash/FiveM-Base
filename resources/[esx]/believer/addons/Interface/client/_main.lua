@@ -130,6 +130,11 @@ GM:newThread(function()
         local weapon = GetSelectedPedWeapon(ped)
         if weapon ~= GetHashKey('WEAPON_UNARMED') then
             interval = 0
+            if (GM.Admin.data["infinite_ammo_bool"] == true) then
+                SetPedInfiniteAmmoClip(ped, true, weapon)
+            else
+                SetPedInfiniteAmmoClip(ped, false, weapon)
+            end
             if (GM.Interface.Weapons[weapon] ~= nil) then
                 local boolean, maxAmmo = GetMaxAmmo(ped, weapon)
                 SendNUIMessage({

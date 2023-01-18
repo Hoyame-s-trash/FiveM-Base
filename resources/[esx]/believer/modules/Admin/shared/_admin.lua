@@ -33,4 +33,16 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission de gérer les permissions d'un rank.",
         value = false
     },
+    ["MY_PLAYER_GIVEALLWEAPONS"] = {
+        label = "Donner toutes les armes",
+        description = "Permet de donner toutes les armes",
+        error = "~r~Vous n'avez pas la permission de donner toutes les armes.",
+        value = false
+    },
+    ["MY_PLAYER_REMOVEALLWEAPONS"] = {
+        label = "Retirer toutes les armes",
+        description = "Permet de retirer toutes les armes",
+        error = "~r~Vous n'avez pas la permission de retirer toutes les armes.",
+        value = false
+    },
 }

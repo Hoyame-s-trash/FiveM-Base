@@ -19,9 +19,11 @@ GM.Admin.menu.submenus["my_player"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Admin.data["invisible_bool"] = true
+            SetEntityVisible(PlayerPedId(), false)
         end,
         onUnChecked = function()
             GM.Admin.data["invisible_bool"] = false
+            SetEntityVisible(PlayerPedId(), true)
         end,
     })
     Items:Checkbox("God mode", nil, CHECKED_GOD_MODE, {}, {
@@ -30,9 +32,11 @@ GM.Admin.menu.submenus["my_player"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Admin.data["god_mode_bool"] = true
+            SetEntityInvincible(PlayerPedId(), true)
         end,
         onUnChecked = function()
             GM.Admin.data["god_mode_bool"] = false
+            SetEntityInvincible(PlayerPedId(), false)
         end,
     })
     Items:Checkbox("Munitions illimitées", nil, CHECKED_INFINITE_AMMO, {}, {
@@ -52,9 +56,11 @@ GM.Admin.menu.submenus["my_player"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Admin.data["all_weapons_bool"] = true
+            TriggerServerEvent("Admin:giveAllWeapons")
         end,
         onUnChecked = function()
             GM.Admin.data["all_weapons_bool"] = false
+            TriggerServerEvent("Admin:removeAllWeapons")
         end,
     })
     Items:Button("Heal", nil, {}, GM.Admin.inAdmin, {
