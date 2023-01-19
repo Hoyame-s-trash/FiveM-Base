@@ -96,9 +96,8 @@ RegisterNetEvent("Admin:gamerTag", function(BOOLEAN)
         GM:newThread(function()
             while gamerTagActive do
                 local plyPed = PlayerPedId()
-                for k,v in pairs(GetActivePlayers()) do
+                for _,v in pairs(GetActivePlayers()) do
                     if #(GetEntityCoords(plyPed, false) - GetEntityCoords(GetPlayerPed(v), false)) < 5000.0 then
-                        -- Todo check if player staff is invisible
                         if GM.Admin.data["players"][GetPlayerServerId(v)] ~= nil then
                             gamerTags[GetPlayerPed(v)] = CreateFakeMpGamerTag(GetPlayerPed(v), "("..GetPlayerServerId(v)..") - "..GetPlayerName(v), false, false, "", 0)
                             SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 0, 255)
@@ -115,15 +114,16 @@ RegisterNetEvent("Admin:gamerTag", function(BOOLEAN)
                                 SetMpGamerTagVisibility(gamerTags[GetPlayerPed(v)], 14, false)
                                 SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 14, 0)
                             end
-                        end
-                        if GM.Admin.data["players"][GetPlayerServerId(v)] ~= nil then
-                            if GM.Admin.data["players"][GetPlayerServerId(v)].vip ~= 0 then
-                                if GM.Admin.data["players"][GetPlayerServerId(v)].vip == 1 then
-                                    SetMpGamerTagColour(gamerTags[GetPlayerPed(v)], 0, 12)
-                                end
+
+                            if GM.Admin.data["players"][GetPlayerServerId(v)].vip == 1 then
+                                SetMpGamerTagVisibility(gamerTags[GetPlayerPed(v)], 7, true)
+                                SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 7, 255)
+                            else
+                                SetMpGamerTagVisibility(gamerTags[GetPlayerPed(v)], 7, false)
+                                SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 7, 0)
                             end
                         end
-
+                        
                         if GM.Admin.data["players"][GetPlayerServerId(v)] ~= nil then
                             if GM.Admin.data["players"][GetPlayerServerId(v)].invisible == true then
                                 RemoveMpGamerTag(gamerTags[GetPlayerPed(v)])
@@ -163,7 +163,7 @@ RegisterNetEvent("Admin:gamerTag", function(BOOLEAN)
                 end
                 Citizen.Wait(25)
             end
-            for k,v in pairs(gamerTags) do
+            for _,v in pairs(gamerTags) do
                 RemoveMpGamerTag(v)
             end
             gamerTags = {}
