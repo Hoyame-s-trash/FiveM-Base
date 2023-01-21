@@ -10,6 +10,7 @@ GM.Admin = {
         players = {},
         blips = {},
         blips_list = {},
+        drugs = {},
     },
     inAdmin = false
 }
@@ -18,8 +19,6 @@ GM.Admin.menu.main = RageUI.CreateMenu("", "Administration", 0, 0, "banner", "bl
 GM.Admin.menu.main["Closed"] = function()
     -- Todo event when menu closed
 end
-
-GM.Admin.menu.submenus["server"] = RageUI.CreateSubMenu(GM.Admin.menu.main, "", "Serveur")
 
 GM.Admin.menu.main:isVisible(function(Items)
     if (GM.Admin.inAdmin == true) then
@@ -68,14 +67,6 @@ GM.Admin.menu.main:isVisible(function(Items)
     }, GM.Admin.menu.submenus["report"])
     Items:Button("Serveur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["server"])
     Items:Button("Options", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["options"])
-end)
-
-GM.Admin.menu.submenus["server"]:isVisible(function(Items)
-    Items:Button("Ranks", nil, {}, true,{
-        onSelected = function()
-            TriggerServerEvent("Admin:requestRanks")
-        end
-    }, GM.Admin.menu.submenus["server_ranks"])
 end)
 
 RegisterNetEvent("Admin:openMenu", function()

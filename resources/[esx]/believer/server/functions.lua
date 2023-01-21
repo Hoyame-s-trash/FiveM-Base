@@ -387,6 +387,14 @@ function ESX.SetPlayerFunctionOverride(index)
   Config.PlayerFunctionOverride = index
 end
 
+function ESX.GetItemExist(item)
+  if (ESX.Items[item]) then
+    return true
+  else
+    return false
+  end
+end
+
 function ESX.GetItemLabel(item)
   if ESX.Items[item] then
     return ESX.Items[item].label

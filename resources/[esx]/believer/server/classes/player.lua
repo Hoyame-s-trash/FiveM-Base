@@ -78,6 +78,14 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		end
 	end
 
+	function self.onPosition(position, radius)
+		local isOnPos = true
+		if (#(self.getCoords(true)-position) > radius) then
+			isOnPos = false
+		end
+		return isOnPos
+	end
+
 	function self.kick(reason)
 		DropPlayer(self.source, reason)
 	end

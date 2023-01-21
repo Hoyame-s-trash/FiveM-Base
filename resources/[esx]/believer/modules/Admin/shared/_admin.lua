@@ -63,4 +63,22 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission d'être invisible par les admins.",
         value = false
     },
+    ["CREATE_DRUGS"] = {
+        label = "Créer une drogue",
+        description = "Permet de créer une drogue",
+        error = "~r~Vous n'avez pas la permission de créer une drogue.",
+        value = false
+    },
+    ["DELETE_DRUGS"] = {
+        label = "Supprimer une drogue",
+        description = "Permet de créer des drogues",
+        error = "~r~Vous n'avez pas la permission de créer des drogues.",
+        value = false
+    },
+    ["MODIFY_DRUGS"] = {
+        label = "Modifié une drogue",
+        description = "Permet de modifié une drogue",
+        error = "~r~Vous n'avez pas la permission de modifié une drogue.",
+        value = false
+    },
 }
