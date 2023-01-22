@@ -54,6 +54,7 @@ function GM.Drug:addZone(zoneName, zoneData)
         private = true,
         marker = false
     })
+    
     return self.zones[zoneName]
 end
 

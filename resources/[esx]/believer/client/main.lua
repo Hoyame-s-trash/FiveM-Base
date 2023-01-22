@@ -109,8 +109,7 @@ AddEventHandler('esx:playerLoaded', function(xPlayer, isNew, skin)
 			Wait(Sleep and 1500 or 0)
 		end
 	end)
-
-	SetDefaultVehicleNumberPlateTextPattern(-1, Config.CustomAIPlates)
+	
 	StartServerSyncLoops()
 end)
 

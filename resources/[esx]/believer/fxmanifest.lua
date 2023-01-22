@@ -12,6 +12,7 @@ files {
     "html/index.html",
     "html/assets/**/**",
     "addons/**/shared/*.json",
+	"modules/**/shared/*.json",
 }
 
 shared_scripts {

@@ -125,7 +125,11 @@ RegisterServerEvent("Admin:drugsModifyPosition", function(drugId)
         for adminSrc,_ in pairs(GM.Admin.inAdmin) do
             TriggerClientEvent("Admin:updateValue", adminSrc, "drugs", drugId, selectedDrug)
         end
-        -- Todo update position for all players
+        local drugZone = selectedDrug:getZone(selectedDrug.name)
+        if (drugZone) then
+            local currentZone = GM.Zone:get(drugZone.uniqueId)
+            currentZone:setData("position", selectedDrug.position)
+        end
     end)
 end)
 

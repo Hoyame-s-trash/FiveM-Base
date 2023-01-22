@@ -88,32 +88,25 @@ GM.Territories.Zones = {
 }
 
 GM.Territories.Items = {
-    -- ["weed"] = {
-    --     prop = "p_weed_bottle_s",
-    --     price = {
-    --         min = 55,
-    --         max = 90   
-    --     }
-    -- },
-    -- ["coke"] = {
-    --     prop = "prop_coke_block_half_b",
-    --     price = {
-    --         min = 90,
-    --         max = 110   
-    --     }
-    -- },
-    -- ["meth"] ={
-    --     prop = "p_meth_bag_01_s",
-    --     price = {
-    --         min = 90,
-    --         max = 110   
-    --     }
-    -- },
-    ["water"] = {
+    ["weed"] = {
         prop = "p_weed_bottle_s",
         price = {
             min = 55,
             max = 90   
+        }
+    },
+    ["coke"] = {
+        prop = "prop_coke_block_half_b",
+        price = {
+            min = 90,
+            max = 110   
+        }
+    },
+    ["meth"] ={
+        prop = "p_meth_bag_01_s",
+        price = {
+            min = 90,
+            max = 110   
         }
     },
 }

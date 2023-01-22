@@ -22136,18 +22136,10 @@ var logStorage = {};
 var logQuery = (invokingResource, query, executionTime, parameters) => {
   if (mysql_debug && Array.isArray(mysql_debug)) {
     if (mysql_debug.includes(invokingResource)) {
-      console.log(
-        `^3[DEBUG] ${invokingResource} took ${executionTime}ms to execute a query!
-      ${query} ${JSON.stringify(parameters)}^0`
-      );
     }
   } else if (mysql_debug || executionTime >= mysql_slow_query_warning)
-    console.log(
-      `^3[${mysql_debug ? "DEBUG" : "WARNING"}] ${invokingResource} took ${executionTime}ms to execute a query!
-    ${query} ${JSON.stringify(parameters)}^0`
-    );
-  if (!mysql_ui)
-    return;
+    if (!mysql_ui)
+      return;
   if (logStorage[invokingResource] === void 0)
     logStorage[invokingResource] = [];
   logStorage[invokingResource].push({
@@ -22157,44 +22149,7 @@ var logQuery = (invokingResource, query, executionTime, parameters) => {
     slow: executionTime >= mysql_slow_query_warning ? true : void 0
   });
 };
-RegisterCommand(
-  "mysql",
-  (source2) => {
-    if (!mysql_ui)
-      return;
-    if (source2 < 1) {
-      console.log("^3This command cannot run server side^0");
-      return;
-    }
-    let totalQueries = 0;
-    let totalTime = 0;
-    let slowQueries = 0;
-    let chartData = [
-      {
-        x: 0,
-        y: 0,
-        z: ""
-      }
-    ];
-    for (const resource in logStorage) {
-      const queries = logStorage[resource];
-      let totalResourceTime = 0;
-      totalQueries += queries.length;
-      totalTime += queries.reduce((totalTime2, query) => totalTime2 += query.executionTime, 0);
-      slowQueries += queries.reduce((slowQueries2, query) => slowQueries2 += query.slow ? 1 : 0, 0);
-      totalResourceTime += queries.reduce((totalResourceTime2, query) => totalResourceTime2 += query.executionTime, 0);
-      chartData.push({ x: queries.length, y: totalResourceTime, z: resource });
-    }
-    emitNet(`oxmysql:openUi`, source2, {
-      resources: Object.keys(logStorage),
-      totalQueries,
-      slowQueries,
-      totalTime,
-      chartData
-    });
-  },
-  true
-);
+
 var sortQueries = (queries, sort) => {
   const sortedQueries = [...queries].sort((a, b) => {
     switch (sort.id) {

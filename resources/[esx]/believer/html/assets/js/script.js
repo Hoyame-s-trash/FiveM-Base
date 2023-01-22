@@ -251,6 +251,12 @@ const app = new Vue({
                     this.chat.history = [];
                     this.chat.msg = "";
                     break;
+                case "addMode":
+                    this.chat.modes.push(data.mode);
+                    break;
+                case "removeMode":
+                    this.chat.modes.splice(this.chat.modes.indexOf(data.mode), 1);
+                    break;
             }
         });
     }

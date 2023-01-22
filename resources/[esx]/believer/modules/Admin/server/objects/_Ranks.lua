@@ -297,6 +297,8 @@ RegisterServerEvent("Admin:deleteRank", function(rankId, input)
             if (player) then
                 player.setGroup("user")
                 player.set("rank_id", GM.Admin.Ranks["rank_user"])
+                player.showNotification("~r~Votre rank a été supprimé, vous avez donc été rétrogradé au rank user.")
+                TriggerClientEvent("Chat:removeMode", player.source, "STAFF")
             end
         end
         GM.Admin.Ranks["list"][rankId] = nil

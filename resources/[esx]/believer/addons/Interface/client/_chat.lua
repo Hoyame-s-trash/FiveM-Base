@@ -59,3 +59,17 @@ RegisterNetEvent("Chat:clearChat", function()
         type = "clearChat"
     })
 end)
+
+RegisterNetEvent("Chat:addMode", function(modeName)
+    SendNUIMessage({
+        type = "addMode",
+        mode = modeName
+    })
+end)
+
+RegisterNetEvent("Chat:removeMode", function(modeName)
+    SendNUIMessage({
+        type = "removeMode",
+        mode = modeName
+    })
+end)
