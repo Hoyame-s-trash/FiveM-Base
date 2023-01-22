@@ -905,3 +905,11 @@ CreateThread(function()
     end
 end)
 
+function ESX.GetTableValue(tbl, value, k)
+    if not tbl or not value or type(tbl) ~= "table" then return end
+	for _,v in pairs(tbl) do
+		if k and v[k] == value or v == value then 
+            return true, _ 
+        end
+	end
+end

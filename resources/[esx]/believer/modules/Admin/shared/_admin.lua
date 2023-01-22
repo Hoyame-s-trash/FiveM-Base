@@ -81,4 +81,10 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission de modifié une drogue.",
         value = false
     },
+    ["SEND_ALL_CHAT"] = {
+        label = "Envoyer des chat (ALL)",
+        description = "Permet d'envoyer des chat (ALL)",
+        error = "~r~Vous n'avez pas la permission d'envoyer des chat (ALL).",
+        value = false
+    },
 }

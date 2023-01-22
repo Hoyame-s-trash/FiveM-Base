@@ -456,4 +456,33 @@ GM:newThread(function()
             return
         end
     end)
+
+    GM.Command:register({
+        name = "chat",
+        label = "Ouvrir le chat",
+        description = "Permet d'ouvrir le chat",
+        keys = { "keyboard", "T"},
+    }, function(playerSrc)
+        if (playerSrc == 0) then return end
+
+        TriggerClientEvent("Chat:toogleChat", playerSrc)
+    end)
+
+    GM.Command:register({
+        name = "clear",
+        label = "Effacer le chat",
+        description = "Permet d'effacer le chat",
+    }, function(playerSrc)
+        if (playerSrc == 0) then return end
+
+        TriggerClientEvent("Chat:clearChat", playerSrc)
+    end)
+
+    GM.Command:register({
+        name = "clearall",
+        label = "Effacer le chat de tous les joueurs",
+        description = "Permet d'effacer le chat de tous les joueurs",
+    }, function(playerSrc)
+        TriggerClientEvent("Chat:clearChat", -1)
+    end)
 end)

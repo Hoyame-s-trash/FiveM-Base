@@ -27,18 +27,11 @@ const app = new Vue({
             "00:00"
         ],
         chat: {
-            history: [
-                // {
-                //     type: "STAFF",
-                //     id: 1,
-                //     name: "Believer :",
-                //     text: "BlueStark grosse mise à jour !"
-                // },
-            ],
+            history: [],
             showInput: false,
             activeMode: "ALL",
-            modes: ["ALL", "STAFF"],
-            submodes: ["ME"],
+            modes: ["ALL"],
+            submodes: [],
             msg: ""
         },
         logo: hudConfig.logo,
@@ -50,7 +43,7 @@ const app = new Vue({
             ammo: [42, 128]
         },
         score: {
-            show: false,
+            show: true,
             time: "05:34",
             leftTeam: {
                 id: "vagos",
@@ -123,6 +116,9 @@ const app = new Vue({
                     mode: this.chat.activeMode
                 })
             })
+            $.post(`https://${GetParentResourceName()}/closeChat`, JSON.stringify({}));
+            app.chat.showInput = false;
+            app.chat.msg = "";
         },
         t(id) {
             return hudConfig.localization[id] || id;
@@ -245,7 +241,57 @@ const app = new Vue({
                         this[key] = temp[key]
                     }
                     break;
+                case "toogleChat":
+                    this.chat.showInput = data.showInput;
+                    break;
+                case "newMessage":
+                    newMessage(data.mode, data.name, data.text, data.time);
+                    break;
+                case "clearChat":
+                    this.chat.history = [];
+                    this.chat.msg = "";
+                    break;
             }
         });
+    }
+})
+
+function newMessage(mode, name, text, time) {
+    let id = 0;
+    if (app.chat.history.length > 0) {
+        id = app.chat.history[app.chat.history.length - 1].id + 1;
+    }
+
+    msgData = {
+        text: text,
+        type: mode,
+        name: name + ' : ',
+        id: id,
+    }
+
+    app.chat.history.push(msgData);
+
+    // Fade out after 10 seconds
+    setTimeout(() => {
+        app.chat.history.shift();
+    }, time);
+}
+
+window.addEventListener('keydown', (e) => {
+    if (app.chat.showInput) {
+        if (e.key == 'Enter') {
+            app.sendMsg();
+            $.post(`https://${GetParentResourceName()}/closeChat`, JSON.stringify({}));
+            app.chat.showInput = false;
+            app.chat.msg = "";
+        }
+    }
+})
+
+window.addEventListener('keyup', (e) => {
+    if (e.key == 'Escape') {
+        $.post(`https://${GetParentResourceName()}/closeChat`, JSON.stringify({}));
+        app.chat.showInput = false;
+        app.chat.msg = "";
     }
 })

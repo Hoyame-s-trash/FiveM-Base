@@ -273,3 +273,16 @@ AddEventHandler("Interface:slots", function(slots)
         slots = slots
     })
 end)
+
+RegisterNetEvent("Interface:chat")
+AddEventHandler("Interface:chat", function()
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        type = "toogleChat",
+        showInput = true,
+    })
+end)
+
+RegisterCommand("new_chat", function()
+    TriggerEvent("Interface:chat")
+end)

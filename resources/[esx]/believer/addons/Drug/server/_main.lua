@@ -47,19 +47,6 @@ RegisterServerEvent("Admin:createDrugs", function(type, drugData)
             quantityGive = drugData["quantityGive"],
             itemGive = drugData["itemGive"]
         }
-        print(drugData["name"], drugData["label"], drugData["quantityGive"], drugData["itemGive"])
-        MySQL.insert('INSERT INTO user_drugs (type, name, label, position, data) VALUES (?, ?, ?, ?, ?)', {
-            type,
-            drugData["name"],
-            drugData["label"],
-            json.encode(drugPosition),
-            json.encode(drugData),
-        }, function(drugId)
-            local newDrug = GM.Drug:new(drugId, type, name, label, drugPosition, drugData)
-            for adminSrc,_ in pairs(GM.Admin.inAdmin) do
-                TriggerClientEvent("Admin:updateValue", adminSrc, "drugs", drugId, newDrug)
-            end
-        end)
     elseif (type == "treatment") then
         drugData = {
             name = drugData["name"],
@@ -69,19 +56,20 @@ RegisterServerEvent("Admin:createDrugs", function(type, drugData)
             quantityTake = drugData["quantityTake"],
             itemTake = drugData["itemTake"]
         }
-        MySQL.insert('INSERT INTO user_drugs (type, name, label, position, data) VALUES (?, ?, ?, ?, ?)', {
-            type,
-            drugData["name"],
-            drugData["label"],
-            json.encode(drugPosition),
-            json.encode(drugData),
-        }, function(drugId)
-            local newDrug = GM.Drug:new(drugId, type, name, label, drugPosition, drugData)
-            for adminSrc,_ in pairs(GM.Admin.inAdmin) do
-                TriggerClientEvent("Admin:updateValue", adminSrc, "drugs", drugId, newDrug)
-            end
-        end)
     end
+    MySQL.insert('INSERT INTO user_drugs (type, name, label, position, data) VALUES (?, ?, ?, ?, ?)', {
+        type,
+        drugData["name"],
+        drugData["label"],
+        json.encode(drugPosition),
+        json.encode(drugData),
+    }, function(drugId)
+        local newDrug = GM.Drug:new(drugId, type, drugData["name"], drugData["label"], drugPosition, drugData)
+        for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+            TriggerClientEvent("Admin:updateValue", adminSrc, "drugs", drugId, newDrug)
+        end
+        -- Todo refresh for all players that got a job2
+    end)
 end)
 
 RegisterServerEvent("Admin:deleteDrugs", function(drugId)
@@ -141,7 +129,7 @@ RegisterServerEvent("Admin:drugsModifyPosition", function(drugId)
     end)
 end)
 
-RegisterServerEvent("Admin:drugsModifyQuantity", function(drugId, quantity)
+RegisterServerEvent("Admin:drugsModifyQuantityGive", function(drugId, quantity)
     local playerSrc = source
     if (not playerSrc) then return end
 
@@ -158,10 +146,10 @@ RegisterServerEvent("Admin:drugsModifyQuantity", function(drugId, quantity)
     local selectedDrug = GM.Drug:getFromId(drugId)
     if (not selectedDrug) then return end
 
-    selectedDrug.quantity = quantity
+    selectedDrug.data["quantityGive"] = quantity
 
-    MySQL.Async.execute("UPDATE user_drugs SET quantity = ? WHERE id = ?", {
-        selectedDrug.quantity,
+    MySQL.Async.execute("UPDATE user_drugs SET data = ? WHERE id = ?", {
+        json.encode(selectedDrug.data),
         drugId
     }, function()
         for adminSrc,_ in pairs(GM.Admin.inAdmin) do
@@ -170,7 +158,7 @@ RegisterServerEvent("Admin:drugsModifyQuantity", function(drugId, quantity)
     end)
 end)
 
-RegisterServerEvent("Admin:drugsModifyItem", function(drugId, item)
+RegisterServerEvent("Admin:drugsModifyItemGive", function(drugId, item)
     local playerSrc = source
     if (not playerSrc) then return end
 
@@ -189,14 +177,95 @@ RegisterServerEvent("Admin:drugsModifyItem", function(drugId, item)
     local selectedDrug = GM.Drug:getFromId(drugId)
     if (not selectedDrug) then return end
 
-    selectedDrug.item = item
+    selectedDrug.data["itemGive"] = item
 
-    MySQL.Async.execute("UPDATE user_drugs SET item = ? WHERE id = ?", {
-        selectedDrug.item,
+    MySQL.Async.execute("UPDATE user_drugs SET data = ? WHERE id = ?", {
+        json.encode(selectedDrug.data),
         drugId
     }, function()
         for adminSrc,_ in pairs(GM.Admin.inAdmin) do
             TriggerClientEvent("Admin:updateValue", adminSrc, "drugs", drugId, selectedDrug)
         end
     end)
+end)
+
+RegisterServerEvent("Admin:drugsModifyQuantityTake", function(drugId, quantity)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not playerRank) then return end
+
+    if (not playerRank:getPermissionsValue("MODIFY_DRUGS", playerSelected.source)) then return end
+
+    local selectedDrug = GM.Drug:getFromId(drugId)
+    if (not selectedDrug) then return end
+
+    if (selectedDrug.type == "harvest") then return end
+
+    selectedDrug.data["quantityTake"] = quantity
+
+    MySQL.Async.execute("UPDATE user_drugs SET data = ? WHERE id = ?", {
+        json.encode(selectedDrug.data),
+        drugId
+    }, function()
+        for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+            TriggerClientEvent("Admin:updateValue", adminSrc, "drugs", drugId, selectedDrug)
+        end
+    end)
+end)
+
+RegisterServerEvent("Admin:drugsModifyItemTake", function(drugId, item)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not playerRank) then return end
+
+    if (not playerRank:getPermissionsValue("MODIFY_DRUGS", playerSelected.source)) then return end
+
+    if (not ESX.GetItemExist(item)) then return playerSelected.showNotification("~r~Cet item n'existe pas.") end
+
+    local selectedDrug = GM.Drug:getFromId(drugId)
+    if (not selectedDrug) then return end
+
+    selectedDrug.data["itemTake"] = item
+
+    MySQL.Async.execute("UPDATE user_drugs SET data = ? WHERE id = ?", {
+        json.encode(selectedDrug.data),
+        drugId
+    }, function()
+        for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+            TriggerClientEvent("Admin:updateValue", adminSrc, "drugs", drugId, selectedDrug)
+        end
+    end)
+end)
+
+AddEventHandler("esx:playerLoaded", function(playerSrc)
+    local playerSrc = playerSrc
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local playerIdentifier = playerSelected.getIdentifier()
+    if (not playerIdentifier) then return end
+
+    for drugId, _ in pairs(GM.Drug["list"]) do
+        local selectedDrug = GM.Drug:getFromId(drugId)
+        if (selectedDrug ~= nil) then
+            local Zone = selectedDrug:getZone(selectedDrug.name)
+            Zone:allowedPlayer(playerSrc)
+        end
+    end
 end)

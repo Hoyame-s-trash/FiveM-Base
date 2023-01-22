@@ -14,7 +14,6 @@ Core.Pickups = {}
 Core.PickupId = 0
 Core.PlayerFunctionOverrides = {}
 
-
 exports('getSharedObject', function()
   return ESX
 end)
@@ -60,9 +59,7 @@ MySQL.ready(function()
   end
 
   if not Jobs then
-    -- Fallback data, if no jobs exist
-    ESX.Jobs['unemployed'] = {label = 'Unemployed',
-                              grades = {['0'] = {grade = 0, label = 'Unemployed', salary = 200, skin_male = {}, skin_female = {}}}}
+    ESX.Jobs['unemployed'] = {label = 'Unemployed', grades = {['0'] = {grade = 0, label = 'Unemployed', salary = 200, skin_male = {}, skin_female = {}}}}
   else
     ESX.Jobs = Jobs
   end
@@ -70,13 +67,6 @@ MySQL.ready(function()
   print('[^2INFO^7] BLUESTARK ^5 V2.0^0 initialized!')
   StartDBSync()
   StartPayCheck()
-end)
-
-RegisterServerEvent('esx:clientLog')
-AddEventHandler('esx:clientLog', function(msg)
-  if Config.EnableDebug then
-    print(('[^2TRACE^7] %s^7'):format(msg))
-  end
 end)
 
 RegisterServerEvent('esx:triggerServerCallback')

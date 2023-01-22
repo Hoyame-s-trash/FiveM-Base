@@ -50,7 +50,7 @@ const hudConfig = {
         "liter": "Litres",
         "kmh": "KM/H",
 
-        "ALL": "GÉNÉRAL",
+        "ALL": "ALL",
         "STAFF": "STAFF",
         "FONDATEUR": "FONDATEUR",
         "ME": "Me",

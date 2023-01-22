@@ -94,12 +94,12 @@ end)
 GM.Admin.menu.submenus["server_drugs_management"]:isVisible(function(Items)
     if (GM.Admin.data["selectedDrug"] ~= nil and GM.Admin.data["drugs"][GM.Admin.data["selectedDrug"]] ~= nil) then
         Items:Button("~b~"..GM.Admin.data["drugs"][GM.Admin.data["selectedDrug"]].label, nil, {}, true, {})
-        Items:Button("Changer la position", nil, {}, true, {
+        Items:Button("Changer la position", GM.Admin.data["drugs"][GM.Admin.data["selectedDrug"]].position, {}, true, {
             onSelected = function()
                 TriggerServerEvent("Admin:drugsModifyPosition", GM.Admin.data["selectedDrug"])
             end
         })
-        Items:Button("Changer la quantité", nil, {}, true, {
+        Items:Button("Changer la quantité reçu", nil, { RightLabel = GM.Admin.data["drugs"][GM.Admin.data["selectedDrug"]].data["quantityGive"] }, true, {
             onSelected = function()
                 local input = exports["input"]:openInput({
                     label = "Modifier la quantité",
@@ -108,10 +108,10 @@ GM.Admin.menu.submenus["server_drugs_management"]:isVisible(function(Items)
                         {label = "QUANTITÉ"},
                     }
                 })
-                TriggerServerEvent("Admin:drugsModifyQuantity", GM.Admin.data["selectedDrug"], input["0"])
+                TriggerServerEvent("Admin:drugsModifyQuantityGive", GM.Admin.data["selectedDrug"], input["0"])
             end
         })
-        Items:Button("Changer l'item", nil, {}, true, {
+        Items:Button("Changer l'item donné", nil, { RightLabel = GM.Admin.data["drugs"][GM.Admin.data["selectedDrug"]].data["itemGive"] }, true, {
             onSelected = function()
                 local input = exports["input"]:openInput({
                     label = "Modifier l'item",
@@ -120,9 +120,35 @@ GM.Admin.menu.submenus["server_drugs_management"]:isVisible(function(Items)
                         {label = "ITEM"},
                     }
                 })
-                TriggerServerEvent("Admin:drugsModifyItem", GM.Admin.data["selectedDrug"], input["0"])
+                TriggerServerEvent("Admin:drugsModifyItemGive", GM.Admin.data["selectedDrug"], input["0"])
             end
         })
+        if (GM.Admin.data["drugs"][GM.Admin.data["selectedDrug"]].type == "treatment") then
+            Items:Button("Changer la quantité pris", nil, { RightLabel = GM.Admin.data["drugs"][GM.Admin.data["selectedDrug"]].data["quantityTake"]}, true, {
+                onSelected = function()
+                    local input = exports["input"]:openInput({
+                        label = "Modifier la quantité",
+                        submitLabel = "Modifier",
+                        placeHolders = {
+                            {label = "QUANTITÉ"},
+                        }
+                    })
+                    TriggerServerEvent("Admin:drugsModifyQuantityTake", GM.Admin.data["selectedDrug"], input["0"])
+                end
+            })
+            Items:Button("Changer l'item pris", nil, { RightLabel = GM.Admin.data["drugs"][GM.Admin.data["selectedDrug"]].data["itemTake"] }, true, {
+                onSelected = function()
+                    local input = exports["input"]:openInput({
+                        label = "Modifier l'item",
+                        submitLabel = "Modifier",
+                        placeHolders = {
+                            {label = "ITEM"},
+                        }
+                    })
+                    TriggerServerEvent("Admin:drugsModifyItemTake", GM.Admin.data["selectedDrug"], input["0"])
+                end
+            })
+        end
         Items:Button("~r~Supprimer la drogue", nil, {}, true, {
             onSelected = function()
                 TriggerServerEvent("Admin:deleteDrugs", GM.Admin.data["selectedDrug"])
