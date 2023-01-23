@@ -31,6 +31,22 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
+        name = "setcoords",
+        label = "Se téléporter à une position",
+        description = "Permet de se téléporter à une position",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then return end
+
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        local position = vector3(tonumber(args[1]), tonumber(args[2]), tonumber(args[3]))
+	    if (not position) then return end
+
+        playerSelected.setCoords(position)
+    end)
+
+    GM.Command:register({
         name = "bring",
         label = "Téléporter une personne à soi",
         description = "Permet de téléporter une personne à soi",

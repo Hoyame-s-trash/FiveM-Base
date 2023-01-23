@@ -7,10 +7,6 @@ function GM:newThread(newThread)
     CreateThread(newThread)
 end
 
-function GM:newThreadNow(newThread)
-    Citizen.CreateThreadNow(newThread)
-end
-
 function GM:consoleLog(logType, logMsg, ...)
     if (GM.sharedEnums.consoleLog == nil or GM.sharedEnums.consoleLog[logType] == nil) then return end
     
@@ -21,10 +17,6 @@ function GM:consoleLog(logType, logMsg, ...)
 end
 
 GM:newThread(function()    
-    while (GM.Translate == nil) do
-        Wait(150)
-    end
-
     while (GM.sharedEnums == nil or GM.Config == nil) do
         Wait(150)
     end

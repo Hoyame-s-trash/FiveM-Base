@@ -15,7 +15,11 @@ GM.Admin.menu.submenus["server_ranks_management_players_management"] = RageUI.Cr
 GM.Admin.menu.submenus["server_drugs"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server"], "", "Drogues")
 GM.Admin.menu.submenus["server_drugs_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_drugs"], "", "Drogues management")
 
+GM.Admin.menu.submenus["server_arenawars"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server"], "", "ArenaWars")
+GM.Admin.menu.submenus["server_arenawars_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_arenawars"], "", "ArenaWars management")
+
 GM.Admin.menu.submenus["server"]:isVisible(function(Items)
+    Items:Button("ArenaWars", nil, {}, true, {}, GM.Admin.menu.submenus["server_arenawars"])
     Items:Button("Drogues", nil, {}, true,{
         onSelected = function()
             TriggerServerEvent("Admin:requestDrugs")
@@ -26,6 +30,29 @@ GM.Admin.menu.submenus["server"]:isVisible(function(Items)
             TriggerServerEvent("Admin:requestRanks")
         end
     }, GM.Admin.menu.submenus["server_ranks"])
+end)
+
+GM.Admin.menu.submenus["server_arenawars"]:isVisible(function(Items)
+    for categoryId, mappingList in pairs(GM.ArenaWars["list"]) do
+        Items:Button(categoryId:lower(), nil, {}, true, {
+            onSelected = function()
+                GM.Admin.data["selectedArena"] = categoryId
+            end
+        }, GM.Admin.menu.submenus["server_arenawars_management"])
+    end
+end)
+
+GM.Admin.menu.submenus["server_arenawars_management"]:isVisible(function(Items)
+    if (GM.Admin.data["selectedArena"] ~= nil and GM.ArenaWars["list"][GM.Admin.data["selectedArena"]] ~= nil) then
+        for i = 1, #GM.ArenaWars["list"][GM.Admin.data["selectedArena"]], 1 do
+            local arenaName = GM.ArenaWars["list"][GM.Admin.data["selectedArena"]][i]
+            Items:Button(arenaName:lower(), nil, {}, true, {
+                onSelected = function()
+                    TriggerServerEvent("ArenaWars:modifyArena", arenaName)
+                end
+            })
+        end
+    end
 end)
 
 GM.Admin.menu.submenus["server_drugs"]:isVisible(function(Items)

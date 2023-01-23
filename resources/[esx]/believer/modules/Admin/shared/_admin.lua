@@ -87,4 +87,10 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission d'envoyer des chat (ALL).",
         value = false
     },
+    ["MODIFY_ARENAWARS"] = {
+        label = "Modifier ArenaWars",
+        description = "Permet de modifier ArenaWars",
+        error = "~r~Vous n'avez pas la permission de modifier ArenaWars.",
+        value = false
+    }
 }
