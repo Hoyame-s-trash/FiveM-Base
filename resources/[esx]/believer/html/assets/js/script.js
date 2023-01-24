@@ -43,7 +43,7 @@ const app = new Vue({
             ammo: [42, 128]
         },
         score: {
-            show: true,
+            show: false,
             time: "05:34",
             leftTeam: {
                 id: "vagos",

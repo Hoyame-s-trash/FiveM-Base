@@ -1,0 +1,34 @@
+GM.Carmeet = GM.Carmeet or {}
+
+GM.Carmeet.FlatBedCoords        = vector3(-2162.78, 1135.01, -25.04)
+GM.Carmeet.FlatBedCarModel      = `slamtruck`
+
+GM.Carmeet.FlatBedProperties = '{"modSpeakers":-1,"modOrnaments":-1,"plate":"EEK 461","modTrimB":-1,"modDial":-1,"tyreSmokeColor":[255,255,255],"modStruts":-1,"tankHealth":990.7,"modFender":-1,"pearlescentColor":147,"modTrunk":-1,"modXenon":1,"dirtLevel":0.2,"bodyHealth":909.2,"modSmokeEnabled":false,"modExhaust":2,"modAerials":-1,"modTransmission":2,"modHood":1,"modFrontBumper":6,"fuelLevel":51.7,"modRearBumper":-1,"modBrakes":2,"modAPlate":-1,"model":-1045911276,"modLivery":14,"modFrontWheels":4,"modTrimA":-1,"modSteeringWheel":-1,"wheels":2,"plateIndex":1,"modTurbo":1,"modAirFilter":-1,"wheelColor":0,"modEngine":1,"neonColor":[255,0,0],"modDoorSpeaker":-1,"modHydrolic":-1,"dashboardColour":156,"color1":12,"windowTint":1,"xenonColor":255,"color2":12,"modHorns":0,"modSuspension":-1,"modPlateHolder":-1,"modRightFender":4,"modWindows":-1,"modVanityPlate":-1,"modGrille":6,"modArmor":-1,"customTires":false,"modSeats":-1,"modDashboard":-1,"modTank":-1,"neonEnabled":[1,1,1,1],"modSpoilers":-1,"modArchCover":-1,"modBackWheels":-1,"modRoof":-1,"extras":[],"interiorColour":3,"modFrame":-1,"modShifterLeavers":-1,"engineHealth":766.4,"modEngineBlock":-1,"modSideSkirt":1}'
+
+-- Exposition coords
+GM.Carmeet.ExpositionCars = {
+    {
+        Coords = vector3(-2144.33, 1124.66, -25.82),
+        Heading = 67.25,
+        Car = `dominator7`,
+        Properties = '{"modFrontBumper":4,"modAPlate":-1,"modSmokeEnabled":false,"extras":[],"modLivery":6,"modPlateHolder":-1,"modSpoilers":11,"modTank":-1,"modHydrolic":-1,"dashboardColour":0,"modTurbo":false,"modTrimB":-1,"color1":5,"tyreSmokeColor":[255,255,255],"wheels":0,"modGrille":-1,"modEngine":-1,"color2":52,"modDoorSpeaker":-1,"engineHealth":619.9,"fuelLevel":80.1,"modEngineBlock":-1,"modAerials":-1,"modVanityPlate":-1,"plateIndex":3,"customTires":false,"modFrontWheels":-1,"wheelColor":156,"modArmor":-1,"modDial":-1,"modBackWheels":-1,"xenonColor":255,"modTransmission":-1,"dirtLevel":0.8,"modXenon":false,"modSteeringWheel":-1,"tankHealth":988.4,"modAirFilter":-1,"bodyHealth":909.5,"neonEnabled":[false,false,false,false],"modSeats":-1,"windowTint":2,"plate":"AEY 380","modExhaust":-1,"modTrunk":-1,"modSuspension":-1,"modShifterLeavers":-1,"modWindows":-1,"modFender":-1,"modSideSkirt":-1,"neonColor":[255,0,255],"modTrimA":-1,"modFrame":-1,"modRearBumper":9,"modDashboard":-1,"modRoof":-1,"modOrnaments":-1,"modHorns":-1,"model":426742808,"modSpeakers":-1,"pearlescentColor":0,"modBrakes":-1,"modHood":-1,"modStruts":-1,"interiorColour":0,"modRightFender":-1,"modArchCover":-1}'
+    },
+    {
+        Coords = vector3(-2144.2, 1120.59, -25.75),
+        Heading = 67.25,
+        Car = `calico`,
+        Properties = '{"customTires":false,"modTransmission":-1,"tankHealth":1000.0,"modEngineBlock":-1,"modTank":-1,"modGrille":-1,"modTrimA":-1,"modBrakes":-1,"wheels":7,"modTurbo":false,"modVanityPlate":-1,"modArmor":-1,"plateIndex":0,"neonEnabled":[false,false,false,false],"modExhaust":8,"bodyHealth":1000.0,"neonColor":[255,0,255],"color1":92,"modHorns":-1,"plate":"21QEP236","modSpoilers":16,"interiorColour":0,"modHood":-1,"dashboardColour":0,"engineHealth":1000.0,"modEngine":-1,"modRearBumper":1,"modDashboard":-1,"modLivery":10,"wheelColor":156,"modFrame":-1,"modAerials":-1,"modOrnaments":-1,"modSuspension":-1,"color2":27,"modHydrolic":-1,"modRoof":-1,"modDial":-1,"modAPlate":-1,"modPlateHolder":-1,"extras":[],"modSmokeEnabled":false,"modSpeakers":-1,"modSeats":-1,"modWindows":-1,"modStruts":-1,"modFender":0,"modFrontBumper":-1,"modTrunk":-1,"modBackWheels":-1,"dirtLevel":0.0,"modRightFender":-1,"modSideSkirt":18,"modXenon":false,"windowTint":1,"modTrimB":-1,"modDoorSpeaker":-1,"pearlescentColor":53,"model":-1193912403,"tyreSmokeColor":[255,255,255],"modFrontWheels":22,"modSteeringWheel":-1,"xenonColor":255,"modShifterLeavers":-1,"modAirFilter":-1,"modArchCover":-1,"fuelLevel":78.8}'
+    },
+    {
+        Coords = vector3(-2144.86, 1117.25, -25.82),
+        Heading = 67.25,
+        Car = `remus`,
+        Properties = '{"modVanityPlate":-1,"pearlescentColor":0,"modRearBumper":0,"modTank":-1,"modSeats":-1,"modAPlate":-1,"modSideSkirt":2,"dirtLevel":0.2,"modAerials":-1,"customTires":false,"wheels":7,"modPlateHolder":-1,"modSmokeEnabled":false,"modSpoilers":13,"wheelColor":156,"color1":33,"modWindows":-1,"modStruts":-1,"windowTint":3,"modOrnaments":-1,"model":1377217886,"interiorColour":8,"modHorns":2,"modArchCover":-1,"engineHealth":1000.0,"bodyHealth":1000.0,"neonColor":[0,0,0],"modDoorSpeaker":-1,"modHood":-1,"modArmor":-1,"modDashboard":-1,"modSuspension":-1,"modDial":-1,"modHydrolic":-1,"xenonColor":255,"modEngine":-1,"plate":"240 SX","modLivery":7,"modAirFilter":-1,"neonEnabled":[false,false,false,false],"modFender":-1,"fuelLevel":53.9,"modFrame":-1,"modExhaust":0,"modTransmission":-1,"modRightFender":-1,"modFrontBumper":4,"tyreSmokeColor":[255,255,255],"modGrille":2,"modShifterLeavers":-1,"color2":31,"modSteeringWheel":-1,"modXenon":false,"modEngineBlock":-1,"modBrakes":-1,"dashboardColour":156,"modRoof":-1,"extras":[],"plateIndex":0,"modFrontWheels":28,"modTrimB":-1,"modBackWheels":-1,"tankHealth":1000.0,"modTurbo":false,"modTrunk":-1,"modTrimA":-1,"modSpeakers":-1}'
+    },
+    {
+        Coords = vector3(-2144.77, 1113.27, -25.82),
+        Heading = 67.25,
+        Car = `rt3000`,
+        Properties = '{"modDoorSpeaker":-1,"modFrontWheels":34,"xenonColor":255,"wheels":3,"modSmokeEnabled":false,"modPlateHolder":-1,"customTires":false,"modShifterLeavers":-1,"neonEnabled":[false,false,false,false],"modExhaust":6,"modHorns":-1,"modRightFender":-1,"engineHealth":992.7,"modSuspension":-1,"neonColor":[255,0,255],"modOrnaments":-1,"modSpoilers":4,"modTurbo":false,"modBackWheels":-1,"modTank":-1,"modStruts":2,"modFrame":-1,"plate":"AEZ 510","modArmor":-1,"bodyHealth":998.1,"modEngineBlock":2,"modSideSkirt":-1,"tyreSmokeColor":[255,255,255],"tankHealth":999.8,"modAerials":-1,"model":-452604007,"modVanityPlate":0,"dirtLevel":0.4,"modRoof":3,"pearlescentColor":12,"modAPlate":-1,"modTrimB":-1,"dashboardColour":131,"modBrakes":-1,"modLivery":6,"modXenon":false,"fuelLevel":55.7,"modFrontBumper":2,"modGrille":3,"modSpeakers":-1,"modDial":-1,"modAirFilter":9,"modEngine":-1,"color1":137,"modRearBumper":2,"modDashboard":3,"modFender":1,"modTrunk":-1,"modWindows":-1,"modHydrolic":-1,"windowTint":3,"modHood":-1,"wheelColor":156,"modTrimA":-1,"modSeats":-1,"modArchCover":-1,"plateIndex":0,"interiorColour":12,"extras":[],"modSteeringWheel":-1,"color2":137,"modTransmission":-1}'
+    },
+}
