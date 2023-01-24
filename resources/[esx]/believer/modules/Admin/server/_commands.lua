@@ -310,81 +310,148 @@ GM:newThread(function()
         label = "Changer le rank d'un joueur",
         description = "Permet de changer le rank d'un joueur",
     }, function(playerSrc, args)
-        local playerSelected = ESX.GetPlayerFromId(playerSrc)
-        if (not playerSelected) then return end
+        if (playerSrc == 0) then
+            local selectedRank = GM.Admin.Ranks:getFromName(args[2])
+            if (not selectedRank) then return end
 
-        if (playerSelected.getGroup() == "user") then return end
+            local targetPlayer = tonumber(args[1]) or args[1]
 
-        local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
-        if (not selectedRank) then return end
+            if (type(targetPlayer) == "number") then
+                local selectedPlayer = ESX.GetPlayerFromId(targetPlayer)
+                if (not selectedPlayer) then
+                    return
+                end
 
-        if (not selectedRank:getPermissionsValue("RECRUIT_PLAYER_RANKS", playerSelected.source)) then return end
+                local targetIdentifier = selectedPlayer.getIdentifier()
+                if (not targetIdentifier) then return end
 
-        if (not selectedRank:canInteract(args[2])) then return playerSelected.showNotification("~r~Vous ne pouvez pas recruter un joueur dans un rank plus haut que vous.") end
+                if (GM.Admin.Ranks["players"][targetIdentifier]) then return end
 
-        local selectedRank = GM.Admin.Ranks:getFromName(args[2])
-        if (not selectedRank) then return end
+                GM.Admin.Ranks["players"][targetIdentifier] = {
+                    rankId = selectedRank.id,
+                    name = selectedRank.name,
+                    reports = 0,
+                    staffName = selectedPlayer.getName()
+                }
 
-        local targetPlayer = tonumber(args[1]) or args[1]
+                selectedRank.players[targetIdentifier] = {
+                    name = selectedPlayer.getName(),
+                    arrival_date = os.date("%d-%m-%Y %H:%M:%S"),
+                    reports = 0
+                }
 
-        if (type(targetPlayer) == "number") then
-            local selectedPlayer = ESX.GetPlayerFromId(targetPlayer)
-            if (not selectedPlayer) then
-                return
+                MySQL.update('UPDATE user_admin SET players = ? WHERE id = ?', {
+                    json.encode(selectedRank.players), 
+                    selectedRank.id
+                }, function()
+                    for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+                        TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", rankId, selectedRank)
+                    end
+                end)
+            else
+                local targetIdentifier = args[1]
+
+                if (GM.Admin.Ranks["players"][targetIdentifier]) then return end
+
+                GM.Admin.Ranks["players"][targetIdentifier] = {
+                    rankId = selectedRank.id,
+                    name = selectedRank.name,
+                    reports = 0,
+                    staffName = targetIdentifier
+                }
+
+                selectedRank.players[targetIdentifier] = {
+                    name = targetIdentifier,
+                    arrival_date = os.date("%d-%m-%Y %H:%M:%S"),
+                    reports = 0
+                }
+
+                MySQL.update('UPDATE user_admin SET players = ? WHERE id = ?', {
+                    json.encode(selectedRank.players), 
+                    selectedRank.id
+                }, function()
+                    for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+                        TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", rankId, selectedRank)
+                    end
+                end)
             end
-
-            local targetIdentifier = selectedPlayer.getIdentifier()
-            if (not targetIdentifier) then return end
-
-            if (GM.Admin.Ranks["players"][targetIdentifier]) then return end
-
-            GM.Admin.Ranks["players"][targetIdentifier] = {
-                rankId = selectedRank.id,
-                name = selectedRank.name,
-                reports = 0,
-                staffName = selectedPlayer.getName()
-            }
-
-            selectedRank.players[targetIdentifier] = {
-                name = targetSelected.getName(),
-                arrival_date = os.date("%d-%m-%Y %H:%M:%S"),
-                reports = 0
-            }
-
-            MySQL.update('UPDATE user_admin SET players = ? WHERE id = ?', {
-                json.encode(selectedRank.players), 
-                selectedRank.id
-            }, function()
-                for adminSrc,_ in pairs(GM.Admin.inAdmin) do
-                    TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", rankId, selectedRank)
-                end
-            end)
         else
-            local targetIdentifier = args[1]
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
 
-            if (GM.Admin.Ranks["players"][targetIdentifier]) then return end
+            if (playerSelected.getGroup() == "user") then return end
 
-            GM.Admin.Ranks["players"][targetIdentifier] = {
-                rankId = selectedRank.id,
-                name = selectedRank.name,
-                reports = 0,
-                staffName = targetIdentifier
-            }
+            local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+            if (not selectedRank) then return end
 
-            selectedRank.players[targetIdentifier] = {
-                name = targetIdentifier,
-                arrival_date = os.date("%d-%m-%Y %H:%M:%S"),
-                reports = 0
-            }
+            if (not selectedRank:getPermissionsValue("RECRUIT_PLAYER_RANKS", playerSelected.source)) then return end
 
-            MySQL.update('UPDATE user_admin SET players = ? WHERE id = ?', {
-                json.encode(selectedRank.players), 
-                selectedRank.id
-            }, function()
-                for adminSrc,_ in pairs(GM.Admin.inAdmin) do
-                    TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", rankId, selectedRank)
+            if (not selectedRank:canInteract(args[2])) then return playerSelected.showNotification("~r~Vous ne pouvez pas recruter un joueur dans un rank plus haut que vous.") end
+
+            local selectedRank = GM.Admin.Ranks:getFromName(args[2])
+            if (not selectedRank) then return end
+
+            local targetPlayer = tonumber(args[1]) or args[1]
+
+            if (type(targetPlayer) == "number") then
+                local selectedPlayer = ESX.GetPlayerFromId(targetPlayer)
+                if (not selectedPlayer) then
+                    return
                 end
-            end)
+
+                local targetIdentifier = selectedPlayer.getIdentifier()
+                if (not targetIdentifier) then return end
+
+                if (GM.Admin.Ranks["players"][targetIdentifier]) then return end
+
+                GM.Admin.Ranks["players"][targetIdentifier] = {
+                    rankId = selectedRank.id,
+                    name = selectedRank.name,
+                    reports = 0,
+                    staffName = selectedPlayer.getName()
+                }
+
+                selectedRank.players[targetIdentifier] = {
+                    name = targetSelected.getName(),
+                    arrival_date = os.date("%d-%m-%Y %H:%M:%S"),
+                    reports = 0
+                }
+
+                MySQL.update('UPDATE user_admin SET players = ? WHERE id = ?', {
+                    json.encode(selectedRank.players), 
+                    selectedRank.id
+                }, function()
+                    for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+                        TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", rankId, selectedRank)
+                    end
+                end)
+            else
+                local targetIdentifier = args[1]
+
+                if (GM.Admin.Ranks["players"][targetIdentifier]) then return end
+
+                GM.Admin.Ranks["players"][targetIdentifier] = {
+                    rankId = selectedRank.id,
+                    name = selectedRank.name,
+                    reports = 0,
+                    staffName = targetIdentifier
+                }
+
+                selectedRank.players[targetIdentifier] = {
+                    name = targetIdentifier,
+                    arrival_date = os.date("%d-%m-%Y %H:%M:%S"),
+                    reports = 0
+                }
+
+                MySQL.update('UPDATE user_admin SET players = ? WHERE id = ?', {
+                    json.encode(selectedRank.players), 
+                    selectedRank.id
+                }, function()
+                    for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+                        TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", rankId, selectedRank)
+                    end
+                end)
+            end
         end
     end)
 
