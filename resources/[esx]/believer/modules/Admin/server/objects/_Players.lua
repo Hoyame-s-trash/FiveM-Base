@@ -8,7 +8,7 @@ function GM.Admin.Players:new(uniqueId, source, name, rank, vip)
     setmetatable(newAdminPlayer, self)
     self.__index = self
 
-    if (GM.Admin.Players["list"][id] ~= nil) then return end
+    if (GM.Admin.Players["list"][source] ~= nil) then return end
 
     newAdminPlayer.id = (source or (#GM.Admin.Players["list"] + 1))
     newAdminPlayer.uniqueId = uniqueId

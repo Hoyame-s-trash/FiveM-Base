@@ -92,5 +92,53 @@ GM.Admin.Permissions = {
         description = "Permet de modifier ArenaWars",
         error = "~r~Vous n'avez pas la permission de modifier ArenaWars.",
         value = false
-    }
+    },
+    ["CREATE_ENTERPRISE"] = {
+        label = "Créer une entreprise",
+        description = "Permet de créer une entreprise",
+        error = "~r~Vous n'avez pas la permission de créer une entreprise.",
+        value = false
+    },
+    ["CREATE_ENTERPRISE_RANK"] = {
+        label = "Créer un grade d'entreprise",
+        description = "Permet de créer un grade d'entreprise",
+        error = "~r~Vous n'avez pas la permission de créer un grade d'entreprise.",
+        value = false
+    },
+    ["UPDATE_ENTERPRISE_PERMISSIONS"] = {
+        label = "Modifier les permissions d'une entreprise",
+        description = "Permet de modifier les permissions d'une entreprise",
+        error = "~r~Vous n'avez pas la permission de modifier les permissions d'une entreprise.",
+        value = false
+    },
+    ["DELETE_ENTERPRISE_RANK"] = {
+        label = "Supprimer un rank d'entreprise",
+        description = "Permet de supprimer un rank d'entreprise",
+        error = "~r~Vous n'avez pas la permission de supprimer un rank d'entreprise.",
+        value = false
+    },
+    ["RECRUIT_ENTERPRISE_PLAYER"] = {
+        label = "Recruter un joueur dans l'entreprise",
+        description = "Permet de recruter un joueur dans l'entreprise",
+        error = "~r~Vous n'avez pas la permission de recruter un joueur dans l'entreprise.",
+        value = false
+    },
+    ["KICK_ENTERPRISE_PLAYER"] = {
+        label = "Virer un joueur de l'entreprise",
+        description = "Permet de virer un joueur de l'entreprise",
+        error = "~r~Vous n'avez pas la permission de virer un joueur de l'entreprise.",
+        value = false
+    },
+    ["DELETE_ENTERPRISE"] = {
+        label = "Supprimer une entreprise",
+        description = "Permet de supprimer une entreprise",
+        error = "~r~Vous n'avez pas la permission de supprimer une entreprise.",
+        value = false
+    },
+    ["CHANGE_ENTERPRISE_RANK_ID"] = {
+        label = "Changer la hiéarchie d'un grade d'entreprise",
+        description = "Permet de changer la hiéarchie d'un grade d'entreprise",
+        error = "~r~Vous n'avez pas la permission de changer la hiéarchie d'un grade d'entreprise.",
+        value = false
+    },
 }

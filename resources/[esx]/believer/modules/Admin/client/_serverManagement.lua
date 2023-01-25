@@ -2,6 +2,8 @@ GM.Admin = GM.Admin or {}
 
 GM.Admin.data.create_drugs = 1
 
+GM.Admin.data.create_enterprises = 1
+
 GM.Admin.menu.submenus["server"] = RageUI.CreateSubMenu(GM.Admin.menu.main, "", "Serveur")
 
 GM.Admin.menu.submenus["server_ranks"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server"], "", "Ranks")
@@ -18,6 +20,15 @@ GM.Admin.menu.submenus["server_drugs_management"] = RageUI.CreateSubMenu(GM.Admi
 GM.Admin.menu.submenus["server_arenawars"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server"], "", "ArenaWars")
 GM.Admin.menu.submenus["server_arenawars_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_arenawars"], "", "ArenaWars management")
 
+GM.Admin.menu.submenus["server_enterprises"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server"], "", "Entreprises")
+GM.Admin.menu.submenus["server_enterprises_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises"], "", "Entreprises management")
+GM.Admin.menu.submenus["server_enterprises_management_ranks"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises_management"], "", "Entreprises management - Ranks")
+GM.Admin.menu.submenus["server_enterprises_management_ranks_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises_management_ranks"], "", "Entreprises management - Ranks - Management")
+GM.Admin.menu.submenus["server_enterprises_management_ranks_management_permissions"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises_management_ranks_management"], "", "Entreprises management - Ranks - Management - Permissions")
+
+GM.Admin.menu.submenus["server_enterprises_management_players"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises_management"], "", "Entreprises management - Players")
+GM.Admin.menu.submenus["server_enterprises_management_players_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises_management_players"], "", "Entreprises management - Players - Management")
+
 GM.Admin.menu.submenus["server"]:isVisible(function(Items)
     Items:Button("ArenaWars", nil, {}, true, {}, GM.Admin.menu.submenus["server_arenawars"])
     Items:Button("Drogues", nil, {}, true,{
@@ -25,11 +36,189 @@ GM.Admin.menu.submenus["server"]:isVisible(function(Items)
             TriggerServerEvent("Admin:requestDrugs")
         end
     }, GM.Admin.menu.submenus["server_drugs"])
+    Items:Button("Entreprises", nil, {}, true, {
+        onSelected = function()
+            TriggerServerEvent("Admin:requestEnterprises")
+        end
+    }, GM.Admin.menu.submenus["server_enterprises"])
     Items:Button("Ranks", nil, {}, true,{
         onSelected = function()
             TriggerServerEvent("Admin:requestRanks")
         end
     }, GM.Admin.menu.submenus["server_ranks"])
+end)
+
+GM.Admin.menu.submenus["server_enterprises"]:isVisible(function(Items)
+    Items:List("Créer une entreprise", {"NORMAL", "MÉCANO", "BOÎTE DE NUIT", "FARM"}, GM.Admin.data.create_enterprises, nil, {}, true, {
+        onListChange = function(Index, Item)
+            GM.Admin.data.create_enterprises = Index
+            if (GM.Admin.data.create_enterprises == 1) then
+                GM.Admin.data["createdEnterprise"] = "normal"
+            elseif (GM.Admin.data.create_enterprises == 2) then
+                GM.Admin.data["createdEnterprise"] = "custom"
+            elseif (GM.Admin.data.create_enterprises == 3) then
+                GM.Admin.data["createdEnterprise"] = "nightclub"
+            elseif (GM.Admin.data.create_enterprises == 4) then
+                GM.Admin.data["createdEnterprise"] = "farm"
+            end
+        end,
+        onSelected = function(index)
+            if index == 1 then
+                GM.Admin.data["createdEnterprise"] = "normal"
+            elseif index == 2 then
+                GM.Admin.data["createdDrug"] = "custom"
+            elseif index == 3 then
+                GM.Admin.data["createdDrug"] = "nightclub"
+            elseif index == 4 then
+                GM.Admin.data["createdDrug"] = "farm"
+            end
+            local input = exports["input"]:openInput({
+                label = "Créer une entreprise",
+                submitLabel = "Créer",
+                placeHolders = {
+                    {label = "NOM"},
+                    {label = "LABEL"},
+                }
+            })
+            TriggerServerEvent("Admin:createEnterprise", GM.Admin.data["createdEnterprise"], input["0"], input["1"])
+        end
+    })
+    for enterpriseId, enterpriseValues in pairs(GM.Admin.data["enterprises"]) do
+        Items:Button(enterpriseValues.label, nil, {RightLabel = enterpriseValues.type:upper()}, true, {
+            onSelected = function()
+                GM.Admin.data["selectedEnterprise"] = enterpriseId
+            end
+        }, GM.Admin.menu.submenus["server_enterprises_management"])
+    end
+end)
+
+GM.Admin.menu.submenus["server_enterprises_management"]:isVisible(function(Items)
+    if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil) then
+        Items:Button("Grades", nil, {}, true, {}, GM.Admin.menu.submenus["server_enterprises_management_ranks"])
+        Items:Button("Joueurs", nil, {}, true, {}, GM.Admin.menu.submenus["server_enterprises_management_players"])
+        Items:Button("~r~Supprimer l'entreprise", nil, {}, true, {
+            onSelected = function()
+                local input = exports["input"]:openInput({
+                    label = "Supprimer l'entreprise",
+                    submitLabel = "Confirmer",
+                    placeHolders = {
+                        {label = "OUI / NON"},
+                    }
+                })
+                TriggerServerEvent("Admin:deleteEnterprise", GM.Admin.data["selectedEnterprise"], input["0"])
+            end
+        })
+    else
+        RageUI.GoBack()
+    end
+end)
+
+GM.Admin.menu.submenus["server_enterprises_management_players"]:isVisible(function(Items)
+    if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil) then
+        Items:Button("Recruter un joueur", nil, {}, true, {
+            onSelected = function()
+                local input = exports["input"]:openInput({
+                    label = "Recruter un joueur",
+                    submitLabel = "Recruter",
+                    placeHolders = {
+                        {label = "ID / LICENSE"},
+                    }
+                })
+                TriggerServerEvent("Admin:enterpriseRecruit", GM.Admin.data["selectedEnterprise"], input["0"])
+            end
+        })
+        for playerIdentifier, playerValues in pairs(GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].players) do
+            Items:Button(playerValues.name, "Date d'arrivée : "..playerValues.arrival_date, {RightLabel = "Grade : "..playerValues.rank}, true, {
+                onSelected = function()
+                    GM.Admin.data["selectedPlayer"] = playerIdentifier
+                end
+            }, GM.Admin.menu.submenus["server_enterprises_management_players_management"])
+        end
+    end
+end)
+
+GM.Admin.menu.submenus["server_enterprises_management_players_management"]:isVisible(function(Items)
+    if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil and GM.Admin.data["selectedPlayer"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].players[GM.Admin.data["selectedPlayer"]] ~= nil) then
+        Items:Button("~r~Virer", nil, {}, true, {
+            onSelected = function()
+                local input = exports["input"]:openInput({
+                    label = "Virer de l'entreprise",
+                    submitLabel = "Virer",
+                    placeHolders = {
+                        {label = "OUI / NON"},
+                    }
+                })
+                TriggerServerEvent("Admin:enterprisePlayerKick", GM.Admin.data["selectedEnterprise"], GM.Admin.data["selectedPlayer"], input["0"])
+            end
+        })
+    end
+end)
+
+GM.Admin.menu.submenus["server_enterprises_management_ranks"]:isVisible(function(Items)
+    if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil) then
+        Items:Button("Créer un grade", nil, {}, true, {
+            onSelected = function()
+                local input = exports["input"]:openInput({
+                    label = "Créer un grade",
+                    submitLabel = "Créer",
+                    placeHolders = {
+                        {label = "Nom"},
+                        {label = "Label"},
+                    }
+                })
+                TriggerServerEvent("Admin:enterpriseCreateRank", GM.Admin.data["selectedEnterprise"], input["0"], input["1"])
+            end
+        })
+
+        for rankId, rankValues in pairs(GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]]["ranks"]) do
+            Items:Button(rankValues.label, rankValues.name, {RightLabel = rankValues.id}, true, {
+                onSelected = function()
+                    GM.Admin.data["selectedGrade"] = rankId
+                end
+            }, GM.Admin.menu.submenus["server_enterprises_management_ranks_management"])
+        end
+    end
+end)
+
+GM.Admin.menu.submenus["server_enterprises_management_ranks_management"]:isVisible(function(Items)
+    if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil and GM.Admin.data["selectedGrade"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].ranks[GM.Admin.data["selectedGrade"]] ~= nil)  then
+        Items:Button("Permissions", nil, {}, true, {}, GM.Admin.menu.submenus["server_enterprises_management_ranks_management_permissions"])
+        Items:Button("Changer l'ID du grade", nil, {}, true, {
+            onSelected = function()
+                local input = exports["input"]:openInput({
+                    label = "Changer l'ID du grade",
+                    submitLabel = "Changer",
+                    placeHolders = {
+                        {label = "ID"},
+                    }
+                })
+                TriggerServerEvent("Admin:enterpriseChangeRankId", GM.Admin.data["selectedEnterprise"], GM.Admin.data["selectedGrade"], input["0"])
+            end
+        })
+        Items:Button("~r~Supprimer le grade", nil, {}, true, {
+            onSelected = function()
+                TriggerServerEvent("Admin:enterpriseDeleteRank", GM.Admin.data["selectedEnterprise"], GM.Admin.data["selectedGrade"])
+            end
+        })
+    end
+end)
+
+GM.Admin.menu.submenus["server_enterprises_management_ranks_management_permissions"]:isVisible(function(Items)
+    if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil and GM.Admin.data["selectedGrade"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].ranks[GM.Admin.data["selectedGrade"]] ~= nil)  then
+        for permissionName, permissionValues in pairs(GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].ranks[GM.Admin.data["selectedGrade"]].permissions) do
+            Items:Checkbox(permissionValues.label, permissionValues.description, permissionValues.value, {}, {
+                onSelected = function(Checked)
+                    permissionValues.value = Checked
+                end,
+                onChecked = function()
+                    TriggerServerEvent("Admin:enterpriseUpdatePermissions", GM.Admin.data["selectedEnterprise"], GM.Admin.data["selectedGrade"], permissionName, true)
+                end,
+                onUnChecked = function()
+                    TriggerServerEvent("Admin:enterpriseUpdatePermissions", GM.Admin.data["selectedEnterprise"], GM.Admin.data["selectedGrade"], permissionName, false)
+                end,
+            })
+        end
+    end
 end)
 
 GM.Admin.menu.submenus["server_arenawars"]:isVisible(function(Items)

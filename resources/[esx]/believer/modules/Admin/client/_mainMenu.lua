@@ -11,6 +11,7 @@ GM.Admin = {
         blips = {},
         blips_list = {},
         drugs = {},
+        enterprises = {},
     },
     inAdmin = false
 }
