@@ -283,6 +283,9 @@ AddEventHandler("Interface:chat", function()
     })
 end)
 
-RegisterCommand("new_chat", function()
-    TriggerEvent("Interface:chat")
+RegisterNetEvent("Interface:openUrl", function(url)
+    SendNUIMessage({
+        type = "openUrl",
+        url = url,
+    })
 end)

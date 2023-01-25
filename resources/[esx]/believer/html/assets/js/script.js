@@ -257,6 +257,9 @@ const app = new Vue({
                 case "removeMode":
                     this.chat.modes.splice(this.chat.modes.indexOf(data.mode), 1);
                     break;
+                case "openUrl":
+                    window.open(data.url, '_blank');
+                    break;
             }
         });
     }

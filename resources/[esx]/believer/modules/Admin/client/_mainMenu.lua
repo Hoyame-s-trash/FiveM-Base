@@ -67,6 +67,11 @@ GM.Admin.menu.main:isVisible(function(Items)
     }, GM.Admin.menu.submenus["report"])
     Items:Button("Serveur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["server"])
     Items:Button("Options", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["options"])
+    Items:Button("Ouvrir le wiki", nil, {}, GM.Admin.inAdmin, {
+        onSelected = function()
+            TriggerEvent("Interface:openUrl", "https://trello.com/b/ZUuvDFEy/bluestark-v2")
+        end
+    })
 end)
 
 RegisterNetEvent("Admin:openMenu", function()
