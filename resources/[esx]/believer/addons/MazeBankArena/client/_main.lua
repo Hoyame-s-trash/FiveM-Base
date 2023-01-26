@@ -29,14 +29,7 @@ AddEventHandler("MazeBankArena:modifyArena", function(arenaName)
     local oldInteriorID = GetInteriorAtCoords(oldInterior.coords.x, oldInterior.coords.y, oldInterior.coords.z)
     if IsValidInterior(oldInteriorID) then
         for __, entitySet in ipairs(oldInterior.entitySets) do
-            if entitySet.enable then
-                EnableInteriorProp(oldInteriorID, entitySet.name)
-                if entitySet.color then
-                    SetInteriorPropColor(oldInteriorID, entitySet.name, entitySet.color)
-                end
-            else
-                DisableInteriorProp(oldInteriorID, entitySet.name)
-            end
+            DisableInteriorProp(oldInteriorID, entitySet.name)
         end
         RefreshInterior(oldInteriorID)
     end
