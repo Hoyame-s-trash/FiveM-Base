@@ -36,6 +36,7 @@ GM.Admin.menu.submenus["server_enterprises_management_zones_management"] = RageU
 
 GM.Admin.menu.submenus["server"]:isVisible(function(Items)
     Items:Button("ArenaWars", nil, {}, true, {}, GM.Admin.menu.submenus["server_arenawars"])
+    Items:Button("Maze Bank Arena", nil, {}, true, {}, GM.Admin.menu.submenus["server_mazebankarena"])
     Items:Button("Drogues", nil, {}, true,{
         onSelected = function()
             TriggerServerEvent("Admin:requestDrugs")
