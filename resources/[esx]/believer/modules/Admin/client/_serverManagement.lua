@@ -182,19 +182,7 @@ end)
 
 GM.Admin.menu.submenus["server_enterprises_management_ranks_management"]:isVisible(function(Items)
     if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil and GM.Admin.data["selectedGrade"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].ranks[GM.Admin.data["selectedGrade"]] ~= nil)  then
-        Items:Button("Permissions", nil, {}, true, {}, GM.Admin.menu.submenus["server_enterprises_management_ranks_management_permissions"])
-        Items:Button("Changer l'ID du grade", nil, {}, true, {
-            onSelected = function()
-                local input = exports["input"]:openInput({
-                    label = "Changer l'ID du grade",
-                    submitLabel = "Changer",
-                    placeHolders = {
-                        {label = "ID"},
-                    }
-                })
-                TriggerServerEvent("Admin:enterpriseChangeRankId", GM.Admin.data["selectedEnterprise"], GM.Admin.data["selectedGrade"], input["0"])
-            end
-        })
+        Items:Button("Permissions", nil, {}, true, {}, GM.Admin.menu.submenus["server_enterprises_management_ranks_management_permissions"]) 
         Items:Button("~r~Supprimer le grade", nil, {}, true, {
             onSelected = function()
                 TriggerServerEvent("Admin:enterpriseDeleteRank", GM.Admin.data["selectedEnterprise"], GM.Admin.data["selectedGrade"])

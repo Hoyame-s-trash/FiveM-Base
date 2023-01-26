@@ -30,8 +30,6 @@ function GM.Enterprise:new(id, type, name, label, players, ranks, zones, money)
         }
     end
 
-    print("New enterprise created: " .. newEnterprise.name .. " (" .. newEnterprise.id .. ")")
-
     GM.Enterprise["list"][newEnterprise.id] = newEnterprise
 
     return newEnterprise
@@ -39,6 +37,13 @@ end
 
 function GM.Enterprise:getFromId(enterpriseId)
     return GM.Enterprise["list"][enterpriseId]
+end
+
+function GM.Enterprise:getFromName(enterpriseName)
+    for _, enterprise in pairs(GM.Enterprise["list"]) do
+        if (enterprise.name == enterpriseName) then return enterprise end
+    end
+    return false
 end
 
 function GM.Enterprise:getRankFromName(rankName)
@@ -57,6 +62,20 @@ function GM.Enterprise:getIdFromRankName(rankName)
         if (rank.name == rankName) then return rankId end
     end
     return false
+end
+
+function GM.Enterprise:getZone(zoneName)
+    return self.zones[zoneName]
+end
+
+function GM.Enterprise:addZone(zoneName, zoneData)
+    if (self.zones[zoneName] ~= nil) then return end
+    self.zones[zoneName] = GM.Zone.Management:create(zoneData.position, zoneData.radius, zoneData.helpText, zoneData.onUsable, {
+        private = true,
+        marker = false
+    })
+    
+    return self.zones[zoneName]
 end
 
 RegisterServerEvent("Admin:requestEnterprises", function()
