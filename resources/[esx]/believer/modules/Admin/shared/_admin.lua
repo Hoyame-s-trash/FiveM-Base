@@ -141,4 +141,10 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission de changer la hiéarchie d'un grade d'entreprise.",
         value = false
     },
+    ["CHANGE_ENTERPRISE_ZONE_POSITION"] = {
+        label = "Changer la position d'une zone d'entreprise",
+        description = "Permet de changer la position d'une zone d'entreprise",
+        error = "~r~Vous n'avez pas la permission de changer la position d'une zone d'entreprise.",
+        value = false
+    },
 }

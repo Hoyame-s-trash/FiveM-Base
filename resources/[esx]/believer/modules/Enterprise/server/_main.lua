@@ -1,11 +1,14 @@
 GM.Enterprise = GM.Enterprise or {}
 
+GM.Enterprise.Loaded = false
+
 GM:newThread(function()
     MySQL.query("SELECT * FROM user_enterprise", {}, function(results)
         if (results[1]) then
             for _, enterpriseValues in pairs(results) do
                 GM.Enterprise:new(enterpriseValues.id, enterpriseValues.type, enterpriseValues.name, enterpriseValues.label, json.decode(enterpriseValues.players), json.decode(enterpriseValues.ranks), json.decode(enterpriseValues.zones), enterpriseValues.money)
             end
+            GM.Enterprise.Loaded = true
         end
     end)
 end)
@@ -319,6 +322,45 @@ RegisterServerEvent("Admin:deleteEnterprise", function(enterpriseId, input)
         -- Todo check if player are connected and update their jobs
         for adminSrc,_ in pairs(GM.Admin.inAdmin) do
             TriggerClientEvent("Admin:removeValue", adminSrc, "enterprises", enterpriseId)
+        end
+    end)
+end)
+
+RegisterServerEvent("Admin:changeEnterpriseZonePosition", function(enterpriseId, zoneName)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not playerRank) then return end
+
+    if (not playerRank:getPermissionsValue("CHANGE_ENTERPRISE_ZONE_POSITION", playerSelected.source)) then return end
+
+    local enterpriseSelected = GM.Enterprise:getFromId(enterpriseId)
+    if (not enterpriseSelected) then return end
+
+    if (not enterpriseSelected.zones[zoneName]) then return end
+
+    local playerCoords = playerSelected.getCoords(true)
+    if (not playerCoords) then return end
+
+    enterpriseSelected.zones_saved[zoneName].position = playerCoords
+
+    MySQL.update('UPDATE user_enterprise SET zones = ? WHERE id = ?', {
+        json.encode(enterpriseSelected.zones_saved), 
+        enterpriseId
+    }, function()
+        for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+            TriggerClientEvent("Admin:updateValue", adminSrc, "enterprises", enterpriseId, enterpriseSelected)
+        end
+        local enterpriseZone = enterpriseSelected:getZone(zoneName)
+        if (enterpriseZone) then
+            local currentZone = GM.Zone:get(enterpriseZone.uniqueId)
+            currentZone:setData("position", enterpriseSelected.zones_saved[zoneName].position)
         end
     end)
 end)

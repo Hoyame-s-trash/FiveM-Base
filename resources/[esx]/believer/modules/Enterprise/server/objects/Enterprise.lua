@@ -2,7 +2,7 @@ GM.Enterprise = GM.Enterprise or {}
 GM.Enterprise["list"] = {}
 GM.Enterprise["list_players"] = {}
 
-function GM.Enterprise:new(id, type, name, label, players, ranks, zones, money)
+function GM.Enterprise:new(id, type, name, label, players, ranks, zones_saved, money)
     local newEnterprise = {}
 
     setmetatable(newEnterprise, self)
@@ -16,7 +16,8 @@ function GM.Enterprise:new(id, type, name, label, players, ranks, zones, money)
     newEnterprise.label = label
     newEnterprise.players = players
     newEnterprise.ranks = ranks
-    newEnterprise.zones = zones
+    newEnterprise.zones = zones or {}
+    newEnterprise.zones_saved = zones_saved or {}
     newEnterprise.money = money
 
     for playerIdentifier, playerValues in pairs(newEnterprise.players) do
@@ -69,11 +70,34 @@ function GM.Enterprise:getZone(zoneName)
 end
 
 function GM.Enterprise:addZone(zoneName, zoneData)
-    if (self.zones[zoneName] ~= nil) then return end
-    self.zones[zoneName] = GM.Zone.Management:create(zoneData.position, zoneData.radius, zoneData.helpText, zoneData.onUsable, {
-        private = true,
-        marker = false
-    })
+    if (self.zones_saved[zoneName] == nil) then
+
+        self.zones_saved[zoneName] = {
+            position = zoneData.position,
+            radius = zoneData.radius,
+        }
+
+        self.zones[zoneName] = GM.Zone.Management:create(zoneData.position, zoneData.radius, zoneData.helpText, zoneData.onUsable, {
+            private = false,
+            marker = true
+        })
+
+        MySQL.update('UPDATE user_enterprise SET zones = ? WHERE id = ?', {
+            json.encode(self.zones_saved), 
+            self.id
+        }, function()
+            for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+                TriggerClientEvent("Admin:updateValue", adminSrc, "enterprises", self.id, self)
+            end
+        end)
+    else
+        local zonePosition = vector3(self.zones_saved[zoneName].position.x, self.zones_saved[zoneName].position.y, self.zones_saved[zoneName].position.z)
+
+        self.zones[zoneName] = GM.Zone.Management:create(zonePosition, self.zones_saved[zoneName].radius, zoneData.helpText, zoneData.onUsable, {
+            private = false,
+            marker = true
+        })
+    end
     
     return self.zones[zoneName]
 end

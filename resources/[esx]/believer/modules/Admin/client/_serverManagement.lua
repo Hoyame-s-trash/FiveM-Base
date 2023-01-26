@@ -29,6 +29,9 @@ GM.Admin.menu.submenus["server_enterprises_management_ranks_management_permissio
 GM.Admin.menu.submenus["server_enterprises_management_players"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises_management"], "", "Entreprises management - Players")
 GM.Admin.menu.submenus["server_enterprises_management_players_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises_management_players"], "", "Entreprises management - Players - Management")
 
+GM.Admin.menu.submenus["server_enterprises_management_zones"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises_management"], "", "Entreprises management - Zones")
+GM.Admin.menu.submenus["server_enterprises_management_zones_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises_management_zones"], "", "Entreprises management - Zones - Management")
+
 GM.Admin.menu.submenus["server"]:isVisible(function(Items)
     Items:Button("ArenaWars", nil, {}, true, {}, GM.Admin.menu.submenus["server_arenawars"])
     Items:Button("Drogues", nil, {}, true,{
@@ -96,6 +99,7 @@ GM.Admin.menu.submenus["server_enterprises_management"]:isVisible(function(Items
     if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil) then
         Items:Button("Grades", nil, {}, true, {}, GM.Admin.menu.submenus["server_enterprises_management_ranks"])
         Items:Button("Joueurs", nil, {}, true, {}, GM.Admin.menu.submenus["server_enterprises_management_players"])
+        Items:Button("Zones", nil, {}, true, {}, GM.Admin.menu.submenus["server_enterprises_management_zones"])
         Items:Button("~r~Supprimer l'entreprise", nil, {}, true, {
             onSelected = function()
                 local input = exports["input"]:openInput({
@@ -110,6 +114,30 @@ GM.Admin.menu.submenus["server_enterprises_management"]:isVisible(function(Items
         })
     else
         RageUI.GoBack()
+    end
+end)
+
+GM.Admin.menu.submenus["server_enterprises_management_zones"]:isVisible(function(Items)
+    if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil) then
+        for zoneId, zoneValues in pairs(GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones) do
+            Items:Button(zoneId, nil, {}, true, {
+                onSelected = function()
+                    GM.Admin.data["selectedEnterpriseZone"] = zoneId
+                end
+            }, GM.Admin.menu.submenus["server_enterprises_management_zones_management"])
+        end
+    else
+        RageUI.GoBack()
+    end
+end)
+
+GM.Admin.menu.submenus["server_enterprises_management_zones_management"]:isVisible(function(Items)
+    if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil and GM.Admin.data["selectedEnterpriseZone"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones[GM.Admin.data["selectedEnterpriseZone"]] ~= nil) then
+        Items:Button("Changer la position", GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones[GM.Admin.data["selectedEnterpriseZone"]].position.x..","..GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones[GM.Admin.data["selectedEnterpriseZone"]].position.y..","..GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones[GM.Admin.data["selectedEnterpriseZone"]].position.z, {}, true, {
+            onSelected = function()
+                TriggerServerEvent("Admin:changeEnterpriseZonePosition", GM.Admin.data["selectedEnterprise"], GM.Admin.data["selectedEnterpriseZone"])
+            end
+        })
     end
 end)
 

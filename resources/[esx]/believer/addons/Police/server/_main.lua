@@ -5,7 +5,7 @@ GM.Police["zones"] = {
         name = "cloakroom",
         position = vector3(451.5, -980.5, 30.6),
         radius = 3.0,
-        helpText = "Appuyez sur ~INPUT_CONTEXT~ pour accéder au vestiaire",
+        helpText = "accéder au vestiaire",
         onUsable = function(playerSrc)
             print(playerSrc)
         end
@@ -13,22 +13,15 @@ GM.Police["zones"] = {
 }
 
 GM:newThread(function()
-    while (GM.Enterprise == nil) do
-        Wait(150)
+    while (GM.Enterprise.Loaded == false) do
+        Wait(100)
     end
-
-    print("Loading police zones...")
 
     local enterpriseSelected = GM.Enterprise:getFromName("police")
     if (not enterpriseSelected) then return end
 
-    print("Loading police zones...")
-
     for zoneName, zone in pairs(GM.Police["zones"]) do
         enterpriseSelected:addZone(zoneName, zone)
     end
-
-    print("Police zones loaded !")
-    print(enterpriseSelected:getZone("cloakroom"))
 
 end)

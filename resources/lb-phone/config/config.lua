@@ -176,7 +176,7 @@ Config.Locales = { -- languages that the player can choose from when setting up 
     },
 }
 
-Config.DefaultLocale = "en"
+Config.DefaultLocale = "fr"
 
 Config.PhoneNumber = {}
 Config.PhoneNumber.Format = "({3}) {3}-{4}" -- Don't touch unless you know what you're doing. IMPORTANT: The sum of the numbers needs to be equal to the phone number length
