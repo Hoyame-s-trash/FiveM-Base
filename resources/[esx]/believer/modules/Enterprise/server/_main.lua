@@ -45,9 +45,6 @@ RegisterServerEvent("Admin:createEnterprise", function(enterpriseType, enterpris
 
     -- Todo check if entreprise already exist
 
-    -- Todo check the input
-    
-
     if (enterpriseName == nil or enterpriseName == "") then
         TriggerClientEvent("esx:showNotification", playerSrc, "~r~Vous devez entrer un nom d'entreprise valide.")
         return
