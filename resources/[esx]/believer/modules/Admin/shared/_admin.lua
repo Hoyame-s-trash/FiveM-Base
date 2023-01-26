@@ -147,4 +147,10 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission de changer la position d'une zone d'entreprise.",
         value = false
     },
+    ["CHANGE_MAZE_BANK_ARENA"] = {
+        label = "Changer l'arène de Maze Bank",
+        description = "Permet de changer l'arène de Maze Bank",
+        error = "~r~Vous n'avez pas la permission de changer l'arène de Maze Bank.",
+        value = false
+    },
 }

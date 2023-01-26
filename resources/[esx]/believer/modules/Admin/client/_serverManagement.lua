@@ -20,6 +20,8 @@ GM.Admin.menu.submenus["server_drugs_management"] = RageUI.CreateSubMenu(GM.Admi
 GM.Admin.menu.submenus["server_arenawars"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server"], "", "ArenaWars")
 GM.Admin.menu.submenus["server_arenawars_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_arenawars"], "", "ArenaWars management")
 
+GM.Admin.menu.submenus["server_mazebankarena"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server"], "", "Maze Bank Arena")
+
 GM.Admin.menu.submenus["server_enterprises"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server"], "", "Entreprises")
 GM.Admin.menu.submenus["server_enterprises_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises"], "", "Entreprises management")
 GM.Admin.menu.submenus["server_enterprises_management_ranks"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["server_enterprises_management"], "", "Entreprises management - Ranks")
@@ -244,6 +246,16 @@ GM.Admin.menu.submenus["server_arenawars"]:isVisible(function(Items)
                 GM.Admin.data["selectedArena"] = categoryId
             end
         }, GM.Admin.menu.submenus["server_arenawars_management"])
+    end
+end)
+
+GM.Admin.menu.submenus["server_mazebankarena"]:isVisible(function(Items)
+    for mappingName, _ in pairs(GM.MazeBankArena["list"]) do
+        Items:Button(mappingName:upper(), nil, {}, true, {
+            onSelected = function()
+                TriggerServerEvent("MazeBankArena:modifyArena", mappingName)
+            end
+        })
     end
 end)
 
