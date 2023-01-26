@@ -3,6 +3,7 @@ GM.Police = GM.Police or {}
 GM.Police["zones"] = {
     ["cloakroom"] = {
         name = "cloakroom",
+        label = "Vestiaire",
         position = vector3(451.5, -980.5, 30.6),
         radius = 3.0,
         helpText = "accéder au vestiaire",
@@ -23,5 +24,4 @@ GM:newThread(function()
     for zoneName, zone in pairs(GM.Police["zones"]) do
         enterpriseSelected:addZone(zoneName, zone)
     end
-
 end)

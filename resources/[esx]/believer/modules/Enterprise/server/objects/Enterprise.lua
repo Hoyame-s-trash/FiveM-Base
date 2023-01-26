@@ -98,6 +98,8 @@ function GM.Enterprise:addZone(zoneName, zoneData)
             marker = true
         })
     end
+
+    self.zones[zoneName].label = zoneData.label
     
     return self.zones[zoneName]
 end

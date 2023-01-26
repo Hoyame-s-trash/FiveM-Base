@@ -235,16 +235,17 @@ RegisterServerEvent("Admin:enterpriseRecruit", function(enterpriseId, playerId)
         return
     end
 
-    -- Todo check if the player are not in another enterprise
-
-    -- Todo get the real name of the player not GameName
+    if (GM.Enterprise["list_players"][targetIdentifier] ~= nil) then
+        TriggerClientEvent("esx:showNotification", playerSrc, "~r~Ce joueur est déjà recruté dans une entreprise.")
+        return
+    end
 
     targetSelected.set("enterprise_id", enterpriseId)
     targetSelected.set("enterprise", enterpriseSelected.name)
 
     enterpriseSelected.players[targetIdentifier] = {
         identifier = targetIdentifier,
-        name = targetSelected.getName(),
+        name = targetSelected.getName(), -- Todo get the real name of the player not GameName
         rank = "recruit",
         rank_id = enterpriseSelected:getIdFromRankName("recruit"),
         arrival_date = os.date("%d-%m-%Y %H:%M:%S")
@@ -362,5 +363,7 @@ RegisterServerEvent("Admin:changeEnterpriseZonePosition", function(enterpriseId,
             local currentZone = GM.Zone:get(enterpriseZone.uniqueId)
             currentZone:setData("position", enterpriseSelected.zones_saved[zoneName].position)
         end
+
+        playerSelected.showNotification("La zone ~g~"..zoneName.."~s~ a été déplacée à votre position.")
     end)
 end)

@@ -119,10 +119,10 @@ end)
 
 GM.Admin.menu.submenus["server_enterprises_management_zones"]:isVisible(function(Items)
     if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil) then
-        for zoneId, zoneValues in pairs(GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones) do
-            Items:Button(zoneId, nil, {}, true, {
+        for zoneName, zoneValues in pairs(GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones) do
+            Items:Button(zoneValues.label, nil, {RightLabel = zoneName}, true, {
                 onSelected = function()
-                    GM.Admin.data["selectedEnterpriseZone"] = zoneId
+                    GM.Admin.data["selectedEnterpriseZone"] = zoneName
                 end
             }, GM.Admin.menu.submenus["server_enterprises_management_zones_management"])
         end
@@ -133,7 +133,7 @@ end)
 
 GM.Admin.menu.submenus["server_enterprises_management_zones_management"]:isVisible(function(Items)
     if (GM.Admin.data["selectedEnterprise"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]] ~= nil and GM.Admin.data["selectedEnterpriseZone"] ~= nil and GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones[GM.Admin.data["selectedEnterpriseZone"]] ~= nil) then
-        Items:Button("Changer la position", GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones[GM.Admin.data["selectedEnterpriseZone"]].position.x..","..GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones[GM.Admin.data["selectedEnterpriseZone"]].position.y..","..GM.Admin.data["enterprises"][GM.Admin.data["selectedEnterprise"]].zones[GM.Admin.data["selectedEnterpriseZone"]].position.z, {}, true, {
+        Items:Button("Changer la position", nil, {}, true, {
             onSelected = function()
                 TriggerServerEvent("Admin:changeEnterpriseZonePosition", GM.Admin.data["selectedEnterprise"], GM.Admin.data["selectedEnterpriseZone"])
             end
