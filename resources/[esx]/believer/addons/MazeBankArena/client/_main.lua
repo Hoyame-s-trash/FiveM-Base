@@ -18,12 +18,11 @@ AddEventHandler("MazeBankArena:modifyArena", function(arenaName)
     end
 
     if (GM.MazeBankArena.currentArena == arenaName) then
+        print("MazeBankArena:modifyArena: already in arena: " .. arenaName)
         return
     end
 
-    local currentInterior = GM.MazeBankArena["list"][GM.MazeBankArena.currentArena]
-
-    local oldInterior = GM.MazeBankArena["list"][arenaName]
+    local oldInterior = GM.MazeBankArena["list"][GM.MazeBankArena.currentArena]
 
     RequestIpl(oldInterior.ipl)
     local oldInteriorID = GetInteriorAtCoords(oldInterior.coords.x, oldInterior.coords.y, oldInterior.coords.z)
