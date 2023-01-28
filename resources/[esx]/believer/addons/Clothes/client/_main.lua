@@ -6,15 +6,6 @@ GM.Clothes = {
     },
     data = {
         outfits = {},
-        categories = {
-            [0] = {
-                name = "tshirt",
-                label = "T-shirt",
-                type = "main",
-                drawable = 8,
-                restricted = {}
-            },
-        }
     },
 }
 
@@ -33,7 +24,7 @@ GM.Clothes.menu.main:isVisible(function(Items)
 end)
 
 GM.Clothes.menu.submenus["clothes_shop"]:isVisible(function(Items)
-    for clotheId, clothes in pairs(GM.Clothes.data.categories) do
+    for clotheId, clothes in pairs(GM.Clothes.Config["clothes_categories"]) do
         Items:Button(clothes.label, nil, {}, true, {
             onSelected = function()
                 GM.Clothes.data["selectedClothe"] = clotheId

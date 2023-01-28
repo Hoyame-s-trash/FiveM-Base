@@ -271,16 +271,13 @@ GM:newThread(function()
         local playerSelected = ESX.GetPlayerFromId(playerSrc)
         if (not playerSelected) then return end
 
-        local playerPed = playerSelected.getPed()
-        if (not playerPed) then return end
-
-        local playerVehicle = GetVehiclePedIsIn(playerPed, false)
+        local playerVehicle = GetVehiclePedIsIn(GetPlayerPed(playerSelected.source), false)
 
         if DoesEntityExist(playerVehicle) then
             DeleteEntity(playerVehicle)
         end
 
-        local allVehicles = ESX.OneSync.GetVehiclesInArea(GetEntityCoords(playerPed), tonumber(args[1]) or 5.0)
+        local allVehicles = ESX.OneSync.GetVehiclesInArea(GetEntityCoords(GetPlayerPed(playerSelected.source)), tonumber(args[1]) or 5.0)
         for i = 1, #allVehicles do 
             local currentVehicle = NetworkGetEntityFromNetworkId(allVehicles[i])
 
