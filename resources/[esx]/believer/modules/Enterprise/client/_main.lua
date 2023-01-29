@@ -1,1 +1,0 @@
-GM.Enterprise = GM.Enterprise or {}

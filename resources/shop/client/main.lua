@@ -7,40 +7,38 @@ Citizen.CreateThread(function()
 	Wait(1000)
 	SendNUIMessage({
 		type = "setJs", 
-		vehicles = AK4Y.Vehicles,
-		motos = AK4Y.Motos,
-		categories = AK4Y.Categories,
-		weapons = AK4Y.Weapons,
-		moneys = AK4Y.Money,
-		packs = AK4Y.Packs,
-		customItems = AK4Y.Customize,
-		customPlatePrice = AK4Y.CustomPlatePriceOnBuyVehicle,
-		minCharForPhone = AK4Y.MinCharForPhoneNumber,
-		minCharForPlate = AK4Y.MinCharForPlate,
-		maxCharForPhone = AK4Y.MaxCharForPhoneNumber,
-		maxCharForPlate = AK4Y.MaxCharForPlate,
-		language = AK4Y.Translate,
+		vehicles = Boutique.Vehicles,
+		motos = Boutique.Motos,
+		categories = Boutique.Categories,
+		weapons = Boutique.Weapons,
+		moneys = Boutique.Money,
+		packs = Boutique.Packs,
+		customPlatePrice = Boutique.CustomPlatePriceOnBuyVehicle,
+		minCharForPhone = Boutique.MinCharForPhoneNumber,
+		minCharForPlate = Boutique.MinCharForPlate,
+		maxCharForPhone = Boutique.MaxCharForPhoneNumber,
+		maxCharForPlate = Boutique.MaxCharForPlate,
+		language = Boutique.Translate,
 	})	
 end)
 
 RegisterNetEvent("esx:playerLoaded")
 AddEventHandler("esx:playerLoaded", function()
-    -- SendNUIMessage({
-	-- 	type = "setJs", 
-	-- 	vehicles = AK4Y.Vehicles,
-	-- 	motos = AK4Y.Motos,
-	-- 	categories = AK4Y.Categories,
-	-- 	weapons = AK4Y.Weapons,
-	-- 	moneys = AK4Y.Money,
-	-- 	packs = AK4Y.Packs,
-	-- 	customItems = AK4Y.Customize,
-	-- 	customPlatePrice = AK4Y.CustomPlatePriceOnBuyVehicle,
-	-- 	minCharForPhone = AK4Y.MinCharForPhoneNumber,
-	-- 	minCharForPlate = AK4Y.MinCharForPlate,
-	-- 	maxCharForPhone = AK4Y.MaxCharForPhoneNumber,
-	-- 	maxCharForPlate = AK4Y.MaxCharForPlate,
-	-- 	language = AK4Y.Translate,
-	-- })
+    SendNUIMessage({
+		type = "setJs", 
+		vehicles = Boutique.Vehicles,
+		motos = Boutique.Motos,
+		categories = Boutique.Categories,
+		weapons = Boutique.Weapons,
+		moneys = Boutique.Money,
+		packs = Boutique.Packs,
+		customPlatePrice = Boutique.CustomPlatePriceOnBuyVehicle,
+		minCharForPhone = Boutique.MinCharForPhoneNumber,
+		minCharForPlate = Boutique.MinCharForPlate,
+		maxCharForPhone = Boutique.MaxCharForPhoneNumber,
+		maxCharForPlate = Boutique.MaxCharForPlate,
+		language = Boutique.Translate,
+	})
 end)
 
 local openMenuSpamProtect = 0
@@ -48,7 +46,7 @@ RegisterKeyMapping("shop", "Ouvrir la boutique", "keyboard", "F1")
 RegisterCommand("shop", function()
 	if openMenuSpamProtect <= GetGameTimer() then 
 		openMenuSpamProtect = GetGameTimer() + 1000
-		ESX.TriggerServerCallback("ak4y-donateSystem:getPlayerDetails", function(result)
+		ESX.TriggerServerCallback("Boutique:getPlayerDetails", function(result)
 			SetNuiFocus(true,true)
 			SendNUIMessage({
 				type = "openUi", 
@@ -58,19 +56,19 @@ RegisterCommand("shop", function()
 			})	
 		end)
 	else
-		AK4Y.ClientNotify(AK4Y.Translate.openSpam, "error")
+		Boutique.ClientNotify(Boutique.Translate.openSpam, "error")
 	end
 end)
 
 RegisterNUICallback("openCaseSystem", function()
-    ExecuteCommand("caseOpening")
+    ExecuteCommand("cases")
 end)
 
 local sendInputSpamProtect = 0
 RegisterNUICallback("sendInput", function(data, cb)
 	if sendInputSpamProtect <= GetGameTimer() then
 		sendInputSpamProtect = GetGameTimer() + 2000 
-		ESX.TriggerServerCallback("ak4y-donateSystem:sendInput", function(result)
+		ESX.TriggerServerCallback("Boutique:sendInput", function(result)
 			if result then 	
 				cb(result)
 			else
@@ -78,7 +76,7 @@ RegisterNUICallback("sendInput", function(data, cb)
 			end
 		end, data)
 	else
-		AK4Y.ClientNotify(AK4Y.Translate.spamNotify, "error")
+		Boutique.ClientNotify(Boutique.Translate.spamNotify, "error")
 		cb(false)
 	end
 end)
@@ -87,15 +85,15 @@ local getVehicleSpamProtect = 0
 RegisterNUICallback("getVehicle", function(data, cb)
 	if getVehicleSpamProtect <= GetGameTimer() then
 		getVehicleSpamProtect = GetGameTimer() + 2000
-		ESX.TriggerServerCallback("ak4y-donateSystem:getVehicle", function(result)
+		ESX.TriggerServerCallback("Boutique:getVehicle", function(result)
 			if result == true then 	
 				cb(true)
 			else
-				cb(AK4Y.Translate.errorDuringPurchase)
+				cb(Boutique.Translate.errorDuringPurchase)
 			end
 		end, data)
 	else
-		AK4Y.ClientNotify(AK4Y.Translate.spamNotify, "error")
+		Boutique.ClientNotify(Boutique.Translate.spamNotify, "error")
 		cb(false)
 	end
 end)
@@ -108,11 +106,11 @@ RegisterNUICallback("getWeapon", function(data, cb)
 			if result then 	
 				cb(true)
 			else
-				cb(AK4Y.Translate.errorDuringPurchase)
+				cb(Boutique.Translate.errorDuringPurchase)
 			end
 		end, data)
 	else
-		AK4Y.ClientNotify(AK4Y.Translate.spamNotify, "error")
+		Boutique.ClientNotify(Boutique.Translate.spamNotify, "error")
 		cb(false)
 	end
 end)
@@ -129,7 +127,7 @@ RegisterNUICallback("getItem", function(data, cb)
 			end
 		end, data)
 	else
-		AK4Y.ClientNotify(AK4Y.Translate.spamNotify, "error")
+		Boutique.ClientNotify(Boutique.Translate.spamNotify, "error")
 		cb(false)
 	end
 end)
@@ -142,11 +140,11 @@ RegisterNUICallback("getMoney", function(data, cb)
 			if result then 	
 				cb(true)
 			else
-				cb(AK4Y.Translate.errorDuringPurchase)
+				cb(Boutique.Translate.errorDuringPurchase)
 			end
 		end, data)
 	else
-		AK4Y.ClientNotify(AK4Y.Translate.spamNotify, "error")
+		Boutique.ClientNotify(Boutique.Translate.spamNotify, "error")
 		cb(false)
 	end	
 end)
@@ -162,36 +160,19 @@ RegisterNUICallback("getCustomPlate", function(data, cb)
 				if result then 	
 					local newPlate = data.input
 					SetVehicleNumberPlateText(veh, data.input)
-					if AK4Y.GiveAddKeys then 
-						AK4Y.GiveAddKeysFunction(newPlate)
+					if Boutique.GiveAddKeys then 
+						Boutique.GiveAddKeysFunction(newPlate)
 					end
 					cb(true)
 				else
-					cb(AK4Y.Translate.errorDuringPurchase)
+					cb(Boutique.Translate.errorDuringPurchase)
 				end
 			end, data, oldPlate)
 		else
-			cb(AK4Y.Translate.insideVehicle)
+			cb(Boutique.Translate.insideVehicle)
 		end
 	else
-		AK4Y.ClientNotify(AK4Y.Translate.spamNotify, "error")
-		cb(false)
-	end	
-end)
-
-local getPrivNumber = 0
-RegisterNUICallback("getPrivNumber", function(data, cb)
-	if getPrivNumber <= GetGameTimer() then
-		getPrivNumber = GetGameTimer() + 2000
-		ESX.TriggerServerCallback("ak4y-donateSystem:getPrivNumber", function(result)
-			if result then 	
-				cb(true)
-			else
-				cb(AK4Y.Translate.errorDuringPurchase)
-			end
-		end, data)
-	else
-		AK4Y.ClientNotify(AK4Y.Translate.spamNotify, "error")
+		Boutique.ClientNotify(Boutique.Translate.spamNotify, "error")
 		cb(false)
 	end	
 end)
@@ -204,11 +185,11 @@ RegisterNUICallback("getPacks", function(data, cb)
 			if result then 	
 				cb(true)
 			else
-				cb(AK4Y.Translate.errorDuringPurchase)
+				cb(Boutique.Translate.errorDuringPurchase)
 			end
 		end, data)
 	else
-		AK4Y.ClientNotify(AK4Y.Translate.spamNotify, "error")
+		Boutique.ClientNotify(Boutique.Translate.spamNotify, "error")
 		cb(false)
 	end	
 end)
@@ -217,41 +198,39 @@ RegisterNUICallback("closeMenu", function(data, cb)
 	SetNuiFocus(false, false)
 end)
 
-local startCountDown = false
+local startTest = false
+
+local isInTest = false
 
 RegisterNUICallback("tryVehicle",function(data, cb)
 	-- Todo check if player is in safezone
 
-	-- Todo check if player already test a vehicle
+	if (isInTest == true) then
+		ESX.ShowNotification("~r~Vous êtes déjà en test.")
+		cb(true)
+		return
+	end
 
 	lastPlayerCoords = GetEntityCoords(PlayerPedId())
-	ESX.Game.SpawnVehicle(data.model, vector3(-960.03155517578,-3362.8012695312,13.944436073303), 60.82, function(entity)
+	SetEntityCoords(PlayerPedId(), -2117.638671875,1098.8151855469,-27.99235534668)
+	ESX.Game.SpawnVehicle(data.model, vector3(-2103.7111816406,1096.8862304688,-28.036245346069), 269.29, function(entity)
+		isInTest = true
 		cb(true)
 		TaskWarpPedIntoVehicle(PlayerPedId(), entity, -1)
 		SetVehicleNumberPlateText(entity, "BOUTIQUE")
-		startCountDown = true
-		local timeGG = GetGameTimer()
-		while startCountDown do
-			Citizen.Wait(1)
-			if GetGameTimer() < timeGG + tonumber(1000 * 60) then
-				drawTxt("~r~ TEMPS RESTANT : " .. math.ceil(60 - (GetGameTimer() - timeGG)/1000) ,4,0.5,0.93,0.50,255,255,255,180)
-			else
+		startTest = true
+		while startTest do
+			Wait(1)
+			ESX.ShowHelpNotification("~INPUT_ENTER~ pour quitter.\n~INPUT_DETONATE~ pour afficher le menu custom.")
+			if IsControlJustPressed(0, 23) then
+				startTest = false
+				isInTest = false
 				DeleteEntity(entity)
 				SetEntityCoords(PlayerPedId(), lastPlayerCoords)
-				startCountDown = false
+			end
+			if IsControlJustPressed(0, 47) then
+				ESX.ShowNotification("~r~Vous ne pouvez pas customiser un véhicule en test module non fais.")
 			end
 		end
 	end, false)
 end)
-
-function drawTxt(text,font,x,y,scale,r,g,b,a)
-	SetTextFont(font)
-	SetTextScale(scale,scale)
-	SetTextColour(r,g,b,a)
-	SetTextOutline()
-	SetTextCentre(5)
-     SetTextFont(8)
-	SetTextEntry("STRING")
-	AddTextComponentString(text)
-	DrawText(x,y)
-end

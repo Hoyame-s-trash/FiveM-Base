@@ -1,7 +1,5 @@
 var customPlatePrice = 15;
-var minCharPhone = 5;
 var minCharPlate = 5;
-var maxCharPhone = 1;
 var maxCharPlate = 1;
 var currentCredit = 0;
 var categories = [];
@@ -12,8 +10,6 @@ var weapons = [];
 var items = [];
 var moneyItems = [];
 var packsItems = [];
-var customItems = [];
-var url_1 = "https://www.google.com";
 var language = [];
 
 function setCategories() {
@@ -110,7 +106,7 @@ $(document).on("click", ".rightTestButton", function () {
             }),
             function (data) {
                 if (data === true) {
-                    $.post("https://shop/closeMenu", JSON.stringify());
+                    $.post(`https://${GetParentResourceName()}/closeMenu`, JSON.stringify());
                     $(".youWantBuySection").hide();
                     $(".customizationSection").hide();
                     $(".succesfullyArea").hide();
@@ -130,7 +126,7 @@ $(document).on("click", ".categorieItem", function () {
 
     if (this.id === "money") {
         $.post(`https://${GetParentResourceName()}/openCaseSystem`, JSON.stringify({}));
-        $.post("https://shop/closeMenu", JSON.stringify());
+        $.post(`https://${GetParentResourceName()}/closeMenu`, JSON.stringify());
         $(".youWantBuySection").hide();
         $(".customizationSection").hide();
         $(".succesfullyArea").hide();
@@ -150,7 +146,6 @@ $(document).on("click", ".categorieItem", function () {
     $(".homeMenu").hide();
     $(".vehicleMenu").hide();
     $(".itemsMenu").hide();
-    $(".buyCreditMenu").hide();
     if (this.id === "vehicle") {
         setVehiclesIntoCategory(vehicles, "veh");
         $(".vehicleMenu").show();
@@ -174,9 +169,6 @@ $(document).on("click", ".categorieItem", function () {
     } else if (this.id === "packs") {
         setItemIntoCategory(packsItems, "packs");
         $(".itemsMenu").show();
-    } else if (this.id === "other") {
-        setItemIntoCategory(customItems, "other");
-        $(".itemsMenu").show();
     }
 });
 
@@ -188,7 +180,6 @@ $(document).on("click", ".mainMenuButton", function () {
     $(".homeMenu").show();
     $(".vehicleMenu").hide();
     $(".itemsMenu").hide();
-    $(".buyCreditMenu").hide();
     // this.className += " selected";
 });
 
@@ -196,15 +187,6 @@ $(document).on("click", ".buyCreditButton", function () {
     window.invokeNative("openUrl", "https://bluestark.tebex.io/category/1864842");
 });
 
-// BUY CREDIT
-
-$(document).on("click", ".buyCreditFirstBox", function () {
-    window.invokeNative("openUrl", url_1);
-});
-
-// BUY CREDIT END
-
-//  ! YAPILACAK ITEMLER ICIN
 $(document).on("click", ".itemsMenuItem", function () {
     var selectedDiv = this;
     var itemInfoStr = $(selectedDiv).attr("data-itemInfo");
@@ -221,106 +203,6 @@ $(document).on("click", ".itemsMenuItem", function () {
         $("#popUpBuy").attr("data-itemInfo", itemInfoStr);
         $("#popUpBuy").attr("data-itemType", itemType);
         $(".youWantBuySection").fadeIn(200);
-    } else {
-        if (itemData.IType == "customPlate") {
-            $(".customizeInfo").html(language.customPlateText);
-        } else {
-            $(".customizeInfo").html(language.privNumberText);
-        }
-        $("#customizeBuy").attr("data-itemInfo", itemInfoStr);
-        $("#customizeBuy").attr("data-itemType", itemType);
-        $(".customizationSection").fadeIn(200);
-    }
-});
-
-$(document).on("click", "#customizeBuy", function () {
-    var selectedItemInfo = $("#customizeBuy").attr("data-itemInfo");
-    var selectedItemType = $("#customizeBuy").attr("data-itemType");
-    var infoParse = JSON.parse(selectedItemInfo);
-    var inputValue = $(".customInput").val();
-    if (infoParse.costCredit <= currentCredit) {
-        if (inputValue.length > 0 && inputValue != "Enter..") {
-            if (infoParse.IType == "customPlate") {
-                if (inputValue.length >= minCharPlate && inputValue.length <= maxCharPlate) {
-                    $.post(
-                        "https://shop/getCustomPlate",
-                        JSON.stringify({
-                            itemInfo: infoParse,
-                            input: inputValue,
-                        }),
-                        function (data) {
-                            if (data === true) {
-                                showSuccess();
-                                currentCredit -= parseInt(infoParse.costCredit);
-                                $(".customizationSection").fadeOut(200);
-                                $(".creditCount").html(currentCredit);
-                            } else {
-                                $(".notifyArea").html(data);
-                                $(".notifySectionXX").fadeIn(200);
-                                setTimeout(() => {
-                                    $(".notifySectionXX").fadeOut(200);
-                                }, 3000);
-                            }
-                        }
-                    );
-                } else {
-                    $(".notifyArea").html(language.minimumChar + minCharPlate + language.MaximumChar + maxCharPlate);
-                    $(".notifySectionXX").fadeIn(200);
-                    setTimeout(() => {
-                        $(".notifySectionXX").fadeOut(200);
-                    }, 3000);
-                }
-            } else if (infoParse.IType == "privNumber") {
-                if (isNaN(inputValue)) {
-                    $(".notifyArea").html(language.typeNumber);
-                    $(".notifySectionXX").fadeIn(200);
-                    setTimeout(() => {
-                        $(".notifySectionXX").fadeOut(200);
-                    }, 3000);
-                } else {
-                    if (inputValue.length >= minCharPhone && inputValue.length <= maxCharPhone) {
-                        $.post(
-                            "https://shop/getPrivNumber",
-                            JSON.stringify({
-                                itemInfo: infoParse,
-                                input: inputValue,
-                            }),
-                            function (data) {
-                                if (data === true) {
-                                    showSuccess();
-                                    currentCredit -= parseInt(infoParse.costCredit);
-                                    $(".customizationSection").fadeOut(200);
-                                    $(".creditCount").html(currentCredit);
-                                } else {
-                                    $(".notifyArea").html(data);
-                                    $(".notifySectionXX").fadeIn(200);
-                                    setTimeout(() => {
-                                        $(".notifySectionXX").fadeOut(200);
-                                    }, 3000);
-                                }
-                            }
-                        );
-                    } else {
-                        $(".notifyArea").html(language.minimumChar + minCharPhone + language.MaximumChar + maxCharPhone);
-                        $(".notifySectionXX").fadeIn(200);
-                        setTimeout(() => {
-                            $(".notifySectionXX").fadeOut(200);
-                        }, 3000);
-                    }
-                }
-            }
-        } else {
-            $(".customInput").css("border", "1px solid red");
-            setTimeout(() => {
-                $(".customInput").css("border", "1px solid rgba(255, 255, 255, 0.02)");
-            }, 2000);
-        }
-    } else {
-        $(".notifyArea").html(language.dontHaveEnoughtCredit);
-        $(".notifySectionXX").fadeIn(200);
-        setTimeout(() => {
-            $(".notifySectionXX").fadeOut(200);
-        }, 3000);
     }
 });
 
@@ -342,7 +224,7 @@ $(document).on("click", "#popUpBuy", function () {
             if (customPlate !== "undefined") {
                 if (customPlate.length >= minCharPlate && customPlate.length <= maxCharPlate) {
                     $.post(
-                        "https://shop/getVehicle",
+                        `https://${GetParentResourceName()}/getVehicle`,
                         JSON.stringify({
                             itemInfo: infoParse,
                             extra: customPlate,
@@ -374,7 +256,7 @@ $(document).on("click", "#popUpBuy", function () {
                 }
             } else {
                 $.post(
-                    "https://shop/getVehicle",
+                    `https://${GetParentResourceName()}/getVehicle`,
                     JSON.stringify({
                         itemInfo: infoParse,
                         extra: customPlate,
@@ -400,7 +282,7 @@ $(document).on("click", "#popUpBuy", function () {
             }
         } else if (selectedItemType == "weapon") {
             $.post(
-                "https://shop/getWeapon",
+                `https://${GetParentResourceName()}/getWeapon`,
                 JSON.stringify({
                     itemInfo: infoParse,
                 }),
@@ -421,7 +303,7 @@ $(document).on("click", "#popUpBuy", function () {
             );
         } else if (selectedItemType == "items") {
             $.post(
-                "https://shop/getItem",
+                `https://${GetParentResourceName()}/getItem`,
                 JSON.stringify({
                     itemInfo: infoParse,
                 }),
@@ -442,7 +324,7 @@ $(document).on("click", "#popUpBuy", function () {
             );
         } else if (selectedItemType == "money") {
             $.post(
-                "https://shop/getMoney",
+                `https://${GetParentResourceName()}/getMoney`,
                 JSON.stringify({
                     itemInfo: infoParse,
                 }),
@@ -463,7 +345,7 @@ $(document).on("click", "#popUpBuy", function () {
             );
         } else if (selectedItemType == "packs") {
             $.post(
-                "https://shop/getPacks",
+                `https://${GetParentResourceName()}/getPacks`,
                 JSON.stringify({
                     itemInfo: infoParse,
                 }),
@@ -496,7 +378,7 @@ $(document).on("click", ".approveButton", function () {
     var codeInputValue = $("#redeemCodeInput").val();
     if (codeInputValue != "Remplir le code.." && codeInputValue.length > 0) {
         $.post(
-            "https://shop/sendInput",
+            `https://${GetParentResourceName()}/sendInput`,
             JSON.stringify({
                 input: codeInputValue,
             }),
@@ -522,7 +404,7 @@ $(document).on("click", ".otherBoxButton", function () {
 });
 $(document).on("click", ".moneyBoxButton", function () {
     $.post(`https://${GetParentResourceName()}/openCaseSystem`, JSON.stringify({}));
-    $.post("https://shop/closeMenu", JSON.stringify());
+    $.post(`https://${GetParentResourceName()}/closeMenu`, JSON.stringify());
     $(".youWantBuySection").hide();
     $(".customizationSection").hide();
     $(".succesfullyArea").hide();
@@ -578,10 +460,7 @@ window.addEventListener("message", (event) => {
         items = event.data.items;
         moneyItems = event.data.moneys;
         packsItems = event.data.packs;
-        customItems = event.data.customItems;
-        minCharPhone = event.data.minCharForPhone;
         minCharPlate = event.data.minCharForPlate;
-        maxCharPhone = event.data.maxCharForPhone;
         maxCharPlate = event.data.maxCharForPlate;
         setCategories();
 
@@ -632,7 +511,7 @@ window.addEventListener("message", (event) => {
 $(document).on("keydown", function () {
     switch (event.keyCode) {
         case 27: // ESC
-            $.post("https://shop/closeMenu", JSON.stringify());
+            $.post(`https://${GetParentResourceName()}/closeMenu`, JSON.stringify());
             $(".youWantBuySection").hide();
             $(".customizationSection").hide();
             $(".succesfullyArea").hide();

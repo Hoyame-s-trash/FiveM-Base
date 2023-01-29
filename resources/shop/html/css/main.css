@@ -269,7 +269,7 @@ body {
     line-height: 33px;
     width: 6rem;
     text-align: center;
-    font-size: 12px;
+    font-size: 11px;
     margin-top: 1.4rem;
     color: rgba(0, 0, 0, 0.789);
     font-family: Zabal Bold;
@@ -817,10 +817,6 @@ body {
 }
 
 .itemsMenu {
-    display: none;
-}
-
-.buyCreditMenu {
     display: none;
 }
 
@@ -1437,34 +1433,6 @@ body {
     box-shadow: 0px 0px 15px rgba(219, 69, 49, 0.07);
 }
 
-.buyCreditFirstBox {
-    cursor: pointer;
-    position: absolute;
-    background: radial-gradient(104.93% 104.93% at 50% 100%, rgba(173, 255, 216, 0.2) 0%, rgba(173, 255, 216, 0) 100%), rgba(173, 255, 216, 0.22);
-    width: 373px;
-    border-radius: 10px;
-    height: 373px;
-}
-
-.buyCreditFirstBox:hover {
-    background: radial-gradient(104.93% 104.93% at 50% 100%, rgba(173, 255, 216, 0.3) 0%, rgba(173, 255, 216, 0) 100%), rgba(173, 255, 216, 0.32);
-}
-
-.buyCreditSecondBox {
-    cursor: pointer;
-    position: absolute;
-    left: 443px;
-    top: 210px;
-    background: radial-gradient(104.93% 104.93% at 50% 100%, rgba(255, 131, 131, 0.2) 0%, rgba(0, 0, 0, 0) 100%), rgba(255, 131, 131, 0.22);
-    width: 680px;
-    height: 373px;
-    border-radius: 10px;
-}
-
-.buyCreditSecondBox:hover {
-    background: radial-gradient(104.93% 104.93% at 50% 100%, rgba(255, 131, 131, 0.3) 0%, rgba(0, 0, 0, 0) 100%), rgba(255, 131, 131, 0.32);
-}
-
 .buyCreditThirdBox {
     position: absolute;
     cursor: pointer;
@@ -1830,14 +1798,6 @@ body {
     font-size: 12px;
 }
 
-#customizeBuy {
-    background: radial-gradient(104.93% 104.93% at 50% 100%, rgba(157, 255, 97, 0.156) 0%, rgba(0, 0, 0, 0) 100%), rgba(159, 255, 114, 0.08);
-}
-
-#customizeBuy:hover {
-    box-shadow: 0px 0px 15px rgba(90, 255, 32, 0.05);
-}
-
 #customizeUpCancel:hover {
     box-shadow: 0px 0px 15px rgba(219, 69, 49, 0.07);
 }
@@ -2076,17 +2036,6 @@ body {
         margin-top: 1.8rem;
     }
 
-    .buyCreditFirstBox {
-        width: 320px;
-        height: 343px;
-    }
-
-    .buyCreditSecondBox {
-        left: 400px;
-        width: 630px;
-        height: 343px;
-    }
-
     .buyCreditThirdBox {
         left: 1070px;
         width: 585px;
@@ -2283,17 +2232,6 @@ body {
     .itemMenuItemCreditArea {
         font-size: 16px;
         margin-top: 1.8rem;
-    }
-
-    .buyCreditFirstBox {
-        width: 310px;
-        height: 335px;
-    }
-
-    .buyCreditSecondBox {
-        left: 380px;
-        width: 620px;
-        height: 335px;
     }
 
     .buyCreditThirdBox {
@@ -2512,17 +2450,6 @@ body {
     .itemMenuItemCreditArea {
         font-size: 16px;
         margin-top: 1.8rem;
-    }
-
-    .buyCreditFirstBox {
-        width: 310px;
-        height: 315px;
-    }
-
-    .buyCreditSecondBox {
-        left: 380px;
-        width: 620px;
-        height: 315px;
     }
 
     .buyCreditThirdBox {
@@ -2786,17 +2713,6 @@ body {
     .itemMenuItemCreditArea {
         font-size: 16px;
         margin-top: 1.8rem;
-    }
-
-    .buyCreditFirstBox {
-        width: 310px;
-        height: 315px;
-    }
-
-    .buyCreditSecondBox {
-        left: 380px;
-        width: 620px;
-        height: 315px;
     }
 
     .buyCreditThirdBox {
@@ -3090,17 +3006,6 @@ body {
     .itemMenuItemCreditArea {
         font-size: 16px;
         margin-top: 3.8rem;
-    }
-
-    .buyCreditFirstBox {
-        width: 510px;
-        height: 465px;
-    }
-
-    .buyCreditSecondBox {
-        left: 580px;
-        width: 1220px;
-        height: 465px;
     }
 
     .buyCreditThirdBox {
@@ -3415,17 +3320,6 @@ body {
     .itemMenuItemCreditArea {
         font-size: 36px;
         margin-top: 1.8rem;
-    }
-
-    .buyCreditFirstBox {
-        width: 846px;
-        height: 787px;
-    }
-
-    .buyCreditSecondBox {
-        left: 902px;
-        width: 1533px;
-        height: 790px;
     }
 
     .buyCreditThirdBox {

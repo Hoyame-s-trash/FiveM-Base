@@ -1,73 +1,89 @@
 ESX = exports['believer']:getSharedObject()
 
-ESX.RegisterServerCallback('ak4y-donateSystem:getPlayerDetails', function(source, cb)
-    local _source = source
-    local xPlayer = ESX.GetPlayerFromId(_source)
-    local identifier = xPlayer.identifier
-    local charInfo = GetPlayerName(_source)
-    local callbackData = {}
-    if AK4Y.Mysql == "oxmysql" then 
-        local result = MySQL.query.await('SELECT * FROM ak4y_donatesystem WHERE identifier = ?', { identifier })
-        if result[1] == nil then 
-            callbackData = {
-                playerData = {
-                    ["credit"] = 0,
-                },
-                charInfo = charInfo,
-            }
-        else
-            callbackData = {playerData = result[1], charInfo = charInfo}
-        end
-        cb(callbackData)
-    end
-end)
+ESX.RegisterServerCallback('Boutique:sendInput', function(source, cb, data)
+    local playerSrc = source
+    if (not playerSrc) then return end
 
-ESX.RegisterServerCallback('ak4y-donateSystem:sendInput', function(source, cb, data)
-    local _source = source
-    local xPlayer = ESX.GetPlayerFromId(_source)
-    local identifier = xPlayer.identifier
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local playerIdentifier = playerSelected.getIdentifier()
+    if (not playerIdentifier) then return end
+
     local inputData = data.input
-    if AK4Y.Mysql == "oxmysql" then
-        local result = MySQL.query.await('SELECT * FROM ak4y_donatesystem_codes WHERE code = ?', { inputData })
-        if result[1] ~= nil then
-            local newCoins = 0
-            for i = 1, #result do
-                newCoins = newCoins + result[i].credit
-            end
-            MySQL.query('DELETE FROM ak4y_donatesystem_codes WHERE code = ?', { inputData })
-            local result2 = MySQL.query.await('SELECT * FROM ak4y_donatesystem WHERE identifier = ?', { identifier })
-            if result2[1] ~= nil then 
-                MySQL.update('UPDATE ak4y_donatesystem SET credit = credit + '..newCoins..' WHERE identifier = ?', { identifier })
-            else
-                MySQL.insert('INSERT INTO ak4y_donatesystem (identifier, credit) VALUES (?, ?)', {
-                    identifier,
-                    newCoins,
-                })
-            end
-            SendToDiscord("identifier: ``"..identifier.."``\nCredit: ``"..newCoins.."\nCode: ``"..inputData.."``\nUsed code!")
-            cb(newCoins)
-        else
-            cb(false)
+
+    local result = MySQL.query.await('SELECT * FROM boutique_codes WHERE code = ?', { inputData })
+    if result[1] ~= nil then
+        local newCoins = 0
+        for i = 1, #result do
+            newCoins = newCoins + result[i].credit
         end
+        MySQL.query('DELETE FROM boutique_codes WHERE code = ?', { inputData })
+        local result2 = MySQL.query.await('SELECT * FROM boutique_account WHERE identifier = ?', { playerIdentifier })
+        if result2[1] ~= nil then 
+            MySQL.update('UPDATE boutique_account SET credit = credit + '..newCoins..' WHERE identifier = ?', { playerIdentifier })
+        else
+            MySQL.insert('INSERT INTO boutique_account (identifier, credit) VALUES (?, ?)', {
+                playerIdentifier,
+                newCoins,
+            })
+        end
+        -- Todo send discord log
+        cb(newCoins)
+    else
+        cb(false)
     end
 end)
 
-ESX.RegisterServerCallback('ak4y-donateSystem:getVehicle', function(source, cb, veri, VehData)
-    local _source = source
-    local xPlayer = ESX.GetPlayerFromId(_source)
-    local identifier = xPlayer.identifier
+ESX.RegisterServerCallback('Boutique:getPlayerDetails', function(source, cb)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local playerIdentifier = playerSelected.getIdentifier()
+    if (not playerIdentifier) then return end
+
+    local charInfo = GetPlayerName(playerSrc)
+    local callbackData = {}
+
+    local result = MySQL.query.await('SELECT * FROM boutique_account WHERE identifier = ?', { playerIdentifier })
+    if result[1] == nil then 
+        callbackData = {
+            playerData = {
+                ["credit"] = 0,
+            },
+            charInfo = charInfo,
+        }
+    else
+        callbackData = {playerData = result[1], charInfo = charInfo}
+    end
+    cb(callbackData)
+end)
+
+ESX.RegisterServerCallback('Boutique:getVehicle', function(source, cb, veri, VehData)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local playerIdentifier = playerSelected.getIdentifier()
+    if (not playerIdentifier) then return end
+
     local data = nil
     local data2 = veri
 
     if data2.itemInfo.vehType == "car" then
-        for k, v in pairs(AK4Y.Vehicles) do
+        for k, v in pairs(Boutique.Vehicles) do
             if v.id == veri.itemInfo.id then 
                 data = v
                 break
             end
         end
     elseif data2.itemInfo.vehType == "motorcycle" then
-        for k, v in pairs(AK4Y.Motos) do
+        for k, v in pairs(Boutique.Motos) do
             if v.id == veri.itemInfo.id then 
                 data = v
                 data2.itemInfo.vehType = "car"
@@ -75,7 +91,7 @@ ESX.RegisterServerCallback('ak4y-donateSystem:getVehicle', function(source, cb, 
             end
         end
     elseif data2.itemInfo.vehType == "air" then
-        for k, v in pairs(AK4Y.Helicopters) do
+        for k, v in pairs(Boutique.Helicopters) do
             if v.id == veri.itemInfo.id then 
                 data = v
                 data2.itemInfo.vehType = "helicopter"
@@ -91,45 +107,45 @@ ESX.RegisterServerCallback('ak4y-donateSystem:getVehicle', function(source, cb, 
         if data2.extra ~= "undefined" then 
             plateCheck = true
             plate = data2.extra:upper()
-            costCredit = costCredit + AK4Y.CustomPlatePriceOnBuyVehicle
+            costCredit = costCredit + Boutique.CustomPlatePriceOnBuyVehicle
         end
         local vehicleData = {
             model = GetHashKey(data.spawnName),
             plate = plate
         }
-        if AK4Y.Mysql == "oxmysql" then
-            local result = MySQL.query.await('SELECT * FROM ak4y_donatesystem WHERE identifier = ?', { identifier })
+        if Boutique.Mysql == "oxmysql" then
+            local result = MySQL.query.await('SELECT * FROM boutique_account WHERE identifier = ?', { playerIdentifier })
             if result[1] ~= nil then 
                 if result[1].credit >= costCredit then
                     if plateCheck then 
                         local resultPlate = MySQL.query.await('SELECT * FROM owned_vehicles WHERE plate = ?', { plate })
                         if resultPlate[1] == nil then 
-                            MySQL.update('UPDATE ak4y_donatesystem SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
+                            MySQL.update('UPDATE boutique_account SET credit = credit - ? WHERE identifier = ?', { costCredit, playerIdentifier })
                             MySQL.insert('INSERT INTO owned_vehicles (owner, plate, vehicle, type, state, boutique) VALUES (?, ?, ?, ?, ?, ?)', {
-                                identifier,
+                                playerIdentifier,
                                 plate,
                                 json.encode(vehicleData),
                                 data2.itemInfo.vehType,
                                 1,
                                 1
                             })
-                            SendToDiscord("identifier: ``"..identifier.."``\nVehicle: ``"..vehicle.."``\nPlate: ``"..plate.."``\nPurchased vehicle!")
+                            -- Todo send discord log
                             cb(true)
                         else
                             print("4")
                             cb(false)
                         end
                     else
-                        MySQL.update('UPDATE ak4y_donatesystem SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
+                        MySQL.update('UPDATE boutique_account SET credit = credit - ? WHERE identifier = ?', { costCredit, playerIdentifier })
                         MySQL.insert('INSERT INTO owned_vehicles (owner, plate, vehicle, type, state, boutique) VALUES (?, ?, ?, ?, ?, ?)', {
-                            identifier,
+                            playerIdentifier,
                             plate,
                             json.encode(vehicleData),
                             data2.itemInfo.vehType,
                             1,
                             1
                         })
-                        SendToDiscord("identifier: ``"..identifier.."``\nVehicle: ``"..vehicle.."``\nPlate: ``"..plate.."``\nPurchased vehicle!")
+                        -- Todo send discord log
                         cb(true)
                     end
                 else
@@ -149,7 +165,7 @@ ESX.RegisterServerCallback('ak4y-donateSystem:getWeapon', function(source, cb, v
     local xPlayer = ESX.GetPlayerFromId(_source)
     local identifier = xPlayer.identifier
     local data = nil
-    for k, v in pairs(AK4Y.Weapons) do
+    for k, v in pairs(Boutique.Weapons) do
         if v.id == veri.itemInfo.id then 
             data = v
             break
@@ -158,17 +174,17 @@ ESX.RegisterServerCallback('ak4y-donateSystem:getWeapon', function(source, cb, v
     if data then
         local costCredit = tonumber(data.costCredit)
         local rewardItem = data.weaponName
-        if AK4Y.Mysql == "oxmysql" then
-            local result = MySQL.query.await('SELECT * FROM ak4y_donatesystem WHERE identifier = ?', { identifier })
+        if Boutique.Mysql == "oxmysql" then
+            local result = MySQL.query.await('SELECT * FROM boutique_account WHERE identifier = ?', { identifier })
             if result[1] ~= nil then 
                 if result[1].credit >= costCredit then
                     if xPlayer.hasWeapon(rewardItem) then
                         cb(false)
                     end
-                    MySQL.update('UPDATE ak4y_donatesystem SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
-                    if AK4Y.WeaponType == "item" then 
+                    MySQL.update('UPDATE boutique_account SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
+                    if Boutique.WeaponType == "item" then 
                         xPlayer.addInventoryItem(rewardItem, 1)
-                    elseif AK4Y.WeaponType == "weapon" then 
+                    elseif Boutique.WeaponType == "weapon" then 
                         xPlayer.addWeapon(rewardItem, 255)
                     end
                     SendToDiscord("identifier: ``"..identifier.."``\nItem: ``"..rewardItem.."``\nGot item!")
@@ -190,7 +206,7 @@ ESX.RegisterServerCallback('ak4y-donateSystem:getPacks', function(source, cb, ve
     local xPlayer = ESX.GetPlayerFromId(_source)
     local identifier = xPlayer.identifier
     local data = nil
-    for k, v in pairs(AK4Y.Packs) do
+    for k, v in pairs(Boutique.Packs) do
         if v.id == veri.itemInfo.id then 
             data = v
             break
@@ -198,11 +214,11 @@ ESX.RegisterServerCallback('ak4y-donateSystem:getPacks', function(source, cb, ve
     end
     if data then 
         local costCredit = tonumber(data.costCredit)
-        if AK4Y.Mysql == "oxmysql" then
-            local result = MySQL.query.await('SELECT * FROM ak4y_donatesystem WHERE identifier = ?', { identifier })
+        if Boutique.Mysql == "oxmysql" then
+            local result = MySQL.query.await('SELECT * FROM boutique_account WHERE identifier = ?', { identifier })
             if result[1] ~= nil then 
                 if result[1].credit >= costCredit then
-                    MySQL.update('UPDATE ak4y_donatesystem SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
+                    MySQL.update('UPDATE boutique_account SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
                     for itemName, itemCount in pairs(data.rewardsItems) do
                         xPlayer.addInventoryItem(itemName, itemCount)
                     end
@@ -246,7 +262,7 @@ ESX.RegisterServerCallback('ak4y-donateSystem:getMoney', function(source, cb, ve
     local xPlayer = ESX.GetPlayerFromId(_source)
     local identifier = xPlayer.identifier
     local data = nil
-    for k, v in pairs(AK4Y.Money) do
+    for k, v in pairs(Boutique.Money) do
         if v.id == veri.itemInfo.id then 
             data = v
             break
@@ -255,138 +271,14 @@ ESX.RegisterServerCallback('ak4y-donateSystem:getMoney', function(source, cb, ve
     if data then 
         local costCredit = tonumber(data.costCredit)
         local rewardMoney = data.inGameMoney
-        if AK4Y.Mysql == "oxmysql" then
-            local result = MySQL.query.await('SELECT * FROM ak4y_donatesystem WHERE identifier = ?', { identifier })
+        if Boutique.Mysql == "oxmysql" then
+            local result = MySQL.query.await('SELECT * FROM boutique_account WHERE identifier = ?', { identifier })
             if result[1] ~= nil then 
                 if result[1].credit >= costCredit then
-                    MySQL.update('UPDATE ak4y_donatesystem SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
+                    MySQL.update('UPDATE boutique_account SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
                     xPlayer.addMoney(rewardMoney)
                     SendToDiscord("identifier: ``"..identifier.."``\nMoney:``"..rewardMoney.."``\nGot money!")
                     cb(true)
-                else
-                    cb(false)
-                end
-            else
-                cb(false)
-            end
-        end
-    else
-        cb(false)
-    end
-end)
-
-ESX.RegisterServerCallback('ak4y-donateSystem:getCustomPlate', function(source, cb, veri, plate)
-    local _source = source
-    local xPlayer = ESX.GetPlayerFromId(_source)
-    local identifier = xPlayer.identifier
-    local data = nil
-    for k, v in pairs(AK4Y.Customize) do
-        if v.id == veri.itemInfo.id then 
-            data = v
-            break
-        end
-    end
-    if data then 
-        local costCredit = tonumber(data.costCredit)
-        local newPlate = veri.input:upper()
-        local oldPlate = string.gsub(plate, "%s+", "")
-        if AK4Y.Mysql == "oxmysql" then
-            local result = MySQL.query.await('SELECT * FROM ak4y_donatesystem WHERE identifier = ?', { identifier })
-            if result[1] ~= nil then 
-                if result[1].credit >= costCredit then
-                    local resultPlate = MySQL.query.await('SELECT * FROM owned_vehicles WHERE plate = ?', { newPlate })
-                    if resultPlate[1] == nil then
-                        local lastCheckPlate = MySQL.query.await('SELECT * FROM owned_vehicles WHERE plate = ?', { oldPlate })
-                        if lastCheckPlate[1] == nil then 
-                            cb(false)
-                        else
-                            if lastCheckPlate[1].owner == identifier then 
-                                MySQL.update('UPDATE ak4y_donatesystem SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
-                                local jsonData = json.decode(lastCheckPlate[1].vehicle)
-                                if jsonData.plate ~= nil then 
-                                    jsonData.plate = newPlate
-                                    local mods = json.encode(jsonData)
-                                    MySQL.update('UPDATE owned_vehicles SET plate = ?, vehicle = ? WHERE plate = ?', { newPlate, mods, oldPlate })
-                                else
-                                    MySQL.update('UPDATE owned_vehicles SET plate = ? WHERE plate = ?', { newPlate, oldPlate })
-                                end
-                                SendToDiscord("identifier: ``"..identifier.."``\nOld Plate: ``"..oldPlate.."``\nNew Plate: ``"..newPlate.."``\nVehicle plate changed!")
-                                cb(true)
-                            else
-                                cb(false)
-                            end
-                        end
-                    else
-                        cb(false)
-                    end
-                else
-                    cb(false)
-                end
-            else
-                cb(false)
-            end
-        end
-    else
-        cb(false)
-    end
-end)
-
-ESX.RegisterServerCallback('ak4y-donateSystem:getPrivNumber', function(source, cb, veri)
-    local _source = source
-    local xPlayer = ESX.GetPlayerFromId(_source)
-    local identifier = xPlayer.identifier
-    local data = nil
-    for k, v in pairs(AK4Y.Customize) do
-        if v.id == veri.itemInfo.id then 
-            data = v
-            break
-        end
-    end
-    if data then
-        local costCredit = tonumber(data.costCredit)
-        local newNumber = veri.input
-        if AK4Y.Mysql == "oxmysql" then
-            local result = MySQL.query.await('SELECT * FROM ak4y_donatesystem WHERE identifier = ?', { identifier })
-            if result[1] ~= nil then 
-                if result[1].credit >= costCredit then
-                    local resultData = MySQL.query.await('SELECT * FROM users WHERE identifier = ?', { identifier })
-                    if resultData[1] ~= nil then 
-                        if AK4Y.Phone == "qb-phone" then 
-                            local query = '%' .. newNumber .. '%'
-                            local checkPhone = MySQL.prepare.await('SELECT COUNT(*) as count FROM players WHERE charinfo LIKE ?', { query })
-                            if checkPhone == 0 then
-                                local charInfo = json.decode(resultData[1].charinfo)
-                                if charInfo.phone then 
-                                    MySQL.update('UPDATE ak4y_donatesystem SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
-                                    charInfo.phone = newNumber
-                                    cb(true)
-                                    DropPayer(_source, "[ak4y-donateSystem] Phone number changed!")
-                                    SendToDiscord("identifier: ``"..identifier.."``\nNew Number: ``"..newNumber.."``\nPhone number changed!")
-                                    Wait(5000)
-                                    local newInfo = json.encode(charInfo)
-                                    MySQL.update('UPDATE users SET charinfo = ? WHERE identifier = ?', { newInfo, identifier })
-                                else
-                                    cb(false)
-                                end
-                            else
-                                cb(false)
-                            end
-                        elseif AK4Y.Phone == "gcphone" then
-                            local resultPhone = MySQL.query.await('SELECT * FROM users WHERE phone_number = ?', { newNumber })
-                            if resultPhone[1] == nil then
-                                MySQL.update('UPDATE ak4y_donatesystem SET credit = credit - ? WHERE identifier = ?', { costCredit, identifier })
-                                cb(true)
-                                DropPlayer(_source, "[ak4y-donateSystem] Phone number changed!")
-                                SendToDiscord("identifier: ``"..identifier.."``\nNew Number: ``"..newNumber.."``\nPhone number changed!")
-                                Wait(5000)
-                                MySQL.update('UPDATE users SET phone_number = ? WHERE identifier = ?', { newNumber, identifier })
-                            else
-                                cb(false)                                    
-                            end
-                        end
-                    else
-                        cb(false)
-                    end
                 else
                     cb(false)
                 end
@@ -428,31 +320,15 @@ RegisterCommand('purchase_donate_credit', function(source, args)
             Wait(1000)
         end
         inProgress = true
-        if AK4Y.Mysql == "oxmysql" then
-            local result = MySQL.query.await('SELECT * FROM ak4y_donatesystem_codes WHERE code = ?', { tbxid })
+        if Boutique.Mysql == "oxmysql" then
+            local result = MySQL.query.await('SELECT * FROM boutique_codes WHERE code = ?', { tbxid })
             if result[1] == nil then
-                MySQL.insert('INSERT INTO ak4y_donatesystem_codes (code, credit) VALUES (?, ?)', { tbxid, credit })
+                MySQL.insert('INSERT INTO boutique_codes (code, credit) VALUES (?, ?)', { tbxid, credit })
                 SendToDiscord("Code: ``"..tbxid.."``\nCredit: ``"..credit.."``\nsuccessfuly into your database!")
             end
             inProgress = false  
         end
     end
-end)
-
-
-AddEventHandler('onResourceStart', function(resource)
-    if resource == GetCurrentResourceName() then
-        if AK4Y.UseTebex then 
-            local tebexConvar = GetConvar('sv_tebexSecret', '')
-            if tebexConvar == '' or tebexConvar == nil then
-                print('^1////////////////////////////////////////////////////////////////////////////////////////////////////////////')
-                print('^1//////////////////////////////////////////^Tebex Secret Missing.^1//////////////////////////////////////////')
-                print('^1////////////////////////////////////////////////////////////////////////////////////////////////////////////')
-                print('ak4y-donateSystem: Tebex Secret Missing please set in server.cfg and try again. Script will not work correctly.')
-                shouldStop = true
-            end
-        end
-	end
 end)
 
 local DISCORD_NAME = "ak4y-donateSystem"
@@ -500,7 +376,7 @@ function GeneratePlate()
 		math.randomseed(GetGameTimer())
 		generatedPlate = string.upper(GetRandomLetter(3) .. GetRandomNumber(3))
 
-        if AK4Y.Mysql == "oxmysql" then 
+        if Boutique.Mysql == "oxmysql" then 
             local result = MySQL.query.await('SELECT 1 FROM owned_vehicles WHERE plate = ?', { generatedPlate })
             if result[1] == nil then 
                 doBreak = true
@@ -534,5 +410,3 @@ function GetRandomLetter(length)
 		return ''
 	end
 end
-
--- Todo faire l'event pour les packs

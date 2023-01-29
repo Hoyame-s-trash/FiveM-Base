@@ -5,31 +5,30 @@
 -- https://discord.gg/kWwM3Bx
 
 
-AK4Y = {}
+Boutique = {}
 
-AK4Y.Framework = "esx" -- esx or newEsx
-AK4Y.Mysql = "oxmysql" -- Check fxmanifest.lua when you change it! |  oxmysql / mysql-async
-AK4Y.OpenMenuCommand = "shop" -- code to open the donate menu
-AK4Y.WeaponType = "weapon" -- weapon or item
-AK4Y.CustomPlatePriceOnBuyVehicle = 200 -- Customization price at the time of vehicle purchase
-AK4Y.Phone = "gcphone" -- gcphone or qb-phone
-AK4Y.MinCharForPhoneNumber = 1 -- Minimum number of characters required for a special number
-AK4Y.MinCharForPlate = 1 -- Minimum number of characters required for a custom plate
-AK4Y.MaxCharForPhoneNumber = 7 -- Minimum number of characters required for a special number
-AK4Y.MaxCharForPlate = 8 -- Minimum number of characters required for a custom plate
-AK4Y.DefaultGarage = 'pillboxgarage' -- Garage name where the vehicle will be sent after purchase
-AK4Y.WeaponType = "weapon" -- item or weapon
-AK4Y.UseTebex = false -- Do you use tebex to sell code?
+Boutique.Framework = "esx" -- esx or newEsx
+Boutique.Mysql = "oxmysql" -- Check fxmanifest.lua when you change it! |  oxmysql / mysql-async
+Boutique.OpenMenuCommand = "shop" -- code to open the donate menu
+Boutique.WeaponType = "weapon" -- weapon or item
+Boutique.CustomPlatePriceOnBuyVehicle = 200 -- Customization price at the time of vehicle purchase
+Boutique.Phone = "gcphone" -- gcphone or qb-phone
+Boutique.MinCharForPhoneNumber = 1 -- Minimum number of characters required for a special number
+Boutique.MinCharForPlate = 1 -- Minimum number of characters required for a custom plate
+Boutique.MaxCharForPhoneNumber = 7 -- Minimum number of characters required for a special number
+Boutique.MaxCharForPlate = 8 -- Minimum number of characters required for a custom plate
+Boutique.DefaultGarage = 'pillboxgarage' -- Garage name where the vehicle will be sent after purchase
+Boutique.WeaponType = "weapon" -- item or weapon
 
-AK4Y.GiveAddKeys = true -- Automatic key issuance after changing the license plate of the vehicle
-AK4Y.GiveAddKeysFunction = function(newPlate)
+Boutique.GiveAddKeys = true -- Automatic key issuance after changing the license plate of the vehicle
+Boutique.GiveAddKeysFunction = function(newPlate)
     TriggerEvent("vehiclekeys:client:SetOwner", newPlate)
 end
 
-AK4Y.ClientNotify = function(text, NotifType)
+Boutique.ClientNotify = function(text, NotifType)
 end
 
-AK4Y.Translate = {
+Boutique.Translate = {
     title1 = "BLUESTARK",
     title2 = "BOUTIQUE",
 
@@ -62,7 +61,7 @@ AK4Y.Translate = {
     otherButton = "PACKS",
     otherDesc = "Vous pouvez accéder au menu des packs en cliquant sur le bouton ci-dessus.",
 
-    moneyInfo = "Cliquez pour plus de détails (non disponible)",
+    moneyInfo = "Cliquez pour plus de détails",
     moneyButtonText = "CAISSES",
     moneyDesc = "Vous pouvez accéder au menu d'achat de caisses en cliquant sur le bouton ci-dessus.",
 
@@ -87,20 +86,15 @@ AK4Y.Translate = {
     spamNotify = "Protection anti-spam, essayez à nouveau",
 }
 
--- Do not add new categories
--- If you want to remove a category, you can put it in the comment line
--- If you put a category in the comment line, put the products sold in that category in the comment line
--- you should not change categoryId
-AK4Y.Categories = {
+Boutique.Categories = {
     { label = "VOITURES", categoryId = "vehicle" },
     { label = "MOTOS", categoryId = "motos" },
     { label = "ARMES", categoryId = "weapon" },
     { label = "PACKS", categoryId = "packs" },
     { label = "CAISSES", categoryId = "money" },
-    -- { label = "AUTRES", categoryId = "other" },
 }
 
-AK4Y.Vehicles = {
+Boutique.Vehicles = {
     {
         id = 1,
         spawnName = "panto", -- Spawn code of the vehicle that will be given when the product is received
@@ -453,7 +447,7 @@ AK4Y.Vehicles = {
     },
 }
 
-AK4Y.Motos = {
+Boutique.Motos = {
     {
         id = 1,
         spawnName = "20r1", -- Spawn code of the vehicle that will be given when the product is received
@@ -568,7 +562,7 @@ AK4Y.Motos = {
     },
 }
 
-AK4Y.Packs = {
+Boutique.Packs = {
     { 
         id = 1,
         itemName = "pack_1",
@@ -704,7 +698,7 @@ AK4Y.Packs = {
 }
 
 
-AK4Y.Weapons = {
+Boutique.Weapons = {
     { 
         id = 1,
         weaponName = "WEAPON_AKFROST",
@@ -754,9 +748,4 @@ AK4Y.Weapons = {
         costCredit = 2500, 
         image = "https://media.discordapp.net/attachments/1028718654348595201/1054862356808749056/ak47.png",
     },
-}
-
-AK4Y.Customize = {
-    {id = 1, label = "PRIVATE PHONE NUMBER", costCredit = 50, IType = "privNumber", image = "./images/phone.png"},
-    {id = 2, label = "PLATE CUSTOMIZATION", costCredit = 50, IType = "customPlate", image = "./images/platee.png"}
 }

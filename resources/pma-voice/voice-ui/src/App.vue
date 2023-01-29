@@ -1,4 +1,5 @@
 <template>
+
 	<body>
 		<audio id="audio_on" src="mic_click_on.ogg"></audio>
 		<audio id="audio_off" src="mic_click_off.ogg"></audio>
@@ -10,7 +11,7 @@
 				{{ voice.radioChannel }} Mhz [Radio]
 			</p>
 			<p v-if="voice.voiceModes.length" :class="{ talking: voice.talking }">
-				{{ voice.voiceModes[voice.voiceMode][1] }} [Range]
+				{{ voice.voiceModes[voice.voiceMode][1] }} [Distance]
 			</p>
 		</div>
 	</body>
@@ -33,7 +34,7 @@ export default {
 		});
 
 		// stops from toggling voice at the end of talking
-		window.addEventListener("message", function(event) {
+		window.addEventListener("message", function (event) {
 			const data = event.data;
 
 			if (data.uiEnabled !== undefined) {
@@ -67,7 +68,7 @@ export default {
 			if (data.usingRadio !== undefined && data.usingRadio !== voice.usingRadio) {
 				voice.usingRadio = data.usingRadio;
 			}
-			
+
 			if ((data.talking !== undefined) && !voice.usingRadio) {
 				voice.talking = data.talking;
 			}
@@ -77,7 +78,7 @@ export default {
 				// discard these errors as its usually just a 'uncaught promise' from two clicks happening too fast.
 				click.load();
 				click.volume = data.volume;
-				click.play().catch((e) => {});
+				click.play().catch((e) => { });
 			}
 		});
 
@@ -103,9 +104,11 @@ export default {
 	text-shadow: 1.25px 0 0 #000, 0 -1.25px 0 #000, 0 1.25px 0 #000,
 		-1.25px 0 0 #000;
 }
+
 .talking {
 	color: rgba(255, 255, 255, 0.822);
 }
+
 p {
 	margin: 0;
 }

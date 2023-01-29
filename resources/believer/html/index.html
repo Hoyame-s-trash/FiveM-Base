@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="./assets/css/misc.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="./assets/js/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+    <title>BlueStark HUD</title>
+</head>
+
+<body>
+    <div class="hud" v-if="show">
+
+        <div class="hud__top">
+            <div class="hud__top_line">
+                <div class="hud__top_line-info announce" v-if="announce.show">
+                    <div class="hud__top_line-info_icon">
+                        <img src="./assets/img/admin.svg" alt="">
+                    </div>
+                    <div class="hud__top_line-info_text">
+                        <h1>Annonce</h1>
+                        <h2 :style="{color: gc('mainColor'), '--shadow': gc('mainShadow')}">{{announce.texts}}
+                        </h2>
+                    </div>
+                </div>
+                <div class="hud__top_line-info safezone" v-if="safezone">
+                    <div class="hud__top_line-info_icon">
+                        <img src="./assets/img/security.svg" alt="">
+                    </div>
+                    <div class="hud__top_line-info_text">
+                        <h1>Zone</h1>
+                        <h2 :style="{color: gc('adminColor'), '--shadow': gc('adminShadow')}">Safe</h2>
+                    </div>
+                </div>
+                <div class="hud__top_line-info noclip" v-if="noclip.show">
+                    <div class="hud__top_line-info_icon">
+                        <img src="./assets/img/noclip.svg" alt="">
+                    </div>
+                    <div class="hud__top_line-info_text">
+                        <h1>Noclip</h1>
+                        <h2 :style="{color: gc('adminColor'), '--shadow': gc('adminShadow')}">Actif</h2>
+                    </div>
+                </div>
+                <div class="hud__top_line-info admin" v-if="admin.show">
+                    <div class="hud__top_line-info_icon">
+                        <img src="./assets/img/setting.svg" alt="">
+                    </div>
+                    <div class="hud__top_line-info_text">
+                        <h1>Administration</h1>
+                        <h2 :style="{color: gc('adminColor'), '--shadow': gc('adminShadow')}">Actif</h2>
+                    </div>
+                </div>
+                <div class="hud__top_line-info reports" v-if="reports.show">
+                    <div class="hud__top_line-info_icon">
+                        <img src="./assets/img/question.svg" alt="">
+                    </div>
+                    <div class="hud__top_line-info_text">
+                        <h1>{{t('Reports')}}</h1>
+                        <h2 :style="{color: gc('mainColor'), '--shadow': gc('mainShadow')}">{{reports.currentReports}} /
+                            {{reports.totalReports}}
+                        </h2>
+                    </div>
+                </div>
+                <div class="hud__top_line-info id">
+                    <div class="hud__top_line-info_icon">
+                        <img src="./assets/img/icons/id.svg" alt="">
+                    </div>
+                    <div class="hud__top_line-info_text">
+                        <h1>{{t('id')}}</h1>
+                        <h2 :style="{color: gc('mainColor'), '--shadow': gc('mainShadow')}">{{id}}</h2>
+                    </div>
+                </div>
+                <div class="hud__top_line-info online">
+                    <div class="hud__top_line-info_icon">
+                        <img src="./assets/img/icons/user.svg" alt="">
+                    </div>
+                    <div class="hud__top_line-info_text">
+                        <h1>{{t('online')}}</h1>
+                        <h2 :style="{color: gc('mainColor'), '--shadow': gc('mainShadow')}">{{online}} / {{slots}}
+                        </h2>
+                    </div>
+                </div>
+                <div class="hud__top_line-info time">
+                    <div class="hud__top_line-info_icon">
+                        <img src="./assets/img/icons/clock.svg" alt="">
+                    </div>
+                    <div class="hud__top_line-info_text">
+                        <h1>{{datetime[0]}}</h1>
+                        <h2 :style="{color: gc('mainColor'), '--shadow': gc('mainShadow')}">{{datetime[1]}}</h2>
+                    </div>
+                </div>
+                <img :src="logo" class="hud__top_line-logo">
+            </div>
+            <div class="hud__top_wanted" v-if="wanted > 0">
+                <img src="./assets/img/icons/star.svg" v-for="(i,k) in 5" :key="k" :class="{inactive: wanted < i}">
+            </div>
+
+            <!-- <div class="hud__top_gift" v-if="prize">
+                <div class="hud__top_gift-text">
+                    <h1>{{t('prize')[0]}}</h1>
+                    <h2>{{prize}}</h2>
+                    <h1>{{t('prize')[1]}}</h1>
+                </div>
+                <img src="./assets/img/gift.png" alt="">
+            </div> -->
+
+            <div class="hud__top_weapon" v-if="weapon.show">
+                <img :src="`./assets/img/weapons/${weapon.icon}.png`" class="hud__top_weapon-icon"
+                    :class="weapon.icon.split('_')[1]">
+                <div class="hud__top_weapon-ammo">
+                    <img src="./assets/img/icons/ammo.svg">
+                    <h1>{{weapon.ammo[0]}}/{{weapon.ammo[1]}}</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud__score" v-if="score.show">
+            <div class="hud__score_team left">
+                <div class="hud__score_team-text">
+                    <h1>{{team(score.leftTeam.id).title}}</h1>
+                    <h2 :style="{color: team(score.leftTeam.id).colors.subtitle}">{{team(score.leftTeam.id).subtitle}}
+                    </h2>
+                </div>
+                <div class="hud__score_team-icon">
+                    <svg width="47" height="53" viewBox="0 0 47 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M25.75 1.87639L43.6997 12.2396C45.092 13.0435 45.9497 14.5291 45.9497 16.1368V36.8633C45.9497 38.4709 45.092 39.9565 43.6997 40.7604L25.75 51.1236C24.3577 51.9275 22.6423 51.9275 21.25 51.1236L3.30033 40.7604C1.90802 39.9565 1.05033 38.4709 1.05033 36.8632V16.1368C1.05033 14.5291 1.90802 13.0435 3.30033 12.2396L21.25 1.87639C22.6423 1.07254 24.3577 1.07254 25.75 1.87639Z"
+                            fill="url(#leftTeam)" :stroke="team(score.leftTeam.id).colors.stroke" />
+                        <defs>
+                            <radialGradient id="leftTeam" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                                gradientTransform="translate(23.5 26.5) rotate(53.2463) scale(49.3001)">
+                                <stop :stop-color="team(score.leftTeam.id).colors.polygon[0]" />
+                                <stop offset="1" :stop-color="team(score.leftTeam.id).colors.polygon[1]"
+                                    stop-opacity="0.65" />
+                            </radialGradient>
+                        </defs>
+                    </svg>
+                    <h1 :style="{color: team(score.leftTeam.id).colors.number}">{{score.leftTeam.count}}</h1>
+
+                </div>
+            </div>
+
+            <div class="hud__score_time">
+                <h1>{{t('time')}}</h1>
+                <h2>{{score.time}}</h2>
+            </div>
+
+            <div class="hud__score_team right">
+                <div class="hud__score_team-icon">
+                    <svg width="47" height="53" viewBox="0 0 47 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M25.75 1.87639L43.6997 12.2396C45.092 13.0435 45.9497 14.5291 45.9497 16.1368V36.8633C45.9497 38.4709 45.092 39.9565 43.6997 40.7604L25.75 51.1236C24.3577 51.9275 22.6423 51.9275 21.25 51.1236L3.30033 40.7604C1.90802 39.9565 1.05033 38.4709 1.05033 36.8632V16.1368C1.05033 14.5291 1.90802 13.0435 3.30033 12.2396L21.25 1.87639C22.6423 1.07254 24.3577 1.07254 25.75 1.87639Z"
+                            fill="url(#rightTeam)" :stroke="team(score.rightTeam.id).colors.stroke" />
+                        <defs>
+                            <radialGradient id="rightTeam" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                                gradientTransform="translate(23.5 26.5) rotate(53.2463) scale(49.3001)">
+                                <stop :stop-color="team(score.rightTeam.id).colors.polygon[0]" />
+                                <stop offset="1" :stop-color="team(score.rightTeam.id).colors.polygon[1]"
+                                    stop-opacity="0.65" />
+                            </radialGradient>
+                        </defs>
+                    </svg>
+                    <h1 :style="{color: team(score.rightTeam.id).colors.number}">{{score.rightTeam.count}}</h1>
+                </div>
+                <div class="hud__score_team-text">
+                    <h1>{{team(score.rightTeam.id).title}}</h1>
+                    <h2 :style="{color: team(score.rightTeam.id).colors.subtitle}">{{team(score.rightTeam.id).subtitle}}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud__map">
+            <div class="hud__map_money cash">
+                <img src="./assets/img/icons/cash.svg" alt="">
+                <div class="hud__map_money-text">
+                    <h1>{{t('cash')}}</h1>
+                    <h2 :style="{color: gc('mainColor'), '--shadow': gc('mainShadow')}">{{format(money.cash.value)}}
+                    </h2>
+                </div>
+            </div>
+            <div class="hud__map_money bank">
+                <img src="./assets/img/icons/bank.svg" alt="">
+                <div class="hud__map_money-text">
+                    <h1>{{t('bank')}}</h1>
+                    <h2 :style="{color: gc('mainColor'), '--shadow': gc('mainShadow')}">{{format(money.bank.value)}}
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud__chat">
+            <div class="hud__chat_history">
+                <span v-for="(i,k) in chat.history" :key="k" :class="i.type">
+                    <h3>{{t(i.type)}}</h3>
+                    <b>{{i.id}}</b>
+                    <div class="text">
+                        <h2><i>{{i.name}}</i> {{i.text}}</h2>
+                    </div>
+                </span>
+            </div>
+            <div class="hud__chat_inputbox" v-if="chat.showInput">
+                <div class="hud__chat_inputbox-input">
+                    <span>{{t(chat.activeMode)}}</span>
+                    <input v-model="chat.msg" type="text" :placeholder="t('msg')">
+                    <button @click="sendMsg()"><img src="./assets/img/icons/send.svg" alt=""></button>
+                </div>
+                <div class="hud__chat_inputbox-modes">
+                    <button v-for="(i,k) in chat.modes" :class="{active: chat.activeMode == i}"
+                        @click="chat.activeMode = i"> {{t(i)}}</button>
+                </div>
+                <div class="hud__chat_inputbox-submodes">
+                    <button v-for="(i,k) in chat.submodes" :class="{active: chat.activeMode == i}"
+                        @click="chat.activeMode = i"> {{t(i)}}</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud__speedometer" v-if="vehicle.show">
+            <div class="hud__speedometer_other">
+                <div class="hud__speedometer_other-oth">
+                    <div class="hud__speedometer_other-oth_misc">
+                        <div class="hud__speedometer_other-oth_misc-spgr">
+                            <h1 :style="{color: gc('mainColor'), '--shadow': gc('mainShadow')}">{{speed}}</h1>
+                            <div class="gear">
+                                <h2>{{vehicle.gear}}</h2>
+                                <img src="./assets/img/icons/gear.svg">
+                            </div>
+                        </div>
+                        <div class="hud__speedometer_other-oth_misc-rpm">
+                            <hr v-for="(i,k) in 9" :key="k" :class="{active: (1 / 9) * i <= vehicle.rpm }">
+                        </div>
+                    </div>
+                    <div class="hud__speedometer_other-oth_red">
+                        <h1>{{t("kmh")}}</h1>
+                        <div class="hud__speedometer_other-oth_red-flex">
+                            <hr>
+                            <hr>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="hud__speedometer_other-fuel">
+                    <h1>{{vehicle.fuel.value}} {{t('liter')}}</h1>
+                    <div class="dots">
+                        <div class="dot" v-for="(i,k) in 8" :style="`--color: ${gc('mainColor')}`" :key="k"
+                            :class="{active: ((1 / vehicle.fuel.max) * i) <= vehicle.fuel.value}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="hud__speedometer_states">
+                <div class="hud__speedometer_states-state engine" :style="`--color: ${gc('mainColor')}`"
+                    :class="{active: vehicle.states.engine}"><img src="./assets/img/icons/engine.svg" alt=""></div>
+                <div class="hud__speedometer_states-state doors" :style="`--color: ${gc('mainColor')}`"
+                    :class="{active: vehicle.states.doors}"><img src="./assets/img/icons/doors.svg" alt=""></div>
+                <div class="hud__speedometer_states-state light" :style="`--color: ${gc('mainColor')}`"
+                    :class="{active: vehicle.states.light}"><img src="./assets/img/icons/light.svg" alt=""></div>
+            </div>
+        </div>
+    </div>
+    <script src="./assets/js/hud.config.js"></script>
+    <script src="./assets/js/script.js"></script>
+</body>
+
+</html>
