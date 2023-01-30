@@ -23,7 +23,7 @@ function GM.Admin.Reports:new(id, source, name, reason)
 
     newAdminReports.source = source
     newAdminReports.name = name
-    newAdminReports.creation_date = os.date("%H:%M")
+    newAdminReports.creation_date = os.date("%d/%m/%Y, %H:%M")
     newAdminReports.time = os.time()
     newAdminReports.taken = false
     newAdminReports.reason = reason

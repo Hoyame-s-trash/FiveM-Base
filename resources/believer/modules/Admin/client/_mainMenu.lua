@@ -59,20 +59,55 @@ GM.Admin.menu.main:isVisible(function(Items)
             end
         end,
     })
-    Items:Button("Joueurs", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["players"])
-    Items:Button("Mon joueur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["my_player"])
-    Items:Button("Report", nil, {}, GM.Admin.inAdmin, {
-        onSelected = function()
-            TriggerServerEvent("Admin:requestReports")
-        end
-    }, GM.Admin.menu.submenus["report"])
-    Items:Button("Serveur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["server"])
-    Items:Button("Options", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["options"])
-    Items:Button("Ouvrir le wiki", nil, {}, GM.Admin.inAdmin, {
-        onSelected = function()
-            TriggerEvent("Interface:openUrl", "https://trello.com/b/ZUuvDFEy/bluestark-v2")
-        end
-    })
+
+    if (GM.Admin.inAdmin == true) then
+        Items:Button("Mon joueur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["my_player"])
+        Items:Button("Autour de moi", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["around_me"])
+        Items:Button("Véhicules", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["vehicles"])
+        Items:Button("Listes des joueurs", nil, {}, GM.Admin.inAdmin, {
+            onSelected = function()
+                TriggerServerEvent("Admin:requestPlayers")
+            end
+        }, GM.Admin.menu.submenus["players"])
+        Items:Button("Reports", nil, {}, GM.Admin.inAdmin, {
+            onSelected = function()
+                TriggerServerEvent("Admin:requestReports")
+            end
+        }, GM.Admin.menu.submenus["report"])
+        Items:Button("Préférences", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["preferences"])
+        Items:Button("Ouvrir le wiki", nil, {}, GM.Admin.inAdmin, {
+            onSelected = function()
+                TriggerEvent("Interface:openUrl", "https://trello.com/b/ZUuvDFEy/bluestark-v2")
+            end
+        })
+        --Items:Button("Serveur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["server"])
+        --Items:Button("Options", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["options"])
+    else
+        local ADMIN_SHOW_REPORTS = GM.Preferences:loadPreferences("admin_show_reports")
+        Items:Checkbox("Afficher le nombre de reports", nil, ADMIN_SHOW_REPORTS, {}, {
+            onSelected = function(Checked)
+                ADMIN_SHOW_REPORTS = Checked
+            end,
+            onChecked = function()
+                GM.Preferences:Save("admin_show_reports", true)
+            end,
+            onUnChecked = function()
+                GM.Preferences:Save("admin_show_reports", false)
+            end,
+        })
+        local ADMIN_SOUND_REPORTS = GM.Preferences:loadPreferences("admin_sound_reports")
+        Items:Checkbox("Afficher le nombre de reports", nil, ADMIN_SOUND_REPORTS, {}, {
+            onSelected = function(Checked)
+                ADMIN_SOUND_REPORTS = Checked
+            end,
+            onChecked = function()
+                GM.Preferences:Save("admin_sound_reports", true)
+            end,
+            onUnChecked = function()
+                GM.Preferences:Save("admin_sound_reports", false)
+            end,
+        })
+    end
 end)
 
 RegisterNetEvent("Admin:openMenu", function()
