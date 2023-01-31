@@ -21,5 +21,5 @@ GM:newThread(function()
         TriggerClientEvent("Admin:openMenu", playerSrc)
     end)
 
-
+    
 end)
