@@ -51,3 +51,5 @@ server_scripts {
     'resource/**/server/*.lua'
 }
 
+
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

@@ -31,3 +31,5 @@ convar_category 'OxMySQL' {
 		{ 'Debug', 'mysql_debug', 'CV_BOOL', 'false' }
 	}
 }
+
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

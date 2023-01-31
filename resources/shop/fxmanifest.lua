@@ -37,3 +37,4 @@ files {
 
 
 lua54 'on'
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

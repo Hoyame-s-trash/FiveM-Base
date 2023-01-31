@@ -10,3 +10,5 @@ fx_version 'adamant'
 game 'common'
 
 server_script 'yarn_builder.js'
+
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

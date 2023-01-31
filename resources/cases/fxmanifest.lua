@@ -38,3 +38,4 @@ files {
 	'html/images/xmasweap/*.png',
 	'html/js/*.js',
 }
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

@@ -27,3 +27,5 @@ dependencies {
 	'believer',
 	'skinchanger'
 }
+
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

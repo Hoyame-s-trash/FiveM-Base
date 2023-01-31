@@ -10,3 +10,5 @@ files {
 	'html/jquery.js',
 	'html/init.js',
 }
+
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

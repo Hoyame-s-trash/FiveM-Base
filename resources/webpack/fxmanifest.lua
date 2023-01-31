@@ -11,3 +11,5 @@ server_script 'webpack_builder.js'
 
 fx_version 'adamant'
 game 'common'
+
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

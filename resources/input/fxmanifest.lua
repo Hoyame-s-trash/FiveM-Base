@@ -25,3 +25,4 @@ server_scripts {
 client_scripts {
     "client/_main.lua",
 }
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

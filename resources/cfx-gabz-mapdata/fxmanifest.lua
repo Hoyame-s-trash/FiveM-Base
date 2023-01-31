@@ -30,3 +30,4 @@ escrow_ignore {
     'gabz_entityset_mods1.lua',
 }
 dependency '/assetpacks'
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

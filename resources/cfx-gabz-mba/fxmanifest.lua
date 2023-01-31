@@ -17,3 +17,4 @@ escrow_ignore {
 }
 
 dependency '/assetpacks'
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

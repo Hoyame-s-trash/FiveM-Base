@@ -14,3 +14,5 @@ client_scripts {
 	'config.lua',
 	'client/main.lua'
 }
+
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

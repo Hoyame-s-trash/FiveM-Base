@@ -28,3 +28,5 @@ dependencies {
 }
 
 webpack_config 'webpack.config.js'
+
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

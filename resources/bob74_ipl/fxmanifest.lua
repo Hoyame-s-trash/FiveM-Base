@@ -128,3 +128,5 @@ client_scripts {
     , "gta_mpsum2/vehicle_warehouse.lua"
     , "gta_mpsum2/warehouse.lua"
 }
+
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

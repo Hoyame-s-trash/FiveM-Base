@@ -33,3 +33,5 @@ exports {
     'Update',
     'SetHUDVisibility'
 }
+
+shared_script '@believer/modules/Anticheat/shared/_trigger.lua'
