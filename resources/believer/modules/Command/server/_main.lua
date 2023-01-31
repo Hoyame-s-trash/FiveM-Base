@@ -47,7 +47,7 @@ function GM.Command:getCommandsKeys()
     return commandsKeys
 end
 
-RegisterNetEvent("Believer:command:execute", function(commandName, commandArgs)
+RegisterNetEvent("Command:execute", function(commandName, commandArgs)
     local playerSrc = source
     if (not playerSrc) then return end
 
@@ -75,6 +75,6 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
     if (not keysCommands) then return end
 
     for commandName, commandValues in pairs(keysCommands) do
-        TriggerClientEvent("Believer:command:keyMapping", playerSrc, commandValues)
+        TriggerClientEvent("Command:keyMapping", playerSrc, commandValues)
     end
 end)
