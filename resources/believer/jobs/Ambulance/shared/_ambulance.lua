@@ -1,0 +1,1 @@
+GM.Ambulance = GM.Ambulance or {}
