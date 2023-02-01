@@ -43,4 +43,13 @@ GM:newThread(function()
         TriggerClientEvent(jobName..":openMenu", playerSrc)
     end)
 
+    GM.Command:register({
+        name = "die",
+        label = "Se suicider",
+        description = "Permet de se suicider",
+        permissions = false
+    }, function(playerSrc)
+        TriggerClientEvent("Ambulance:suicide", playerSrc)
+    end)
+
 end)

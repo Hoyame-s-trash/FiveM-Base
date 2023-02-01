@@ -36,7 +36,7 @@ end)
 
 function GM.Service:getPeopleService(jobName)
     if (GM.Service["Enterprise_list"][jobName] == nil) then
-        return 0
+        return {}
     end
 
     return GM.Service["Enterprise_list"][jobName]

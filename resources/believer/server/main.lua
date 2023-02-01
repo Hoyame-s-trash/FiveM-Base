@@ -2,7 +2,7 @@ SetMapName('San Andreas')
 SetGameType('ESX Legacy')
 
 local newPlayer = 'INSERT INTO `users` SET `accounts` = ?, `identifier` = ?, `group` = ?'
-local loadPlayer = 'SELECT `uniqueId`, `accounts`, `job`, `job_grade`, `group`, `position`, `inventory`, `skin`, `loadout`'
+local loadPlayer = 'SELECT `uniqueId`, `accounts`, `job`, `job_grade`, `group`, `position`, `inventory`, `skin`, `loadout`, `is_dead`'
 
 if Config.Identity then
   loadPlayer = loadPlayer .. ', `firstname`, `lastname`, `dateofbirth`, `sex`, `height`'
@@ -27,9 +27,7 @@ function onPlayerJoined(playerId)
   local identifier = ESX.GetIdentifier(playerId)
   if identifier then
     if ESX.GetPlayerFromIdentifier(identifier) then
-      DropPlayer(playerId,
-        ('there was an error loading your character!\nError code: identifier-active-ingame\n\nThis error is caused by a player on this server who has the same identifier as you have. Make sure you are not playing on the same Rockstar account.\n\nYour Rockstar identifier: %s'):format(
-          identifier))
+      DropPlayer(playerId,('there was an error loading your character!\nError code: identifier-active-ingame\n\nThis error is caused by a player on this server who has the same identifier as you have. Make sure you are not playing on the same Rockstar account.\n\nYour Rockstar identifier: %s'):format(identifier))
     else
       local result = MySQL.scalar.await('SELECT 1 FROM users WHERE identifier = ?', {identifier})
       if result then
@@ -39,8 +37,7 @@ function onPlayerJoined(playerId)
       end
     end
   else
-    DropPlayer(playerId,
-      'there was an error loading your character!\nError code: identifier-missing-ingame\n\nThe cause of this error is not known, your identifier could not be found. Please come back later or report this problem to the server administration team.')
+    DropPlayer(playerId,'there was an error loading your character!\nError code: identifier-missing-ingame\n\nThe cause of this error is not known, your identifier could not be found. Please come back later or report this problem to the server administration team.')
   end
 end
 
@@ -58,7 +55,7 @@ end
 
 
 function loadESXPlayer(identifier, playerId, isNew)
-  local userData = {uniqueId = 0, accounts = {}, inventory = {}, job = {}, loadout = {}, playerName = GetPlayerName(playerId), weight = 0}
+  local userData = {uniqueId = 0, accounts = {}, inventory = {}, job = {}, loadout = {}, playerName = GetPlayerName(playerId), weight = 0, is_dead = false}
 
   local result = MySQL.prepare.await(loadPlayer, {identifier})
   local job, grade, jobObject, gradeObject = result.job, tostring(result.job_grade)
@@ -68,6 +65,10 @@ function loadESXPlayer(identifier, playerId, isNew)
 
   if result.uniqueId then
     userData.uniqueId = result.uniqueId
+  end
+
+  if result.is_dead then
+    userData.is_dead = result.is_dead
   end
 
   -- Accounts
@@ -216,7 +217,7 @@ function loadESXPlayer(identifier, playerId, isNew)
   end
 
   local xPlayer = CreateExtendedPlayer(playerId, identifier, userData.group, userData.accounts, userData.inventory, userData.weight, userData.job,
-    userData.loadout, userData.playerName, userData.coords, userData.uniqueId)
+    userData.loadout, userData.playerName, userData.coords, userData.uniqueId, userData.is_dead)
   ESX.Players[playerId] = xPlayer
 
   if userData.firstname then

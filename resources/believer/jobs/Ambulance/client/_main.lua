@@ -37,6 +37,16 @@ GM.Ambulance.menu.main:isVisible(function(Items)
             TriggerServerEvent("Ambulance:requestCalls")
         end
     }, GM.Ambulance.menu.submenus["calls"])
+    Items:Button("Réanimer", nil, {}, GM.Ambulance.data.onService, {
+        onSelected = function()
+            local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
+            if (closestPlayer == -1 or closestDistance > 3.0) then
+                return ESX.ShowNotification("~r~Aucun joueur à proximité.")
+            else
+                TriggerServerEvent("Ambulance:revivePlayer", GetPlayerServerId(closestPlayer))
+            end
+        end
+    })
 end)
 
 GM.Ambulance.menu.submenus["calls"]:isVisible(function(Items)

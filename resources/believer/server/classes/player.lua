@@ -4,7 +4,7 @@ local DoesEntityExist = DoesEntityExist
 local GetEntityCoords = GetEntityCoords
 local GetEntityHeading = GetEntityHeading
 
-function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, weight, job, loadout, name, coords, uniqueId)
+function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, weight, job, loadout, name, coords, uniqueId, is_dead)
 	local targetOverrides = Config.PlayerFunctionOverride and Core.PlayerFunctionOverrides[Config.PlayerFunctionOverride] or {}
 	
 	local self = {}
@@ -24,6 +24,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	self.weight = weight
 	self.maxWeight = Config.MaxWeight
 	self.license = 'license:'..identifier
+	self.is_dead = is_dead
 
 	ExecuteCommand(('add_principal identifier.%s group.%s'):format(self.license, self.group))
 	
@@ -36,6 +37,14 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 
 	function self.getUniqueId()
 		return self.uniqueId
+	end
+
+	function self.getDead()
+		return self.is_dead
+	end
+
+	function self.setDead(boolean)
+		self.is_dead = boolean
 	end
 
 	function self.triggerEvent(eventName, ...)

@@ -1,44 +1,32 @@
 GM.Ambulance = GM.Ambulance or {}
 
-local PlayerData              = {}
-local FirstSpawn              = true
-local IsDead                  = false
-local HasAlreadyEnteredMarker = false
-local LastZone                = nil
-local CurrentAction           = nil
-local CurrentActionMsg        = ''
-local CurrentActionData       = {}
+GM.Ambulance.IsDead = false
+GM.Ambulance.VipUse = false
+
+local FirstSpawn = true
 local second = 1000
 local minute = 60 * second
-RespawnDelayAfterRPDeath   = 1 * minute
 
-function RespawnPed(ped, coords)
-    SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, false, true)
+function RespawnPed()
+    local coords = GetEntityCoords(PlayerPedId())
+    SetEntityCoordsNoOffset(PlayerPedId(), coords.x, coords.y, coords.z, false, false, false, true)
     NetworkResurrectLocalPlayer(coords.x, coords.y, coords.z, coords.heading, true, false)
-    SetPlayerInvincible(ped, false)
-    TriggerEvent('playerSpawned', coords.x, coords.y, coords.z, coords.heading)
-    ClearPedBloodDamage(ped)
+    SetPlayerInvincible(PlayerPedId(), false)
+    TriggerEvent("playerSpawned", coords.x, coords.y, coords.z, coords.heading)
+    ClearPedBloodDamage(PlayerPedId())
 end
-
-RegisterNetEvent('esx_ambulancejob:heal')
-AddEventHandler('esx_ambulancejob:heal', function(_type)
-    local playerPed = GetPlayerPed(-1)
-    local maxHealth = GetEntityMaxHealth(playerPed)
-    if _type == 'small' then
-        local health = GetEntityHealth(playerPed)
-        local newHealth = math.min(maxHealth , math.floor(health + maxHealth/8))
-        SetEntityHealth(playerPed, newHealth)
-    elseif _type == 'big' then
-        SetEntityHealth(playerPed, maxHealth)
-    end
-    ESX.ShowNotification('vous avez été soigné.')
-end)
 
 function StartDistressSignal()
     GM:newThread(function()
-        local timer = RespawnDelayAfterRPDeath
+        local vip = true -- Todo get VIP STATUS
 
-        while timer > 0 and IsDead do
+        if (vip) then
+            local timer = 0.2 * minute
+        else
+            local timer = 5 * minute
+        end
+
+        while timer > 0 and GM.Ambulance.IsDead do
             Citizen.Wait(2)
             timer = timer - 30
 
@@ -50,7 +38,7 @@ function StartDistressSignal()
             SetTextEdge(1, 0, 0, 0, 255)
             SetTextDropShadow()
             SetTextOutline()
-            BeginTextCommandDisplayText('STRING')
+            BeginTextCommandDisplayText("STRING")
             AddTextComponentSubstringPlayerName("Appuyez sur [G] pour contacter les secours")
             EndTextCommandDisplayText(0.42, 0.85)
 
@@ -63,10 +51,16 @@ function StartDistressSignal()
 end
 
 function ShowTimer()
-    local timer = RespawnDelayAfterRPDeath
+    local vip = true -- Todo get VIP STATUS
+
+    if (vip) then
+        timer = 0.2 * minute
+    else
+        timer = 5 * minute
+    end
     
     GM:newThread(function()
-        while timer > 0 and IsDead do
+        while timer > 0 and GM.Ambulance.IsDead do
             Citizen.Wait(0)
 
             raw_seconds = timer/1000
@@ -83,7 +77,24 @@ function ShowTimer()
             SetTextDropShadow()
             SetTextOutline()
 
-            local text = 'Vous serez automatiquement transporté à l\'hôpital dans ~b~'..minutes..' minutes '..seconds..' secondes~s~'
+            if (vip) then
+                if (not GM.Ambulance.VipUse) the 
+                    local text = "Réanimation par NPC"
+                    if IsControlPressed(0, 51) then
+                        GM.Ambulance.VipUse = true
+                        TriggerServerEvent("Ambulance:revivePlayerVip")
+                        SetTimeout(10*60000, function()
+                            GM.Ambulance.VipUse = false
+                        end)
+                        break
+                    end
+                else
+                    local text = "Vous serez automatiquement transporté à l\"hôpital dans ~b~"..minutes.." minutes "..seconds.." secondes~s~ réanimation NPC déjà utilisée"
+                end
+            else
+                local text = "Vous serez automatiquement transporté à l\"hôpital dans ~b~"..minutes.." minutes "..seconds.." secondes~s~"
+            end
+
 
             SetTextCentre(true)
             BeginTextCommandDisplayText("STRING")
@@ -93,7 +104,7 @@ function ShowTimer()
             timer = timer - 15
         end
 
-        while timer <= 0 and IsDead do
+        while timer <= 0 and GM.Ambulance.IsDead do
             Citizen.Wait(0)
 
             SetTextFont(4)
@@ -104,13 +115,16 @@ function ShowTimer()
             SetTextEdge(1, 0, 0, 0, 255)
             SetTextDropShadow()
             SetTextOutline()
-            SetTextCentre(true)
 
+            local text = "Appuyez sur [E] pour être transporté à l'hôpital"
+
+            SetTextCentre(true)
             BeginTextCommandDisplayText("STRING")
-            AddTextComponentSubstringPlayerName("Appuyez sur [~b~E~s~] pour être ~b~transporté~s~ à l'hôpital")
+            AddTextComponentSubstringPlayerName(text)
             EndTextCommandDisplayText(0.5, 0.8)
 
             if IsControlPressed(0, 51) then
+                TriggerServerEvent("Ambulance:revivePlayerToHospital")
                 break
             end
         end
@@ -118,8 +132,8 @@ function ShowTimer()
 end
 
 function OnPlayerDeath()
-    IsDead = true
-    TriggerServerEvent('esx_ambulancejob:setDeathStatus', 1)
+    GM.Ambulance.IsDead = true
+    TriggerServerEvent("Ambulance:setDead", true)
 
     ShowTimer()
 
@@ -129,26 +143,22 @@ function OnPlayerDeath()
     SetTimecycleModifier("damage")
 end
 
-AddEventHandler('playerSpawned', function()
-    IsDead = false
+AddEventHandler("playerSpawned", function()
+    GM.Ambulance.IsDead = false
 
     if FirstSpawn then
-        TriggerServerEvent('esx_ambulancejob:firstSpawn')
+        TriggerServerEvent("Ambulance:requestDeathStatus")
         exports.spawnmanager:setAutoSpawn(false) -- disable respawn
         FirstSpawn = false
     end
 end)
 
-AddEventHandler('esx:onPlayerDeath', function()
+AddEventHandler("esx:onPlayerDeath", function()
     OnPlayerDeath()
 end)
 
-RegisterNetEvent('esx_ambulancejob:revive')
-AddEventHandler('esx_ambulancejob:revive', function()
-    local playerPed = GetPlayerPed(-1)
-    local coords    = GetEntityCoords(playerPed)
-    TriggerServerEvent('esx_ambulancejob:setDeathStatus', 0)
-
+RegisterNetEvent("Ambulance:revivePlayer")
+AddEventHandler("Ambulance:revivePlayer", function()
     GM:newThread(function()
 
         DoScreenFadeOut(800)
@@ -157,23 +167,7 @@ AddEventHandler('esx_ambulancejob:revive', function()
             Citizen.Wait(0)
         end
 
-        ESX.SetPlayerData('lastPosition', {
-            x = coords.x,
-            y = coords.y,
-            z = coords.z
-        })
-
-        TriggerServerEvent('esx:updateLastPosition', {
-            x = coords.x,
-            y = coords.y,
-            z = coords.z
-        })
-
-        RespawnPed(playerPed, {
-            x = coords.x,
-            y = coords.y,
-            z = coords.z
-        })
+        RespawnPed()
 
         ClearTimecycleModifier()
 
@@ -194,10 +188,6 @@ function stringsplit(inputstr, sep)
     return t
 end
 
-RegisterCommand("die", function()
-    SetEntityHealth(GetPlayerPed(-1), 0)
-end)
-
-RegisterCommand("reset", function()
-    ClearTimecycleModifier()
+RegisterNetEvent("Ambulance:suicide", function()
+    SetEntityHealth(PlayerPedId(), 0)
 end)
