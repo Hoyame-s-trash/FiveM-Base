@@ -25,6 +25,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	self.maxWeight = Config.MaxWeight
 	self.license = 'license:'..identifier
 	self.is_dead = is_dead
+	self.vip = vip or 1
 
 	ExecuteCommand(('add_principal identifier.%s group.%s'):format(self.license, self.group))
 	
@@ -45,6 +46,10 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 
 	function self.setDead(boolean)
 		self.is_dead = boolean
+	end
+
+	function self.getVip()
+		return self.vip
 	end
 
 	function self.triggerEvent(eventName, ...)

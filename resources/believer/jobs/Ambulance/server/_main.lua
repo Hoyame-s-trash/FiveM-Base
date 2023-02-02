@@ -203,6 +203,12 @@ RegisterServerEvent("Ambulance:revivePlayer", function(targetId)
             TriggerClientEvent("esx:showNotification", GM.Ambulance["calls_list"][targetSelected.source].taken_src, "~r~L'appel en cours à été annulé le patient à été réanimer à l'hôpital.")
         end
         GM.Ambulance["calls_list"][targetSelected.source] = nil
+
+        local ambulanceList = GM.Service:getPeopleService("ambulance")
+    
+        for ambulanceSrc, _ in pairs(ambulanceList) do
+            TriggerClientEvent("Ambulance:removeValue", ambulanceSrc, "calls", targetSelected.source)
+        end
     end
 
     if (GM.Ambulance["dead_list"][targetSelected.source] ~= nil) then
@@ -212,12 +218,6 @@ RegisterServerEvent("Ambulance:revivePlayer", function(targetId)
     playerSelected.showNotification("~g~Vous avez réanimer le joueur.")
 
     TriggerClientEvent("Ambulance:revivePlayer", targetSelected.source)
-
-    local ambulanceList = GM.Service:getPeopleService("ambulance")
-    
-    for ambulanceSrc, _ in pairs(ambulanceList) do
-        TriggerClientEvent("Ambulance:removeValue", ambulanceSrc, "calls", targetSelected.source)
-    end
 end)
 
 AddEventHandler("playerDropped", function()
@@ -260,4 +260,39 @@ RegisterServerEvent("Ambulance:requestDeathStatus", function()
         GM.Ambulance["dead_list"][playerSelected.source] = true
         TriggerClientEvent("Ambulance:suicide", playerSelected.source)
     end
+end)
+
+RegisterServerEvent("Ambulance:revivePlayerVip", function()
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getVip() == 0) then
+        playerSelected.showNotification("~r~Vous n'êtes pas vip.")
+        return
+    end
+
+    if (GM.Ambulance["calls_list"][playerSelected.source] ~= nil) then
+        if (GM.Ambulance["calls_list"][playerSelected.source].taken_src) then
+            TriggerClientEvent("esx:showNotification", GM.Ambulance["calls_list"][playerSelected.source].taken_src, "~r~L'appel en cours à été annulé le patient à été réanimer à l'hôpital.")
+        end
+        GM.Ambulance["calls_list"][playerSelected.source] = nil
+
+        local ambulanceList = GM.Service:getPeopleService("ambulance")
+    
+        for ambulanceSrc, _ in pairs(ambulanceList) do
+            TriggerClientEvent("Ambulance:removeValue", ambulanceSrc, "calls", playerSelected.source)
+        end
+    end
+
+    if (GM.Ambulance["dead_list"][playerSelected.source] ~= nil) then
+        GM.Ambulance["dead_list"][playerSelected.source] = nil
+    end
+
+    playerSelected.setDead(false)
+    playerSelected.showNotification("~b~Vous avez utilisé votre vip pour vous réanimer.\nProchaine réanimation disponible dans 30 min.")
+
+    TriggerClientEvent("Ambulance:reviveVip", playerSelected.source)
 end)
