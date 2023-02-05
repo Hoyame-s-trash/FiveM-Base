@@ -125,4 +125,45 @@ GM:newThread(function()
             TriggerClientEvent("Ambulance:revivePlayer", targetSelected.source)
         end
     end)
+
+    GM.Command:register({
+        name = "noclip",
+        label = "Noclip",
+        description = "Permet de passer en mode noclip",
+        keys = {"keyboard", "O"}
+    }, function(playerSrc)
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        if (GM.Admin.inAdmin[playerSelected.source] == nil) then
+            playerSelected.showNotification("~r~Vous n'êtes pas en mode admin.")
+            return
+        end
+
+        if (playerSelected.get("noclip") == false) then
+            playerSelected.set("noclip", true)
+            playerSelected.showNotification("~b~Vous avez activé le mode noclip.")
+        else
+            playerSelected.set("noclip", false)
+            playerSelected.showNotification("~b~Vous avez désactivé le mode noclip.")
+        end
+
+        TriggerClientEvent("Admin:noClip", playerSrc)
+    end)
+
+    GM.Command:register({
+        name = "create_enterprise",
+        label = "Créer une entreprise",
+        description = "Permet de créer une entreprise",
+    }, function(playerSrc)
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        -- if (GM.Admin.inAdmin[playerSelected.source] == nil) then
+        --     playerSelected.showNotification("~r~Vous n'êtes pas en mode admin.")
+        --     return
+        -- end
+
+        TriggerClientEvent("Enterprise:createEnterprise", playerSrc)
+    end)
 end)

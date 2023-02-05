@@ -96,7 +96,7 @@ GM.Admin.menu.main:isVisible(function(Items)
             end,
         })
         local ADMIN_SOUND_REPORTS = GM.Preferences:loadPreferences("admin_sound_reports")
-        Items:Checkbox("Afficher le nombre de reports", nil, ADMIN_SOUND_REPORTS, {}, {
+        Items:Checkbox("Notification sonore lors d'un report", nil, ADMIN_SOUND_REPORTS, {}, {
             onSelected = function(Checked)
                 ADMIN_SOUND_REPORTS = Checked
             end,
@@ -132,6 +132,8 @@ end)
 
 RegisterNetEvent("Admin:playSound", function(SOUND_NAME)
     if (SOUND_NAME == "new_report") then
-        PlaySoundFrontend(-1, "Menu_Accept", "Phone_SoundSet_Default", 1)
+        if (GM.Preferences:loadPreferences("admin_sound_reports")) then
+            PlaySoundFrontend(-1, "Menu_Accept", "Phone_SoundSet_Default", 1)
+        end
     end
 end)

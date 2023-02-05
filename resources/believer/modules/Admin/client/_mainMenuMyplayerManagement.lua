@@ -46,7 +46,7 @@ GM.Admin.menu.submenus["my_player"]:isVisible(function(Items)
     })
     Items:Button("Revive", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
-            -- Todo event to revive player source
+            ExecuteCommand("revive "..GetPlayerServerId(PlayerId()))
         end
     })
 end)

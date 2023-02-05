@@ -2,6 +2,8 @@ GM.Interface = GM.Interface or {}
 
 GM.Interface.CurrentDisplay = true -- Todo faire un module de préférences stocké dans le cache du joueur afin de gérer cette variable
 
+GM.Interface.PlayerCount = 0
+
 function GM.Interface:Display(bool)
     SendNUIMessage({
         type = "toggleHud",
@@ -191,6 +193,10 @@ end)
 RegisterNetEvent("Interface:admin")
 AddEventHandler("Interface:admin", function(admin)
     if (not admin) then return end
+    
+    if (not GM.Preferences:loadPreferences("admin_show_reports")) then
+        admin.reports = false
+    end
 
     SendNUIMessage(admin)
 end)
@@ -198,6 +204,10 @@ end)
 RegisterNetEvent("Interface:currentReportCount")
 AddEventHandler("Interface:currentReportCount", function(report)
     if (not report) then return end
+
+    if (not GM.Preferences:loadPreferences("admin_show_reports")) then
+        return
+    end
 
     SendNUIMessage({
         type = "updateCurrentReports",
@@ -208,6 +218,10 @@ end)
 RegisterNetEvent("Interface:totalReportCount")
 AddEventHandler("Interface:totalReportCount", function(report)
     if (not report) then return end
+
+    if (not GM.Preferences:loadPreferences("admin_show_reports")) then
+        return
+    end
 
     SendNUIMessage({
         type = "updateTotalReports",
@@ -240,6 +254,7 @@ end)
 
 RegisterNetEvent("Interface:slots")
 AddEventHandler("Interface:slots", function(slots)
+    GM.Interface.slots = slots
     SendNUIMessage({
         type = "updateSlots",
         slots = slots

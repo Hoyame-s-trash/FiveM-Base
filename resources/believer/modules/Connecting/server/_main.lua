@@ -6,6 +6,23 @@ GM.Connecting["Identifiers"].List = {}
 GM.Connecting["Identifiers"].List["users"] = {}
 GM.Connecting["Identifiers"].List["identifiers"] = {}
 
+AddEventHandler("esx:playerLoaded", function(playerSrc)
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local playerIdentifier = playerSelected.getIdentifier()
+    if (not playerIdentifier) then return end
+
+    if (GM.Connecting["Identifiers"].List["users"][playerIdentifier].uniqueId == nil) then
+        MySQL.update("UPDATE user_identifiers set uniqueId = ? WHERE owner = ?", {
+            playerSelected.getUniqueId(),
+            playerIdentifier
+        }, function()
+            GM.Connecting["Identifiers"].List["users"][playerIdentifier].uniqueId = playerSelected.getUniqueId()
+        end)
+    end
+end)
+
 CreateThread(function()
     MySQL.query("SELECT * FROM user_identifiers", {
     }, function(results)
@@ -18,6 +35,7 @@ CreateThread(function()
                 GM.Connecting["Identifiers"].List["users"][selectedResult.owner] = {
                     identifier = selectedResult.owner,
                     isBanned = json.decode(selectedResult.currentBan),
+                    uniqueId = selectedResult.uniqueId,
                     identifiers = {}
                 }
             end
@@ -303,6 +321,7 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
             GM.Connecting["Identifiers"].List["users"][playerIdentifier] = {
                 identifier = playerIdentifier,
                 isBanned = nil,
+                uniqueId = nil,
                 identifiers = {}
             }
         end)

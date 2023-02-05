@@ -164,7 +164,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	end
 
 	function self.get(k)
-		return self.variables[k]
+		return self.variables[k] or false
 	end
 
 	function self.getAccounts(minimal)

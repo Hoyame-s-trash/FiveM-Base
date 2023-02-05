@@ -84,7 +84,8 @@ RegisterNetEvent('Anticheat:detectionTrigger', function(source, title, descripti
     title = dec(title)
     description = dec(description)
     SendDiscord(src, title, description, 0000000)
-    DropPlayer(src, "You cant trigger events via lua executors!.")
+    print("YOU CANT TRIGGER EVENTS VIA LUX EXECUTORS")
+    --DropPlayer(src, "You cant trigger events via lua executors!.")
 end)
 
 RegisterCommand("anticheat", function(source, args, rawCommand)

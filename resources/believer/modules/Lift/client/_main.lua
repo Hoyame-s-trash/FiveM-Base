@@ -4,11 +4,15 @@ GM.Lift = {
     menu = {},
     data = {},
     list = {
-        ["AMBULANCE"] = {
+        ["AMBULANCE_1"] = {
             {
-                name = "-1 - Salles d'opération",
-                pos = vec3(286.74047851562,-919.26440429688,29.199459075928)
+                name = "3 - Accueil",
+                pos = vec3(331.41299438477,-595.45880126953,43.284076690674)
             },
+            {
+                name = "1 - Ambulance garage",
+                pos = vec3(342.11361694336,-585.48492431641,28.799180984497),            
+            }
         },
     },
 }
@@ -58,7 +62,7 @@ GM:newThread(function()
         local pPos = GetEntityCoords(PlayerPedId())
         local dist, currentName = getClosestLift(pPos)
       
-        if dist < 2 and not RageUI.Visible(mainMenu) then 
+        if dist < 3 and not RageUI.Visible(mainMenu) then 
             waiting = 1
             ESX.ShowHelpNotification("Appuyez sur ~INPUT_PICKUP~ pour prendre ~b~l'ascenseur~s~.")
             if (IsControlJustPressed(0, 51)) then

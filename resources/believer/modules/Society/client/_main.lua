@@ -1,0 +1,1 @@
+GM.Society = GM.Society or {}
