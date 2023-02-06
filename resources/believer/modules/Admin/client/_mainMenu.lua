@@ -80,8 +80,6 @@ GM.Admin.menu.main:isVisible(function(Items)
                 TriggerEvent("Interface:openUrl", "https://trello.com/b/ZUuvDFEy/bluestark-v2")
             end
         })
-        --Items:Button("Serveur", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["server"])
-        --Items:Button("Options", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["options"])
     else
         local ADMIN_SHOW_REPORTS = GM.Preferences:loadPreferences("admin_show_reports")
         Items:Checkbox("Afficher le nombre de reports", nil, ADMIN_SHOW_REPORTS, {}, {

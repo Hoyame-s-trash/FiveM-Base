@@ -2,7 +2,7 @@ GM.Enterprise = GM.Enterprise or {}
 GM.Enterprise["list"] = {}
 GM.Enterprise["list_players"] = {}
 
-function GM.Enterprise:new(id, type, name, label, players, ranks, money)
+function GM.Enterprise:new(id, type, name, label, players, grades, money)
     local newEnterprise = {}
 
     setmetatable(newEnterprise, self)
@@ -15,7 +15,7 @@ function GM.Enterprise:new(id, type, name, label, players, ranks, money)
     newEnterprise.name = name
     newEnterprise.label = label
     newEnterprise.players = players
-    newEnterprise.ranks = ranks
+    newEnterprise.grades = grades
     newEnterprise.money = money
 
     for playerIdentifier, playerValues in pairs(newEnterprise.players) do
@@ -30,8 +30,6 @@ function GM.Enterprise:new(id, type, name, label, players, ranks, money)
     end
 
     GM.Enterprise["list"][newEnterprise.id] = newEnterprise
-
-    print("New enterprise created: " .. newEnterprise.name .. " (" .. newEnterprise.id .. ")")
 
     return newEnterprise
 end
@@ -49,23 +47,19 @@ function GM.Enterprise:getFromName(enterpriseName)
     return false
 end
 
-function GM.Enterprise:getRankFromName(rankName)
-    for _, rank in pairs(self.ranks) do
-        if (rank.name == rankName) then 
+function GM.Enterprise:getGradeFromName(gradeName)
+    for _, grade in pairs(self.grades) do
+        if (grade.name == gradeName) then 
             return true 
         end
     end
     return false
 end
 
-function GM.Enterprise:generateRankId()
-    return (#self.ranks + 1)
-end
-
-function GM.Enterprise:getIdFromRankName(rankName)
-    for rankId, rank in pairs(self.ranks) do
-        if (rank.name == rankName) then 
-            return rankId 
+function GM.Enterprise:getIdFromGradeName(gradeName)
+    for gradeId, grade in pairs(self.grades) do
+        if (grade.name == gradeName) then 
+            return gradeId 
         end
     end
     return false

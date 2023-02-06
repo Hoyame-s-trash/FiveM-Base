@@ -17,18 +17,21 @@ end
 
 GM.Enterprise.Management.menu.submenus["create_enterprise"] = RageUI.CreateSubMenu(GM.Enterprise.Management.menu.main, "", "Créer une entreprise")
 
-GM.Enterprise.Management.menu.submenus["manage_enterprise"] = RageUI.CreateSubMenu(GM.Enterprise.Management.menu.main, "", "Gérer les entreprises")
+GM.Enterprise.Management.menu.submenus["enterprise"] = RageUI.CreateSubMenu(GM.Enterprise.Management.menu.main, "", "Gérer les entreprises")
+GM.Enterprise.Management.menu.submenus["enterprise_management"] = RageUI.CreateSubMenu(GM.Enterprise.Management.menu.submenus["enterprise"], "", "Management de l'entreprise")
+GM.Enterprise.Management.menu.submenus["enterprise_management_grades"] = RageUI.CreateSubMenu(GM.Enterprise.Management.menu.submenus["enterprise_management"], "", "Grade de l'entreprise")
+
 
 GM.Enterprise.Management.menu.main:isVisible(function(Items)
     Items:Button("Créer une entreprise", nil, {}, true, {}, GM.Enterprise.Management.menu.submenus["create_enterprise"])
     Items:Button("Gérer les entreprises", nil, {}, true, {
         onSelected = function()
-            TriggerServerEvent("Enterprise:requestEnterprises")
+            TriggerServerEvent("EnterpriseManagement:requestEnterprises")
         end,
-    }, GM.Enterprise.Management.menu.submenus["manage_enterprise"])
+    }, GM.Enterprise.Management.menu.submenus["enterprise"])
 end)
 
-GM.Enterprise.Management.menu.submenus["manage_enterprise"]:isVisible(function(Items)
+GM.Enterprise.Management.menu.submenus["enterprise"]:isVisible(function(Items)
     if (GM.Enterprise.Management.data["manage_filter_index"] == nil) then
         GM.Enterprise.Management.data["manage_filter_index"] = 1
     end
@@ -44,7 +47,68 @@ GM.Enterprise.Management.menu.submenus["manage_enterprise"]:isVisible(function(I
         if (GM.Enterprise.Management.data["manage_filter_type"][GM.Enterprise.Management.data["manage_filter_index"]]:lower() == enterprise.type) then
             Items:Button(enterprise.name, nil, {}, true, {
                 onSelected = function()
-                    TriggerServerEvent("Enterprise:requestEnterprise", enterprise.id)
+                    GM.Enterprise.Management.data["currentEnterprise"] = enterprise.id
+                end,
+            }, GM.Enterprise.Management.menu.submenus["enterprise_management"])
+        end
+    end
+end)
+
+GM.Enterprise.Management.menu.submenus["enterprise_management"]:isVisible(function(Items)
+    if (GM.Enterprise.Management.data["currentEnterprise"] ~= nil and GM.Enterprise.Management.data["enterprises"][GM.Enterprise.Management.data["currentEnterprise"]] ~= nil) then
+        Items:Button("Grades", nil, {}, true, {}, GM.Enterprise.Management.menu.submenus["enterprise_management_grades"])
+        Items:Button("Employés", nil, {}, true, {})
+        Items:Button("~r~Supprimer l'entreprise", nil, {}, true, {
+            onSelected = function()
+                local input = exports["input"]:openInput({
+                    label = "Supprimer l'entreprise",
+                    submitLabel = "Confirmer",
+                    placeHolders = {
+                        {label = "OUI / NON"},
+                    }
+                })
+                
+                if (input["0"] == nil or input["0"] == "nil") then
+                    ESX.ShowNotification("~r~La réponse n'est pas valide.")
+                    return 
+                end
+
+                TriggerServerEvent("EnterpriseManagement:deleteEnterprise", GM.Enterprise.Management.data["currentEnterprise"], input["0"])
+            end
+        })
+    end
+end)
+
+GM.Enterprise.Management.menu.submenus["enterprise_management_grades"]:isVisible(function(Items)
+    Items:Button("Créer un grade", nil, {} , true, {
+        onSelected = function()
+            local input = exports["input"]:openInput({
+                label = "Créer un grade",
+                submitLabel = "Confirmer",
+                placeHolders = {
+                    {label = "Nom"},
+                    {label = "Label"}
+                }
+            })
+            
+            if (input["0"] == nil or input["0"] == "nil") then
+                ESX.ShowNotification("~r~Le nom du grade n'est pas valide.")
+                return 
+            end
+
+            if (input["1"] == nil or input["1"] == "nil") then
+                ESX.ShowNotification("~r~Le label du grade n'est pas valide.")
+                return 
+            end
+
+            TriggerServerEvent("EnterpriseManagement:createGrade", GM.Enterprise.Management.data["currentEnterprise"], input["0"], input["1"])
+        end
+    })
+    if (GM.Enterprise.Management.data["currentEnterprise"] ~= nil and GM.Enterprise.Management.data["enterprises"][GM.Enterprise.Management.data["currentEnterprise"]] ~= nil) then
+        for _, grade in pairs(GM.Enterprise.Management.data["enterprises"][GM.Enterprise.Management.data["currentEnterprise"]].grades) do
+            Items:Button(grade.label.." - "..grade.name, nil, {}, true, {
+                onSelected = function()
+                    GM.Enterprise.Management.data["currentGrade"] = grade.id
                 end,
             })
         end
@@ -101,7 +165,7 @@ GM.Enterprise.Management.menu.submenus["create_enterprise"]:isVisible(function(I
     })
     Items:Button("Créer l'entreprise", nil, {}, true, {
         onSelected = function()
-            TriggerServerEvent("Enterprise:createEnterprise", {
+            TriggerServerEvent("EnterpriseManagement:createEnterprise", {
                 type = GM.Enterprise.Management.data["create_enterprise_type"][GM.Enterprise.Management.data["create_enterprise_index"]]:lower(),
                 name = GM.Enterprise.Management.data["create_enterprise_name"],
                 label = GM.Enterprise.Management.data["create_enterprise_label"],
@@ -110,7 +174,7 @@ GM.Enterprise.Management.menu.submenus["create_enterprise"]:isVisible(function(I
     })
 end)
 
-RegisterNetEvent("Enterprise:updateValue", function(ENTERPRISE_DATA, ENTERPRISE_KEY, ENTERPRISE_VALUE)
+RegisterNetEvent("EnterpriseManagement:updateValue", function(ENTERPRISE_DATA, ENTERPRISE_KEY, ENTERPRISE_VALUE)
     if (not ENTERPRISE_VALUE) then
         GM.Enterprise.Management.data[ENTERPRISE_DATA] = ENTERPRISE_KEY
     else
@@ -118,7 +182,7 @@ RegisterNetEvent("Enterprise:updateValue", function(ENTERPRISE_DATA, ENTERPRISE_
     end
 end)
 
-RegisterNetEvent("Enterprise:removeValue", function(ENTERPRISE_DATA, ENTERPRISE_KEY)
+RegisterNetEvent("EnterpriseManagement:removeValue", function(ENTERPRISE_DATA, ENTERPRISE_KEY)
     if (not ENTERPRISE_KEY) then
         GM.Enterprise.Management.data[ENTERPRISE_DATA] = nil
     else
@@ -126,6 +190,6 @@ RegisterNetEvent("Enterprise:removeValue", function(ENTERPRISE_DATA, ENTERPRISE_
     end
 end)
 
-RegisterNetEvent("Enterprise:createEnterprise", function()
+RegisterNetEvent("EnterpriseManagement:openMenu", function()
     GM.Enterprise.Management.menu.main:toggle()
 end)

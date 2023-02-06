@@ -152,9 +152,9 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "create_enterprise",
-        label = "Créer une entreprise",
-        description = "Permet de créer une entreprise",
+        name = "enterprises",
+        label = "Ouvrir le menu des entreprises",
+        description = "Permet d'ouvrir le menu des entreprises",
     }, function(playerSrc)
         local playerSelected = ESX.GetPlayerFromId(playerSrc)
         if (not playerSelected) then return end
@@ -164,7 +164,7 @@ GM:newThread(function()
         --     return
         -- end
 
-        TriggerClientEvent("Enterprise:createEnterprise", playerSrc)
+        TriggerClientEvent("EnterpriseManagement:openMenu", playerSrc)
     end)
 
     GM.Command:register({
