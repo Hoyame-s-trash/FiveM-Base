@@ -16,31 +16,31 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
         TriggerClientEvent("chatMessage", adminSrc, "", { 255, 255, 255 }, "^2" .. playerSelected.getName() .. " à rejoint le serveur.")
     end
 
-    if (GM.Admin.Ranks["players"][playerIdentifier]) then
-        if (GM.Admin.Ranks["players"][playerIdentifier].staffName ~= playerSelected.getName()) then
+    if (GM.Ranks["players"][playerIdentifier]) then
+        if (GM.Ranks["players"][playerIdentifier].staffName ~= playerSelected.getName()) then
 
-            local playerRank = GM.Admin.Ranks:getFromId(GM.Admin.Ranks["players"][playerIdentifier].rankId)
+            local playerRank = GM.Ranks:getFromId(GM.Ranks["players"][playerIdentifier].rankId)
             if (not playerRank) then return end
 
             playerRank.players[playerIdentifier].name = playerSelected.getName()
 
-            GM.Admin.Ranks["players"][playerIdentifier].staffName = playerSelected.getName()
+            GM.Ranks["players"][playerIdentifier].staffName = playerSelected.getName()
 
             MySQL.update("UPDATE user_admin SET players = ? WHERE id = ?", {
                 json.encode(playerRank.players), 
-                GM.Admin.Ranks["players"][playerIdentifier].rankId
+                GM.Ranks["players"][playerIdentifier].rankId
             }, function()
                 for adminSrc,_ in pairs(GM.Admin.inAdmin) do
-                    TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", GM.Admin.Ranks["players"][playerIdentifier].rankId, playerRank)
+                    TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", GM.Ranks["players"][playerIdentifier].rankId, playerRank)
                 end
             end)
         end
-        playerSelected.set("rank_id", GM.Admin.Ranks["players"][playerIdentifier].rankId)
-        playerSelected.set("rank_label", GM.Admin.Ranks["players"][playerIdentifier].label)
-        playerSelected.setGroup(GM.Admin.Ranks["players"][playerIdentifier].name)
+        playerSelected.set("rank_id", GM.Ranks["players"][playerIdentifier].rankId)
+        playerSelected.set("rank_label", GM.Ranks["players"][playerIdentifier].label)
+        playerSelected.setGroup(GM.Ranks["players"][playerIdentifier].name)
         GM.Chat:addPlayerToMode("STAFF", playerSrc)
     else
-        playerSelected.set("rank_id", GM.Admin.Ranks["rank_user"])
+        playerSelected.set("rank_id", GM.Ranks["rank_user"])
         playerSelected.set("rank_label", "Joueur")
         playerSelected.setGroup("user")
     end
@@ -75,7 +75,7 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
                 admin = true,
                 reports = true,
                 currentReports = tostring(GM.Admin.Reports:count()),
-                totalReports = tostring(GM.Admin.Ranks["players"][playerIdentifier].reports)
+                totalReports = tostring(GM.Ranks["players"][playerIdentifier].reports)
             })
             for adminSrc,_ in pairs(GM.Admin.inAdmin) do
                 TriggerClientEvent("Admin:updateValue", adminSrc, "players", staffSelected.id, staffSelected)
@@ -96,7 +96,6 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
             for adminSrc,_ in pairs(GM.Admin.inAdmin) do
                 TriggerClientEvent("Admin:updateValue", adminSrc, "players", staffSelected.id, staffSelected)
             end
-            -- Todo reset clothes for staff
         end
     end
 end)

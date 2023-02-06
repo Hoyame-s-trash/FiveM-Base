@@ -31,7 +31,7 @@ RegisterServerEvent("Admin:createDrugs", function(type, drugData)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     if (not playerRank:getPermissionsValue("CREATE_DRUGS", playerSelected.source)) then return end
@@ -81,7 +81,7 @@ RegisterServerEvent("Admin:deleteDrugs", function(drugId)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     if (not playerRank:getPermissionsValue("DELETE_DRUGS", playerSelected.source)) then return end
@@ -108,7 +108,7 @@ RegisterServerEvent("Admin:drugsModifyPosition", function(drugId)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     if (not playerRank:getPermissionsValue("MODIFY_DRUGS", playerSelected.source)) then return end
@@ -142,7 +142,7 @@ RegisterServerEvent("Admin:drugsModifyQuantityGive", function(drugId, quantity)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     if (not playerRank:getPermissionsValue("MODIFY_DRUGS", playerSelected.source)) then return end
@@ -171,7 +171,7 @@ RegisterServerEvent("Admin:drugsModifyItemGive", function(drugId, item)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     if (not playerRank:getPermissionsValue("MODIFY_DRUGS", playerSelected.source)) then return end
@@ -202,7 +202,7 @@ RegisterServerEvent("Admin:drugsModifyQuantityTake", function(drugId, quantity)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     if (not playerRank:getPermissionsValue("MODIFY_DRUGS", playerSelected.source)) then return end
@@ -233,7 +233,7 @@ RegisterServerEvent("Admin:drugsModifyItemTake", function(drugId, item)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     if (not playerRank:getPermissionsValue("MODIFY_DRUGS", playerSelected.source)) then return end

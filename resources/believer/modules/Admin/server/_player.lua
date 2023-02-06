@@ -38,7 +38,7 @@ RegisterServerEvent("Admin:giveAllWeapons", function()
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
     if (not selectedRank:getPermissionsValue("MY_PLAYER_GIVEALLWEAPONS", playerSelected.source)) then return end
@@ -70,7 +70,7 @@ RegisterServerEvent("Admin:removeAllWeapons", function()
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
     if (not selectedRank:getPermissionsValue("MY_PLAYER_REMOVEALLWEAPONS", playerSelected.source)) then return end
@@ -99,7 +99,7 @@ AddEventHandler("Player:destroy", function(playerSrc)
 
         if (playerSelected.getGroup() == "user") then return end
 
-        local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+        local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
         if (not selectedRank) then return end
 
         if (not selectedRank:getPermissionsValue("MY_PLAYER_REMOVEALLWEAPONS", playerSelected.source)) then return end
@@ -126,7 +126,7 @@ RegisterServerEvent("Admin:gamerTag", function(BOOLEAN)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
     if (not selectedRank:getPermissionsValue("MY_PLAYER_GAMERTAG", playerSelected.source)) then return end
@@ -148,7 +148,7 @@ RegisterServerEvent("Admin:blipsManager", function()
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
     if (not selectedRank:getPermissionsValue("MY_PLAYER_BLIPS", playerSelected.source)) then return end
@@ -195,7 +195,7 @@ RegisterServerEvent("Admin:invisibleStaff", function(BOOLEAN)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
     if (not selectedRank:getPermissionsValue("MY_PLAYER_INVISIBLESTAFF", playerSelected.source)) then return end

@@ -51,7 +51,7 @@ RegisterServerEvent("Chat:sendMessage", function(mode, message)
     if (mode == "ALL") then
         if (playerSelected.getGroup() == "user") then return end
 
-        local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+        local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
         if (not playerRank) then return end
 
         if (not playerRank:getPermissionsValue("SEND_ALL_CHAT", playerSelected.source)) then return end

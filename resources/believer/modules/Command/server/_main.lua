@@ -26,7 +26,7 @@ function GM.Command:register(commandData, func)
 
             if (commandData.permissions) then
 
-                local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+                local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
                 if (not playerRank) then return end
 
                 if (not playerRank:getCommandValue(commandData.name, source)) then return end
@@ -58,7 +58,7 @@ RegisterNetEvent("Command:execute", function(commandName, commandArgs)
 
     if (GM.Command.List[commandName].permissions == true) then
 
-        local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+        local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
         if (not playerRank) then return end
 
         if (not playerRank:getCommandValue(commandName, playerSrc)) then return end

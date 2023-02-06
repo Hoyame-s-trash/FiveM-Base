@@ -9,7 +9,7 @@ RegisterServerEvent("MazeBankArena:modifyArena", function(mappingName)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     if (not playerRank:getPermissionsValue("CHANGE_MAZE_BANK_ARENA", playerSelected.source)) then return end

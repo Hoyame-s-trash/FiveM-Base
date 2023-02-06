@@ -88,7 +88,7 @@ RegisterServerEvent("Admin:takeReport", function(reportId)
 
     if (reportSelected.taken) then return playerSelected.showNotification("~r~Ce report est déjà pris.") end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     playerRank.players[playerIdentifier].reports = playerRank.players[playerIdentifier].reports + 1

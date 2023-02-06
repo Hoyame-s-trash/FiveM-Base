@@ -9,7 +9,7 @@ RegisterServerEvent("Admin:repairVehicle", function(vehicleId)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     if (not playerRank:getPermissionsValue("VEHICLES_REPAIR", playerSelected.source)) then return end

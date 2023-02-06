@@ -21,7 +21,7 @@ RegisterServerEvent("Admin:addVehicleBoutique", function(input)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local selectedRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not selectedRank) then return end
 
     if (not selectedRank:getPermissionsValue("BOUTIQUE_ADDVEHICLE", playerSelected.source)) then return end

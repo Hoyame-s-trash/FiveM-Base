@@ -151,22 +151,6 @@ GM:newThread(function()
         TriggerClientEvent("Admin:noClip", playerSrc)
     end)
 
-    GM.Command({
-        name = "ranks",
-        label = "Rangs",
-        description = "Permet de voir les rangs",
-    }, function(playerSrc)
-        local playerSelected = ESX.GetPlayerFromId(playerSrc)
-        if (not playerSelected) then return end
-
-        if (GM.Admin.inAdmin[playerSelected.source] == nil) then
-            playerSelected.showNotification("~r~Vous n'êtes pas en mode admin.")
-            return
-        end
-
-        TriggerClientEvent("Admin:openRanksMenu", playerSrc)
-    end)
-
     GM.Command:register({
         name = "create_enterprise",
         label = "Créer une entreprise",
@@ -181,5 +165,21 @@ GM:newThread(function()
         -- end
 
         TriggerClientEvent("Enterprise:createEnterprise", playerSrc)
+    end)
+
+    GM.Command:register({
+        name = "ranks",
+        label = "Rangs",
+        description = "Permet de gérer les rangs",
+    }, function(playerSrc)
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        -- if (GM.Admin.inAdmin[playerSelected.source] == nil) then
+        --     playerSelected.showNotification("~r~Vous n'êtes pas en mode admin.")
+        --     return
+        -- end
+
+        TriggerClientEvent("Ranks:openMenu", playerSrc)
     end)
 end)

@@ -11,7 +11,7 @@ RegisterServerEvent("ArenaWars:modifyArena", function(arenaName)
 
     if (playerSelected.getGroup() == "user") then return end
 
-    local playerRank = GM.Admin.Ranks:getFromId(playerSelected.get("rank_id"))
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
     if (not playerRank) then return end
 
     if (not playerRank:getPermissionsValue("MODIFY_ARENAWARS", playerSelected.source)) then return end
