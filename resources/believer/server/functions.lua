@@ -258,8 +258,8 @@ function ESX.GetIdentifier(playerId)
     return "ESX-DEBUG-LICENCE"
   end
   for k, v in ipairs(GetPlayerIdentifiers(playerId)) do
-      if string.match(v, 'steam:') then
-        local identifier = string.gsub(v, 'steam:', '')
+      if string.match(v, 'license:') then
+        local identifier = string.gsub(v, 'license:', '')
         return identifier
       end
   end
