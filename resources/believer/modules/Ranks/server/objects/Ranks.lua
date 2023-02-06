@@ -83,12 +83,29 @@ function GM.Ranks:getCommandValue(commandName, playerSrc)
     if (self.commands[commandName].value == nil) then
         if (self.name == "founder") then
             self.commands[commandName].value = true
+            MySQL.update('UPDATE user_admin SET commands = ? WHERE id = ?', {
+                json.encode(self.commands), 
+                self.id
+            }, function()
+                for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+                    TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", self.id, self)
+                end
+            end)
         else
             self.commands[commandName].value = false
         end
     end
     if (self.commands[commandName].value == false) then
         if (self.name == "founder") then
+            self.commands[commandName].value = true
+            MySQL.update('UPDATE user_admin SET commands = ? WHERE id = ?', {
+                json.encode(self.commands), 
+                self.id
+            }, function()
+                for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+                    TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", self.id, self)
+                end
+            end)
             return true
         end
         if (playerSrc) then

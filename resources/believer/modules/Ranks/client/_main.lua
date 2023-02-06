@@ -56,9 +56,9 @@ GM.Ranks.menu.submenus["server_ranks_management"]:isVisible(function(Items)
     if (GM.Ranks.data["selectedRank"] ~= nil and GM.Ranks.data["ranks"][GM.Ranks.data["selectedRank"]] ~= nil) then
         Items:Button("~b~"..GM.Ranks.data["ranks"][GM.Ranks.data["selectedRank"]].name.." - ID : "..GM.Ranks.data["ranks"][GM.Ranks.data["selectedRank"]].id, nil, {}, true,{})
         Items:Button("Gérer les joueurs", nil, {}, (GM.Ranks.data["ranks"][GM.Ranks.data["selectedRank"]].name ~= "user"),{}, GM.Ranks.menu.submenus["server_ranks_management_players"])
-        Items:Button("Gérer les commandes", nil, {}, true,{}, GM.Ranks.menu.submenus["server_ranks_management_commands"])
-        Items:Button("Gérer les permissions", nil, {}, true,{}, GM.Ranks.menu.submenus["server_ranks_management_permissions"])
-        Items:Button("~r~Supprimer le rank", nil, {}, GM.Ranks.data["ranks"][GM.Ranks.data["selectedRank"]].name ~= "user",{
+        Items:Button("Gérer les commandes", nil, {}, GM.Ranks.data["ranks"][GM.Ranks.data["selectedRank"]].name ~= "founder",{}, GM.Ranks.menu.submenus["server_ranks_management_commands"])
+        Items:Button("Gérer les permissions", nil, {}, GM.Ranks.data["ranks"][GM.Ranks.data["selectedRank"]].name ~= "founder",{}, GM.Ranks.menu.submenus["server_ranks_management_permissions"])
+        Items:Button("~r~Supprimer le rank", nil, {}, GM.Ranks.data["ranks"][GM.Ranks.data["selectedRank"]].name ~= "user" and GM.Ranks.data["ranks"][GM.Ranks.data["selectedRank"]].name ~= "founder",{
             onSelected = function()
                 local input = exports["input"]:openInput({
                     label = "Supprimer un rank",
