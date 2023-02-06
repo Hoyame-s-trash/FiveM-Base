@@ -521,7 +521,7 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
     end
 
     for i = 1, #playerTokens do
-        local currentIdentifier = playerIdentifiers[i]
+        local currentIdentifier = playerTokens[i]
         if (currentIdentifier ~= nil and GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier] ~= nil) then
             local ownerData = GM.Connecting["Identifiers"].List["users"][GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier].owner]
             if ((GM.Connecting["Identifiers"].List["identifiers"][currentIdentifier].owner ~= playerIdentifier) or (ownerData.isConnected == true)) then
