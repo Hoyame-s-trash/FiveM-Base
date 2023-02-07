@@ -62,7 +62,7 @@ RageUI.UI = {
 
 ---@class Settings
 RageUI.Settings = {
-    Debug = false,
+    Debug = true,
     Controls = {
         Up = {
             Enabled = true,

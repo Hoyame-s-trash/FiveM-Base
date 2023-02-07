@@ -5,13 +5,10 @@ GM.Admin = {
         submenus = {}
     },
     data = {
-        ranks = {},
         reports = {},
         players = {},
         blips = {},
         blips_list = {},
-        drugs = {},
-        enterprises = {},
     },
     inAdmin = false
 }

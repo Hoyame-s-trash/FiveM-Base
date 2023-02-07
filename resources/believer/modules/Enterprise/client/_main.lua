@@ -118,7 +118,7 @@ GM.Enterprise.Management.menu.submenus["enterprise_management_grades"]:isVisible
 end)
 
 GM.Enterprise.Management.menu.submenus["enterprise_management_grades_management"]:isVisible(function(Items)
-    if (GM.Enterprise.Management.data["currentGrade"] ~= nil and GM.Enterprise.Management.data["enterprises"][GM.Enterprise.Management.data["currentEnterprise"]] ~= nil) then
+    if (GM.Enterprise.Management.data["currentGrade"] ~= nil and GM.Enterprise.Management.data["enterprises"][GM.Enterprise.Management.data["currentEnterprise"]] ~= nil and GM.Enterprise.Management.data["enterprises"][GM.Enterprise.Management.data["currentEnterprise"]].grades[GM.Enterprise.Management.data["currentGrade"]] ~= nil) then
         Items:Button("Permissions", nil, {}, true, {}, GM.Enterprise.Management.menu.submenus["enterprise_management_grades_management_permissions"]) 
         Items:Button("~r~Supprimer le grade", nil, {}, true, {
             onSelected = function()
@@ -138,6 +138,8 @@ GM.Enterprise.Management.menu.submenus["enterprise_management_grades_management"
                 TriggerServerEvent("EnterpriseManagement:deleteGrade", GM.Enterprise.Management.data["currentEnterprise"], GM.Enterprise.Management.data["currentGrade"], input["0"])
             end
         })
+    else
+        RageUI.GoBack()
     end
 end)
 

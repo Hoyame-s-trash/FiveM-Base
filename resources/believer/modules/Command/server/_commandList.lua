@@ -163,6 +163,11 @@ GM:newThread(function()
         local playerSelected = ESX.GetPlayerFromId(playerSrc)
         if (not playerSelected) then return end
 
+        if (GM.Admin.inAdmin[playerSelected.source] == nil) then
+            playerSelected.showNotification("~r~Vous n'êtes pas en mode admin.")
+            return
+        end
+
         TriggerClientEvent("EnterpriseManagement:openMenu", playerSrc)
     end)
 

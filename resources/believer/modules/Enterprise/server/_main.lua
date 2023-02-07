@@ -151,5 +151,57 @@ RegisterServerEvent("EnterpriseManagement:deleteGrade", function(enterpriseId, g
     local enterprise = GM.Enterprise:getFromId(enterpriseId)
     if (not enterprise) then return end
 
-    
+    if (input == "OUI" or input == "oui") then
+        for _, grade in pairs(enterprise.grades) do
+            if (grade.id == gradeId) then
+                if (grade.name == "owner") then
+                    playerSelected.showNotification("~r~Vous ne pouvez pas supprimer le grade owner.")
+                    return
+                end
+                if (grade.name == "recruit") then
+                    playerSelected.showNotification("~r~Vous ne pouvez pas supprimer le grade recruit.")
+                    return
+                end
+                table.remove(enterprise.grades, _)
+                break
+            end
+        end
+
+        MySQL.update("UPDATE user_enterprise SET grades = ? WHERE id = ?", {
+            json.encode(enterprise.grades),
+            enterpriseId
+        }, function()
+            for adminSrc, _ in pairs(GM.Admin.inAdmin) do
+                TriggerClientEvent("EnterpriseManagement:updateValue", adminSrc, "enterprises", enterpriseId, enterprise)
+            end
+        end)
+    else
+        playerSelected.showNotification("~r~Vous n'avez pas confirmé la suppression du grade.")
+        return
+    end
+end)
+
+RegisterServerEvent("EntrepriseManagement:updatePermissions", function(enterpriseId, gradeName, permissionsName, permissionsValue)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    -- Todo add admin permissions
+
+    local enterprise = GM.Enterprise:getFromId(enterpriseId)
+    if (not enterprise) then return end
+
+    local grade = enterprise:getGradeFromName(gradeName)
+    if (not grade) then return end
+
+    if (grade.permissions[permissionsName] == nil) then
+        playerSelected.showNotification("~r~Cette permission n'existe pas.\nAjout de la permission en cours.")
+        return
+    end
+
+    grade.permissions[permissionsName].value = permissionsValue
 end)
