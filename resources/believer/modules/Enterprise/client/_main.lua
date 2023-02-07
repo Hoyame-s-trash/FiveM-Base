@@ -21,6 +21,8 @@ GM.Enterprise.Management.menu.submenus["enterprise"] = RageUI.CreateSubMenu(GM.E
 GM.Enterprise.Management.menu.submenus["enterprise_management"] = RageUI.CreateSubMenu(GM.Enterprise.Management.menu.submenus["enterprise"], "", "Management de l'entreprise")
 GM.Enterprise.Management.menu.submenus["enterprise_management_grades"] = RageUI.CreateSubMenu(GM.Enterprise.Management.menu.submenus["enterprise_management"], "", "Grade de l'entreprise")
 
+GM.Enterprise.Management.menu.submenus["enterprise_management_grades_management"] = RageUI.CreateSubMenu(GM.Enterprise.Management.menu.submenus["enterprise_management_grades"], "", "Grade management")
+GM.Enterprise.Management.menu.submenus["enterprise_management_grades_management_permissions"] = RageUI.CreateSubMenu(GM.Enterprise.Management.menu.submenus["enterprise_management_grades_management"], "", "Grade management - permissions")
 
 GM.Enterprise.Management.menu.main:isVisible(function(Items)
     Items:Button("Créer une entreprise", nil, {}, true, {}, GM.Enterprise.Management.menu.submenus["create_enterprise"])
@@ -109,6 +111,48 @@ GM.Enterprise.Management.menu.submenus["enterprise_management_grades"]:isVisible
             Items:Button(grade.label.." - "..grade.name, nil, {}, true, {
                 onSelected = function()
                     GM.Enterprise.Management.data["currentGrade"] = grade.id
+                end,
+            }, GM.Enterprise.Management.menu.submenus["enterprise_management_grades_management"])
+        end
+    end
+end)
+
+GM.Enterprise.Management.menu.submenus["enterprise_management_grades_management"]:isVisible(function(Items)
+    if (GM.Enterprise.Management.data["currentGrade"] ~= nil and GM.Enterprise.Management.data["enterprises"][GM.Enterprise.Management.data["currentEnterprise"]] ~= nil) then
+        Items:Button("Permissions", nil, {}, true, {}, GM.Enterprise.Management.menu.submenus["enterprise_management_grades_management_permissions"]) 
+        Items:Button("Supprimer le grade", nil, {}, true, {
+            onSelected = function()
+                local input = exports["input"]:openInput({
+                    label = "Supprimer le grade",
+                    submitLabel = "Confirmer",
+                    placeHolders = {
+                        {label = "OUI / NON"},
+                    }
+                })
+                
+                if (input["0"] == nil or input["0"] == "nil") then
+                    ESX.ShowNotification("~r~La réponse n'est pas valide.")
+                    return 
+                end
+
+                TriggerServerEvent("EnterpriseManagement:deleteGrade", GM.Enterprise.Management.data["currentEnterprise"], GM.Enterprise.Management.data["currentGrade"], input["0"])
+            end
+        })
+    end
+end)
+
+GM.Enterprise.Management.menu.submenus["enterprise_management_grades_management_permissions"]:isVisible(function(Items)
+    if (GM.Enterprise.Management.data["currentEnterprise"] ~= nil and GM.Enterprise.Management.data["enterprises"][GM.Enterprise.Management.data["currentEnterprise"]] ~= nil and GM.Enterprise.Management.data["currentGrade"] ~= nil and GM.Admin.Management.data["enterprises"][GM.Enterprise.Management.data["currentEnterprise"]].ranks[GM.Enterprise.Management.data["currentGrade"]] ~= nil) then
+        for permissionName, permissionValues in pairs(GM.Admin.Management.data["enterprises"][GM.Enterprise.Management.data["currentEnterprise"]].ranks[GM.Enterprise.Management.data["currentGrade"]].permissions) do
+            Items:Checkbox(permissionValues.label, permissionValues.description, permissionValues.value, {}, {
+                onSelected = function(Checked)
+                    permissionValues.value = Checked
+                end,
+                onChecked = function()
+                    TriggerServerEvent("EntrepriseManagement:updatePermissions", GM.Enterprise.Management.data["currentEnterprise"], GM.Enterprise.Management.data["currentGrade"], permissionName, true)
+                end,
+                onUnChecked = function()
+                    TriggerServerEvent("EntrepriseManagement:updatePermissions", GM.Enterprise.Management.data["currentEnterprise"], GM.Enterprise.Management.data["currentGrade"], permissionName, false)
                 end,
             })
         end

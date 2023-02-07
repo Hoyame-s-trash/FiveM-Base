@@ -115,7 +115,7 @@ RegisterServerEvent("EnterpriseManagement:createGrade", function(enterpriseId, g
     local enterprise = GM.Enterprise:getFromId(enterpriseId)
     if (not enterprise) then return end
 
-    if (GM.Enterprise:getGradeFromName(gradeName)) then
+    if (enterprise:getGradeFromName(gradeName)) then
         playerSelected.showNotification("~r~Un grade existe déjà avec ce nom.")
         return
     end
@@ -135,6 +135,4 @@ RegisterServerEvent("EnterpriseManagement:createGrade", function(enterpriseId, g
             TriggerClientEvent("EnterpriseManagement:updateValue", adminSrc, "enterprises", enterpriseId, enterprise)
         end
     end)
-
-
 end)
