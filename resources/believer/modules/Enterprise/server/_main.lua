@@ -136,3 +136,20 @@ RegisterServerEvent("EnterpriseManagement:createGrade", function(enterpriseId, g
         end
     end)
 end)
+
+RegisterServerEvent("EnterpriseManagement:deleteGrade", function(enterpriseId, gradeId, input)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    -- Todo add admin permissions
+
+    local enterprise = GM.Enterprise:getFromId(enterpriseId)
+    if (not enterprise) then return end
+
+    
+end)
