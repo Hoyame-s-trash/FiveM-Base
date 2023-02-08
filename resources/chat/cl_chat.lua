@@ -20,7 +20,13 @@ RegisterNetEvent('__cfx_internal:serverPrint')
 RegisterNetEvent('_chat:messageEntered')
 
 --deprecated, use chat:addMessage
-AddEventHandler('chatMessage', function(author, color, text)
+AddEventHandler('chatMessage', function(author, color, text, report)
+  if (report == true) then
+    local ADMIN_MASK_LOGS_REPORTS = exports.believer:loadPrerefences("admin_mask_logs_reports")
+    if (ADMIN_MASK_LOGS_REPORTS == true) then 
+      return 
+    end
+  end
   local args = { text }
   if author ~= "" then
     table.insert(args, 1, author)

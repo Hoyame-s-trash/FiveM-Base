@@ -41,18 +41,18 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
             GM.Preferences:Save("admin_show_blips", false)
         end,
     })
-    local ADMIN_USE_VMENU_NOCLIP = GM.Preferences:loadPreferences("admin_use_vmenu_noclip")
-    Items:Checkbox("Utiliser le NoClip 'VMenu'", nil, ADMIN_USE_VMENU_NOCLIP, {}, {
-        onSelected = function(Checked)
-            ADMIN_USE_VMENU_NOCLIP = Checked
-        end,
-        onChecked = function()
-            GM.Preferences:Save("admin_use_vmenu_noclip", true)
-        end,
-        onUnChecked = function()
-            GM.Preferences:Save("admin_use_vmenu_noclip", false)
-        end,
-    })
+    -- local ADMIN_USE_VMENU_NOCLIP = GM.Preferences:loadPreferences("admin_use_vmenu_noclip")
+    -- Items:Checkbox("Utiliser le NoClip 'VMenu'", nil, ADMIN_USE_VMENU_NOCLIP, {}, {
+    --     onSelected = function(Checked)
+    --         ADMIN_USE_VMENU_NOCLIP = Checked
+    --     end,
+    --     onChecked = function()
+    --         GM.Preferences:Save("admin_use_vmenu_noclip", true)
+    --     end,
+    --     onUnChecked = function()
+    --         GM.Preferences:Save("admin_use_vmenu_noclip", false)
+    --     end,
+    -- })
     local ADMIN_SHOW_REPORTS = GM.Preferences:loadPreferences("admin_show_reports")
     Items:Checkbox("Afficher le nombre de reports", nil, ADMIN_SHOW_REPORTS, {}, {
         onSelected = function(Checked)
@@ -154,7 +154,9 @@ RegisterNetEvent("Admin:gamerTag", function(BOOLEAN)
                             end
                         end
 
-                        if (GM.Admin.data["gamertag_myself_bool"] == nil or GM.Admin.data["gamertag_myself_bool"] == false) and GetPlayerServerId(v) == GetPlayerServerId(PlayerId()) then
+                        local ADMIN_SHOW_MYSELF = GM.Preferences:loadPreferences("admin_show_myself")
+
+                        if (ADMIN_SHOW_MYSELF == false) and GetPlayerServerId(v) == GetPlayerServerId(PlayerId()) then
                             RemoveMpGamerTag(gamerTags[GetPlayerPed(v)])
                         end
                         

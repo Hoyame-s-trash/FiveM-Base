@@ -37,7 +37,7 @@ function GM.Admin.Reports:new(id, source, name, reason)
         TriggerClientEvent("Admin:playSound", adminSrc, "new_report")
         TriggerClientEvent("Admin:updateValue", adminSrc, "reports", newAdminReports.id, newAdminReports)
         TriggerClientEvent("Interface:currentReportCount", adminSrc, tostring(GM.Admin.Reports:count()))
-        TriggerClientEvent("chat:addMessage", adminSrc, { args = { '^5NOUVEAU REPORT - '..newAdminReports.id, newAdminReports.reason .. ' (' .. newAdminReports.name .. ' - '..newAdminReports.source..')'}})
+        TriggerClientEvent("chat:addMessage", adminSrc, { args = { '^5NOUVEAU REPORT - '..newAdminReports.id, newAdminReports.reason .. ' (' .. newAdminReports.name .. ' - '..newAdminReports.source..')'}}, true)
     end
 
     SetTimeout(GM.Admin.ReportCooldown * 60000, function()
@@ -103,7 +103,7 @@ RegisterServerEvent("Admin:takeReport", function(reportId)
         for adminSrc,_ in pairs(GM.Admin.inAdmin) do
             TriggerClientEvent("Admin:updateValue", adminSrc, "reports", reportId, reportSelected)
             TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", playerSelected.get("rank_id"), playerRank)
-            TriggerClientEvent("chat:addMessage", adminSrc, { args = { '^5REPORT PRIS - '..reportSelected.id, reportSelected.taken_name .. ' à pris le report du joueur (' .. reportSelected.name .. ' - '..reportSelected.source..') '}})
+            TriggerClientEvent("chat:addMessage", adminSrc, { args = { '^5REPORT PRIS - '..reportSelected.id, reportSelected.taken_name .. ' à pris le report du joueur (' .. reportSelected.name .. ' - '..reportSelected.source..') '}}, true)
         end
         TriggerClientEvent("Interface:totalReportCount", playerSrc, playerRank.players[playerIdentifier].reports)
     end)
@@ -130,7 +130,7 @@ RegisterServerEvent("Admin:closeReport", function(reportId)
     for adminSrc,_ in pairs(GM.Admin.inAdmin) do
         TriggerClientEvent("Admin:removeValue", adminSrc, "reports", reportId)
         TriggerClientEvent("Interface:currentReportCount", adminSrc, tostring(GM.Admin.Reports:count()))
-        TriggerClientEvent("chat:addMessage", adminSrc, { args = { '^5REPORT CLOSE - '..reportSelected.id, playerSelected.getName() .. ' à close le report ID - (' .. reportId..') '}})
+        TriggerClientEvent("chat:addMessage", adminSrc, { args = { '^5REPORT CLOSE - '..reportSelected.id, playerSelected.getName() .. ' à close le report ID - (' .. reportId..') '}}, true)
     end
 end)
 
