@@ -7,7 +7,6 @@ GM:newThread(function()
         name = "commands",
         label = "Ouvrir le menu des commandes",
         description = "Permet d'ouvrir le menu des commandes",
-        permissions = false,
     }, function(playerSrc)
         TriggerClientEvent("Command:openMenu", playerSrc, GM.Command.List)
     end)
@@ -62,7 +61,7 @@ GM:newThread(function()
             if (not targetSelected) then return end
 
             if (GM.Ambulance["dead_list"][targetSelected.source] == nil) then
-                print("LE JOUEUR N'EST PAS MORT")
+                print("LE JOUEUR "..targetSelected.getName().." N'EST PAS MORT")
                 return
             end
 
@@ -101,7 +100,7 @@ GM:newThread(function()
             if (not targetSelected) then return end
 
             if (GM.Ambulance["dead_list"][targetSelected.source] == nil) then
-                playerSelected.showNotification("~r~Ce joueur n'est pas mort.")
+                playerSelected.showNotification("~r~Le joueur "..targetSelected.getName().." n'est pas mort.")
                 return
             end
 
@@ -358,9 +357,20 @@ GM:newThread(function()
         if (not playerPosition) then return end
 
         ESX.OneSync.SpawnVehicle(vehicleName, playerPosition - vector3(0,0, 0.9), GetEntityHeading(playerPed), upgrades, function(networkId)
-            local vehicle = NetworkGetEntityFromNetworkId(networkId)
-            Wait(250)
-            TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
+            if networkId then
+                local vehicle = NetworkGetEntityFromNetworkId(networkId)
+                for i = 1, 20 do
+                    Wait(0)
+                    SetPedIntoVehicle(playerPed, vehicle, -1)
+            
+                    if GetVehiclePedIsIn(playerPed, false) == vehicle then
+                        break
+                    end
+                end
+                if GetVehiclePedIsIn(playerPed, false) ~= vehicle then
+                    playerSelected.showNotification("~r~Impossible de rentrer dans le véhicule !")
+                end
+            end
         end)
     end)
 
@@ -447,6 +457,12 @@ GM:newThread(function()
                 }, function()
                     for adminSrc,_ in pairs(GM.Admin.inAdmin) do
                         TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", rankId, selectedRank)
+                    end
+                    local keysCommands = GM.Command:getCommandsKeys()
+                    if (not keysCommands) then return end
+
+                    for commandName, commandValues in pairs(keysCommands) do
+                        TriggerClientEvent("Command:keyMapping", selectedPlayer.source, commandValues)
                     end
                 end)
             else
@@ -639,5 +655,22 @@ GM:newThread(function()
             TriggerClientEvent("esx:showNotification", playerSrc, "~r~Vous n'avez pas de report en cours.")
             return
         end
+    end)
+
+    GM.Command:register({
+        name = "heading",
+        label = "Afficher sa position",
+        description = "Permet d'afficher sa position",
+    }, function(playerSrc)
+        if (playerSrc == 0) then return end
+
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        local playerPed = playerSelected.getPed()
+
+        local heading = GetEntityHeading(playerPed)
+
+        playerSelected.showNotification("~b~Heading: ~w~"..heading)
     end)
 end)

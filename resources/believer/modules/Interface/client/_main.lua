@@ -2,6 +2,14 @@ GM.Interface = GM.Interface or {}
 
 GM.Interface.CurrentDisplay = true -- Todo faire un module de préférences stocké dans le cache du joueur afin de gérer cette variable
 
+function GM.Interface:ToggleDisplay(BOOLEAN)
+    self.CurrentDisplay = BOOLEAN
+end
+
+exports("toggleInterface", function(BOOLEAN)
+    GM.Interface:ToggleDisplay(BOOLEAN)
+end)
+
 GM.Interface.PlayerCount = 0
 
 function GM.Interface:Display(bool)

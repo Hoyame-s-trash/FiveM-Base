@@ -13,7 +13,6 @@
 body {
   -webkit-user-select: none;
      -moz-user-select: none;
-      -ms-user-select: none;
           user-select: none;
 }
 
@@ -100,11 +99,8 @@ body {
   left: -1rem;
   width: 20.375rem;
   height: 9.063rem;
-  -webkit-animation-name: fadeInLeftBig;
   animation-name: fadeInLeftBig;
-  -webkit-animation-duration: 1s;
   animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   align-items: center;
   justify-content: center;
@@ -413,23 +409,9 @@ body {
 }
 
 .fadeInLeftBig {
-  -webkit-animation-name: fadeInLeftBig;
   animation-name: fadeInLeftBig;
-  -webkit-animation-duration: 1s;
   animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
-}
-
-@-webkit-keyframes fadeInLeftBig {
-  0% {
-    opacity: 0;
-    transform: translate3d(-2000px, 0, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: none;
-  }
 }
 @keyframes fadeInLeftBig {
   0% {
@@ -576,7 +558,7 @@ body {
   width: 3.25rem;
   height: 3.25rem;
   left: 3.125rem;
-  top: 20.938rem;
+  top: 15.938rem;
   position: absolute;
   background-image: url("../icon/trunk.svg");
   background-size: cover;

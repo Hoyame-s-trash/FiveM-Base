@@ -165,6 +165,24 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission de supprimer des véhicules.",
         value = false
     },
+    ["AROUND_ME_PNJS"] = {
+        label = "Supprimer des PNJs",
+        description = "Permet de supprimer des PNJs",
+        error = "~r~Vous n'avez pas la permission de supprimer des PNJs.",
+        value = false
+    },
+    ["AROUND_ME_OBJECTS"] = {
+        label = "Supprimer des props",
+        description = "Permet de supprimer des props",
+        error = "~r~Vous n'avez pas la permission de supprimer des props.",
+        value = false
+    },
+    ["AROUND_ME_REVIVE"] = {
+        label = "Réanimer des joueurs (zone)",
+        description = "Permet de réanimer des joueurs (zone)",
+        error = "~r~Vous n'avez pas la permission de réanimer des joueurs (zone).",
+        value = false
+    },
     -- VEHICLES
     ["VEHICLES_REPAIR"] = {
         label = "Réparer un véhicule",

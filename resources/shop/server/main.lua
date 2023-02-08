@@ -391,6 +391,10 @@ function GeneratePlate()
 	return generatedPlate
 end
 
+exports('GeneratePlate', function()
+    return GeneratePlate()
+end)
+
 function GetRandomNumber(length)
 	Citizen.Wait(1)
 	math.randomseed(GetGameTimer())

@@ -12,24 +12,47 @@ GM.Admin.menu.submenus["around_me"]:isVisible(function(Items)
                     {label = "RADIUS"},
                 }
             })
-            if (input ~= nil) then
-                TriggerServerEvent("Admin:deleteVehicles", input["1"])
-            end
+
+            TriggerServerEvent("Admin:deleteVehicles", input["0"])
         end
     })
     Items:Button("Supprimer les PNJs", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
-            -- Todo event this button
+            local input = exports["input"]:openInput({
+                label = "Supprimer les PNJs",
+                submitLabel = "SUPPRIMER",
+                placeHolders = {
+                    {label = "RADIUS"},
+                }
+            })
+
+            TriggerServerEvent("Admin:deletePnjs", input["0"])
         end
     })
     Items:Button("Supprimer les props", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
-            -- Todo event this button
+            local input = exports["input"]:openInput({
+                label = "Supprimer les props",
+                submitLabel = "SUPPRIMER",
+                placeHolders = {
+                    {label = "RADIUS"},
+                }
+            })
+
+            TriggerServerEvent("Admin:deleteObjects", input["0"])
         end
     })
     Items:Button("Revive zone", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
-            -- Todo event this button
+            local input = exports["input"]:openInput({
+                label = "Revive zone",
+                submitLabel = "RÉANIMER",
+                placeHolders = {
+                    {label = "RADIUS"},
+                }
+            })
+
+            TriggerServerEvent("Admin:reviveZone", input["0"])
         end
     })
     Items:Button("Heal zone", nil, {}, GM.Admin.inAdmin, {
