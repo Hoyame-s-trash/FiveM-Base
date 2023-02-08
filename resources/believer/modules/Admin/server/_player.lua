@@ -139,7 +139,7 @@ GM.Admin.Blips = {}
 GM.Admin.Blips["InBlips"] = {}
 GM.Admin.Blips["list"] = {}
 
-RegisterServerEvent("Admin:blipsManager", function()
+RegisterServerEvent("Admin:blipsManager", function(BOOLEAN)
     local playerSrc = source
     if (not playerSrc) then return end
 
@@ -153,11 +153,13 @@ RegisterServerEvent("Admin:blipsManager", function()
 
     if (not selectedRank:getPermissionsValue("MY_PLAYER_BLIPS", playerSelected.source)) then return end
 
+    if (BOOLEAN == false) then
+        GM.Admin.Blips["InBlips"][playerSrc] = nil
+        TriggerClientEvent("Admin:blipsManager", playerSrc, BOOLEAN)
+    end
+
     if (not GM.Admin.Blips["InBlips"][playerSrc]) then
         GM.Admin.Blips["InBlips"][playerSrc] = true
-    else
-        GM.Admin.Blips["InBlips"][playerSrc] = nil
-        TriggerClientEvent("Admin:blipsManager", playerSrc, false)
     end
 end)
 
@@ -180,7 +182,7 @@ GM:newThread(function()
         for adminSrc, _ in pairs(GM.Admin.Blips["InBlips"]) do
             TriggerClientEvent("Admin:blipsManager", adminSrc, GM.Admin.Blips["list"])
         end
-        Wait(5000)
+        Wait(1000)
     end
 end)
 

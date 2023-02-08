@@ -32,17 +32,21 @@ GM.Admin.menu.main:isVisible(function(Items)
         onChecked = function()
             GM.Admin.inAdmin = true
             TriggerServerEvent("Admin:updatePlayerStaff", true)
-            local ADMIN_SHOW_GAMERTAGS = GM.Preferences:loadPreferences("admin_show_gamertags")
-            if (ADMIN_SHOW_GAMERTAGS == true) then
+            if (GM.Preferences:loadPreferences("admin_show_gamertags") == true) then
                 TriggerServerEvent("Admin:gamerTag", true)
+            end
+            if (GM.Preferences:loadPreferences("admin_show_blips") == true) then
+                TriggerServerEvent("Admin:blipsManager", true)
             end
         end,
         onUnChecked = function()
             GM.Admin.inAdmin = false
             TriggerServerEvent("Admin:updatePlayerStaff", false)
-            local ADMIN_SHOW_GAMERTAGS = GM.Preferences:loadPreferences("admin_show_gamertags")
-            if (ADMIN_SHOW_GAMERTAGS == true) then
+            if (GM.Preferences:loadPreferences("admin_show_gamertags") == true) then
                 TriggerServerEvent("Admin:gamerTag", false)
+            end
+            if (GM.Preferences:loadPreferences("admin_show_blips") == true) then
+                TriggerServerEvent("Admin:blipsManager", false)
             end
         end,
     })
@@ -103,6 +107,9 @@ RegisterNetEvent("Admin:updateValue", function(ADMIN_DATA, ADMIN_KEY, ADMIN_VALU
     if (not ADMIN_VALUE) then
         GM.Admin.data[ADMIN_DATA] = ADMIN_KEY
     else
+        print(ADMIN_DATA)
+        print(ADMIN_KEY)
+        print(ADMIN_VALUE)
         GM.Admin.data[ADMIN_DATA][ADMIN_KEY] = ADMIN_VALUE
     end
 end)

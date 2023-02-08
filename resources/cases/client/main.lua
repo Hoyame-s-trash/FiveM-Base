@@ -26,7 +26,6 @@ RegisterCommand(Cases.OpenCommand, function()
                 premiumCases = Cases.PremiumCases,
                 standardCases = Cases.StandardCases,
                 myGoldCoin = result.creditcoin,
-                mySilverCoin = result.silvercoin,
                 myFirstName = firstname,
                 myLastName = lastname,
                 webSiteLink = Cases.WebsiteLink,

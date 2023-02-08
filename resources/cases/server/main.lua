@@ -12,10 +12,9 @@ ESX.RegisterServerCallback('Cases:getPlayerDetails', function(source, cb)
     local callbackData = {}
     local result = ExecuteSql("SELECT * FROM boutique_account WHERE identifier = '"..identifier.."'")
     if result[1] == nil then    
-        ExecuteSql("INSERT INTO boutique_account SET identifier = '"..identifier.."', credit = '0', silvercoin = '0'")
+        ExecuteSql("INSERT INTO boutique_account SET identifier = '"..identifier.."', credit = '0'")
         callbackData = {
             creditcoin = 0,
-            silvercoin = 0,
             apiKey = steamApiKey,
             steamid = steamid,
             lastItems = lastItems,
@@ -24,7 +23,6 @@ ESX.RegisterServerCallback('Cases:getPlayerDetails', function(source, cb)
     else
         callbackData = {
             creditcoin = result[1].credit,
-            silvercoin = result[1].silvercoin,
             apiKey = steamApiKey,
             steamid = steamid,
             lastItems = lastItems,
@@ -45,14 +43,6 @@ ESX.RegisterServerCallback('Cases:selectedCaseOpen', function(source, cb, caseDa
         if caseData.priceType == "COINS" then 
             if result[1].credit >= caseData.price then 
                 ExecuteSql("UPDATE boutique_account SET credit = credit - '"..caseData.price.."' WHERE identifier = '"..identifier.."'")
-                SendToDiscord("identifier: ``"..identifier.."``\nCASE UNIQUE ID: ``"..caseData.uniqueId.."``\nCASE OPENED!")
-                cb(true)
-            else
-                cb(false)
-            end
-        else
-            if result[1].silvercoin >= caseData.price then 
-                ExecuteSql("UPDATE boutique_account SET silvercoin = silvercoin - '"..caseData.price.."' WHERE identifier = '"..identifier.."'")
                 SendToDiscord("identifier: ``"..identifier.."``\nCASE UNIQUE ID: ``"..caseData.uniqueId.."``\nCASE OPENED!")
                 cb(true)
             else
@@ -167,9 +157,6 @@ ESX.RegisterServerCallback('Cases:sellItem', function(source, cb, caseData, item
     if result[1] ~= nil then    
         if caseData.priceType == "COINS" then 
             ExecuteSql("UPDATE boutique_account SET credit = credit + '"..itemData.sellCredit.."' WHERE identifier = '"..identifier.."'")
-            cb(true)
-        else
-            ExecuteSql("UPDATE boutique_account SET silvercoin = silvercoin + '"..itemData.sellCredit.."' WHERE identifier = '"..identifier.."'")
             cb(true)
         end
         SendToDiscord("identifier: ``"..identifier.."``\nCREDIT: ``"..itemData.sellCredit.."``\nPRICE TYPE: ``"..caseData.priceType.."``\nITEM SELLED!")

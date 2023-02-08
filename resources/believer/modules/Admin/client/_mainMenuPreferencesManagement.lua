@@ -36,9 +36,11 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Preferences:Save("admin_show_blips", true)
+            TriggerServerEvent("Admin:blipsManager", true)
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_show_blips", false)
+            TriggerServerEvent("Admin:blipsManager", false)
         end,
     })
     -- local ADMIN_USE_VMENU_NOCLIP = GM.Preferences:loadPreferences("admin_use_vmenu_noclip")
@@ -194,5 +196,46 @@ RegisterNetEvent("Admin:gamerTag", function(BOOLEAN)
             end
             gamerTags = {}
         end)
+    end
+end)
+
+RegisterNetEvent("Admin:blipsManager", function(BLIPS_DATA)
+
+    if (type(BLIPS_DATA) ~= "table" and BLIPS_DATA == false) then
+        for _, blip in pairs(GM.Admin.data["blips_list"]) do
+            RemoveBlip(blip)
+        end
+        return
+    end
+
+    for _, blip in pairs(GM.Admin.data["blips_list"]) do
+        RemoveBlip(blip)
+    end
+
+    -- for _, player in pairs(GetActivePlayers()) do
+    --     local ped = GetPlayerPed(player)
+    --     if (not DoesBlipExist(GM.Admin.data["blips_list"][player])) then
+    --         GM.Admin.data["blips_list"][player] = AddBlipForEntity(ped)
+    --         SetBlipSprite(GM.Admin.data["blips_list"][player], 6)
+    --         SetBlipScale(GM.Admin.data["blips_list"][player], 0.70)
+    --         SetBlipColour(GM.Admin.data["blips_list"][player], 0)
+    --         SetBlipAsShortRange(GM.Admin.data["blips_list"][player], true)
+    --         BeginTextCommandSetBlipName("STRING")
+    --         AddTextComponentString(player.." - "..GetPlayerName(ped))
+    --         EndTextCommandSetBlipName(GM.Admin.data["blips_list"][player])
+    --     end
+    -- end
+
+    for blipId, blipData in pairs(BLIPS_DATA) do
+        if (not DoesBlipExist(GM.Admin.data["blips_list"][blipId])) then
+            GM.Admin.data["blips_list"][blipId] = AddBlipForCoord(blipData.x, blipData.y, blipData.z)
+            SetBlipSprite(GM.Admin.data["blips_list"][blipId], 6)
+            SetBlipScale(GM.Admin.data["blips_list"][blipId], 0.70)
+            SetBlipColour(GM.Admin.data["blips_list"][blipId], 0)
+            SetBlipAsShortRange(GM.Admin.data["blips_list"][blipId], true)
+            BeginTextCommandSetBlipName("STRING")
+            AddTextComponentString(blipId.." - "..blipData.name)
+            EndTextCommandSetBlipName(GM.Admin.data["blips_list"][blipId])
+        end
     end
 end)

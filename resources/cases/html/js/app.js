@@ -67,7 +67,6 @@ $(document).on("click", ".openCaseButton", function () {
     if (parseInfo.caseTheme === "purple") caseImg = "purpleCase.png";
     $(".openingCaseImageX").attr("src", `./images/src/${caseImg}`);
 
-    var coinImg = "./images/src/silverCoin.png";
     if (parseInfo.priceType == "COINS") coinImg = "./images/src/goldCoin.png";
     $(".openingGoldIconImg").attr("src", coinImg);
 
@@ -314,9 +313,6 @@ $(document).on("click", ".openinOpenCaseButton", function () {
                 if (selectedJson.priceType == "COINS") {
                     var myCoin = parseInt($(".goldCoinAmount").html());
                     $(".goldCoinAmount").html(myCoin - selectedJson.price);
-                } else {
-                    var myCoin = parseInt($(".silverCoinAmount").html());
-                    $(".silverCoinAmount").html(myCoin - selectedJson.price);
                 }
                 var selectedCaseItemsParse = JSON.parse(JSON.stringify(selectedJson));
                 setItemsIntoRollArea(selectedCaseItemsParse.items, data);
@@ -368,9 +364,6 @@ $(document).on("click", ".openinOpenFastButton", function () {
                 if (selectedJson.priceType == "COINS") {
                     var myCoin = parseInt($(".goldCoinAmount").html());
                     $(".goldCoinAmount").html(myCoin - selectedJson.price);
-                } else {
-                    var myCoin = parseInt($(".silverCoinAmount").html());
-                    $(".silverCoinAmount").html(myCoin - selectedJson.price);
                 }
                 var selectedCaseItemsParse = JSON.parse(JSON.stringify(selectedJson));
                 setItemsIntoRollArea(selectedCaseItemsParse.items, data);
@@ -437,9 +430,6 @@ $(document).on("click", "#sellButton", function () {
             if (generalCaseParse.priceType == "COINS") {
                 var myCoin = parseInt($(".goldCoinAmount").html());
                 $(".goldCoinAmount").html(myCoin + wonItemParse.sellCredit);
-            } else {
-                var myCoin = parseInt($(".silverCoinAmount").html());
-                $(".silverCoinAmount").html(myCoin + wonItemParse.sellCredit);
             }
             $(".congratulationsSection").fadeOut(400);
             setTimeout(() => {
@@ -639,7 +629,6 @@ window.addEventListener("message", (event) => {
         $(".openinOpenCaseButton").html(translate.openCase);
         $("#inBoxItemsText").html(translate.items);
         $(".goldCoinAmount").html(event.data.myGoldCoin);
-        $(".silverCoinAmount").html(event.data.mySilverCoin);
         $(".firstName").html(event.data.myFirstName);
         $(".lastName").html(event.data.myLastName);
         premiumCases = event.data.premiumCases;
