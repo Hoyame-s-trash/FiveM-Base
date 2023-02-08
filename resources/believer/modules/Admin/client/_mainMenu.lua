@@ -32,27 +32,17 @@ GM.Admin.menu.main:isVisible(function(Items)
         onChecked = function()
             GM.Admin.inAdmin = true
             TriggerServerEvent("Admin:updatePlayerStaff", true)
+            local ADMIN_SHOW_GAMERTAGS = GM.Preferences:loadPreferences("admin_show_gamertags")
+            if (ADMIN_SHOW_GAMERTAGS == true) then
+                TriggerServerEvent("Admin:gamerTag", true)
+            end
         end,
         onUnChecked = function()
             GM.Admin.inAdmin = false
             TriggerServerEvent("Admin:updatePlayerStaff", false)
-            if (GM.Admin.data["all_weapons_bool"] == true) then
-                GM.Admin.data["all_weapons_bool"] = false
-                TriggerServerEvent("Admin:removeAllWeapons")
-            end
-            if (GM.Admin.data["gamertag_bool"] == true) then
-                GM.Admin.data["gamertag_bool"] = false
-                CHECKED_GAMERTAG = false
-                TriggerEvent("Admin:gamerTag", false)
-            end
-            if (GM.Admin.data["blips_bool"] == true) then
-                GM.Admin.data["blips_bool"] = false
-                CHECKED_BLIPS = false
-                TriggerEvent("Admin:blipsManager", false)
-            end
-            if (GM.Admin.data["gamertag_myself_bool"] == true) then
-                CHECKED_GAMERTAG_MYSELF = false
-                GM.Admin.data["gamertag_myself_bool"] = false
+            local ADMIN_SHOW_GAMERTAGS = GM.Preferences:loadPreferences("admin_show_gamertags")
+            if (ADMIN_SHOW_GAMERTAGS == true) then
+                TriggerServerEvent("Admin:gamerTag", false)
             end
         end,
     })

@@ -10,11 +10,11 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Preferences:Save("admin_show_gamertags", true)
-            -- Todo event this
+            TriggerServerEvent("Admin:gamerTag", true)
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_show_gamertags", false)
-            -- Todo event this
+            TriggerServerEvent("Admin:gamerTag", false)
         end,
     })
     local ADMIN_SHOW_MYSELF = GM.Preferences:loadPreferences("admin_show_myself")
@@ -24,11 +24,9 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Preferences:Save("admin_show_myself", true)
-            -- Todo event this
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_show_myself", false)
-            -- Todo event this
         end,
     })
     local ADMIN_SHOW_BLIPS = GM.Preferences:loadPreferences("admin_show_blips")
@@ -38,11 +36,9 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Preferences:Save("admin_show_blips", true)
-            -- Todo event this
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_show_blips", false)
-            -- Todo event this
         end,
     })
     local ADMIN_USE_VMENU_NOCLIP = GM.Preferences:loadPreferences("admin_use_vmenu_noclip")
@@ -52,11 +48,9 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Preferences:Save("admin_use_vmenu_noclip", true)
-            -- Todo event this
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_use_vmenu_noclip", false)
-            -- Todo event this
         end,
     })
     local ADMIN_SHOW_REPORTS = GM.Preferences:loadPreferences("admin_show_reports")
@@ -66,11 +60,9 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Preferences:Save("admin_show_reports", true)
-            -- Todo event this
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_show_reports", false)
-            -- Todo event this
         end,
     })
     local ADMIN_SOUND_REPORTS = GM.Preferences:loadPreferences("admin_sound_reports")
@@ -80,11 +72,9 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Preferences:Save("admin_sound_reports", true)
-            -- Todo event this
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_sound_reports", false)
-            -- Todo event this
         end,
     })
     local ADMIN_MASK_LOGS_REPORTS = GM.Preferences:loadPreferences("admin_mask_logs_reports")
@@ -94,11 +84,9 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Preferences:Save("admin_mask_logs_reports", true)
-            -- Todo event this
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_mask_logs_reports", false)
-            -- Todo event this
         end,
     })
     local ADMIN_MASK_MSG_STAFF = GM.Preferences:loadPreferences("admin_mask_msg_staff")
@@ -108,11 +96,9 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Preferences:Save("admin_mask_msg_staff", true)
-            -- Todo event this
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_mask_msg_staff", false)
-            -- Todo event this
         end,
     })
     Items:Checkbox("Afficher toutes les propriétés", nil, ADMIN_SHOW_PROPERTIES, {}, {
@@ -120,10 +106,91 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
             ADMIN_SHOW_PROPERTIES = Checked
         end,
         onChecked = function()
-            -- Todo event this
         end,
         onUnChecked = function()
-            -- Todo event this
         end,
     })
+end)
+
+local gamerTags = {}
+
+RegisterNetEvent("Admin:gamerTag", function(BOOLEAN)
+    gamerTagActive = BOOLEAN
+    if gamerTagActive then
+        GM:newThread(function()
+            while gamerTagActive do
+                local plyPed = PlayerPedId()
+                for _,v in pairs(GetActivePlayers()) do
+                    if #(GetEntityCoords(plyPed, false) - GetEntityCoords(GetPlayerPed(v), false)) < 5000.0 then
+                        if GM.Admin.data["players"][GetPlayerServerId(v)] ~= nil then
+                            gamerTags[GetPlayerPed(v)] = CreateFakeMpGamerTag(GetPlayerPed(v), "("..GetPlayerServerId(v)..") - "..GetPlayerName(v), false, false, "", 0)
+                            SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 0, 255)
+                            SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 2, 255)
+                            SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 4, 255)
+                            SetMpGamerTagVisibility(gamerTags[GetPlayerPed(v)], 0, true)
+                            SetMpGamerTagVisibility(gamerTags[GetPlayerPed(v)], 2, true)
+                            SetMpGamerTagVisibility(gamerTags[GetPlayerPed(v)], 4, NetworkIsPlayerTalking(v))
+
+                            if GM.Admin.data["players"][GetPlayerServerId(v)].admin == true then
+                                SetMpGamerTagVisibility(gamerTags[GetPlayerPed(v)], 14, true)
+                                SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 14, 255)
+                            else
+                                SetMpGamerTagVisibility(gamerTags[GetPlayerPed(v)], 14, false)
+                                SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 14, 0)
+                            end
+
+                            if GM.Admin.data["players"][GetPlayerServerId(v)].vip == 1 then
+                                SetMpGamerTagVisibility(gamerTags[GetPlayerPed(v)], 7, true)
+                                SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 7, 255)
+                            else
+                                SetMpGamerTagVisibility(gamerTags[GetPlayerPed(v)], 7, false)
+                                SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 7, 0)
+                            end
+                        end
+                        
+                        if GM.Admin.data["players"][GetPlayerServerId(v)] ~= nil then
+                            if GM.Admin.data["players"][GetPlayerServerId(v)].invisible == true then
+                                RemoveMpGamerTag(gamerTags[GetPlayerPed(v)])
+                            end
+                        end
+
+                        if (GM.Admin.data["gamertag_myself_bool"] == nil or GM.Admin.data["gamertag_myself_bool"] == false) and GetPlayerServerId(v) == GetPlayerServerId(PlayerId()) then
+                            RemoveMpGamerTag(gamerTags[GetPlayerPed(v)])
+                        end
+                        
+                        if GM.Admin.data["players"][GetPlayerServerId(v)] ~= nil then
+                            if GM.Admin.data["players"][GetPlayerServerId(v)].rank == "Fondateur" then
+                                SetMpGamerTagColour(gamerTags[GetPlayerPed(v)], 0, 9)
+                            elseif GM.Admin.data["players"][GetPlayerServerId(v)].rank == "Manager" then
+                                SetMpGamerTagColour(gamerTags[GetPlayerPed(v)], 0, 18)
+                            elseif GM.Admin.data["players"][GetPlayerServerId(v)].rank == "Gérant Staff" then
+                                SetMpGamerTagColour(gamerTags[GetPlayerPed(v)], 0, 27)
+                            elseif GM.Admin.data["players"][GetPlayerServerId(v)].rank == "Administrateur" then
+                                SetMpGamerTagColour(gamerTags[GetPlayerPed(v)], 0, 31)
+                            elseif GM.Admin.data["players"][GetPlayerServerId(v)].rank == "Modérateur" then
+                                SetMpGamerTagColour(gamerTags[GetPlayerPed(v)], 0, 4)
+                            elseif GM.Admin.data["players"][GetPlayerServerId(v)].rank == "Helpeur" then
+                                SetMpGamerTagColour(gamerTags[GetPlayerPed(v)], 0, 5)
+                            elseif GM.Admin.data["players"][GetPlayerServerId(v)].rank == "Ami" then
+                                SetMpGamerTagColour(gamerTags[GetPlayerPed(v)], 0, 6)
+                            end
+                        end
+                        if NetworkIsPlayerTalking(v) then
+                            SetMpGamerTagColour(gamerTags[GetPlayerPed(v)], 4, 0)
+                        else
+                            SetMpGamerTagColour(gamerTags[GetPlayerPed(v)], 4, 0)
+                        end
+                    else
+                        RemoveMpGamerTag(gamerTags[GetPlayerPed(v)])
+                        gamerTags[GetPlayerPed(v)] = nil
+                    end
+                end
+                Citizen.Wait(25)
+            end
+            for _,v in pairs(gamerTags) do
+                RemoveMpGamerTag(v)
+            end
+            gamerTags = {}
+        end)
+    end
 end)
