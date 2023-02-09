@@ -107,9 +107,6 @@ RegisterNetEvent("Admin:updateValue", function(ADMIN_DATA, ADMIN_KEY, ADMIN_VALU
     if (not ADMIN_VALUE) then
         GM.Admin.data[ADMIN_DATA] = ADMIN_KEY
     else
-        print(ADMIN_DATA)
-        print(ADMIN_KEY)
-        print(ADMIN_VALUE)
         GM.Admin.data[ADMIN_DATA][ADMIN_KEY] = ADMIN_VALUE
     end
 end)

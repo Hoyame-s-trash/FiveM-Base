@@ -4,7 +4,12 @@ RegisterNUICallback("TestDrive",function(data, cb)
     SetEntityVisible(PlayerPedId(), 1)
     local hash = GetHashKey(data.car)
     lastPlayerCoords = GetEntityCoords(PlayerPedId())
-    if not HasModelLoaded(hash) then RequestModel(hash) while not HasModelLoaded(hash) do Citizen.Wait(10) end end
+    if not HasModelLoaded(hash) then 
+        RequestModel(hash) 
+        while not HasModelLoaded(hash) do 
+            Citizen.Wait(10) 
+        end 
+    end
     testDriveEntity = CreateVehicle(hash, vector4(TestDrive), 1, 1) -- ? TestDriveSpawnPosition
     SetPedIntoVehicle(PlayerPedId(), testDriveEntity, -1)
     SetVehicleNumberPlateText(testDriveEntity,"TestCar")-- ! TestDrivePlate
@@ -153,48 +158,12 @@ Citizen.CreateThread(function()
 end)
 
 RegisterNUICallback("Buy", function(data, cb)
-    --CloseNui()
     TriggerServerEvent("Cardealer:buyVehicle", {
         model = data.model,
         price = data.price,
         color = data.color,
         type = data.shoptype
     })
-    -- ESX.TriggerServerCallback("isPrice", function(result)
-    --     if result then 
-    --         local hash = GetHashKey(data.model)
-    --         local coords = konumfor(SpawnCoords)
-    --         if coords ~= nil then
-    --             if not HasModelLoaded(hash) then 
-    --                 RequestModel(hash) 
-    --                 while not HasModelLoaded(hash) do 
-    --                     Citizen.Wait(10) 
-    --                 end 
-    --             end
-    --             local buycar = CreateVehicle(hash, coords.x,coords.y,coords.z, coords.w, true, false)
-    --             local netid = NetworkGetNetworkIdFromEntity(buycar)
-    --             local NewPlate = CustomizePlate()
-    --             SetPedIntoVehicle(PlayerPedId(), buycar, -1)
-    --             SetVehicleNumberPlateText(buycar, NewPlate)
-    --             SetVehicleCustomPrimaryColour(buycar,  data.color.R, data.color.G, data.color.B)
-    --             SetVehicleCustomSecondaryColour(buycar, data.color.R, data.color.G, data.color.B)
-    --             SetPedIntoVehicle(PlayerPedId(), buycar, -1)
-    --             SetVehicleHasBeenOwnedByPlayer(buycar, true)
-    --             SetNetworkIdCanMigrate(netid, true)
-    --             SetVehicleNeedsToBeHotwired(buycar, false)
-    --             SetVehRadioStation(buycar, 'OFF')
-    --             local Plate = GetVehicleNumberPlateText(buycar)
-    --             Plate = Trim(GetVehicleNumberPlateText(buycar))
-    --             CloseNui()
-    --             CustomizeCamera(isOpen)
-    --             TriggerServerEvent("vehicleshop:setVehicleOwned", Plate, ESX.Game.GetVehicleProperties(buycar), data.model)
-    --             SendNUIMessage({type = "close"})
-    --             Config.Carkeys(Plate)
-    --         end
-    --     else
-    --         ESX.ShowNotification("Insufficient Money")
-    --     end
-    -- end, data.price)
 end)
 
 RegisterNetEvent("Cardealer:closeUI", function()

@@ -84,10 +84,19 @@ RegisterServerEvent("Cardealer:buyVehicle", function(vehicle)
                 playerSelected.removeMoney(Config.Vehicles.Car[vehicle.type][i].price)
                 local plate = GeneratePlate()
 
-                MySQL.insert('INSERT INTO owned_vehicles (owner, plate, outfit) VALUES (@identifier, @name, @outfit)', {
-                    ["@identifier"] = playerIdentifier,
-                    ["@name"] = outfitName,
-                    ["@outfit"] = json.encode(outfit)
+                vehicle = {
+                    model = vehicle.model,
+                    plate = plate,
+                    customPrimaryColor = {vehicle.color["R"], vehicle.color["G"], vehicle.color["B"]},
+                    customSecondaryColor = {vehicle.color["R"], vehicle.color["G"], vehicle.color["B"]},
+                }
+
+                MySQL.insert('INSERT INTO owned_vehicles (owner, plate, vehicle, type, stored) VALUES (@owner, @plate, @vehicle, @type, @stored)', {
+                    ["@owner"] = playerSelected.getIdentifier(),
+                    ["@plate"] = plate,
+                    ["@vehicle"] = json.encode(vehicle),
+                    ["@type"] = vehicle.type,
+                    ["@stored"] = 1
                 },function(outfitId)
                     local upgrades = {
                         plate = plate, 
@@ -130,22 +139,5 @@ RegisterServerEvent("Cardealer:buyVehicle", function(vehicle)
                 --return
             --end
         end
-    end
-end)
-
-ESX.RegisterServerCallback("isPrice", function(source, cb, money)
-    local Player = ESX.GetPlayerFromId(source)
-    if Player.getMoney() >= tonumber(money) then 
-        Player.removeMoney(tonumber(money))
-        cb(true)
-    else
-        cb(false)
-    end
-end)
-
-RegisterServerEvent('vehicleshop:setVehicleOwned', function (Plate,Props, Model)
-    local Player = ESX.GetPlayerFromId(source).identifier
-    if GetResourceState('oxmysql') == 'started' then
-        exports.oxmysql:insert('INSERT INTO owned_vehicles (owner, plate, vehicle) VALUES (?, ?, ?) ', {Player, Plate, json.encode(Props)})
     end
 end)
