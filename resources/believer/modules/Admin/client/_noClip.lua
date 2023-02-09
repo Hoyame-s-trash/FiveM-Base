@@ -131,14 +131,14 @@ function GM.Admin.Noclip:ControlInCam()
         end
     end
     if IsControlJustPressed(0, GM.Admin.Noclip.DetailsScalform.speed.control) then
-        DisplayOnscreenKeyboard(false, "FMMC_KEY_TIP8", "", GM.Admin.Noclip.SpeedNoclip, "", "", "", 5)
-        while UpdateOnscreenKeyboard() == 0 do
-            Citizen.Wait(10)
-            if UpdateOnscreenKeyboard() == 1 and GetOnscreenKeyboardResult() and string.len(GetOnscreenKeyboardResult()) >= 1 then
-                GM.Admin.Noclip.SpeedNoclip = tonumber(GetOnscreenKeyboardResult()) or 1.0
-                break
-            end
-        end
+        local input = exports["input"]:openInput({
+            label = "Vitesse NoClip",
+            submitLabel = "APPLIQUER",
+            placeHolders = {
+                {label = "Vitesse"},
+            }
+        })
+        GM.Admin.Noclip.SpeedNoclip = tonumber(input["0"]) or 1.0
     end
     if IsControlJustPressed(0, GM.Admin.Noclip.DetailsScalform.message.control) then
         -- local input = exports["input"]:openInput({

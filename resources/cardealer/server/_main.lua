@@ -84,7 +84,7 @@ RegisterServerEvent("Cardealer:buyVehicle", function(vehicle)
                 playerSelected.removeMoney(Config.Vehicles.Car[vehicle.type][i].price)
                 local plate = GeneratePlate()
 
-                vehicle = {
+                newVehicle = {
                     model = vehicle.model,
                     plate = plate,
                     customPrimaryColor = {vehicle.color["R"], vehicle.color["G"], vehicle.color["B"]},
@@ -94,7 +94,7 @@ RegisterServerEvent("Cardealer:buyVehicle", function(vehicle)
                 MySQL.insert('INSERT INTO owned_vehicles (owner, plate, vehicle, type, stored) VALUES (@owner, @plate, @vehicle, @type, @stored)', {
                     ["@owner"] = playerSelected.getIdentifier(),
                     ["@plate"] = plate,
-                    ["@vehicle"] = json.encode(vehicle),
+                    ["@vehicle"] = json.encode(newVehicle),
                     ["@type"] = vehicle.type,
                     ["@stored"] = 1
                 },function(outfitId)
