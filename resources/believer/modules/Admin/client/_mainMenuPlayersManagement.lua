@@ -6,7 +6,7 @@ GM.Admin.menu.submenus["players_management"] = RageUI.CreateSubMenu(GM.Admin.men
 
 GM.Admin.menu.submenus["players"]:isVisible(function(Items)
     -- Todo when pressed keys F open filter menu
-    Items:Button("~b~Rechercher", nil, {RightLabel = "🔍"}, GM.Admin.inAdmin, {
+    Items:Button("Filtre", nil, {RightLabel = GM.Admin.data["filterValue"] or "Aucun"}, GM.Admin.inAdmin, {
         onSelected = function()
             local input = exports["input"]:openInput({
                 label = "Rechercher",
