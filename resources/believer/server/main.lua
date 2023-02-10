@@ -1,8 +1,8 @@
 SetMapName('San Andreas')
 SetGameType('ESX Legacy')
 
-local newPlayer = 'INSERT INTO `users` SET `accounts` = ?, `identifier` = ?, `group` = ?'
-local loadPlayer = 'SELECT `uniqueId`, `accounts`, `job`, `job_grade`, `group`, `position`, `inventory`, `skin`, `loadout`, `is_dead`'
+local newPlayer = 'INSERT INTO `users` SET `accounts` = ?, `identifier` = ?, `group` = ?, `first_connection` = ?'
+local loadPlayer = 'SELECT `uniqueId`, `accounts`, `job`, `job_grade`, `group`, `position`, `inventory`, `skin`, `loadout`, `is_dead`, `first_connection`'
 
 if Config.Identity then
   loadPlayer = loadPlayer .. ', `firstname`, `lastname`, `dateofbirth`, `sex`, `height`'
@@ -48,14 +48,14 @@ function createESXPlayer(identifier, playerId, data)
     accounts[account] = money
   end
 
-  MySQL.prepare(newPlayer, {json.encode(accounts), identifier, "user"}, function()
+  MySQL.prepare(newPlayer, {json.encode(accounts), identifier, "user", os.time(os.date("!*t"))}, function()
     loadESXPlayer(identifier, playerId, true)
   end)
 end
 
 
 function loadESXPlayer(identifier, playerId, isNew)
-  local userData = {uniqueId = 0, accounts = {}, inventory = {}, job = {}, loadout = {}, playerName = GetPlayerName(playerId), weight = 0, is_dead = false}
+  local userData = {uniqueId = 0, accounts = {}, inventory = {}, job = {}, loadout = {}, playerName = GetPlayerName(playerId), weight = 0, is_dead = false, first_connection = os.time(os.date("!*t"))}
 
   local result = MySQL.prepare.await(loadPlayer, {identifier})
   local job, grade, jobObject, gradeObject = result.job, tostring(result.job_grade)
@@ -67,8 +67,16 @@ function loadESXPlayer(identifier, playerId, isNew)
     userData.uniqueId = result.uniqueId
   end
 
+  -- Dead
+
   if result.is_dead then
     userData.is_dead = result.is_dead
+  end
+
+  -- First connection
+
+  if result.first_connection then
+    userData.first_connection = result.first_connection
   end
 
   -- Accounts
@@ -217,7 +225,7 @@ function loadESXPlayer(identifier, playerId, isNew)
   end
 
   local xPlayer = CreateExtendedPlayer(playerId, identifier, userData.group, userData.accounts, userData.inventory, userData.weight, userData.job,
-    userData.loadout, userData.playerName, userData.coords, userData.uniqueId, userData.is_dead)
+    userData.loadout, userData.playerName, userData.coords, userData.uniqueId, userData.is_dead, userData.first_connection)
   ESX.Players[playerId] = xPlayer
 
   if userData.firstname then

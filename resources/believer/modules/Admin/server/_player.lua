@@ -223,3 +223,37 @@ RegisterServerEvent("Admin:invisibleStaff", function(BOOLEAN)
         end
     end
 end)
+
+RegisterServerEvent("Admin:getInformationsPlayer", function(playerId)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not selectedRank) then return end
+
+    if (not selectedRank:getPermissionsValue("PLAYER_INFORMATIONS", playerSelected.source)) then return end
+
+    local playerTarget = ESX.GetPlayerFromId(playerId)
+    if (not playerTarget) then return end
+
+    local targetIdentifier = playerTarget.getIdentifier()
+    if (not targetIdentifier) then return end
+
+    local playerInformations = {
+        name = playerTarget.getName(),
+        uniqueId = playerTarget.getUniqueId(),
+        job = playerTarget.job.name,
+        money = playerTarget.getMoney(),
+        bank = playerTarget.getAccount("bank").money,
+        dirty = playerTarget.getAccount("black_money").money,
+        first_connection = GM.PlayTime:convertTimestampToDate(playerTarget.getFirstConnection()),
+        time_play = GM.PlayTime:getActualTime(targetIdentifier),
+    }
+
+    TriggerClientEvent("Admin:updateValue", playerSelected.source, "informations", playerInformations)
+end)

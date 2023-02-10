@@ -190,4 +190,11 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission de réparer un véhicule.",
         value = false
     },
+    -- PLAYERS
+    ["PLAYER_INFORMATIONS"] = {
+        label = "Informations d'un joueur",
+        description = "Permet d'obtenir les informations d'un joueur",
+        error = "~r~Vous n'avez pas la permission d'obtenir les informations d'un joueur.",
+        value = false
+    },
 }

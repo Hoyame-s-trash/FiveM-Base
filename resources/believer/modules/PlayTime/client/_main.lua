@@ -1,0 +1,1 @@
+GM.PlayTime = GM.PlayTime or {}

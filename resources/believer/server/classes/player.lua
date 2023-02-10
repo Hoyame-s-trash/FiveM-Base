@@ -4,7 +4,7 @@ local DoesEntityExist = DoesEntityExist
 local GetEntityCoords = GetEntityCoords
 local GetEntityHeading = GetEntityHeading
 
-function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, weight, job, loadout, name, coords, uniqueId, is_dead)
+function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, weight, job, loadout, name, coords, uniqueId, is_dead, first_connection)
 	local targetOverrides = Config.PlayerFunctionOverride and Core.PlayerFunctionOverrides[Config.PlayerFunctionOverride] or {}
 	
 	local self = {}
@@ -26,6 +26,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	self.license = 'license:'..identifier
 	self.is_dead = is_dead
 	self.vip = vip or 1
+	self.first_connection = first_connection
 
 	ExecuteCommand(('add_principal identifier.%s group.%s'):format(self.license, self.group))
 	
@@ -46,6 +47,10 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 
 	function self.setDead(boolean)
 		self.is_dead = boolean
+	end
+
+	function self.getFirstConnection()
+		return self.first_connection
 	end
 
 	function self.getVip()

@@ -4,6 +4,9 @@ GM.Admin.menu.submenus["players"] = RageUI.CreateSubMenu(GM.Admin.menu.main, "",
 
 GM.Admin.menu.submenus["players_management"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["players"], "", "Détails du joueur")
 
+GM.Admin.menu.submenus["players_management_informations"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["players_management"], "", "Informations du joueur")
+
+
 GM.Admin.menu.submenus["players"]:isVisible(function(Items)
     -- Todo when pressed keys F open filter menu
     Items:Button("Filtre", nil, {RightLabel = GM.Admin.data["filterValue"] or "Aucun"}, GM.Admin.inAdmin, {
@@ -15,13 +18,15 @@ GM.Admin.menu.submenus["players"]:isVisible(function(Items)
                     {label = "ID / UNIQUE ID / NOM / RANK"},
                 }
             })
-            if (not input["0"]) then return end
+            if (not input["0"]) then
+                GM.Admin.data["filterValue"] = "Aucun"
+            end
             GM.Admin.data["filterValue"] = input["0"]
         end
     })
     for playerSrc, playersValues in pairs(GM.Admin.data["players"]) do
         if (playersValues.invisible == false) then
-            if GM.Admin.data["filterValue"] == nil or string.find(playersValues.id, GM.Admin.data["filterValue"]) or string.find(playersValues.name, GM.Admin.data["filterValue"]) or string.find(playersValues.rank, GM.Admin.data["filterValue"]) or string.find(playersValues.uniqueId, GM.Admin.data["filterValue"]) then
+            if GM.Admin.data["filterValue"] == nil or GM.Admin.data["filterValue"] == "Aucun" or string.find(playersValues.id, GM.Admin.data["filterValue"]) or string.find(playersValues.name, GM.Admin.data["filterValue"]) or string.find(playersValues.rank, GM.Admin.data["filterValue"]) or string.find(playersValues.uniqueId, GM.Admin.data["filterValue"]) then
                 Items:Button(playersValues.name, nil, { RightLabel = playersValues.id}, GM.Admin.inAdmin, {
                     onSelected = function()
                         GM.Admin.data["selectedPlayer"] = playersValues.id
@@ -68,8 +73,9 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
     })
     Items:Button("Informations", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            TriggerServerEvent("Admin:getInformationsPlayer", GM.Admin.data["selectedPlayer"])
         end
-    })
+    }, GM.Admin.menu.submenus["players_management_informations"])
     Items:Button("Liste des véhicules", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
         end
@@ -153,4 +159,17 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
         onSelected = function()
         end
     })
+end)
+
+GM.Admin.menu.submenus["players_management_informations"]:isVisible(function(Items)
+    if (GM.Admin.data["informations"] ~= nil) then 
+        Items:Button("Nom", nil, {RightLabel = GM.Admin.data["informations"].name}, GM.Admin.inAdmin, {})
+        Items:Button("Id unique", nil, {RightLabel = GM.Admin.data["informations"].uniqueId}, GM.Admin.inAdmin, {})
+        Items:Button("Job", nil, {RightLabel = GM.Admin.data["informations"].job}, GM.Admin.inAdmin, {})
+        Items:Button("Argent", nil, {RightLabel = GM.Admin.data["informations"].money}, GM.Admin.inAdmin, {})
+        Items:Button("Banque", nil, {RightLabel = GM.Admin.data["informations"].bank}, GM.Admin.inAdmin, {})
+        Items:Button("Sale", nil, {RightLabel = GM.Admin.data["informations"].dirty}, GM.Admin.inAdmin, {})
+        Items:Button("Première connexion", nil, {RightLabel = GM.Admin.data["informations"].first_connection}, GM.Admin.inAdmin, {})
+        Items:Button("Temps de jeu", nil, {RightLabel = GM.Admin.data["informations"].time_play}, GM.Admin.inAdmin, {})
+    end
 end)
