@@ -155,7 +155,8 @@ RegisterServerEvent("Admin:blipsManager", function(BOOLEAN)
 
     if (BOOLEAN == false) then
         GM.Admin.Blips["InBlips"][playerSrc] = nil
-        TriggerClientEvent("Admin:blipsManager", playerSrc, BOOLEAN)
+        TriggerClientEvent("Admin:blipsManager", playerSrc, false)
+        return
     end
 
     if (not GM.Admin.Blips["InBlips"][playerSrc]) then
@@ -360,4 +361,71 @@ RegisterServerEvent("Admin:getVehiclesPlayer", function(playerId)
             TriggerClientEvent("Admin:updateValue", playerSelected.source, "vehicles", vehicles)
         end
     end)
+end)
+
+RegisterServerEvent("Admin:showReportCount", function()
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local playerIdentifier = playerSelected.getIdentifier()
+    if (not playerIdentifier) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    TriggerClientEvent("Interface:admin", playerSelected.source, {
+        type = "updateAdmin",
+        admin = true,
+        reports = true,
+        currentReports = tostring(GM.Admin.Reports:count()),
+        totalReports = tostring(GM.Ranks["players"][playerIdentifier].reports)
+    })
+end)
+
+RegisterServerEvent("Admin:killPlayer", function(playerId)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not selectedRank) then return end
+
+    if (not selectedRank:getPermissionsValue("PLAYER_KILL", playerSelected.source)) then return end
+
+    local targetSelected = ESX.GetPlayerFromId(playerId)
+    if (not targetSelected) then return end
+
+    TriggerClientEvent("Admin:killPlayer", targetSelected.source)
+end)
+
+RegisterServerEvent("Admin:resetIdentityPlayer", function(playerId)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not selectedRank) then return end
+
+    if (not selectedRank:getPermissionsValue("PLAYER_RESET_IDENTITY", playerSelected.source)) then return end
+
+    local targetSelected = ESX.GetPlayerFromId(playerId)
+    if (not targetSelected) then return end
+
+    targetSelected.set("reset_identity", true)
+    playerSelected.showNotification("~b~Vous avez réinitialisé l'identité de "..targetSelected.getName()..".")
+    targetSelected.showNotification("~r~Votre identité a été réinitialisée par un staff.")
+
+    
+
+    TriggerClientEvent("Creator:openIdentity", targetSelected.source, targetSelected.get("firstName"), targetSelected.get("lastName"), targetSelected.get("dateofbirth"), targetSelected.get("height"), targetSelected.get("sex"))
 end)

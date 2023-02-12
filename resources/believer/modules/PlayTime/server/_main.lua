@@ -55,7 +55,6 @@ AddEventHandler("playerDropped", function(reason)
             ['@time'] = storedTime + playTime,
             ['@identifier'] = playerIdentifier
         }, function()
-            print("Player " .. playerSelected.getName() .. " (" .. playerIdentifier .. ") has played for " .. GM.PlayTime:SecondsToClock(storedTime + playTime) .. ".")
             GM.PlayTime.List[playerIdentifier] = nil
         end)
     end

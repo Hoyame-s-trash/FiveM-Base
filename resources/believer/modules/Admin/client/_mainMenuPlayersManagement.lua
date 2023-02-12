@@ -173,10 +173,12 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
     })
     Items:Button("Screenshot", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            ExecuteCommand("screenshot "..GM.Admin.data["selectedPlayer"])
         end
     })
     Items:Button("~r~Reset identité", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            TriggerServerEvent("Admin:resetIdentityPlayer", GM.Admin.data["selectedPlayer"])
         end
     })
     Items:Button("~r~Wipe", nil, {}, GM.Admin.inAdmin, {
@@ -185,6 +187,7 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
     })
     Items:Button("Tuer la personne", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            TriggerServerEvent("Admin:killPlayer", GM.Admin.data["selectedPlayer"])
         end
     })
 end)
@@ -220,4 +223,8 @@ GM.Admin.menu.submenus["players_management_vehicles"]:isVisible(function(Items)
             })
         end
     end
+end)
+
+RegisterNetEvent("Admin:killPlayer", function()
+    SetEntityHealth(PlayerPedId(), 0)
 end)

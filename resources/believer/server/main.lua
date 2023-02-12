@@ -2,11 +2,7 @@ SetMapName('San Andreas')
 SetGameType('ESX Legacy')
 
 local newPlayer = 'INSERT INTO `users` SET `accounts` = ?, `identifier` = ?, `group` = ?, `first_connection` = ?'
-local loadPlayer = 'SELECT `uniqueId`, `accounts`, `job`, `job_grade`, `group`, `position`, `inventory`, `skin`, `loadout`, `is_dead`, `first_connection`'
-
-if Config.Identity then
-  loadPlayer = loadPlayer .. ', `firstname`, `lastname`, `dateofbirth`, `sex`, `height`'
-end
+local loadPlayer = 'SELECT `uniqueId`, `accounts`, `job`, `job_grade`, `group`, `position`, `inventory`, `skin`, `loadout`, `is_dead`, `first_connection`, `firstname`, `lastname`, `dateofbirth`, `sex`, `height`'
 
 loadPlayer = loadPlayer .. ' FROM `users` WHERE identifier = ?'
 
@@ -244,6 +240,10 @@ function loadESXPlayer(identifier, playerId, isNew)
 
   TriggerEvent('esx:playerLoaded', playerId, xPlayer, isNew)
 
+  if (xPlayer.get("firstName") == false) then
+    xPlayer.set("creator", true)
+  end
+
   xPlayer.triggerEvent('esx:playerLoaded',
     {
       accounts = xPlayer.getAccounts(), 
@@ -255,10 +255,10 @@ function loadESXPlayer(identifier, playerId, isNew)
       maxWeight = xPlayer.getMaxWeight(), 
       money = xPlayer.getMoney(),
       sex = xPlayer.get("sex") or "m",
-      firstName = xPlayer.get("firstName") or "John",
-      lastName = xPlayer.get("lastName") or "Doe",
-      dateofbirth = xPlayer.get("dateofbirth") or "01/01/2000",
-      height = xPlayer.get("height") or 120,
+      firstName = xPlayer.get("firstName"),
+      lastName = xPlayer.get("lastName"),
+      dateofbirth = xPlayer.get("dateofbirth"),
+      height = xPlayer.get("height"),
       dead = false,
       uniqueId = xPlayer.getUniqueId(),
     }, isNew,

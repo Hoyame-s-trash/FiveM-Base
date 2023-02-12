@@ -215,4 +215,16 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission d'obtenir les véhicules d'un joueur.",
         value = false
     },
+    ["PLAYER_KILL"] = {
+        label = "Tuer un joueur",
+        description = "Permet de tuer un joueur",
+        error = "~r~Vous n'avez pas la permission de tuer un joueur.",
+        value = false
+    },
+    ["PLAYER_RESET_IDENTITY"] = {
+        label = "Réinitialiser l'identité d'un joueur",
+        description = "Permet de réinitialiser l'identité d'un joueur",
+        error = "~r~Vous n'avez pas la permission de réinitialiser l'identité d'un joueur.",
+        value = false
+    }
 }

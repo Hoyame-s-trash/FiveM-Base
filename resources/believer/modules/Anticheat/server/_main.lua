@@ -88,28 +88,28 @@ RegisterNetEvent('Anticheat:detectionTrigger', function(source, title, descripti
     --DropPlayer(src, "You cant trigger events via lua executors!.")
 end)
 
-RegisterCommand("anticheat", function(source, args, rawCommand)
-	if source ~= 0 then return end
-	if args[1] == "install" then
-        for i = 0, GetNumResources() - 1 do
-            local resource = GetResourceByFindIndex(i)
-            if resource ~= GetCurrentResourceName() then
-                local path = GetResourcePath(resource)
-                setall(path, true, resource)
-            end
-        end
-        print("Anticheat has been installed on all resources.")
-    elseif args[1] == "uninstall" then
-        for i = 0, GetNumResources() - 1 do
-            local resource = GetResourceByFindIndex(i)
-            if resource ~= GetCurrentResourceName() then
-                local path = GetResourcePath(resource)
-                setall(path , false, resource)
-            end
-        end
-        print("Anticheat has been uninstalled from all resources.")
-    end
-end)
+-- RegisterCommand("anticheat", function(source, args, rawCommand)
+-- 	if source ~= 0 then return end
+-- 	if args[1] == "install" then
+--         for i = 0, GetNumResources() - 1 do
+--             local resource = GetResourceByFindIndex(i)
+--             if resource ~= GetCurrentResourceName() then
+--                 local path = GetResourcePath(resource)
+--                 setall(path, true, resource)
+--             end
+--         end
+--         print("Anticheat has been installed on all resources.")
+--     elseif args[1] == "uninstall" then
+--         for i = 0, GetNumResources() - 1 do
+--             local resource = GetResourceByFindIndex(i)
+--             if resource ~= GetCurrentResourceName() then
+--                 local path = GetResourcePath(resource)
+--                 setall(path , false, resource)
+--             end
+--         end
+--         print("Anticheat has been uninstalled from all resources.")
+--     end
+-- end)
 
 function setall(dir , bool, resource)
     local files = io.popen('dir "'..dir..'" /b /a-d'):lines()

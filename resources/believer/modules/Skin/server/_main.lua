@@ -1,3 +1,12 @@
+GM.Skin = GM.Skin or {}
+
+GM.Skin.BackpackWeight = {
+	[40] = 16, 
+	[41] = 20, 
+	[44] = 25, 
+	[45] = 23
+}
+
 RegisterServerEvent('esx_skin:save')
 AddEventHandler('esx_skin:save', function(skin)
 	local playerSrc = source
@@ -10,7 +19,7 @@ AddEventHandler('esx_skin:save', function(skin)
 	if (not playerIdentifier) then return end
 
 	local defaultMaxWeight = ESX.GetConfig().MaxWeight
-	local backpackModifier = Config.BackpackWeight[skin.bags_1]
+	local backpackModifier = GM.Skin.BackpackWeight[skin.bags_1]
 
 	if backpackModifier then
 		playerSelected.setMaxWeight(defaultMaxWeight + backpackModifier)
@@ -55,7 +64,7 @@ AddEventHandler('esx_skin:setWeight', function(skin)
 
     if not ESX.GetConfig().OxInventory then
         local defaultMaxWeight = ESX.GetConfig().MaxWeight
-        local backpackModifier = Config.BackpackWeight[skin.bags_1]
+        local backpackModifier = GM.Skin.BackpackWeight[skin.bags_1]
 
         if backpackModifier then
             xPlayer.setMaxWeight(defaultMaxWeight + backpackModifier)
@@ -82,8 +91,8 @@ end)
 
 ESX.RegisterCommand('skin', 'admin', function(xPlayer, args, showError)
 	xPlayer.triggerEvent('esx_skin:openSaveableMenu')
-end, false, {help = TranslateCap('skin')})
+end, false, {help = 'changer de skin'})
 
 ESX.RegisterCommand('skinsave', 'admin', function(xPlayer, args, showError)
 	xPlayer.triggerEvent('esx_skin:requestSaveSkin')
-end, false, {help = TranslateCap('saveskin')})
+end, false, {help = 'sauvegarder skin dans un fichier'})

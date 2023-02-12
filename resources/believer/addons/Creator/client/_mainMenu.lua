@@ -141,9 +141,9 @@ GM.Creator.menu.main:isVisible(function(Items)
         onListChange = function(Index, Item)
             GM.Creator.data.index_sexe = Index
             if (GM.Creator.data.index_sexe == 1) then
-                GM.Creator.data.sexe = "Homme"
+                GM.Creator.data.sex = "Homme"
             elseif (GM.Creator.data.index_sexe == 2) then
-                GM.Creator.data.sexe = "Femme"
+                GM.Creator.data.sex = "Femme"
             end
         end,
         onSelected = function(index)
@@ -155,14 +155,15 @@ GM.Creator.menu.main:isVisible(function(Items)
             end
         end
     })
-    -- Items:Button("Confirmer votre identité", nil, {}, GM.Creator.data.first_name ~= nil and GM.Creator.data.last_name ~= nil and GM.Creator.data.age ~= nil and GM.Creator.data.height ~= nil and GM.Creator.data.sexe ~= nil, {
-    --     onSelected = function()
-    --         -- Todo event this server side to set the identity
-    --     end
-    -- }, GM.Creator.menu.submenus["appareance"])
-    Items:Button("Confirmer votre identité", nil, {}, true, {
+    Items:Button("Confirmer votre identité", nil, {}, GM.Creator.data.first_name ~= nil and GM.Creator.data.last_name ~= nil and GM.Creator.data.dateofbirth ~= nil and GM.Creator.data.height ~= nil and GM.Creator.data.sex ~= nil, {
         onSelected = function()
-            -- Todo event this server side to set the identity
+            TriggerServerEvent("Creator:createIdentity", {
+                first_name = GM.Creator.data.first_name,
+                last_name = GM.Creator.data.last_name,
+                dateofbirth = GM.Creator.data.dateofbirth,
+                height = GM.Creator.data.height,
+                sex = GM.Creator.data.sex,
+            })
         end
     }, GM.Creator.menu.submenus["appareance"])
 end)
@@ -199,11 +200,7 @@ GM.Creator.menu.submenus["appareance"]:isVisible(function(Items)
     Items:Button("Joue", nil, {}, true, {})
     Items:Button("Mâchoires", nil, {}, true, {})
     Items:Button("Menton", nil, {}, true, {})
-    Items:Button("Confirmer votre apparence", nil, {}, true, {
-        onSelected = function()
-            -- Todo event this server side to set the identity
-        end
-    }, GM.Creator.menu.submenus["character"])
+    Items:Button("Confirmer votre apparence", nil, {}, true, {}, GM.Creator.menu.submenus["character"])
 end, function()
     Panels:PercentagePanel(GM.Creator.data.PercentLargenose, 'Largeur', '0%', '100%', {
         onProgressChange = function(Percentage)
@@ -365,8 +362,7 @@ end, function()
     }, 3)
 end)
 
-RegisterNetEvent("Believer:creator:openMenu", function()
-    -- Todo set camera and clothes bluestark to everyone
+RegisterNetEvent("Creator:openMenu", function()
     DisplayRadar(false)
     SetPlayerControl(PlayerId(), false, 12)
     GM.Creator.menu.main:toggle()

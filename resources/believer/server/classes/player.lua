@@ -61,6 +61,14 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		TriggerClientEvent(eventName, self.source, ...)
 	end
 
+	function self.savePosition(savePosition)
+		if (savePosition == true) then
+			self.position = nil
+		else
+			self.position = GetEntityCoords(self.getPed())
+		end
+	end
+
 	function self.setCoords(coords)
 		local Ped = GetPlayerPed(self.source)
 		local vector = type(coords) == "vector4" and coords or type(coords) == "vector3" and vector4(coords, 0.0) or

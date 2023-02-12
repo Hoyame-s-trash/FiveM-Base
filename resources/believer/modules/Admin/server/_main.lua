@@ -12,10 +12,6 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
     local playerIdentifier = playerSelected.getIdentifier()
     if (not playerIdentifier) then return end
 
-    for adminSrc,_ in pairs(GM.Admin.inAdmin) do
-        TriggerClientEvent("chatMessage", adminSrc, "", { 255, 255, 255 }, "^2" .. playerSelected.getName() .. " à rejoint le serveur.")
-    end
-
     if (GM.Ranks["players"][playerIdentifier]) then
         if (GM.Ranks["players"][playerIdentifier].staffName ~= playerSelected.getName()) then
 
@@ -37,11 +33,13 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
         end
         playerSelected.set("rank_id", GM.Ranks["players"][playerIdentifier].rankId)
         playerSelected.set("rank_label", GM.Ranks["players"][playerIdentifier].label)
+        playerSelected.set("report_count", GM.Ranks["players"][playerIdentifier].reports)
         playerSelected.setGroup(GM.Ranks["players"][playerIdentifier].name)
-        GM.Chat:addPlayerToMode("STAFF", playerSrc)
+        --GM.Chat:addPlayerToMode("STAFF", playerSrc)
     else
         playerSelected.set("rank_id", GM.Ranks["rank_user"])
         playerSelected.set("rank_label", "Joueur")
+        playerSelected.set("report_count", 0)
         playerSelected.setGroup("user")
     end
 
@@ -75,7 +73,7 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
                 admin = true,
                 reports = true,
                 currentReports = tostring(GM.Admin.Reports:count()),
-                totalReports = tostring(GM.Ranks["players"][playerIdentifier].reports)
+                totalReports = tostring(playerSelected.get("report_count"))
             })
             for adminSrc,_ in pairs(GM.Admin.inAdmin) do
                 TriggerClientEvent("Admin:updateValue", adminSrc, "players", staffSelected.id, staffSelected)
@@ -97,11 +95,5 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
                 TriggerClientEvent("Admin:updateValue", adminSrc, "players", staffSelected.id, staffSelected)
             end
         end
-    end
-end)
-
-AddEventHandler("playerDropped", function(reason)
-    for adminSrc,_ in pairs(GM.Admin.inAdmin) do
-        TriggerClientEvent("chatMessage", -1, "", { 255, 255, 255 }, "^2* " .. GetPlayerName(source) .." s'est déconnecté  (" .. reason .. ")")
     end
 end)

@@ -574,6 +574,29 @@ RegisterNetEvent("esx:GetVehicleType", function(Model, Request)
 	TriggerServerEvent("esx:ReturnVehicleType", types[VehicleType] or "automobile", Request)
 end)
 
+function ESX.GetVehicleType(model)
+	if not IsModelInCdimage(model) then
+		return false
+	end
+  
+	if model == `submersible` or model == `submersible2` then
+		return "submarine"
+	end
+  
+	local VehicleType = GetVehicleClassFromName(model)
+	local types = {
+		[8] = "bike",
+		[11] = "trailer",
+		[13] = "bike",
+		[14] = "boat",
+		[15] = "heli",
+		[16] = "plane",
+		[21] = "train",
+	}
+  
+	return types[VehicleType] or "automobile"
+end
+
 SetAmbientZoneStatePersistent("collision_ybmrar", false, true)
 SetFlashLightKeepOnWhileMoving(true)
 SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)

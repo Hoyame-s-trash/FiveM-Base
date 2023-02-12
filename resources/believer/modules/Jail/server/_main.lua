@@ -12,7 +12,6 @@ GM:newThread(function()
                 }
             end
         end
-        print("[Jail] Loaded " .. #results .. " jails from database.")
         loadAllJails = true
     end)
 end)

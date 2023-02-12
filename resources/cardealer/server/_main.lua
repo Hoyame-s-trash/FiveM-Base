@@ -110,7 +110,7 @@ RegisterServerEvent("Cardealer:buyVehicle", function(vehicle)
                     local playerPosition = playerSelected.getCoords(true)
                     if (not playerPosition) then return end
             
-                    ESX.OneSync.SpawnVehicle(vehicle.model, vector3(-23.875314712524,-1094.9291992188,26.678476333618), 340.15, upgrades, function(networkId)
+                    ESX.OneSync.SpawnVehicle(vehicle.model, vector3(-23.875314712524,-1094.9291992188,26.678476333618), 340.15, upgrades, false, function(networkId)
                         if networkId then
                             local vehicle = NetworkGetEntityFromNetworkId(networkId)
                             for i = 1, 20 do

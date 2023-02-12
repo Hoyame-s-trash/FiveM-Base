@@ -60,5 +60,7 @@ end)
 
 RegisterNetEvent("Jail:sendOutJail", function()
     GM.Jail.current = {}
-	-- Todo retrieve player skin
+	ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin)
+		TriggerEvent('skinchanger:loadSkin', skin)
+	end)
 end)

@@ -43,18 +43,6 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
             TriggerServerEvent("Admin:blipsManager", false)
         end,
     })
-    -- local ADMIN_USE_VMENU_NOCLIP = GM.Preferences:loadPreferences("admin_use_vmenu_noclip")
-    -- Items:Checkbox("Utiliser le NoClip 'VMenu'", nil, ADMIN_USE_VMENU_NOCLIP, {}, {
-    --     onSelected = function(Checked)
-    --         ADMIN_USE_VMENU_NOCLIP = Checked
-    --     end,
-    --     onChecked = function()
-    --         GM.Preferences:Save("admin_use_vmenu_noclip", true)
-    --     end,
-    --     onUnChecked = function()
-    --         GM.Preferences:Save("admin_use_vmenu_noclip", false)
-    --     end,
-    -- })
     local ADMIN_SHOW_REPORTS = GM.Preferences:loadPreferences("admin_show_reports")
     Items:Checkbox("Afficher le nombre de reports", nil, ADMIN_SHOW_REPORTS, {}, {
         onSelected = function(Checked)
@@ -62,9 +50,11 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onChecked = function()
             GM.Preferences:Save("admin_show_reports", true)
+            TriggerServerEvent("Admin:showReportCount")
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_show_reports", false)
+            TriggerEvent("Interface:disableReportCount")
         end,
     })
     local ADMIN_SOUND_REPORTS = GM.Preferences:loadPreferences("admin_sound_reports")
@@ -125,7 +115,7 @@ RegisterNetEvent("Admin:gamerTag", function(BOOLEAN)
                 for _,v in pairs(GetActivePlayers()) do
                     if #(GetEntityCoords(plyPed, false) - GetEntityCoords(GetPlayerPed(v), false)) < 5000.0 then
                         if GM.Admin.data["players"][GetPlayerServerId(v)] ~= nil then
-                            gamerTags[GetPlayerPed(v)] = CreateFakeMpGamerTag(GetPlayerPed(v), "("..GetPlayerServerId(v)..") - "..GetPlayerName(v), false, false, "", 0)
+                            gamerTags[GetPlayerPed(v)] = CreateFakeMpGamerTag(GetPlayerPed(v), "("..GetPlayerServerId(v)..") - "..GM.Admin.data["players"][GetPlayerServerId(v)].name, false, false, "", 0)
                             SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 0, 255)
                             SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 2, 255)
                             SetMpGamerTagAlpha(gamerTags[GetPlayerPed(v)], 4, 255)
@@ -211,20 +201,6 @@ RegisterNetEvent("Admin:blipsManager", function(BLIPS_DATA)
     for _, blip in pairs(GM.Admin.data["blips_list"]) do
         RemoveBlip(blip)
     end
-
-    -- for _, player in pairs(GetActivePlayers()) do
-    --     local ped = GetPlayerPed(player)
-    --     if (not DoesBlipExist(GM.Admin.data["blips_list"][player])) then
-    --         GM.Admin.data["blips_list"][player] = AddBlipForEntity(ped)
-    --         SetBlipSprite(GM.Admin.data["blips_list"][player], 6)
-    --         SetBlipScale(GM.Admin.data["blips_list"][player], 0.70)
-    --         SetBlipColour(GM.Admin.data["blips_list"][player], 0)
-    --         SetBlipAsShortRange(GM.Admin.data["blips_list"][player], true)
-    --         BeginTextCommandSetBlipName("STRING")
-    --         AddTextComponentString(player.." - "..GetPlayerName(ped))
-    --         EndTextCommandSetBlipName(GM.Admin.data["blips_list"][player])
-    --     end
-    -- end
 
     for blipId, blipData in pairs(BLIPS_DATA) do
         if (not DoesBlipExist(GM.Admin.data["blips_list"][blipId])) then

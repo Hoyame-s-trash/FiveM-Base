@@ -363,7 +363,7 @@ GM:newThread(function()
         local playerPosition = playerSelected.getCoords(true)
         if (not playerPosition) then return end
 
-        ESX.OneSync.SpawnVehicle(vehicleName, playerPosition - vector3(0,0, 0.9), GetEntityHeading(playerPed), false, function(networkId)
+        ESX.OneSync.SpawnVehicle(vehicleName, playerPosition - vector3(0,0, 0.9), GetEntityHeading(playerPed), false, false, function(networkId)
             if networkId then
                 local vehicle = NetworkGetEntityFromNetworkId(networkId)
                 for i = 1, 20 do
@@ -424,7 +424,7 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "setgroup",
+        name = "setRank",
         label = "Changer le rank d'un joueur",
         description = "Permet de changer le rank d'un joueur",
     }, function(playerSrc, args)
@@ -702,14 +702,25 @@ GM:newThread(function()
 
             timeJail = tonumber(args[2]) * 60
 
+            local reason = table.concat(args, " ", 3)
+
             GM.Jail.List[targetIdentifier] = {
                 time = timeJail,
-                joinTime = os.time(os.date("!*t"))
+                joinTime = os.time(os.date("!*t")),
+                reason = reason
             }
 
             SetEntityCoords(targetSelected.getPed(), 1728.492, 2532.91, 43.58)
 
-            TriggerClientEvent("Jail:sendInJail", targetSelected.source, timeJail)
+            local jail = {
+                reason = reason,
+                date = os.date("%d/%m/%Y %H:%M:%S"),
+                admin = "Console",
+            }
+        
+            MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {targetIdentifier, "Jail", json.encode(jail)}, function()
+                TriggerClientEvent("Jail:sendInJail", targetSelected.source, timeJail)
+            end)
         else
             local playerSelected = ESX.GetPlayerFromId(playerSrc)
             if (not playerSelected) then return end
@@ -729,14 +740,25 @@ GM:newThread(function()
 
             timeJail = tonumber(args[2]) * 60
 
+            local reason = table.concat(args, " ", 3)
+
             GM.Jail.List[targetIdentifier] = {
                 time = timeJail,
-                joinTime = os.time(os.date("!*t"))
+                joinTime = os.time(os.date("!*t")),
+                reason = reason
             }
 
             SetEntityCoords(targetSelected.getPed(), 1728.492, 2532.91, 43.58)
 
-            TriggerClientEvent("Jail:sendInJail", targetSelected.source, timeJail)
+            local jail = {
+                reason = reason,
+                date = os.date("%d/%m/%Y %H:%M:%S"),
+                admin = playerSelected.getName(),
+            }
+        
+            MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {targetIdentifier, "Jail", json.encode(jail)}, function()
+                TriggerClientEvent("Jail:sendInJail", targetSelected.source, timeJail)
+            end)
         end
     end)
 
@@ -889,6 +911,59 @@ GM:newThread(function()
                 end)
             else
                 playerSelected.showNotification("~r~La resource screenshot-basic n'est pas lancé.")
+            end
+        end
+    end)
+
+    GM.Command:register({
+        name = "creator",
+        label = "Ouvrir le menu de création de personnage",
+        description = "Permet d'ouvrir le menu de création de personnage",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then return end
+
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        local targetSelected = ESX.GetPlayerFromId(args[1] or playerSrc)
+        if (not targetSelected) then return end
+
+        targetSelected.set("creator", true)
+
+        TriggerClientEvent("Creator:openMenu", targetSelected.source)
+        playerSelected.showNotification("~g~Vous avez ouvert le menu de création de personnage de "..targetSelected.getName()..".")
+    end)
+
+    GM.Command:register({
+        name = "tpVehicle",
+        label = "Se téléporter à un véhicule",
+        description = "Permet de se téléporter à un véhicule",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then return end
+
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        local plate = string.upper(args[1])
+        if (not plate) then
+            playerSelected.showNotification("~r~Vous devez spécifier une plaque de véhicule.")
+            return
+        end
+
+        local vehicles = GetAllVehicles()
+        if (not vehicles) then return end
+
+        for _, vehicle in pairs(vehicles) do
+            local vehiclePlate = GetVehicleNumberPlateText(vehicle)
+            if (vehiclePlate ~= nil) then
+                if (vehiclePlate == plate) then
+                    local vehicleCoords = GetEntityCoords(vehicle)
+                    if (not vehicleCoords) then return end
+
+                    SetEntityCoords(playerSelected.getPed(), vehicleCoords)
+                    playerSelected.showNotification("~g~Vous avez été téléporté au véhicule recherché ("..plate..").")
+                    return
+                end
             end
         end
     end)

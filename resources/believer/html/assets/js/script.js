@@ -199,6 +199,9 @@ const app = new Vue({
                 case "updateCurrentReports":
                     this.reports.currentReports = data.currentReports;
                     break;
+                case "disableCurrentReports":
+                    this.reports.show = false;
+                    break;
                 case "updateTotalReports":
                     this.reports.totalReports = data.totalReports;
                     break;

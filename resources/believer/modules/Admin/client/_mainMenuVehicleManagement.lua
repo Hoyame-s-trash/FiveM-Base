@@ -12,7 +12,7 @@ GM.Admin.menu.submenus["vehicles"]:isVisible(function(Items)
                     {label = "MODEL"},
                 }
             })
-            ExecuteCommand("car "..input["1"])
+            ExecuteCommand("car "..input["0"])
         end
     })
     Items:Button("Réparer le véhicule", nil, {}, GM.Admin.inAdmin, {

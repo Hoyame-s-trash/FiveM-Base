@@ -223,6 +223,13 @@ AddEventHandler("Interface:currentReportCount", function(report)
     })
 end)
 
+RegisterNetEvent("Interface:disableReportCount")
+AddEventHandler("Interface:disableReportCount", function()
+    SendNUIMessage({
+        type = "disableCurrentReports",
+    })
+end)
+
 RegisterNetEvent("Interface:totalReportCount")
 AddEventHandler("Interface:totalReportCount", function(report)
     if (not report) then return end

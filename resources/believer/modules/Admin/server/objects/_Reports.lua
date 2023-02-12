@@ -124,6 +124,7 @@ RegisterServerEvent("Admin:closeReport", function(reportId)
     if (not reportSelected.taken) then return playerSelected.showNotification("~r~Ce report n'est pas pris.") end
 
     TriggerClientEvent("esx:showNotification", reportSelected.source, "~b~Votre report à bien été fermé.")
+    
     GM.Admin.Reports["player"][reportSelected.source] = nil
     GM.Admin.Reports["list"][reportSelected.id] = nil
 
