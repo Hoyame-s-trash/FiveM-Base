@@ -105,8 +105,16 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		return isOnPos
 	end
 
-	function self.kick(reason)
-		DropPlayer(self.source, reason)
+	function self.kick(reason, author)
+		local kick = {
+			reason = reason,
+			date = os.date("%d/%m/%Y %H:%M:%S"),
+			admin = author,
+		}
+	
+		MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {self.identifier, "Kick", json.encode(kick)}, function()
+			DropPlayer(self.source, reason)
+		end)
 	end
 
 	function self.ban(reason, expiration, author)

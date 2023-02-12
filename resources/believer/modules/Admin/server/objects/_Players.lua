@@ -18,7 +18,6 @@ function GM.Admin.Players:new(uniqueId, source, name, rank, vip)
     newAdminPlayer.vip = vip
     newAdminPlayer.admin = false
     newAdminPlayer.invisible = false
-    newAdminPlayer.connected_date = os.date("%H:%M")
 
     GM.Admin.Players["list"][newAdminPlayer.id] = newAdminPlayer
 
@@ -33,13 +32,6 @@ function GM.Admin.Players:getFromId(playerId)
     return GM.Admin.Players["list"][playerId]
 end
 
-function GM.Admin.Players:set(KEY, VALUE)
-    if (not KEY) then return end
-    if (not VALUE) then return end
-
-    self[KEY] = VALUE
-end
-
 RegisterServerEvent("Admin:requestPlayers", function()
     local playerSrc = source
     if (not playerSrc) then return end
@@ -52,7 +44,8 @@ RegisterServerEvent("Admin:requestPlayers", function()
     TriggerClientEvent("Admin:updateValue", playerSrc, "players", GM.Admin.Players["list"])
 end)
 
-AddEventHandler("Player:destroy", function(playerSrc)
+AddEventHandler("playerDropped", function()
+    local playerSrc = source
     if (not playerSrc) then return end
 
     if (GM.Admin.Players["list"][playerSrc]) then

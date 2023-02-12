@@ -87,7 +87,9 @@ RegisterServerEvent("Admin:removeAllWeapons", function()
     GM.Admin.Weapon[playerSelected.source] = nil
 end)
 
-AddEventHandler("Player:destroy", function(playerSrc)
+AddEventHandler("playerDropped", function()
+    local playerSrc = source
+
     if (not playerSrc) then return end
 
     if (GM.Admin.Weapon[playerSrc] ~= nil) then
@@ -101,8 +103,6 @@ AddEventHandler("Player:destroy", function(playerSrc)
 
         local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
         if (not selectedRank) then return end
-
-        if (not selectedRank:getPermissionsValue("MY_PLAYER_REMOVEALLWEAPONS", playerSelected.source)) then return end
 
         if (GM.Admin.Weapon[playerSelected.source] == nil) then return end
 
@@ -256,4 +256,72 @@ RegisterServerEvent("Admin:getInformationsPlayer", function(playerId)
     }
 
     TriggerClientEvent("Admin:updateValue", playerSelected.source, "informations", playerInformations)
+end)
+
+RegisterServerEvent("Admin:setWarningPlayer", function(playerId, input)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local playerIdentifier = playerSelected.getIdentifier()
+    if (not playerIdentifier) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not selectedRank) then return end
+
+    if (not selectedRank:getPermissionsValue("PLAYER_WARNING", playerSelected.source)) then return end
+
+    local playerTarget = ESX.GetPlayerFromId(playerId)
+    if (not playerTarget) then return end
+
+    local targetIdentifier = playerTarget.getIdentifier()
+    if (not targetIdentifier) then return end
+
+    local warn = {
+        reason = input,
+        date = os.date("%d/%m/%Y %H:%M:%S"),
+        admin = playerSelected.getName(),
+    }
+
+    MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {playerIdentifier, "Avertissement", json.encode(warn)}, function(id)
+        playerSelected.showNotification("~b~Vous avez mis un avertissement à "..playerTarget.getName().." pour "..input)
+    end)
+end)
+
+RegisterServerEvent("Admin:requestSanctionsPlayer", function(playerId)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not selectedRank) then return end
+
+    if (not selectedRank:getPermissionsValue("PLAYER_SANCTIONS", playerSelected.source)) then return end
+
+    local playerTarget = ESX.GetPlayerFromId(playerId)
+    if (not playerTarget) then return end
+
+    local targetIdentifier = playerTarget.getIdentifier()
+    if (not targetIdentifier) then return end
+
+    MySQL.query('SELECT * FROM user_sanctions WHERE identifier = ?', {targetIdentifier}, function(result)
+        if result then
+            local sanctions = {}
+            for _,v in pairs(result) do
+                table.insert(sanctions, {
+                    type = v.type,
+                    data = json.decode(v.data),
+                })
+            end
+            TriggerClientEvent("Admin:updateValue", playerSelected.source, "sanctions", sanctions)
+        end
+    end)
 end)

@@ -197,4 +197,16 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission d'obtenir les informations d'un joueur.",
         value = false
     },
+    ["PLAYER_WARNING"] = {
+        label = "Avertir un joueur",
+        description = "Permet d'avertir un joueur",
+        error = "~r~Vous n'avez pas la permission d'avertir un joueur.",
+        value = false
+    },
+    ["PLAYER_SANCTIONS"] = {
+        label = "Sanctions d'un joueur",
+        description = "Permet d'obtenir les sanctions d'un joueur",
+        error = "~r~Vous n'avez pas la permission d'obtenir les sanctions d'un joueur.",
+        value = false
+    },
 }

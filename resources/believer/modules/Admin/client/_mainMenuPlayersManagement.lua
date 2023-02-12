@@ -6,9 +6,9 @@ GM.Admin.menu.submenus["players_management"] = RageUI.CreateSubMenu(GM.Admin.men
 
 GM.Admin.menu.submenus["players_management_informations"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["players_management"], "", "Informations du joueur")
 
+GM.Admin.menu.submenus["players_management_sanctions"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["players_management"], "", "Sanctions du joueur")
 
 GM.Admin.menu.submenus["players"]:isVisible(function(Items)
-    -- Todo when pressed keys F open filter menu
     Items:Button("Filtre", nil, {RightLabel = GM.Admin.data["filterValue"] or "Aucun"}, GM.Admin.inAdmin, {
         onSelected = function()
             local input = exports["input"]:openInput({
@@ -107,6 +107,16 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
     })
     Items:Button("~y~Avertissement", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            local input = exports["input"]:openInput({
+                label = "Avertissement",
+                submitLabel = "ENVOYER",
+                placeHolders = {
+                    {label = "Raison"},
+                }
+            })
+            if (not input["0"]) then return end
+
+            TriggerServerEvent("Admin:setWarningPlayer", GM.Admin.data["selectedPlayer"], input["0"])
         end
     })
     Items:Button("~r~Ban", nil, {}, GM.Admin.inAdmin, {
@@ -125,8 +135,9 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
     })
     Items:Button("Historique des sanctions", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            TriggerServerEvent("Admin:requestSanctionsPlayer", GM.Admin.data["selectedPlayer"])
         end
-    })
+    }, GM.Admin.menu.submenus["players_management_sanctions"])
     Items:Button("Freeze", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
         end
@@ -171,5 +182,13 @@ GM.Admin.menu.submenus["players_management_informations"]:isVisible(function(Ite
         Items:Button("Sale", nil, {RightLabel = GM.Admin.data["informations"].dirty}, GM.Admin.inAdmin, {})
         Items:Button("Première connexion", nil, {RightLabel = GM.Admin.data["informations"].first_connection}, GM.Admin.inAdmin, {})
         Items:Button("Temps de jeu", nil, {RightLabel = GM.Admin.data["informations"].time_play}, GM.Admin.inAdmin, {})
+    end
+end)
+
+GM.Admin.menu.submenus["players_management_sanctions"]:isVisible(function(Items)
+    if (GM.Admin.data["sanctions"] ~= nil) then 
+        for k, v in pairs(GM.Admin.data["sanctions"]) do
+            Items:Button(v.type.." : "..v.data["reason"], v.data["date"].." | "..v.data["reason"], {RightLabel = v.data["admin"]}, true, {})
+        end
     end
 end)

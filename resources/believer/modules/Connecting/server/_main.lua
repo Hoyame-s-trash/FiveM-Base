@@ -120,6 +120,14 @@ function GM.Connecting:ban(playerIdentifier, banData)
             if (playerSelected ~= nil) then
                 DropPlayer(playerSelected.source, "Vous êtes banni de BlueStark !\nRaison : "..banData.reason..".")
             end
+            local bans = {
+                reason = banData.reason,
+                date = os.date("%d/%m/%Y %H:%M:%S"),
+                admin = banData.author,
+            }
+        
+            MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {playerIdentifier, "Ban", json.encode(bans)}, function(id)
+            end)
         end)
     end
 end

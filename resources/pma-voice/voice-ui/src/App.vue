@@ -11,7 +11,7 @@
 				{{ voice.radioChannel }} Mhz [Radio]
 			</p>
 			<p v-if="voice.voiceModes.length" :class="{ talking: voice.talking }">
-				{{ voice.voiceModes[voice.voiceMode][1] }} [Distance]
+				{{ voice.voiceModes[voice.voiceMode][1] }} [Range]
 			</p>
 		</div>
 	</body>
@@ -90,23 +90,22 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+
 .voiceInfo {
-	font-family: Avenir, Helvetica, Arial, sans-serif;
+	font-family: "Montserrat";
 	position: fixed;
 	text-align: right;
 	bottom: 5px;
 	padding: 0;
 	right: 5px;
-	font-size: 12px;
+	font-size: 15px;
 	font-weight: bold;
-	color: rgb(148, 150, 151);
-	/* https://stackoverflow.com/questions/4772906/css-is-it-possible-to-add-a-black-outline-around-each-character-in-text */
-	text-shadow: 1.25px 0 0 #000, 0 -1.25px 0 #000, 0 1.25px 0 #000,
-		-1.25px 0 0 #000;
+	color: rgb(255, 255, 255);
 }
 
 .talking {
-	color: rgba(255, 255, 255, 0.822);
+	color: #33b5e5;
 }
 
 p {

@@ -10,6 +10,7 @@ GM.Admin = {
         blips = {},
         blips_list = {},
         informations = {},
+        sanctions = {},
     },
     inAdmin = false
 }

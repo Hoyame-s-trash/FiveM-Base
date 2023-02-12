@@ -3,14 +3,14 @@ local mutedPlayers = {}
 -- we can't use GetConvarInt because its not a integer, and theres no way to get a float... so use a hacky way it is!
 local volumes = {
 	-- people are setting this to 1 instead of 1.0 and expecting it to work.
-	['radio'] = GetConvarInt('voice_defaultRadioVolume', 60) / 100,
-	['call'] = GetConvarInt('voice_defaultCallVolume', 60) / 100,
+	['radio'] = GetConvarInt('voice_defaultRadioVolume', 30) / 100,
+	['phone'] = GetConvarInt('voice_defaultPhoneVolume', 60) / 100,
 }
 
 radioEnabled, radioPressed, mode = true, false, GetConvarInt('voice_defaultVoiceMode', 2)
 radioData = {}
 callData = {}
-submixIndicies = {}
+
 --- function setVolume
 --- Toggles the players volume
 ---@param volume number between 0 and 100
@@ -24,16 +24,15 @@ function setVolume(volume, volumeType)
 		if volumeTbl then
 			LocalPlayer.state:set(volumeType, volume, true)
 			volumes[volumeType] = volume
-			resyncVolume(volumeType, volume)
 		else
 			error(('setVolume got a invalid volume type %s'):format(volumeType))
 		end
 	else
-		for volumeType, _ in pairs(volumes) do
-			volumes[volumeType] = volume
-			LocalPlayer.state:set(volumeType, volume, true)
+		-- _ is here to not mess with global 'type' function
+		for _type, vol in pairs(volumes) do
+			volumes[_type] = volume
+			LocalPlayer.state:set(_type, volume, true)
 		end
-		resyncVolume("all", volume)
 	end
 end
 
@@ -44,10 +43,10 @@ exports('getRadioVolume', function()
 	return volumes['radio']
 end)
 exports("setCallVolume", function(vol)
-	setVolume(vol, 'call')
+	setVolume(vol, 'phone')
 end)
 exports('getCallVolume', function()
-	return volumes['call']
+	return volumes['phone']
 end)
 
 
@@ -61,70 +60,27 @@ end)
 -- 0_freq_hi = 4900.0
 
 if gameVersion == 'fivem' then
-	local radioEffectId = CreateAudioSubmix('Radio')
+	radioEffectId = CreateAudioSubmix('Radio')
 	SetAudioSubmixEffectRadioFx(radioEffectId, 0)
-	-- This is a GetHashKey on purpose, backticks break treesitter in nvim :|
-	SetAudioSubmixEffectParamInt(radioEffectId, 0, GetHashKey('default'), 1)
-	SetAudioSubmixOutputVolumes(
-		radioEffectId,
-		0,
-		1.0 --[[ frontLeftVolume ]],
-		0.25 --[[ frontRightVolume ]],
-		0.0 --[[ rearLeftVolume ]],
-		0.0 --[[ rearRightVolume ]],
-		1.0 --[[ channel5Volume ]],
-		1.0 --[[ channel6Volume ]]
-	)
+	SetAudioSubmixEffectParamInt(radioEffectId, 0, `default`, 1)
 	AddAudioSubmixOutput(radioEffectId, 0)
-	submixIndicies['radio'] = radioEffectId
 
-	local callEffectId = CreateAudioSubmix('Call')
-	SetAudioSubmixOutputVolumes(
-		callEffectId,
-		1,
-		0.10 --[[ frontLeftVolume ]],
-		0.50 --[[ frontRightVolume ]],
-		0.0 --[[ rearLeftVolume ]],
-		0.0 --[[ rearRightVolume ]],
-		1.0 --[[ channel5Volume ]],
-		1.0 --[[ channel6Volume ]]
-	)
-	AddAudioSubmixOutput(callEffectId, 1)
-	submixIndicies['call'] = callEffectId
-
-	-- Callback is expected to return data in an array, this is for compatibility sake with js, index 0 should be the name and index 1 should be the submixId
-	-- the callback is sent the effectSlot it can register to, not sure if this is needed, but its here for safety
-	exports("registerCustomSubmix", function(callback)
-		local submixTable = callback()
-		type_check({submixTable, "table"})
-		local submixName, submixId = submixTable[1], submixTable[2]
-		type_check({submixName, "string"}, {submixId, "number"})
-		logger.info("Creating submix %s with submixId %s", submixName, submixId)
-		submixIndicies[submixName] = submixId
-	end)
-	TriggerEvent("pma-voice:registerCustomSubmixes")
+	phoneEffectId = CreateAudioSubmix('Phone')
+	SetAudioSubmixEffectRadioFx(phoneEffectId, 1)
+	SetAudioSubmixEffectParamInt(phoneEffectId, 1, `default`, 1)
+	SetAudioSubmixEffectParamFloat(phoneEffectId, 1, `freq_low`, 300.0)
+	SetAudioSubmixEffectParamFloat(phoneEffectId, 1, `freq_hi`, 6000.0)
+	AddAudioSubmixOutput(phoneEffectId, 1)
 end
 
---- export setEffectSubmix
---- Sets a user defined audio submix for radio and phonecall effects
----@param type string either "call" or "radio"
----@param effectId number submix id returned from CREATE_AUDIO_SUBMIX
-exports("setEffectSubmix", function(type, effectId)
-	type_check({type, "string"}, {effectId, "number"})
-	if submixIndicies[type] then
-		submixIndicies[type] = effectId
+local submixFunctions = {
+	['radio'] = function(plySource)
+		MumbleSetSubmixForServerId(plySource, radioEffectId)
+	end,
+	['phone'] = function(plySource)
+		MumbleSetSubmixForServerId(plySource, phoneEffectId)
 	end
-end)
-
-function restoreDefaultSubmix(plyServerId)
-	local submix = Player(plyServerId).state.submix
-	local submixEffect = submixIndicies[submix]
-	if not submix or not submixEffect then
-		MumbleSetSubmixForServerId(plyServerId, -1)
-		return
-	end
-	MumbleSetSubmixForServerId(plyServerId, submixEffect)
-end
+}
 
 -- used to prevent a race condition if they talk again afterwards, which would lead to their voice going to default.
 local disableSubmixReset = {}
@@ -136,51 +92,27 @@ local disableSubmixReset = {}
 function toggleVoice(plySource, enabled, moduleType)
 	if mutedPlayers[plySource] then return end
 	logger.verbose('[main] Updating %s to talking: %s with submix %s', plySource, enabled, moduleType)
-	local distance = currentTargets[plySource]
-	if enabled and (not distance or distance > 4.0) then
+	if enabled then
 		MumbleSetVolumeOverrideByServerId(plySource, enabled and volumes[moduleType])
 		if GetConvarInt('voice_enableSubmix', 1) == 1 and gameVersion == 'fivem' then
 			if moduleType then
 				disableSubmixReset[plySource] = true
-				if submixIndicies[moduleType] then
-					MumbleSetSubmixForServerId(plySource, submixIndicies[moduleType])
-				end
+				submixFunctions[moduleType](plySource)
 			else
-				restoreDefaultSubmix(plySource)
+				MumbleSetSubmixForServerId(plySource, -1)
 			end
 		end
-	elseif not enabled then
+	else
 		if GetConvarInt('voice_enableSubmix', 1) == 1 and gameVersion == 'fivem' then
 			-- garbage collect it
 			disableSubmixReset[plySource] = nil
 			SetTimeout(250, function()
 				if not disableSubmixReset[plySource] then
-					restoreDefaultSubmix(plySource)
+					MumbleSetSubmixForServerId(plySource, -1)
 				end
 			end)
 		end
 		MumbleSetVolumeOverrideByServerId(plySource, -1.0)
-	end
-end
-
-local function updateVolumes(voiceTable, override)
-	for serverId, talking in pairs(voiceTable) do
-		if serverId == playerServerId then goto skip_iter end
-		MumbleSetVolumeOverrideByServerId(serverId, talking and override or -1.0)
-		::skip_iter::
-	end
-end
-
---- resyncs the call/radio/etc volume to the new volume
----@param volumeType any
-function resyncVolume(volumeType, newVolume)
-	if volumeType == "all" then
-		resyncVolume("radio", newVolume)
-		resyncVolume("call", newVolume)
-	elseif volumeType == "radio" then
-		updateVolumes(radioData, newVolume)
-	elseif volumeType == "call" then
-		updateVolumes(callData, newVolume)
 	end
 end
 
@@ -217,17 +149,11 @@ end
 ---@param clickType boolean whether to play the 'on' or 'off' click. 
 function playMicClicks(clickType)
 	if micClicks ~= 'true' then return logger.verbose("Not playing mic clicks because client has them disabled") end
-	-- TODO: Add customizable radio click volumes
 	sendUIMessage({
 		sound = (clickType and "audio_on" or "audio_off"),
-		volume = (clickType and 0.1 or 0.03)
+		volume = (clickType and volumes["radio"] or 0.05)
 	})
 end
-
---- getter for mutedPlayers
-exports('getMutedPlayers', function()
-	return mutedPlayers
-end)
 
 --- toggles the targeted player muted
 ---@param source number the player to mute

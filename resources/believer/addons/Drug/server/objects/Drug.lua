@@ -156,7 +156,9 @@ function GM.Drug:use(playerSrc)
     end)
 end
 
-AddEventHandler("Player:destroy", function(playerSrc)
+AddEventHandler("playerDropped", function()
+    local playerSrc = source
+
     if (not playerSrc) then return end
 
     if (GM.Drug.onFarming[playerSrc] ~= nil) then

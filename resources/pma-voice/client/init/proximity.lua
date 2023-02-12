@@ -2,14 +2,13 @@
 local disableUpdates = false
 local isListenerEnabled = false
 local plyCoords = GetEntityCoords(PlayerPedId())
-proximity = MumbleGetTalkerProximity()
-currentTargets = {}
 
 function orig_addProximityCheck(ply)
 	local tgtPed = GetPlayerPed(ply)
-	local voiceRange = GetConvar('voice_useNativeAudio', 'false') == 'true' and proximity * 3 or proximity
-	local distance = #(plyCoords - GetEntityCoords(tgtPed))
-	return distance < voiceRange, distance 
+	local voiceModeData = Cfg.voiceModes[mode]
+	local distance = GetConvar('voice_useNativeAudio', 'false') == 'true' and voiceModeData[1] * 3 or voiceModeData[1]
+
+	return #(plyCoords - GetEntityCoords(tgtPed)) < distance
 end
 local addProximityCheck = orig_addProximityCheck
 
@@ -25,35 +24,21 @@ function addNearbyPlayers()
 	if disableUpdates then return end
 	-- update here so we don't have to update every call of addProximityCheck
 	plyCoords = GetEntityCoords(PlayerPedId())
-	proximity = MumbleGetTalkerProximity()
-	currentTargets = {}
+
 	MumbleClearVoiceTargetChannels(voiceTarget)
-	if LocalPlayer.state.disableProximity then return end
-	MumbleAddVoiceChannelListen(playerServerId)
-	MumbleAddVoiceTargetChannel(voiceTarget, playerServerId)
-
-    for source, _ in pairs(callData) do
-        if source ~= playerServerId then
-            MumbleAddVoiceTargetChannel(voiceTarget, source)
-		end
-    end
-
-
 	local players = GetActivePlayers()
 	for i = 1, #players do
 		local ply = players[i]
 		local serverId = GetPlayerServerId(ply)
-		local shouldAdd, distance = addProximityCheck(ply)
-		if shouldAdd then
-			-- if distance then
-			-- 	currentTargets[serverId] = distance
-			-- else
-			-- 	-- backwards compat, maybe remove in v7 
-			-- 	currentTargets[serverId] = 15.0
-			-- end
-			-- logger.verbose('Added %s as a voice target', serverId)
+
+		if addProximityCheck(ply) then
+			if isTarget then goto skip_loop end
+
+			logger.verbose('Added %s as a voice target', serverId)
 			MumbleAddVoiceTargetChannel(voiceTarget, serverId)
 		end
+
+		::skip_loop::
 	end
 end
 
@@ -96,17 +81,11 @@ RegisterNetEvent('onPlayerDropped', function(serverId)
 	end
 end)
 
-local listenerOverride = false
-exports("setListenerOverride", function(enabled)
-	type_check({enabled, "boolean"})
-	listenerOverride = enabled
-end)
-
 -- cache talking status so we only send a nui message when its not the same as what it was before
 local lastTalkingStatus = false
 local lastRadioStatus = false
 local voiceState = "proximity"
-CreateThread(function()
+Citizen.CreateThread(function()
 	TriggerEvent('chat:addSuggestion', '/muteply', 'Mutes the player with the specified id', {
 		{ name = "player id", help = "the player to toggle mute" },
 		{ name = "duration", help = "(opt) the duration the mute in seconds (default: 900)" }
@@ -131,12 +110,10 @@ CreateThread(function()
 
 		if voiceState == "proximity" then
 			addNearbyPlayers()
-			-- What a name, wowza
-			local cam = GetConvarInt("voice_disableAutomaticListenerOnCamera", 0) ~= 1 and GetRenderingCam() or -1
-			local isSpectating = NetworkIsInSpectatorMode() or cam ~= -1
-			if not isListenerEnabled and (isSpectating or listenerOverride) then
+			local isSpectating = NetworkIsInSpectatorMode()
+			if isSpectating and not isListenerEnabled then
 				setSpectatorMode(true)
-			elseif isListenerEnabled and not isSpectating and not listenerOverride then
+			elseif not isSpectating and isListenerEnabled then
 				setSpectatorMode(false)
 			end
 		end
@@ -176,34 +153,4 @@ AddEventHandler("onClientResourceStop", function(resource)
 			end
 		end
 	end
-end)
-
-exports("addVoiceMode", function(distance, name)
-	for i = 1, #Cfg.voiceModes do
-		local voiceMode = Cfg.voiceModes[i]
-		if voiceMode[2] == name then
-			logger.verbose("Already had %s, overwritting instead", name)
-			voiceMode[1] = distance
-			return
-		end
-	end
-	Cfg.voiceModes[#Cfg.voiceModes + 1] = {distance, name}
-end)
-
-exports("removeVoiceMode", function(name)
-	for i = 1, #Cfg.voiceModes do
-		local voiceMode = Cfg.voiceModes[i]
-		if voiceMode[2] == name then
-			table.remove(Cfg.voiceModes, i)
-			-- Reset our current range if we had it
-			if mode == i then
-				local newMode = Cfg.voiceModes[1]
-				mode = 1
-				setProximityState(newMode[i], false)
-			end
-			return true
-		end
-	end
-
-	return false
 end)

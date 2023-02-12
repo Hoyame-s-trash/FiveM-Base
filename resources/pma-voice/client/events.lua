@@ -7,7 +7,6 @@ function handleInitialState()
 
 	while MumbleGetVoiceChannelFromServerId(playerServerId) ~= playerServerId do
 		Wait(250)
-		MumbleSetVoiceChannel(playerServerId)
 	end
 
 	MumbleAddVoiceTargetChannel(voiceTarget, playerServerId)

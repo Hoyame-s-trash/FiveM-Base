@@ -17,7 +17,6 @@ client_scripts {
 	'client/init/proximity.lua',
 	'client/init/init.lua',
 	'client/init/main.lua',
-	'client/init/submix.lua',
 	'client/module/*.lua',
     'client/*.lua',
 }
@@ -53,12 +52,12 @@ convar_category 'PMA-Voice' {
 	{ "Enable F11 proximity key", "$voice_enableProximityCycle", "CV_INT", "1" },
 	{ "Proximity cycle key", "$voice_defaultCycle", "CV_STRING", "F11" },
 	{ "Voice radio volume", "$voice_defaultRadioVolume", "CV_INT", "30" },
-	{ "Voice call volume", "$voice_defaultCallVolume", "CV_INT", "60" },
+	{ "Voice phone volume", "$voice_defaultPhoneVolume", "CV_INT", "60" },
 	{ "Enable radios", "$voice_enableRadios", "CV_INT", "1" },
-	{ "Enable calls", "$voice_enableCalls", "CV_INT", "1" },
+	{ "Enable phones", "$voice_enablePhones", "CV_INT", "1" },
 	{ "Enable submix", "$voice_enableSubmix", "CV_INT", "1" },
         { "Enable radio animation", "$voice_enableRadioAnim", "CV_INT", "0" },
-	{ "Radio key", "$voice_defaultRadio", "CV_STRING", "LMENU" },
+	{ "Radio key", "$voice_defaultRadio", "CV_STRING", "LALT" },
 	{ "UI refresh rate", "$voice_uiRefreshRate", "CV_INT", "200" },
 	{ "Allow players to set audio intent", "$voice_allowSetIntent", "CV_INT", "1" },
 	{ "External mumble server address", "$voice_externalAddress", "CV_STRING", "" },
@@ -68,5 +67,3 @@ convar_category 'PMA-Voice' {
 	{ "Hide server endpoints in logs", "$voice_hideEndpoints", "CV_INT", "1" },
     }
 }
-
-shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

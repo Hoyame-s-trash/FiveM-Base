@@ -24,9 +24,9 @@ RegisterServerEvent("Admin:deleteVehicles", function(radius)
 
     radius = tonumber(radius)
 
-    if (radius >= 30.0) then
-        playerSelected.showNotification("~r~Vous ne pouvez pas supprimer les véhicules à plus de 30m.\nRadius appliqué à 30m automatiquement.")
-        radius = 30.0
+    if (radius >= 100.0) then
+        playerSelected.showNotification("~r~Vous ne pouvez pas supprimer les véhicules à plus de 100m.\nRadius appliqué à 100m automatiquement.")
+        radius = 100.0
     end
 
     for _, vehicle in pairs(vehicles) do
@@ -67,9 +67,9 @@ RegisterServerEvent("Admin:deletePnjs", function(radius)
 
     radius = tonumber(radius)
 
-    if (radius >= 30.0) then
-        playerSelected.showNotification("~r~Vous ne pouvez pas supprimer les PNJs à plus de 30m.\nRadius appliqué à 30m automatiquement.")
-        radius = 30.0
+    if (radius >= 100.0) then
+        playerSelected.showNotification("~r~Vous ne pouvez pas supprimer les PNJs à plus de 100m.\nRadius appliqué à 100m automatiquement.")
+        radius = 100.0
     end
 
     for _, ped in pairs(peds) do
@@ -110,9 +110,9 @@ RegisterServerEvent("Admin:deleteObjects", function(radius)
 
     radius = tonumber(radius)
 
-    if (radius >= 30.0) then
-        playerSelected.showNotification("~r~Vous ne pouvez pas supprimer les objects à plus de 30m.\nRadius appliqué à 30m automatiquement.")
-        radius = 30.0
+    if (radius >= 100.0) then
+        playerSelected.showNotification("~r~Vous ne pouvez pas supprimer les objects à plus de 100m.\nRadius appliqué à 100m automatiquement.")
+        radius = 100.0
     end
 
     for _, object in pairs(objects) do
@@ -153,9 +153,9 @@ RegisterServerEvent("Admin:reviveZone", function(radius)
 
     radius = tonumber(radius)
 
-    if (radius >= 30.0) then
-        playerSelected.showNotification("~r~Vous ne pouvez pas réanimer les joueurs à plus de 30m.\nRadius appliqué à 30m automatiquement.")
-        radius = 30.0
+    if (radius >= 100.0) then
+        playerSelected.showNotification("~r~Vous ne pouvez pas réanimer les joueurs à plus de 100m.\nRadius appliqué à 100m automatiquement.")
+        radius = 100.0
     end
 
     for _, targetSrc in pairs(GetPlayers()) do

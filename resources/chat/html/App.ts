@@ -11,7 +11,7 @@ export interface Message {
   template: string;
   params?: { [key: string]: string };
   multiline?: boolean;
-  color?: [ number, number, number ];
+  color?: [number, number, number];
   templateId?: number;
   mode?: string;
   modeData?: Mode;
@@ -74,17 +74,17 @@ export default Vue.extend({
       hideState: ChatHideStates.ShowWhenActive,
       backingSuggestions: [] as Suggestion[],
       removedSuggestions: [] as string[],
-      templates: { ...CONFIG.templates } as { [ key: string ]: string },
+      templates: { ...CONFIG.templates } as { [key: string]: string },
       message: "",
       messages: [] as Message[],
       oldMessages: [] as string[],
       oldMessagesIndex: -1,
-      tplBackups: [] as unknown as [ HTMLElement, string ][],
-      msgTplBackups: [] as unknown as [ string, string ][],
+      tplBackups: [] as unknown as [HTMLElement, string][],
+      msgTplBackups: [] as unknown as [string, string][],
       focusTimer: 0,
       showWindowTimer: 0,
       showHideStateTimer: 0,
-      listener: (event: MessageEvent) => {},
+      listener: (event: MessageEvent) => { },
       modes: [defaultMode, globalMode] as Mode[],
       modeIdx: 0,
     };
@@ -174,9 +174,9 @@ export default Vue.extend({
         case ChatHideStates.AlwaysShow:
           return 'Visible';
         case ChatHideStates.AlwaysHide:
-          return 'Hidden';
+          return 'Caché';
         case ChatHideStates.ShowWhenActive:
-          return 'When active';
+          return 'Quand actif';
       }
     }
   },
@@ -268,7 +268,7 @@ export default Vue.extend({
         this.modes = [defaultMode];
       }
     },
-    ON_TEMPLATE_ADD({ template }: { template: { id: string, html: string }}) {
+    ON_TEMPLATE_ADD({ template }: { template: { id: string, html: string } }) {
       if (this.templates[template.id]) {
         this.warn(`Tried to add duplicate template '${template.id}'`);
       } else {

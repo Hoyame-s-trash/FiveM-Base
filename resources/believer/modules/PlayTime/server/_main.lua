@@ -10,7 +10,7 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
     if (not playerIdentifier) then return end
 
     MySQL.query('SELECT * FROM user_playtime WHERE identifier = ?', {playerIdentifier}, function(result)
-        if (result[1].time == nil) then
+        if (result[1] == nil) then
             MySQL.insert('INSERT INTO user_playtime (identifier, time) VALUES (@identifier, @time)', {
                 ['@identifier'] = playerIdentifier,
                 ['@time'] = 0

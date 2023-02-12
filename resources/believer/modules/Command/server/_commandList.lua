@@ -262,15 +262,25 @@ GM:newThread(function()
         label = "Expulser une personne",
         description = "Permet d'expulser une personne du serveur",
     }, function(playerSrc, args)
-        local playerSelected = ESX.GetPlayerFromId(playerSrc)
-        if (not playerSelected) then return end
+        if (playerSrc == 0) then
 
-        local targetSelected = ESX.GetPlayerFromId(args[1])
-        if (not targetSelected) then return end
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
 
-        local kickReason = table.concat(args, " ", 2)
+            local kickReason = table.concat(args, " ", 2)
 
-        targetSelected.kick("Vous avez été kick de BlueStark !\n"..kickReason)
+            targetSelected.kick("Vous avez été kick de BlueStark !\n"..kickReason, "Console")
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local kickReason = table.concat(args, " ", 2)
+
+            targetSelected.kick("Vous avez été kick de BlueStark !\n"..kickReason, playerSelected.getName())
+        end
     end)
 
     GM.Command:register({
@@ -291,9 +301,6 @@ GM:newThread(function()
         else
             finishTimer = (os.time() + (tonumber(args[2]) * 60)) * 1000
         end
-
-        print(reason)
-        print(finishTimer)
     
         if (type(targetPlayer) == "number") then
             local selectedPlayer = ESX.GetPlayerFromId(targetPlayer)
@@ -356,7 +363,7 @@ GM:newThread(function()
         local playerPosition = playerSelected.getCoords(true)
         if (not playerPosition) then return end
 
-        ESX.OneSync.SpawnVehicle(vehicleName, playerPosition - vector3(0,0, 0.9), GetEntityHeading(playerPed), upgrades, function(networkId)
+        ESX.OneSync.SpawnVehicle(vehicleName, playerPosition - vector3(0,0, 0.9), GetEntityHeading(playerPed), false, function(networkId)
             if networkId then
                 local vehicle = NetworkGetEntityFromNetworkId(networkId)
                 for i = 1, 20 do
@@ -672,5 +679,117 @@ GM:newThread(function()
         local heading = GetEntityHeading(playerPed)
 
         playerSelected.showNotification("~b~Heading: ~w~"..heading)
+    end)
+
+    GM.Command:register({
+        name = "jail",
+        label = "Envoyer un joueur dans l'instance trolleur",
+        description = "Permet d'envoyer un joueur dans l'instance trolleur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local targetIdentifier = targetSelected.getIdentifier()
+            if (not targetIdentifier) then return end
+
+            if (GM.Jail.List[targetIdentifier]) then
+                print("Player is already in jail")
+                return
+            end
+
+            local timeJail
+
+            timeJail = tonumber(args[2]) * 60
+
+            GM.Jail.List[targetIdentifier] = {
+                time = timeJail,
+                joinTime = os.time(os.date("!*t"))
+            }
+
+            SetEntityCoords(targetSelected.getPed(), 1728.492, 2532.91, 43.58)
+
+            TriggerClientEvent("Jail:sendInJail", targetSelected.source, timeJail)
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local targetIdentifier = targetSelected.getIdentifier()
+            if (not targetIdentifier) then return end
+
+            if (GM.Jail.List[targetIdentifier]) then
+                playerSelected.showNotification("~r~Le joueur est déjà en prison.")
+                return
+            end
+
+            local timeJail
+
+            timeJail = tonumber(args[2]) * 60
+
+            GM.Jail.List[targetIdentifier] = {
+                time = timeJail,
+                joinTime = os.time(os.date("!*t"))
+            }
+
+            SetEntityCoords(targetSelected.getPed(), 1728.492, 2532.91, 43.58)
+
+            TriggerClientEvent("Jail:sendInJail", targetSelected.source, timeJail)
+        end
+    end)
+
+    GM.Command:register({
+        name = "unjail",
+        label = "Sortir un joueur de l'instance trolleur",
+        description = "Permet de sortir un joueur de l'instance trolleur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local targetIdentifier = targetSelected.getIdentifier()
+            if (not targetIdentifier) then return end
+
+            if (not GM.Jail.List[targetIdentifier]) then
+                print("Player is not in jail")
+                return
+            end
+
+            GM.Jail.List[targetIdentifier] = nil
+            SetEntityCoords(targetSelected.getPed(), 1851.03, 2586.16, 45.67)
+            targetSelected.showNotification("~g~Vous avez été libéré de prison par un membre du staff !\nMerci de relire le règlement !")
+            TriggerClientEvent("Jail:sendOutJail", targetSelected.source)
+            print("Player "..targetSelected.getName().." has been unjailed by the server")
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local targetIdentifier = targetSelected.getIdentifier()
+            if (not targetIdentifier) then return end
+
+            if (not GM.Jail.List[targetIdentifier]) then
+                playerSelected.showNotification("~r~Ce joueur n'est pas en prison.")
+                return
+            end
+
+            MySQL.query('SELECT * FROM user_jail WHERE identifier = ?', {targetIdentifier}, function(result)
+                if (result[1] ~= nil) then
+                    MySQL.Async.execute("DELETE FROM user_jail WHERE identifier = ?", {
+                        targetIdentifier
+                    })
+                end
+            end)
+
+            GM.Jail.List[targetIdentifier] = nil
+            SetEntityCoords(targetSelected.getPed(), 1851.03, 2586.16, 45.67)
+            targetSelected.showNotification("~g~Vous avez été libéré de prison par un membre du staff !\nMerci de relire le règlement !")
+            TriggerClientEvent("Jail:sendOutJail", targetSelected.source)
+            playerSelected.showNotification("~g~Vous avez libéré "..targetSelected.getName().." de prison.")
+        end
     end)
 end)

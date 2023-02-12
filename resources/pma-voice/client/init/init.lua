@@ -10,10 +10,10 @@ AddEventHandler('onClientResourceStart', function(resource)
 	local success = pcall(function()
 		local micClicksKvp = GetResourceKvpString('pma-voice_enableMicClicks')
 		if not micClicksKvp then
-			SetResourceKvp('pma-voice_enableMicClicks', "true")
+			SetResourceKvp('pma-voice_enableMicClicks', tostring(true))
 		else
 			if micClicksKvp ~= 'true' and micClicksKvp ~= 'false' then
-				error('Invalid Kvp, throwing error for automatic fix')
+				error('Invalid Kvp, throwing error for automatic cleaning')
 			end
 			micClicks = micClicksKvp
 		end
@@ -21,7 +21,7 @@ AddEventHandler('onClientResourceStart', function(resource)
 
 	if not success then
 		logger.warn('Failed to load resource Kvp, likely was inappropriately modified by another server, resetting the Kvp.')
-		SetResourceKvp('pma-voice_enableMicClicks', "true")
+		SetResourceKvp('pma-voice_enableMicClicks', tostring(true))
 		micClicks = 'true'
 	end
 	sendUIMessage({
@@ -30,17 +30,13 @@ AddEventHandler('onClientResourceStart', function(resource)
 		voiceMode = mode - 1
 	})
 
-	local radioChannel = LocalPlayer.state.radioChannel or 0
-	local callChannel = LocalPlayer.state.callChannel or 0
-
 	-- Reinitialize channels if they're set.
-	if radioChannel ~= 0 then
-		setRadioChannel(radioChannel)
+	if LocalPlayer.state.radioChannel ~= 0 then
+		setRadioChannel(LocalPlayer.state.radioChannel)
 	end
 
-	if callChannel ~= 0 then
-		setCallChannel(callChannel)
+	if LocalPlayer.state.callChannel ~= 0 then
+		setCallChannel(LocalPlayer.state.callChannel)
 	end
-
 	print('Script initialization finished.')
 end)
