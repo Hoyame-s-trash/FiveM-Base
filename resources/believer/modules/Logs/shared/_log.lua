@@ -1,0 +1,1 @@
+GM.Logs = GM.Logs or {}

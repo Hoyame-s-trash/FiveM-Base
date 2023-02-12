@@ -269,7 +269,7 @@ GM:newThread(function()
 
             local kickReason = table.concat(args, " ", 2)
 
-            targetSelected.kick("Vous avez été kick de BlueStark !\n"..kickReason, "Console")
+            targetSelected.kick(kickReason, "Console")
         else
             local playerSelected = ESX.GetPlayerFromId(playerSrc)
             if (not playerSelected) then return end
@@ -279,7 +279,7 @@ GM:newThread(function()
 
             local kickReason = table.concat(args, " ", 2)
 
-            targetSelected.kick("Vous avez été kick de BlueStark !\n"..kickReason, playerSelected.getName())
+            targetSelected.kick(kickReason, playerSelected.getName())
         end
     end)
 
@@ -790,6 +790,106 @@ GM:newThread(function()
             targetSelected.showNotification("~g~Vous avez été libéré de prison par un membre du staff !\nMerci de relire le règlement !")
             TriggerClientEvent("Jail:sendOutJail", targetSelected.source)
             playerSelected.showNotification("~g~Vous avez libéré "..targetSelected.getName().." de prison.")
+        end
+    end)
+
+    GM.Command:register({
+        name = "freeze",
+        label = "Freeze un joueur",
+        description = "Permet de freeze un joueur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            FreezeEntityPosition(targetSelected.getPed(), true)
+            print("Player "..targetSelected.getName().." has been frozen by the server")
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            FreezeEntityPosition(targetSelected.getPed(), true)
+            playerSelected.showNotification("~g~Vous avez freeze "..targetSelected.getName()..".")
+        end
+    end)
+
+    GM.Command:register({
+        name = "unfreeze",
+        label = "UnFreeze un joueur",
+        description = "Permet de unfreeze un joueur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            FreezeEntityPosition(targetSelected.getPed(), false)
+            print("Player "..targetSelected.getName().." has been defrozen by the server")
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            FreezeEntityPosition(targetSelected.getPed(), false)
+            playerSelected.showNotification("~g~Vous avez defreeze "..targetSelected.getName()..".")
+        end
+    end)
+
+    GM.Command:register({
+        name = "screenshot",
+        label = "Prendre un screen du joueur",
+        description = "Permet de prendre un screenshot de l'écran du joueur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            if GetResourceState("screenshot-basic") == "started" then
+                local targetSelected = ESX.GetPlayerFromId(args[1])
+                if (not targetSelected) then return end
+
+                local name = ESX.generateVariable(16)
+                exports["screenshot-basic"]:requestClientScreenshot(targetSelected.source, {
+                    fileName = "cache/" .. name .. ".jpg"
+                 }, function(err, fileName)
+                    if not err then
+                        TriggerEvent("Logs:sendLogsScreenshot", GM.Logs["List"]["screenshot"], "./" .. fileName, {
+                            username = "BlueStark",
+                            embeds = GM.Logs:ConstructScreenshotEmbed(targetSelected.source, name .. ".jpg")
+                        })
+                    else
+                        print("fatal error occured while taking a screenshot")
+                    end
+                end)
+            else
+                print("screenshot-basic is not started")
+            end
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            if GetResourceState("screenshot-basic") == "started" then
+                local targetSelected = ESX.GetPlayerFromId(args[1])
+                if (not targetSelected) then return end
+
+                local name = ESX.generateVariable(16)
+                exports["screenshot-basic"]:requestClientScreenshot(targetSelected.source, {
+                    fileName = "cache/" .. name .. ".jpg"
+                 }, function(err, fileName)
+                    if not err then
+                        TriggerEvent("Logs:sendLogsScreenshot", GM.Logs["List"]["screenshot"], "./" .. fileName, {
+                            username = "BlueStark",
+                            embeds = GM.Logs:ConstructScreenshotEmbed(targetSelected.source, name .. ".jpg")
+                        })
+                        playerSelected.showNotification("~g~Vous avez pris un screenshot de "..targetSelected.getName()..".")
+                    else
+                        playerSelected.showNotification("~r~Une erreur est survenue lors de la prise du screenshot.")
+                    end
+                end)
+            else
+                playerSelected.showNotification("~r~La resource screenshot-basic n'est pas lancé.")
+            end
         end
     end)
 end)

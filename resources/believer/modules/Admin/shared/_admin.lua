@@ -209,4 +209,10 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission d'obtenir les sanctions d'un joueur.",
         value = false
     },
+    ["PLAYER_VEHICLES"] = {
+        label = "Véhicules d'un joueur",
+        description = "Permet d'obtenir les véhicules d'un joueur",
+        error = "~r~Vous n'avez pas la permission d'obtenir les véhicules d'un joueur.",
+        value = false
+    },
 }

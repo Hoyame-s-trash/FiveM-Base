@@ -394,3 +394,16 @@ function ESX.DoesJobExist(job, grade)
 
   return false
 end
+
+function ESX.generateVariable(length)
+	local res = ""
+	for i = 1, length do
+        local chance = math.random(0, 1)
+        if chance == 0 then
+		    res = res .. string.char(math.random(97, 122))
+        elseif chance == 1 then
+            res = res .. tostring(math.random(0, 9))
+        end  
+	end
+	return res
+end

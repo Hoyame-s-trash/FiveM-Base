@@ -47,6 +47,7 @@ server_scripts {
 	"common/functions.lua",
 	"modules/**/server/objects/*.lua",
     "modules/**/server/*.lua",
+	"modules/**/server/*.js",
     "addons/**/server/*.lua",
     "addons/**/server/objects/*.lua",
 	"jobs/**/server/*.lua",

@@ -6,7 +6,9 @@ GM.Admin.menu.submenus["players_management"] = RageUI.CreateSubMenu(GM.Admin.men
 
 GM.Admin.menu.submenus["players_management_informations"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["players_management"], "", "Informations du joueur")
 
-GM.Admin.menu.submenus["players_management_sanctions"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["players_management"], "", "Sanctions du joueur")
+GM.Admin.menu.submenus["players_management_sanctions"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["players_management"], "", "Historique des sanctions")
+
+GM.Admin.menu.submenus["players_management_vehicles"] = RageUI.CreateSubMenu(GM.Admin.menu.submenus["players_management"], "", "Véhicules du joueur")
 
 GM.Admin.menu.submenus["players"]:isVisible(function(Items)
     Items:Button("Filtre", nil, {RightLabel = GM.Admin.data["filterValue"] or "Aucun"}, GM.Admin.inAdmin, {
@@ -78,8 +80,9 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
     }, GM.Admin.menu.submenus["players_management_informations"])
     Items:Button("Liste des véhicules", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            TriggerServerEvent("Admin:getVehiclesPlayer", GM.Admin.data["selectedPlayer"])
         end
-    })
+    }, GM.Admin.menu.submenus["players_management_vehicles"])
     Items:Button("Inventaire", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
         end
@@ -99,10 +102,21 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
     })
     Items:Button("~y~Envoyer dans l'instance trolleurs", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            local input = exports["input"]:openInput({
+                label = "Envoyer dans l'instance trolleurs",
+                submitLabel = "ENVOYER",
+                placeHolders = {
+                    {label = "Temps (minutes)"},
+                    {label = "Raison"}
+                }
+            })
+            if (not input["0"] and not input["1"]) then return end
+            ExecuteCommand("jail "..GM.Admin.data["selectedPlayer"].." "..input["0"].." "..input["1"])
         end
     })
     Items:Button("~y~Retirer de l'instance trolleurs", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            ExecuteCommand("unjail "..GM.Admin.data["selectedPlayer"])
         end
     })
     Items:Button("~y~Avertissement", nil, {}, GM.Admin.inAdmin, {
@@ -140,10 +154,12 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
     }, GM.Admin.menu.submenus["players_management_sanctions"])
     Items:Button("Freeze", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            ExecuteCommand("freeze "..GM.Admin.data["selectedPlayer"])
         end
     })
     Items:Button("Unfreeze", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            ExecuteCommand("unfreeze "..GM.Admin.data["selectedPlayer"])
         end
     })
     Items:Button("Heal", nil, {}, GM.Admin.inAdmin, {
@@ -152,6 +168,7 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
     })
     Items:Button("Revive", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
+            ExecuteCommand("revive "..GM.Admin.data["selectedPlayer"])
         end
     })
     Items:Button("Screenshot", nil, {}, GM.Admin.inAdmin, {
@@ -173,22 +190,34 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
 end)
 
 GM.Admin.menu.submenus["players_management_informations"]:isVisible(function(Items)
-    if (GM.Admin.data["informations"] ~= nil) then 
+    if (GM.Admin.data["informations"] ~= nil and json.encode(GM.Admin.data["informations"]) ~= "[]") then
         Items:Button("Nom", nil, {RightLabel = GM.Admin.data["informations"].name}, GM.Admin.inAdmin, {})
         Items:Button("Id unique", nil, {RightLabel = GM.Admin.data["informations"].uniqueId}, GM.Admin.inAdmin, {})
         Items:Button("Job", nil, {RightLabel = GM.Admin.data["informations"].job}, GM.Admin.inAdmin, {})
-        Items:Button("Argent", nil, {RightLabel = GM.Admin.data["informations"].money}, GM.Admin.inAdmin, {})
-        Items:Button("Banque", nil, {RightLabel = GM.Admin.data["informations"].bank}, GM.Admin.inAdmin, {})
-        Items:Button("Sale", nil, {RightLabel = GM.Admin.data["informations"].dirty}, GM.Admin.inAdmin, {})
+        Items:Button("Argent", nil, {RightLabel = "~g~"..GM.Admin.data["informations"].money.." $"}, GM.Admin.inAdmin, {})
+        Items:Button("Banque", nil, {RightLabel = "~g~"..GM.Admin.data["informations"].bank.." $"}, GM.Admin.inAdmin, {})
+        Items:Button("Sale", nil, {RightLabel = "~g~"..GM.Admin.data["informations"].dirty.." $"}, GM.Admin.inAdmin, {})
         Items:Button("Première connexion", nil, {RightLabel = GM.Admin.data["informations"].first_connection}, GM.Admin.inAdmin, {})
         Items:Button("Temps de jeu", nil, {RightLabel = GM.Admin.data["informations"].time_play}, GM.Admin.inAdmin, {})
     end
 end)
 
 GM.Admin.menu.submenus["players_management_sanctions"]:isVisible(function(Items)
-    if (GM.Admin.data["sanctions"] ~= nil) then 
+    if (GM.Admin.data["sanctions"] ~= nil and json.encode(GM.Admin.data["sanctions"]) ~= "[]") then 
         for k, v in pairs(GM.Admin.data["sanctions"]) do
             Items:Button(v.type.." : "..v.data["reason"], v.data["date"].." | "..v.data["reason"], {RightLabel = v.data["admin"]}, true, {})
+        end
+    end
+end)
+
+GM.Admin.menu.submenus["players_management_vehicles"]:isVisible(function(Items)
+    if (GM.Admin.data["vehicles"] ~= nil and json.encode(GM.Admin.data["vehicles"]) ~= "[]") then 
+        for k, v in pairs(GM.Admin.data["vehicles"]) do
+            Items:Button(v.model.." - "..v.plate, "Appuyez sur ~b~entrée~s~ pour mettre le véhicule en fourrière", {RightLabel = v.stored}, true, {
+                onSelected = function()
+                    -- Todo set the vehicle to impound
+                end
+            })
         end
     end
 end)

@@ -248,7 +248,7 @@ RegisterServerEvent("Admin:getInformationsPlayer", function(playerId)
         name = playerTarget.getName(),
         uniqueId = playerTarget.getUniqueId(),
         job = playerTarget.job.name,
-        money = playerTarget.getMoney(),
+        money = playerTarget.getAccount("money").money,
         bank = playerTarget.getAccount("bank").money,
         dirty = playerTarget.getAccount("black_money").money,
         first_connection = GM.PlayTime:convertTimestampToDate(playerTarget.getFirstConnection()),
@@ -322,6 +322,42 @@ RegisterServerEvent("Admin:requestSanctionsPlayer", function(playerId)
                 })
             end
             TriggerClientEvent("Admin:updateValue", playerSelected.source, "sanctions", sanctions)
+        end
+    end)
+end)
+
+RegisterServerEvent("Admin:getVehiclesPlayer", function(playerId)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not selectedRank) then return end
+
+    if (not selectedRank:getPermissionsValue("PLAYER_VEHICLES", playerSelected.source)) then return end
+
+    local playerTarget = ESX.GetPlayerFromId(playerId)
+    if (not playerTarget) then return end
+
+    local targetIdentifier = playerTarget.getIdentifier()
+    if (not targetIdentifier) then return end
+
+    MySQL.query('SELECT * FROM owned_vehicles WHERE owner = ?', {targetIdentifier}, function(result)
+        if result then
+            local vehicles = {}
+            for _,v in pairs(result) do
+                local vehicleData = json.decode(v.vehicle)
+                table.insert(vehicles, {
+                    plate = v.plate,
+                    model = vehicleData["model"],
+                    state = v.state,
+                })
+            end
+            TriggerClientEvent("Admin:updateValue", playerSelected.source, "vehicles", vehicles)
         end
     end)
 end)

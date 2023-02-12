@@ -113,7 +113,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		}
 	
 		MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {self.identifier, "Kick", json.encode(kick)}, function()
-			DropPlayer(self.source, reason)
+			DropPlayer(self.source, "Vous avez été kick de BlueStark !\n"..reason)
 		end)
 	end
 
