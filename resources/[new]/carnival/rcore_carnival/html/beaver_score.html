@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.4/gsap.min.js"></script>
+    <script src="./vue.min.js"></script>
+    <head>
+        <meta charset="UTF-8">
+        <title>ah yes the negotiator!</title>
+    </head>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Press%20Start%202P:normal');
+
+        .scoreText{
+            font-family: 'Press Start 2P';
+            font-size: 22vw;
+            text-align: right;
+            position: absolute;
+            bottom: -65%;
+            left: -2.5%;
+            color: red;
+            height: 54vw;
+            width: 97vw;
+        }
+
+        .gameover{
+            font-family: 'Press Start 2P';
+            font-size: 11vw;
+            text-align: right;
+            position: absolute;
+            bottom: -77%;
+            left: -5.5%;
+            color: red;
+            height: 65vw;
+            width: 98vw;
+        }
+
+        .healtBar{
+            font-size: 11vw;
+            bottom: -92%;
+            left: -2%;
+        }
+
+        .timeLeft{
+            font-size: 11vw;
+            bottom: -95%;
+            right: 2%;
+            left: unset;
+            text-align: left;
+        }
+    </style>
+
+    <body style="overflow: hidden;">
+        <div id = "body">
+            <p id = "score" class = "scoreText">{{animatedScore}}</p>
+            <p id = "gameover" class = "gameover" style="display:none;">GAMEOVER</p>
+            <p id = "health" class = "scoreText healtBar">♥♥♥♥</p>
+            <p id = "time" v-if="timeVisible" class = "scoreText timeLeft">{{time}}</p>
+        </div>
+    </body>
+
+    <script>
+        var App = new Vue({
+            el: '#body',
+            data:
+            {
+                CurrentScoreAdded: 0,
+                CurrentScore: 0,
+
+                time: 60,
+                timeVisible: false,
+            },
+            computed: {
+                animatedScore: function() {
+                    return this.CurrentScoreAdded.toFixed(0);
+                }
+            },
+            watch: {
+                CurrentScore: function(newValue) {
+                    gsap.to(this.$data, { duration: 1.0, CurrentScoreAdded: newValue });
+                }
+            },
+        })
+
+        function getQueryParams() {
+            var qs = window.location.search;
+            qs = qs.split('+').join(' ');
+
+            var params = {},
+                tokens,
+                re = /[?&]?([^=]+)=([^&]*)/g;
+
+            while (tokens = re.exec(qs)) {
+                params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+            }
+            return params;
+        }
+
+        var result = getQueryParams();
+
+        $.post('https://rcore_carnival/duiHasLoaded', JSON.stringify({
+            identifier: result.identifier,
+            id: result.id,
+        }));
+
+        $(document).ready(function(){
+            window.addEventListener('message', function(event) {
+                var data = event.data;
+
+                if(data.type === "health"){
+                    $("#health").text("");
+                    for(var i = 0; i < data.health; i ++){
+                         $("#health").append("♥");
+                    }
+                }
+
+                if(data.type === "score"){
+                    //$("#score").text(data.score);
+                    App.CurrentScore = data.score;
+                }
+
+                if(data.type === "time"){
+                    App.time = data.time;
+                    App.timeVisible = true;
+                }
+
+                if(data.type === "text"){
+                    $("#score").hide();
+                    $("#health").hide();
+                    $("#gameover").show();
+                    $("#time").hide();
+
+                    $("#gameover").text(data.text);
+
+                    App.time = 60;
+
+                    setTimeout(function(){
+                        $("#score").show();
+                        $("#health").show();
+                        $("#time").show();
+                        $("#gameover").hide();
+                        App.timeVisible = false;
+                    }, 5000);
+                }
+            });
+        });
+
+    </script>
+</html>
