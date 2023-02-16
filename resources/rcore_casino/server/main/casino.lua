@@ -787,7 +787,7 @@ function EndEverything(playerId)
 end
 
 function PrintInfo()
-    local mysqlRes = "mysql-async"
+    local mysqlRes = "oxmysql"
     if Config.MongoDB then
         mysqlRes = "mongoDB"
     elseif Config.Ghmattimysql then

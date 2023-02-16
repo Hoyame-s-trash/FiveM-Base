@@ -5,7 +5,6 @@ dependencies {
     '/server:4752',
     '/onesync',
     '/gameBuild:2060',
-    'rcore_casino_interior'
 }
 
 version '1.0.37'
@@ -55,7 +54,7 @@ client_scripts {
 }
 
 server_scripts {
-    "@mysql-async/lib/MySQL.lua",
+    "@oxmysql/lib/MySQL.lua",
     "config.lua",
     "config_jobs.lua",
     "config_server.lua",

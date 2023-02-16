@@ -33,13 +33,6 @@ function GM.Admin.Reports:new(id, source, name, reason)
 
     TriggerClientEvent("esx:showNotification", newAdminReports.source, "~b~Votre report à bien été envoyé à l'administration.")
 
-    for adminSrc,_ in pairs(GM.Admin.inAdmin) do
-        TriggerClientEvent("Admin:playSound", adminSrc, "new_report")
-        TriggerClientEvent("Admin:updateValue", adminSrc, "reports", newAdminReports.id, newAdminReports)
-        TriggerClientEvent("Interface:currentReportCount", adminSrc, tostring(GM.Admin.Reports:count()))
-        TriggerClientEvent("chat:addMessage", adminSrc, { args = { '^5NOUVEAU REPORT - '..newAdminReports.id, newAdminReports.reason .. ' (' .. newAdminReports.name .. ' - '..newAdminReports.source..')'}}, true)
-    end
-
     SetTimeout(GM.Admin.ReportCooldown * 60000, function()
         if (GM.Admin.Reports["list"][newAdminReports.id] ~= nil) then
             if (GM.Admin.Reports["list"][newAdminReports.id].taken == true) then return end

@@ -1,6 +1,6 @@
 Config = {
     -- Map
-    MapType = 5, -- 1: for DLCiplLoader, 2: Gabz Casino, 3: NoPixel Casino, 4: k4mb1 casino, 5: GTA:O Interior (rcore_casino_interior)
+    MapType = 2, -- 1: for DLCiplLoader, 2: Gabz Casino, 3: NoPixel Casino, 4: k4mb1 casino, 5: GTA:O Interior (rcore_casino_interior)
 
     --[[
     Gabz Casino
@@ -16,14 +16,14 @@ Config = {
 
     -- Xmas trees
     -- • configurable in xmas\xmas_cl.lua nad xmas\xmas_sv.lua
-    Xmas = false,
+    Xmas = true,
 
     -- Money Or Casino Chips? 
     UseOnlyMoney = false, -- set to true if you wanna disable using casino chips and use money instead
     ExchangeRate = 1, -- set value of one casino chip, for example, set to 5, if 1 chip equals to 5$ (minimum: 0.1, rounded by 0.1, 0.5 or 1)
     ShowChipsHud = true, -- show/hide the chips hud on the top-right corner
     ChipsInventoryItem = "casino_chips",
-    UseBankMoney = false, -- cash or bank?
+    UseBankMoney = true, -- cash or bank?
 
     -- Behave in casino?
     RestrictControls = true, -- don't jump, don't attack inside the Casino
@@ -112,7 +112,7 @@ Config = {
     PlateUseSpace = true,
 
     -- Drinking
-    DrunkSystem = 1,
+    DrunkSystem = 1, -- Todo put rcore_drunk
     -- 1 = built-in, resets drunk level after leaving casino
     -- 2 = esx_status
     -- 3 = evidence:client:SetStatus
@@ -122,7 +122,7 @@ Config = {
     EnableGuidebookIntegration = false, -- https://store.rcore.cz/package/5041989
 
     -- Society
-    EnableSociety = true, -- whether to enable society account
+    EnableSociety = false, -- whether to enable society account
     SocietyName = "society_casino",
     SocietyLimitFromBalance = 10000, -- if society account has less money than this, it will start paying out reduced money, (SocietyLimitPayoutPercentage)
     SocietyLimitPayoutPercentage = 35, -- example: if SocietyLimitPayoutPercentage is 35%, and SocietyLimitFromBalance is 10000 => 1000 payout at the Cashier will be limited to 350, if the society bank account balance is less than 10 000
@@ -156,7 +156,7 @@ Config = {
     MongoDB = false, -- if you decide to use MongoDB instead of MYSQL, don't forget to edit your MongoDB queries in: server/main/cache.lua, server/main/casino.lua and server/utils/plateGenerator.lua
 
     -- Mysql Resources
-    Ghmattimysql = false, -- if you're using "ghmattimysql" instead of mysql-async
+    Ghmattimysql = false, -- if you're using "ghmattimysql" instead of oxmysql
 
     -- Tweaks
     VoiceTweak = false, -- keep it false, if you don't have amy voice problems inside casino
@@ -173,7 +173,7 @@ Framework = {
     -- https://documentation.rcore.cz/paid-resources/rcore_casino
 
     -- esx resource name + shared object name
-    ES_EXTENDED_RESOURCE_NAME = "es_extended",
+    ES_EXTENDED_RESOURCE_NAME = "believer",
     ESX_SHARED_OBJECT = "esx:getSharedObject",
     -- esx extra settings
     BUILTIN_HUD_CHIPS = false,
