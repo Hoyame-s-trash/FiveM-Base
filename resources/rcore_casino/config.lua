@@ -16,7 +16,7 @@ Config = {
 
     -- Xmas trees
     -- • configurable in xmas\xmas_cl.lua nad xmas\xmas_sv.lua
-    Xmas = true,
+    Xmas = false,
 
     -- Money Or Casino Chips? 
     UseOnlyMoney = false, -- set to true if you wanna disable using casino chips and use money instead
@@ -102,7 +102,7 @@ Config = {
     CASINO_BLIPS_SHORT_RANGE = true, -- true: blips are visible only to players near casino, false: blips are always visible
     CASINO_BLIP_ID = 679, -- 679 is the diamond icon [https://docs.fivem.net/docs/game-references/blips/]
     --
-    AMBIENT_SOUNDS = true, -- enable casino background interior sound
+    AMBIENT_SOUNDS = false, -- enable casino background interior sound
 
     Debug = false,
 
@@ -207,10 +207,7 @@ GameplayKeys = {
 }
 
 AdminGroup = {
-    ["god"] = true,
-    ["admin"] = true,
-    ["mod"] = true,
-    ["moderator"] = true
+    ["founder"] = true,
 }
 
 -- Enable / Disable individual games/activities
@@ -291,7 +288,7 @@ function SetCasinoBlip(coords, blipIcon, blipName, exterior)
     --------------
     SetBlipSprite(blip, blipIcon)
     SetBlipDisplay(blip, 4)
-    SetBlipScale(blip, 1.2)
+    SetBlipScale(blip, 0.8)
     SetBlipColour(blip, 0)
     SetBlipAsShortRange(blip, exterior and Config.CASINO_BLIPS_SHORT_RANGE or false)
     --------------

@@ -19,17 +19,7 @@ CreateThread(function()
     end)
 
     bossMenu.on("leave", function()
-        if ESX then
-            if ESX.UI then
-                ESX.UI.Menu.CloseAll()
-            end
-        end
-
-        -- I didnt found any way to close the qbcore menu seems like there isnt anything for this?
-        -- if you know the answer please contact us support and dont hesitate to help us!
-        if QBCore then
-
-        end
+        print("Rage UI Close All")
     end)
 
     bossMenu.setRenderJob(Config.JobName)
@@ -38,19 +28,7 @@ CreateThread(function()
     })
     bossMenu.setMinGrade(Config.BossGrade)
     bossMenu.on("key", function()
-        if Framework.Active == 1 then
-            TriggerEvent(Events.ES_BOSS_MENU, Config.JobName, function(data, menu)
-                menu.close()
-            end, {
-                withdraw = true,
-                deposit = true,
-                wash = true,
-                employees = true,
-                grades = true
-            })
-        elseif Framework.Active == 2 then
-            TriggerEvent(Events.QB_BOSS_MENU)
-        end
+        print("open boss menu")
     end)
 
     local vehReplacenent = createMarker()

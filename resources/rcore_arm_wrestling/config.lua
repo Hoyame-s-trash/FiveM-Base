@@ -151,28 +151,25 @@ LANGUAGE = {
 BLIP_CONFIG = {
     sprite = 311,
     color = 0,
-    label = "Arm Wrestling",
-    scale = 1.0,
+    label = "Activité - Bras de fer",
+    scale = 0.8,
 }
 
---[[
-    For control numbers and labels, see https://docs.fivem.net/docs/game-references/controls/
-]]
 CONTROLS = {
     PLAY = {
         CONTROL = 38,
         CONTROL_LABEL = 'INPUT_PICKUP',
-        TEXT = 'Arm Wrestle',
+        TEXT = 'Bras de fer',
     },
     QUIT = {
         CONTROL = 47,
         CONTROL_LABEL = 'INPUT_DETONATE',
-        TEXT = 'Quit',
+        TEXT = 'Quitter',
     },
     MASH_A = {
         CONTROL = 35,
         CONTROL_LABEL = 'INPUT_MOVE_RIGHT_ONLY',
-        TEXT = 'Wrestle',
+        TEXT = 'Lutter',
     },
     MASH_B = {
         CONTROL = 34,

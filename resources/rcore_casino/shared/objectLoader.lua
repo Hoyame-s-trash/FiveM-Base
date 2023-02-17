@@ -2,7 +2,7 @@ function GetCoreObject(framework, resourceName, callBack)
     -- ES_EXTENDED
     if framework == 1 then
         xpcall(function()
-            callBack(exports[resourceName or 'es_extended']['getSharedObject']())
+            callBack(exports[resourceName or 'believer']['getSharedObject']())
         end, function(error)
             CreateThread(function()
                 local tries = 10

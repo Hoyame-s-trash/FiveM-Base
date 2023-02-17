@@ -1,5 +1,5 @@
-CONST_SIDE_A = 'a'
-CONST_SIDE_B = 'b'
+CONST_SIDE_A = "a"
+CONST_SIDE_B = "b"
 
 Config = {
     ExtremeEdition = false, -- whitelist `w_ex_grenadefrag` in your anticheat for this to work
@@ -15,97 +15,97 @@ Config = {
     StopHorizontalBounceTreshold = 1.0,
     BallElasticity = 1.2,
     Tutorial = {
-        {text = 'Tenis will ~y~start~s~ when two players ~y~join~s~, one on each side.', time = 5000},
-        {text = 'To serve, ~y~enter the checkpoint~s~, press ~y~E~s~ to start serving.', time = 5000},
-        {text = 'When serving, ~y~move to a position~s~ from which you want to serve and ~y~press Left Mouse Button~s~', time = 5000},
-        {text = '~y~Select power~s~ with which you want to serve and use ~y~WSAD~s~ to aim where you want to shoot.', time = 5000},
-        {text = 'When serving, ~y~always aim to the diagonal corner~s~, so use either ~y~A~s~ or ~y~AW~s~ keys.', time = 5000},
-        {text = "Before ~y~returning~s~, it's easiest to wait until the ball first ~y~bounces off~s~ the ground.", time = 5000},
-        {text = "~y~Bottom spin~s~ will carry the ball ~y~further~s~, ~y~top spin~s~ will carry the ball ~y~less~s~.", time = 5000},
+        {text = "Tenis va ~y~commencer~s~ lorsque deux joueurs ~y~se rejoignent~s~, un de chaque côté.", time = 5000},
+        {text = "Pour servir, entrez dans le point de contrôle, appuyez sur ~y~E~s~ pour commencer à servir.", time = 5000},
+        {text = "Pour servir, déplacez-vous vers la position à partir de laquelle vous voulez servir et appuyez sur le bouton gauche de la souris.", time = 5000},
+        {text = "~y~Sélectionnez la puissance~s~ avec laquelle vous voulez servir et utilisez le bouton 'WASD' pour viser là où vous voulez tirer.", time = 5000},
+        {text = "Lorsque vous servez, visez toujours le coin diagonal, utilisez donc les touches ~y~A~s~ ou ~y~AW~s~.", time = 5000},
+        {text = "Avant de retourner la balle, il est plus facile d'attendre qu'elle rebondisse sur le sol.", time = 5000},
+        {text = "~y~L'effet de bas de page portera la balle plus loin~s~, l'effet de haut de page portera la balle moins loin.", time = 5000},
     },
     Translation = {
-        SECOND_SERVE = 'Second Serve',
-        OPPONENT_WON_POINT = '~r~Opponent won point!',
-        YOU_WON_POINT = '~g~You won point!',
-        OPPONENT_WON_GAME = '~r~Opponent won game!',
-        YOU_WON_GAME = '~g~You won game!',
+        SECOND_SERVE = "Deuxième service",
+        OPPONENT_WON_POINT = "~r~L'adversaire a gagné le point !",
+        YOU_WON_POINT = "~Vous avez gagné le point !",
+        OPPONENT_WON_GAME = "~r~L'adversaire a gagné le match !",
+        YOU_WON_GAME = "~Tu as gagné la partie !",
 
-        YOU = 'You',
-        OPPONENT = 'Opponent',
+        YOU = "Vous",
+        OPPONENT = "Adversaire",
 
-        GAMES = 'GAMES',
-        POINTS = 'POINTS',
+        GAMES = "PARTIES",
+        POINTS = "POINTS",
 
-        SERVE_HINT = 'To correctly serve, aim with key ~y~~a~~s~ to hit ~g~highlighted~s~ rectangle.~n~Ball must ~y~hit ground~s~ first before opponent can return.~n~~y~LEFT CLICK~s~ to initiate serve.',
-        SERVE_HINT_AW = 'A or AW',
-        SERVE_HINT_DW = 'D or DW',
-        Blip = 'Tennis',
+        SERVE_HINT = "Pour servir correctement, visez avec la touche ~y~~a~~s~ pour toucher le rectangle ~g~surligné~s~.~n~La balle doit ~y~atteindre le sol~s~ en premier avant que l'adversaire ne puisse la renvoyer.~n~~y~Clic gauche~s~ pour lancer le service.",
+        SERVE_HINT_AW = "A ou AW",
+        SERVE_HINT_DW = "D ou DW",
+        Blip = "Activité - Tennis",
     },
     Control = {
         AIM_FAR = {
             key = 32,
-            name = 'INPUT_MOVE_UP_ONLY',
-            label = 'Aim Far',
+            name = "INPUT_MOVE_UP_ONLY",
+            label = "Viser loin",
         },
         AIM_NEAR = {
             key = 33,
-            name = 'INPUT_MOVE_DOWN_ONLY',
-            label = 'Aim Near',
+            name = "INPUT_MOVE_DOWN_ONLY",
+            label = "Viser près",
         },
         AIM_LEFT = {
             key = 34,
-            name = 'INPUT_MOVE_LEFT_ONLY',
-            label = 'Aim Left',
+            name = "INPUT_MOVE_LEFT_ONLY",
+            label = "Viser à gauche",
         },
         AIM_RIGHT = {
             key = 35,
-            name = 'INPUT_MOVE_RIGHT_ONLY',
-            label = 'Aim Right',
+            name = "INPUT_MOVE_RIGHT_ONLY",
+            label = "Viser à droite",
         },
         SHOT_REGULAR = {
             key = 24,
-            name = 'INPUT_ATTACK',
-            label = 'Base Swing',
+            name = "INPUT_ATTACK",
+            label = "Swing de base",
         },
         SHOT_SERVE = {
             key = 24,
-            name = 'INPUT_ATTACK',
-            label = 'Serve',
+            name = "INPUT_ATTACK",
+            label = "Servir",
         },
         SHOT_TOP_SPIN = {
             key = 25,
-            name = 'INPUT_AIM',
-            label = 'Topspin',
+            name = "INPUT_AIM",
+            label = "Topspin",
         },
         SHOT_BACK_SPIN = {
             key = 22,
-            name = 'INPUT_JUMP',
-            label = 'Backspin',
+            name = "INPUT_JUMP",
+            label = "Backspin",
         },
         SERVE_DROP_BALL = {
             key = 23,
-            name = 'INPUT_ENTER',
-            label = 'Drop Ball'
+            name = "INPUT_ENTER",
+            label = "Jeter la balle"
         },
         LEAVE_TENIS = {
             key = 23,
-            name = 'INPUT_ENTER',
-            label = 'Quit'
+            name = "INPUT_ENTER",
+            label = "Quitter"
         },
         SERVE = {
             key = 38,
-            name = 'INPUT_PICKUP',
-            label = 'Serve'
+            name = "INPUT_PICKUP",
+            label = "Servir"
         },
         JOIN_TENIS = {
             key = 38,
-            name = 'INPUT_PICKUP',
-            label = 'Join Tenis'
+            name = "INPUT_PICKUP",
+            label = " Rejoindre partie"
         },
         TUTORIAL_MODIFIER = {
             key = 21,
-            name = 'INPUT_SPRINT',
-            label = 'Tutorial',
+            name = "INPUT_SPRINT",
+            label = "Tutoriel",
         }
     }
 }

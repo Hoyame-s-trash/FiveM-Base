@@ -69,7 +69,7 @@ Citizen.CreateThread(function()
 end)
 
 Citizen.CreateThread(function()
-    AddTextEntry('LS_ARM_S', '~' .. CONTROLS.PLAY.CONTROL_LABEL .. '~ ' .. CONTROLS.PLAY.TEXT)
+    AddTextEntry('LS_ARM_S', 'Appuyez sur ~' .. CONTROLS.PLAY.CONTROL_LABEL .. '~ pour jouer au bras de fer.')
 
     while true do
         local lenClosestTableIndices = #ClosestTableIndices
@@ -126,11 +126,6 @@ AddEventHandler('lsrp_arm_wrestling:grantPosition', function(tableId, positionId
         2.0, 2
     )
     StartGameThread(tableId, positionId)
-end)
-
-RegisterNetEvent('lsrp_arm_wrestling:denyPosition')
-AddEventHandler('lsrp_arm_wrestling:denyPosition', function()
-    TriggerEvent('lsrp_utils:showNotification', 'Na této straně stolu již stojí někdo jiný.')
 end)
 
 RegisterNetEvent('lsrp_arm_wrestling:start')

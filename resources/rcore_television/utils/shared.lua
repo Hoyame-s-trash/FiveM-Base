@@ -2,7 +2,7 @@ function GetEsxObject()
     local promise_ = promise:new()
     local obj
     xpcall(function()
-        obj = exports['es_extended']['getSharedObject']()
+        obj = exports['believer']['getSharedObject']()
         promise_:resolve(obj)
     end, function(error)
         TriggerEvent(Config.ESX_Object or "esx:getSharedObject", function(module)

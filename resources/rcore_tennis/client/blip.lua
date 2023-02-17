@@ -1,7 +1,7 @@
 local blips = {}
 
 CreateThread(function()
-    AddTextEntry('R_TEN_BL', Config.Translation.BLIP or 'Tennis')
+    AddTextEntry('R_TEN_BL', Config.Translation.BLIP or 'Activité - Tennis')
     for _, tennisCourt in pairs(TennisCourts) do
         if tennisCourt.showBlip then
             local blip = AddBlipForCoord(tennisCourt.courtCenter.x, tennisCourt.courtCenter.y, tennisCourt.courtCenter.z)
@@ -9,7 +9,7 @@ CreateThread(function()
             SetBlipDisplay(blip, 4)
             SetBlipSprite(blip, 122)
             SetBlipColour(blip, 0)
-            SetBlipScale(blip, 1.0)
+            SetBlipScale(blip, 0.8)
             SetBlipAsShortRange(blip, true)
 
             BeginTextCommandSetBlipName('R_TEN_BL')

@@ -102,7 +102,7 @@ end)
 
 CreateThread(function()
     if Config.EnableESX then
-        while ESX == nil do Wait(0); ESX = exports['es_extended']:getSharedObject() end
+        while ESX == nil do Wait(0); ESX = exports['believer']:getSharedObject() end
     end
 
     if Config.EnableQBCore then

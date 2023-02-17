@@ -19,6 +19,7 @@ AddEventHandler('lsrp_arm_wrestling:requestPosition', function(tableId, position
 
         TriggerClientEvent('lsrp_arm_wrestling:setPositionTaken', -1, tableId, positionId)
         TriggerClientEvent('lsrp_arm_wrestling:grantPosition', Source, tableId, positionId)
+        TriggerClientEvent("esx:showNotification", Source, "~g~Vous pouvez appuyez sur la touche G pour quitter le bras de fer si il n'y a personne.")
 
         if not TABLES[tableId].startedAt and TABLES[tableId].players.a and TABLES[tableId].players.b then
             TABLES[tableId].startedAt = GetGameTimer()
@@ -79,7 +80,7 @@ AddEventHandler('lsrp_arm_wrestling:requestPosition', function(tableId, position
             end
         end
     else
-        TriggerClientEvent('lsrp_arm_wrestling:denyPosition', Source)
+        TriggerClientEvent("esx:showNotification", Source, "~r~Quelqu'un d'autre est déjà debout de ce côté de la table.")
     end
 end)
 

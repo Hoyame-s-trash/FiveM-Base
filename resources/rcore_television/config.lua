@@ -3,7 +3,7 @@ Config = {}
 -- 0 standalone
 -- 1 ESX
 -- 2 QBCore
-Config.FrameWork = 0
+Config.FrameWork = 1
 
 -- 1 = raycast (whitedot in center of the screen)
 -- 2 = E click on keyboard only.
@@ -76,8 +76,8 @@ Config.useWhitelist = true
 -- Message list
 -- the command for this is /streamertelevision
 Config.Messages = {
-    ["streamer_on"] = "Streamer mode is on. From now you will not hear any music/sound from any TV.",
-    ["streamer_off"] = "Streamer mode is off. From now you will be able to watch any TV.",
+    ["streamer_on"] = "Le mode Streamer est activé. A partir de maintenant, vous n'entendrez plus aucune musique/aucun son provenant d'un téléviseur.",
+    ["streamer_off"] = "Le mode Streamer est désactivé. A partir de maintenant, vous pourrez regarder n'importe quelle télévision.",
 }
 
 -- list of scaleform to use to televison
