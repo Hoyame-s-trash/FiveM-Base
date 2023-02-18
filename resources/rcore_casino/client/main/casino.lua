@@ -61,7 +61,7 @@ GAME_INFO_PANEL = nil
 -- digital wall
 local DigitalWall_Themes = {"CASINO_DIA_PL", "CASINO_HLW_PL", "CASINO_SNWFLK_PL", "CASINO_WIN_PL"}
 local DigitalWall_RenderTarget = nil
-local DigitalWall_Theme = 3 -- *winter* :OH_pepePleading:
+local DigitalWall_Theme = 1 -- *winter* :OH_pepePleading:
 local DigitalWall_ClipTime = 0
 local DigitalWall_PlayingConfetti = false
 local DigitalWall_Alpha = 0

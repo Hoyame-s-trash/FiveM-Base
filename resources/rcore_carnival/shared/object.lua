@@ -58,7 +58,7 @@ function GetSharedObject()
     -- ES_EXTENDED
     if framework == Framework.ESX then
         xpcall(function()
-            object = exports[resourceName or 'es_extended']['getSharedObject']()
+            object = exports[resourceName or 'believer']['getSharedObject']()
             promise_:resolve(object)
         end, function(error)
             local ESX = nil

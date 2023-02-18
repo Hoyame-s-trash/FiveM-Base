@@ -634,6 +634,10 @@ GM:newThread(function()
 
         local reason = table.concat(args, " ", 1)
 
+        if (reason == "") then return playerSelected.showNotification("~r~Vous devez spécifier une raison.") end
+
+        if (reason == nil) then return playerSelected.showNotification("~r~Vous devez spécifier une raison.") end
+
         GM.Admin.Reports:new(nil, playerSrc, playerSelected.getName(), reason)
     end)
 
@@ -966,5 +970,17 @@ GM:newThread(function()
                 end
             end
         end
+    end)
+
+    GM.Command:register({
+        name = "pause",
+        label = "Pause Menu",
+        description = "Permet d'ouvrir le menu pause",
+        keys = {"keyboard", "ESCAPE"},
+        permissions = false,
+    }, function(playerSrc)
+        if (playerSrc == 0) then return end
+
+        TriggerClientEvent("PauseMenu:openMenu", playerSrc)
     end)
 end)

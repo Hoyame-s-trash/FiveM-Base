@@ -8,13 +8,13 @@ Config.Framework = {
     -- 0 = standalone
     -- 1 = esx
     -- 2 = qbcore
-    Active = 0,
+    Active = 1,
 
     -- esx
     ESX_SHARED_OBJECT = "esx:getSharedObject",
 
     -- es_extended resource name
-    ES_EXTENDED_NAME = "es_extended",
+    ES_EXTENDED_NAME = "believer",
 
     -------
 

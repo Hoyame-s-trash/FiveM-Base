@@ -60,13 +60,17 @@ AddEventHandler("playerDropped", function(reason)
     end
 end)
 
-function GM.PlayTime:SecondsToClock(seconds)
+function GM.PlayTime:SecondsToClock(seconds, restricted)
 	local days = math.floor(seconds / 86400)
 	seconds = seconds - days * 86400
 	local hours = math.floor(seconds / 3600 )
 	seconds = seconds - hours * 3600
 	local minutes = math.floor(seconds / 60)
 	seconds = seconds - minutes * 60
+
+    if (restricted) then
+        return string.format("%d jours, %d heures", days, hours)
+    end
 
 	if days == 0 and hours == 0 and minutes == 0 then
 		return string.format("%d secondes.", seconds)
@@ -80,7 +84,7 @@ function GM.PlayTime:SecondsToClock(seconds)
 	return string.format("%d jours, %d heures, %d minutes, %d secondes", days, hours, minutes, seconds)
 end
 
-function GM.PlayTime:getActualTime(playerIdentifier)
+function GM.PlayTime:getActualTime(playerIdentifier, restricted)
     if (GM.PlayTime.List[playerIdentifier] ~= nil) then
         local storedTime = GM.PlayTime.List[playerIdentifier].time
         local joinTime = GM.PlayTime.List[playerIdentifier].joinTime
@@ -88,10 +92,14 @@ function GM.PlayTime:getActualTime(playerIdentifier)
         local timeNow = os.time(os.date("!*t"))
         local playTime = timeNow - joinTime
 
-        return GM.PlayTime:SecondsToClock(storedTime + playTime)
+        return GM.PlayTime:SecondsToClock(storedTime + playTime, restricted or false)
     end
     return "Nouveau"
 end
+
+exports("getActualTime", function(playerIdentifier, restricted)
+    return GM.PlayTime:getActualTime(playerIdentifier, restricted)
+end)
 
 function GM.PlayTime:convertTimestampToDate(time)
     local date = os.date("%d/%m/%Y", time)

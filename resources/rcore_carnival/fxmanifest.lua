@@ -56,7 +56,7 @@ client_scripts {
 }
 
 server_scripts {
-    "@mysql-async/lib/MySQL.lua",
+    "@oxmysql/lib/MySQL.lua",
     "config.lua",
     "config_minigameList.lua",
     "config_shop.lua",

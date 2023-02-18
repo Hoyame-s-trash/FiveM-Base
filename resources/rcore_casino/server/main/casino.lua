@@ -331,23 +331,8 @@ end
 
 -- Is Player admin?
 function IsPlayerAdmin(playerId)
-    DebugStart("IsPlayerAdmin")
-    local xPlayer = ESX.GetPlayerFromId(playerId)
-    if xPlayer then
-        local group = xPlayer.getGroup()
-        if type(group) == "table" then
-            for k, v in pairs(group) do
-                if AdminGroup[group] then
-                    return true
-                end
-            end
-            return IsPlayerAceAllowed(playerId, "admin")
-        end
-        if type(group) == "string" then
-            return AdminGroup[group] ~= nil
-        end
-    end
-    return false
+    -- Todo make real function to check admin with believer resource
+    return true
 end
 
 -- check if player works at casino
