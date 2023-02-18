@@ -1,10 +1,10 @@
 Config = {
-    Framework = 0, --[ 1 = ESX / 2 = QBCore / 3 = Other ] Choose your framework
+    Framework = 1, --[ 1 = ESX / 2 = QBCore / 3 = Other ] Choose your framework
 
 	FrameworkTriggers = {
-		notify = '', -- [ ESX = 'esx:showNotification' / QBCore = 'QBCore:Notify' ] Set the notification event, if left blank, default will be used
-		object = '', --[ ESX = 'esx:getSharedObject' / QBCore = 'QBCore:GetObject' ] Set the shared object event, if left blank, default will be used (deprecated for QBCore)
-		resourceName = '', -- [ ESX = 'es_extended' / QBCore = 'qb-core' ] Set the resource name, if left blank, automatic detection will be performed
+		notify = 'ESX', -- [ ESX = 'esx:showNotification' / QBCore = 'QBCore:Notify' ] Set the notification event, if left blank, default will be used
+		object = 'ESX', --[ ESX = 'esx:getSharedObject' / QBCore = 'QBCore:GetObject' ] Set the shared object event, if left blank, default will be used (deprecated for QBCore)
+		resourceName = 'believer', -- [ ESX = 'es_extended' / QBCore = 'qb-core' ] Set the resource name, if left blank, automatic detection will be performed
 	},
     
     NotificationDistance = 10.0,
@@ -92,35 +92,35 @@ Config = {
         BALL_IN_HAND_DOWN = {code = 173, label = 'INPUT_CELLPHONE_DOWN'},
     },
     Text = {
-        BACK = "Back",
-        HIT = "Hit",
-        BALL_IN_HAND = "Ball-in-Hand",
-        BALL_IN_HAND_BACK = "Back",
-        AIM_LEFT = "Aim left",
-        AIM_RIGHT = "Aim right",
-        AIM_SLOWER = "Aim slower",
+        BACK = "Retour",
+        HIT = "Tirer",
+        BALL_IN_HAND = "Boule en main",
+        BALL_IN_HAND_BACK = "Retour",
+        AIM_LEFT = "Viser à gauche",
+        AIM_RIGHT = "Viser à droite",
+        AIM_SLOWER = "Viser doucement",
 
-        POOL = 'Pool',
-        POOL_GAME = 'Pool game',
-        POOL_SUBMENU = 'Select ball configuration',
-        TYPE_8_BALL = '8-ball',
-        TYPE_STRAIGHT = 'Straight pool',
-        POOL_SETUP = 'Setup: ',
+        POOL = 'Billard',
+        POOL_GAME = 'Jeu de billard',
+        POOL_SUBMENU = 'Sélectionnez la configuration de la boule',
+        TYPE_8_BALL = '8 Boules',
+        TYPE_STRAIGHT = 'Pool droit',
+        POOL_SETUP = 'Installer: ',
 
-        HINT_SETUP = 'Set up table',
-        HINT_TAKE_CUE = 'Take pool cue',
-        HINT_RETURN_CUE = 'Return pool cue',
-        HINT_HINT_TAKE_CUE = 'To play pool, take pool cue at the pool cue stand',
-        HINT_PLAY = 'Play',
+        HINT_SETUP = 'Installer la table',
+        HINT_TAKE_CUE = 'Prendre la queue de billard',
+        HINT_RETURN_CUE = 'Retourner la queue de billard',
+        HINT_HINT_TAKE_CUE = 'Pour jouer au billard, prenez la queue de billard au stand de la queue de billard.',
+        HINT_PLAY = 'Jouer',
 
-        NOT_ENOUGH_MONEY = 'You don\'t have $%s to setup this table.',
+        NOT_ENOUGH_MONEY = "Vous n'avez pas les moyens (%s) d'installer cette table.",
 
-        BALL_IN_HAND_LEFT = 'Left',
-        BALL_IN_HAND_RIGHT = 'Right',
-        BALL_IN_HAND_UP = 'Up',
-        BALL_IN_HAND_DOWN = 'Down',
-        BALL_POCKETED = '%s ball was pocketed',
-        BALL_IN_HAND_NOTIFY = 'Player has taken cue ball in hand',
+        BALL_IN_HAND_LEFT = 'Gauche',
+        BALL_IN_HAND_RIGHT = 'Droite',
+        BALL_IN_HAND_UP = 'Haut',
+        BALL_IN_HAND_DOWN = 'Bas',
+        BALL_POCKETED = '%s boules ont été empochée',
+        BALL_IN_HAND_NOTIFY = 'Le joueur a pris la boule de choc en main',
         BALL_LABELS = {
             [-1] = 'Cue',
             [1] = '~y~Solid 1~s~',

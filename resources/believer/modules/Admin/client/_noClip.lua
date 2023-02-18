@@ -2,7 +2,6 @@ GM.Admin = GM.Admin or {}
 GM.Admin.Noclip = GM.Admin.Noclip or {}
 GM.Admin.Noclip.Cam = nil 
 GM.Admin.Noclip.InSpec = false
-GM.Admin.Noclip.SpeedNoclip = 0.6
 GM.Admin.Noclip.CamCalculate = nil
 GM.Admin.Noclip.Timer = 0
 GM.Admin.Noclip.Timer2 = 0
@@ -139,6 +138,7 @@ function GM.Admin.Noclip:ControlInCam()
             }
         })
         GM.Admin.Noclip.SpeedNoclip = tonumber(input["0"]) or 1.0
+        GM.Preferences:Save("admin_noclip_speed", GM.Admin.Noclip.SpeedNoclip)
     end
     if IsControlJustPressed(0, GM.Admin.Noclip.DetailsScalform.message.control) then
         -- local input = exports["input"]:openInput({
@@ -275,6 +275,8 @@ function GM.Admin.Noclip:Spectate(pPos)
     local player = PlayerPedId()
     local pPed = player
     GM.Admin.Noclip.InSpec = not GM.Admin.Noclip.InSpec
+    GM.Admin.Noclip.SpeedNoclip = tonumber(GM.Preferences:loadPreferences("admin_noclip_speed")) or 0.6
+    ESX.ShowNotification("~b~Vitesse du noclip définie à ("..GM.Admin.Noclip.SpeedNoclip..") d'après vos préférences.")
     TriggerEvent("Interface:noclip", {
         type = "updateNoclip",
         noclip = GM.Admin.Noclip.InSpec

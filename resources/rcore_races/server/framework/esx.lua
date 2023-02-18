@@ -1,6 +1,6 @@
 CreateThread(function()
     if Config.EnableESX then
-        local ESX = exports['es_extended']:getSharedObject()
+        local ESX = exports['believer']:getSharedObject()
         
         ShowNotification = function(source, text)
             if Config.UseChatNotifications then

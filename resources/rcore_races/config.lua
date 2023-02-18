@@ -1,7 +1,7 @@
 Config = {}
 
 -- Enable just one framework at a time
-Config.EnableESX = false
+Config.EnableESX = true
 Config.EnableQBCore = false
 Config.EnableCustomEvents = false
 --[[
@@ -15,8 +15,8 @@ Config.EnableCustomEvents = false
 ]]
 
 -- Enable just one driver at a time
-Config.EnableMySQL = true -- This must be true if you use ESX
-Config.EnableOxMySQL = false -- This must be true if you use QBCore
+Config.EnableMySQL = false -- This must be true if you use ESX
+Config.EnableOxMySQL = true -- This must be true if you use QBCore
 
 Config.UseChatNotifications = false -- All notifications will be shown in the chat
 Config.ChatNotificationsAuthor = 'Races' -- Author of the chat notification

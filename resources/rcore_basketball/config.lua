@@ -1,21 +1,21 @@
-GAME_HORSE = 'horse'
-GAME_ATW = 'atw'
-GAME_FREE_THROW = 'free-throw'
+GAME_HORSE = "horse"
+GAME_ATW = "atw"
+GAME_FREE_THROW = "free-throw"
 
 Config = {
-	Framework = 0, --[ 1 = ESX / 2 = QBCore / 3 = Other ] Choose your framework
+	Framework = 1, --[ 1 = ESX / 2 = QBCore / 3 = Other ] Choose your framework
 
 	FrameworkTriggers = {
-		notify = '', -- [ ESX = 'esx:showNotification' / QBCore = 'QBCore:Notify' ] Set the notification event, if left blank, default will be used
-		object = '', --[ ESX = 'esx:getSharedObject' / QBCore = 'QBCore:GetObject' ] Set the shared object event, if left blank, default will be used (deprecated for QBCore)
-		resourceName = '', -- [ ESX = 'es_extended' / QBCore = 'qb-core' ] Set the resource name, if left blank, automatic detection will be performed
+		notify = "ESX", -- [ ESX = "esx:showNotification" / QBCore = "QBCore:Notify" ] Set the notification event, if left blank, default will be used
+		object = "ESX", --[ ESX = "esx:getSharedObject" / QBCore = "QBCore:GetObject" ] Set the shared object event, if left blank, default will be used (deprecated for QBCore)
+		resourceName = "believer", -- [ ESX = "believer" / QBCore = "qb-core" ] Set the resource name, if left blank, automatic detection will be performed
 	},
 
 	AllowWager = true,
 
 	OxInventory = false,
 
-	HorseLetters = {'H', 'O', 'R', 'S', 'E'},
+	HorseLetters = {"H", "O", "R", "S", "E"},
 
 	Marker = {
 		Scale = 1.4,
@@ -38,11 +38,11 @@ Config = {
 
 	-- If set to true, players will need basketball in their inventory to play
 	RequireBasketball = false,
-	BasketballItemName = 'basketball',
+	BasketballItemName = "basketball",
 
 	-- Allows players with item basketball_hoop to place the hoop anywhere on the map
 	AllowPlacingHoops = true,
-	HoopItemName = 'basketball_hoop',
+	HoopItemName = "basketball_hoop",
 
 	-- Improves performance by ~30% when near basketball hoop, but makes it less visible when player scores
 	-- (Removes the white basketball hoop net effect)
@@ -68,91 +68,91 @@ Config = {
 		},
 		AIM_THROW = {
             key = 38,
-            name = 'INPUT_PICKUP',
-            label = 'Aim throw',
+            name = "INPUT_PICKUP",
+            label = "Lancer de la cible",
 		},
 		TRICK_SPIN = {
             keyHold = 19,
             key = 38,
-            label = 'Trick: Spin',
+            label = "Trick: Spin",
 		},
 		TRICK_BNR = {
             keyHold = 36,
             key = 38,
-            label = 'Trick: Behind the neck roll',
+            label = "Truc : Roulade derrière le cou",
 		},
 
 		AIM_LOCK = {
 			key = 36,
-			label = 'Lock Aim',
+			label = "Verrouiller la visée",
 		},
 		POWER_SPEED = {
 			key = 21,
-			label = 'Power Multiplier',
+			label = "Multiplicateur de puissance",
 		},
 		LOWER_POWER = {
 			keyHold = 15,
 			key = 14,
-			label = 'Throw Power',
+			label = "Puissance du lancer",
 		},
 		EXIT = {
 			key = 23,
-			label = 'Exit',
+			label = "Quitter",
 		},
 		THROW = {
 			key = 22,
-			label = 'Throw',
+			label = "Lancer",
 		},
 	},
 
 	Text = {
-		ATW_CP_THROW_POINTS = 'positions',
-		[GAME_HORSE] = 'HORSE',
-		[GAME_ATW] = 'Around the World',
-		[GAME_FREE_THROW] = 'Free Throw',
-		GO_TO_BALL_PICKUP = 'Go to ~y~the ball~s~ and ~y~pick it up~s~',
-		START_GAME = '~INPUT_PICKUP~ Start',
-		START_TAKE_GAME = '~INPUT_PICKUP~ Start~n~~INPUT_SPRINT~ + ~INPUT_PICKUP~ Remove Hoop',
-		REMOVE_HOOP = 'Remove hoop',
-		START_REGISTRATION = '~INPUT_PICKUP~ Start registration',
-		BEGIN_GAME = '~INPUT_PICKUP~ Begin game',
-		JOIN_GAME = '~INPUT_PICKUP~ Join Game',
-		END_THROW = '~INPUT_ENTER~ Cancel',
-		THROW = '~INPUT_JUMP~ Throw ball',
-		START_THROW = '~INPUT_PICKUP~ Throw ball',
-		PICKUP = '~INPUT_PICKUP~ Pick the ball up',
-		TOO_CLOSE = 'You are ~r~too close~s~ to the hoop to ~y~set throw points~s~',
-		PLACE_POINT = '~INPUT_PICKUP~ Place a throw point',
-		REMOVE_POINT = '~INPUT_SPRINT~ + ~INPUT_PICKUP~ Remove a throw point',
-		TOO_CLOSE_OTHER = 'You are ~r~too close~s~ to ~y~another throw point~s~',
-		NOT_ENOUGH_MONEY = 'You do not have enough money to wager.',
-		WON_WAGER = 'You won $%d in the basketball game',
-		WON_NO_WAGER = 'You won the baskeball game',
-		HORSE_SET = 'Throw from ~y~anywhere~s~. Other players will have to replicate ~y~the same shot~s~',
-		HORSE_THROW = 'Throw from the ~y~same place~s~ as the previous player',
-		MUST_BE_IN_MARKER = 'You must be in ~r~marker~s~ to throw.',
-		PLACE_AIM = '~y~Aim~s~ at a wall to place a hoop.',
-		PLACE_HOOP = '~INPUT_PICKUP~ Place~n~~INPUT_ENTER~ Exit',
-		PLACE_TOO_FAR = 'The ~y~Interaction point~s~ is too far from the hoop.',
-		GAME_IN_PROGRESS = 'Can\'t remove the hoop, a game is currently in progress.',
-		CANT_TAKE = 'You can\'t remove this hoop.',
-		DIF_EASY = 'Easy',
-		DIF_MEDIUM = 'Medium',
-		DIF_HARD = 'Hard',
-		REGISTER = 'Register',
-		START = 'Start',
-		CLOSE = 'Close',
-		BASKETBALL = 'Basketball',
-		T_OPEN = 'Open',
-		T_FINISH_SETUP = 'Finish setup',
-		T_PICKUP = 'Pick up',
-		WAGER = 'Wager',
-		WAGER_NONE = 'None',
-		GAME_MODE = 'Game Mode',
-		DIFFICULTY = 'Difficulty',
-		NEED_BASKETBALL = 'You need a basketball to play',
-		BLIP = 'Basketball',
-		GAME_SETTING_UP = 'Game is being configured',
+		ATW_CP_THROW_POINTS = "positions",
+		[GAME_HORSE] = "HORSE",
+		[GAME_ATW] = "Autour du monde",
+		[GAME_FREE_THROW] = "Lancer franc",
+		GO_TO_BALL_PICKUP = "~y~Va vers le ballon et ramasse-le.~s~",
+		START_GAME = "~INPUT_PICKUP~ Commencer",
+		START_TAKE_GAME = "~INPUT_PICKUP~ Démarrer~n~~INPUT_SPRINT~ + ~INPUT_PICKUP~ Enlever le cerceau",
+		REMOVE_HOOP = "Retirer l'arceau",
+		START_REGISTRATION = "~INPUT_PICKUP~ Démarrer l'enregistrement",
+		BEGIN_GAME = "~INPUT_PICKUP~ Commencer le jeu",
+		JOIN_GAME = "~INPUT_PICKUP~ Rejoindre le jeu",
+		END_THROW = "~INPUT_ENTER~ Annuler",
+		THROW = "~INPUT_JUMP~ Lancer la balle",
+		START_THROW = "~INPUT_PICKUP~ Lancer la balle",
+		PICKUP = "~INPUT_PICKUP~ Ramassez le ballon",
+		TOO_CLOSE = "~r~Vous êtes trop près du panier pour marquer des points.",
+		PLACE_POINT = "~INPUT_PICKUP~ Placez un point de lancement",
+		REMOVE_POINT = "~INPUT_SPRINT~ + ~INPUT_PICKUP~ Supprimer un point de lancement",
+		TOO_CLOSE_OTHER = "~r~Vous êtes trop près d'un autre point de jet.",
+		NOT_ENOUGH_MONEY = "Vous n'avez pas assez d'argent pour parier.",
+		WON_WAGER = "Vous avez gagné $%d dans le jeu de basket-ball",
+		WON_NO_WAGER = "Vous avez gagné le match de baskeball",
+		HORSE_SET = "Lancez depuis ~y~tout endroit~s~. Les autres joueurs devront reproduire ~y~le même tir~s~.",
+		HORSE_THROW = "Lancer depuis le ~y~même endroit~s~ que le joueur précédent.",
+		MUST_BE_IN_MARKER = "Vous devez être en ~r~marker~s~ pour lancer.",
+		PLACE_AIM = "~y~Dirigez vous vers un mur pour placer un cerceau.",
+		PLACE_HOOP = "~INPUT_PICKUP~ Placer~n~~INPUT_ENTER~ Quitter",
+		PLACE_TOO_FAR = "Le point d'interaction est trop loin du cerceau.",
+		GAME_IN_PROGRESS = "Impossible de retirer le cerceau, un match est en cours.",
+		CANT_TAKE = "Vous ne pouvez pas enlever cet arceau.",
+		DIF_EASY = "Facile",
+		DIF_MEDIUM = "Moyen",
+		DIF_HARD = "Difficile",
+		REGISTER = "Enregistrer",
+		START = "Commencer",
+		CLOSE = "Fermer",
+		BASKETBALL = "Basketball",
+		T_OPEN = "Ouvrir",
+		T_FINISH_SETUP = "Finir la configuration",
+		T_PICKUP = "Ramasser",
+		WAGER = "Parier",
+		WAGER_NONE = "Aucun pari",
+		GAME_MODE = "Mode de jeu",
+		DIFFICULTY = "Difficulté",
+		NEED_BASKETBALL = "Vous devez avoir un ballon de basket-ball pour jouer.",
+		BLIP = "Activité - Basketball",
+		GAME_SETTING_UP = "Le jeu est en cours de configuration.",
 	},
 }
 
@@ -442,23 +442,23 @@ BasketballHoops = {
 		
 }
 
-STATUS_FREE = 'free'
-STATUS_CONFIGURING = 'configuring'
-STATUS_REGISTRATION = 'registration'
-STATUS_PLAYING = 'playing'
-STATUS_THROWN = 'thrown'
+STATUS_FREE = "free"
+STATUS_CONFIGURING = "configuring"
+STATUS_REGISTRATION = "registration"
+STATUS_PLAYING = "playing"
+STATUS_THROWN = "thrown"
 
-C_PLAYERS = 'players'
+C_PLAYERS = "players"
 
 if Config.UseQTarget then
-	Config.TargetResourceName = 'qtarget'
+	Config.TargetResourceName = "qtarget"
 end
 if Config.UseBTTarget then
-	Config.TargetResourceName = 'bt-target'
+	Config.TargetResourceName = "bt-target"
 end
 if Config.UseQBTarget then
-	Config.TargetResourceName = 'qb-target'
+	Config.TargetResourceName = "qb-target"
 end
 if Config.UseOxTarget then
-	Config.TargetResourceName = 'ox_target'
+	Config.TargetResourceName = "ox_target"
 end
