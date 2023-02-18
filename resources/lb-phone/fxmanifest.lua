@@ -12,7 +12,7 @@ shared_script {
 client_script "client/**/*.lua"
 
 server_scripts {
-    "@mysql-async/lib/MySQL.lua",
+    "@oxmysql/lib/MySQL.lua",
     "server/**/*.lua",
     "config/server.lua"
 }
@@ -27,7 +27,7 @@ ui_page "ui/dist/index.html"
 
 dependencies {
     "loaf_lib",
-    "mysql-async"
+    "oxmysql"
 }
 
 escrow_ignore {

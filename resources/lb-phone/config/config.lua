@@ -125,65 +125,13 @@ Config.Locations = { -- Locations that'll appear in the maps app.
 
 Config.Locales = { -- languages that the player can choose from when setting up a phone [Check the docs to see which languages the phone supports]
     {
-        locale = "en",
-        name = "English"
-    },
-    {
-        locale = "de",
-        name = "Deutsch"
-    },
-    {
         locale = "fr",
         name = "Français"
-    },
-    {
-        locale = "es",
-        name = "Español"
-    },
-    {
-        locale = "nl",
-        name = "Nederlands"
-    },
-    {
-        locale = "dk",
-        name = "Dansk"
-    },
-    {
-        locale = "no",
-        name = "Norsk"
-    },
-    {
-        locale = "th",
-        name = "ไทย"
-    },
-    {
-        locale = "ar",
-        name = "عربي"
-    },
-    {
-        locale = "ru",
-        name = "Русский"
-    },
-    {
-        locale = "cs",
-        name = "Czech"
-    },
-    {
-        locale = "sv",
-        name = "Svenska"
-    },
-    {
-        locale = "pl",
-        name = "Polski"
-    },
-    {
-        locale = "hu",
-        name = "Magyar"
     },
 }
 
 
-Config.DefaultLocale = "en"
+Config.DefaultLocale = "fr"
 Config.DateLocale = "en-US" -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
 
 Config.PhoneNumber = {}
@@ -212,7 +160,7 @@ Config.MaxTransferAmount = 1000000 -- The maximum amount of money that can be tr
 Config.CityName = "Los Santos" -- The name that's being used in the weather app etc.
 Config.RealTime = true -- if true, the time will use real life time depending on where the user lives, if false, the time will be the ingame time.
 
-Config.EmailDomain = "lbphone.com"
+Config.EmailDomain = "bluestark.fr"
 
 Config.DeleteMessages = true -- allow players to delete messages?
 
