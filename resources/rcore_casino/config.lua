@@ -164,7 +164,7 @@ Config = {
 }
 
 Framework = {
-    -- 1 = es_extended
+    -- 1 = believer
     -- 2 = QBcore / custom
     -- for custom frameworks, also use option *2*, and rewrite all the qbcore functions
 

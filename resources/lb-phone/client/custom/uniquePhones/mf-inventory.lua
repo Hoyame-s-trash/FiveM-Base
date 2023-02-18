@@ -3,7 +3,7 @@ CreateThread(function()
         return
     end
 
-    local ESX = exports["es_extended"]:getSharedObject()
+    local ESX = exports["believer"]:getSharedObject()
 
     local function GetItemsByName(name)
         local items = {}

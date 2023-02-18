@@ -5,7 +5,7 @@ CreateThread(function()
 
     debugprint("Loading ESX")
     local export, ESX = pcall(function()
-        return exports.es_extended:getSharedObject()
+        return exports.believer:getSharedObject()
     end)
     if not export then
         while not ESX do

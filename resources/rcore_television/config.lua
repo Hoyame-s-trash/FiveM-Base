@@ -17,7 +17,7 @@ end
 
 Config.QBCoreObject = "QBCore:GetObject"
 
--- is the script es_extended based?
+-- is the script believer based?
 Config.ESX_Object = "esx:getSharedObject"
 
 -- event for player loaded

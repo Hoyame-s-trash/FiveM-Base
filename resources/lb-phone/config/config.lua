@@ -5,7 +5,7 @@ Config.Debug = false -- Set to true to enable debug mode
 Config.Framework = "esx"
 --[[
     Supported frameworks:
-        * esx: es_extended, https://github.com/esx-framework/esx-legacy
+        * esx: believer, https://github.com/esx-framework/esx-legacy
         * qb: qb-core, https://github.com/qbcore-framework/qb-core
         * ox: ox_core, https://github.com/overextended/ox_core
         * standalone: no framework, note that framework specific apps will not work unless you implement the functions
@@ -13,7 +13,7 @@ Config.Framework = "esx"
 Config.CustomFramework = false -- if set to true and you use standalone, you will be able to use framework specific apps
 
 Config.Item = {}
-Config.Item.Require = true -- require a phone item to use the phone
+Config.Item.Require = false -- require a phone item to use the phone
 Config.Item.Name = "phone" -- name of the phone item
 
 Config.Item.Unique = false -- should each phone be unique? https://docs.lbphone.com/phone/configuration#unique-phones
@@ -125,65 +125,13 @@ Config.Locations = { -- Locations that'll appear in the maps app.
 
 Config.Locales = { -- languages that the player can choose from when setting up a phone [Check the docs to see which languages the phone supports]
     {
-        locale = "en",
-        name = "English"
-    },
-    {
-        locale = "de",
-        name = "Deutsch"
-    },
-    {
         locale = "fr",
         name = "Français"
-    },
-    {
-        locale = "es",
-        name = "Español"
-    },
-    {
-        locale = "nl",
-        name = "Nederlands"
-    },
-    {
-        locale = "dk",
-        name = "Dansk"
-    },
-    {
-        locale = "no",
-        name = "Norsk"
-    },
-    {
-        locale = "th",
-        name = "ไทย"
-    },
-    {
-        locale = "ar",
-        name = "عربي"
-    },
-    {
-        locale = "ru",
-        name = "Русский"
-    },
-    {
-        locale = "cs",
-        name = "Czech"
-    },
-    {
-        locale = "sv",
-        name = "Svenska"
-    },
-    {
-        locale = "pl",
-        name = "Polski"
-    },
-    {
-        locale = "hu",
-        name = "Magyar"
     },
 }
 
 
-Config.DefaultLocale = "en"
+Config.DefaultLocale = "fr"
 Config.DateLocale = "en-US" -- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
 
 Config.PhoneNumber = {}
@@ -212,13 +160,13 @@ Config.MaxTransferAmount = 1000000 -- The maximum amount of money that can be tr
 Config.CityName = "Los Santos" -- The name that's being used in the weather app etc.
 Config.RealTime = true -- if true, the time will use real life time depending on where the user lives, if false, the time will be the ingame time.
 
-Config.EmailDomain = "lbphone.com"
+Config.EmailDomain = "bluestark.com"
 
 Config.DeleteMessages = true -- allow players to delete messages?
 
-Config.SyncFlash = true -- should flashlights be synced across all players? May have an impact on performance
+Config.SyncFlash = false -- should flashlights be synced across all players? May have an impact on performance
 Config.EndLiveClose = false -- should IG live end when you close the phone?
-Config.AllowExternal = false -- allow people to upload external images? (note: this means they can upload nsfw / gore etc)
+Config.AllowExternal = true -- allow people to upload external images? (note: this means they can upload nsfw / gore etc)
 Config.AutoBackup = true -- should the phone automatically create a backup when you get a new phone?
 
 Config.PhoneModel = `lb_phone_prop` -- the prop of the phone, if you want to use a custom phone model, you can change this here

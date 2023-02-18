@@ -13,7 +13,7 @@ Config.Framework = {
     -- esx
     ESX_SHARED_OBJECT = "esx:getSharedObject",
 
-    -- es_extended resource name
+    -- believer resource name
     ES_EXTENDED_NAME = "believer",
 
     -------
