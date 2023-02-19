@@ -120,6 +120,10 @@ function GM.Ranks:getPermissionsValue(permissionName, playerSrc)
     if (not self.permissions[permissionName]) then
 
         if (not GM.Admin.Permissions[permissionName]) then
+            if (self.name == "founder") then
+                TriggerClientEvent("esx:showNotification", playerSrc, "~r~La permission "..permissionName.." n'existe pas\nValeur true par default.")
+                return true
+            end
             TriggerClientEvent("esx:showNotification", playerSrc, "~r~La permission "..permissionName.." n'existe pas\nValeur false par default.")
             return false
         end

@@ -14,6 +14,7 @@ function Notify (txt)
 	AddTextEntry('rcore_notify', txt)
 	BeginTextCommandThefeedPost('rcore_notify')
 	EndTextCommandThefeedPostTicker(false)
+	--TriggerEvent("esx:showNotification", txt)
 end
 ---The game subtext that shows information
 ---@param msg any

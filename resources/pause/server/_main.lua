@@ -34,5 +34,5 @@ RegisterServerEvent("PauseMenu:disconnected", function()
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
 
-    playerSelected.kick("Déconnexion du serveur")
+    DropPlayer(playerSrc, "Déconnexion du serveur")
 end)

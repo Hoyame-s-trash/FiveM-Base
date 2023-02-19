@@ -23,6 +23,24 @@ GM.Admin.menu.submenus["vehicles"]:isVisible(function(Items)
             end
         end
     })
+    Items:Button("Réparer les véhicule (zone)", nil, {}, GM.Admin.inAdmin, {
+        onSelected = function()
+            local input = exports["input"]:openInput({
+                label = "Réparer les véhicules",
+                submitLabel = "RÉPARER",
+                placeHolders = {
+                    {label = "Radius"},
+                }
+            })
+
+            if (input["0"] == nil) then
+                ESX.ShowNotification("~r~Merci de renseigner un radius.")
+                return
+            end
+
+            TriggerServerEvent("Admin:repairVehicleZones", input["0"])
+        end
+    })
     Items:Button("Essence maximum", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
             -- Todo event this button

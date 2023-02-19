@@ -3,7 +3,7 @@
 CreateThread(function()
     if not Config.Framework ~= Framework.Standalone then
         if Config.Framework == Framework.ESX then
-            ESX = exports['es_extended']:getSharedObject()
+            ESX = exports['believer']:getSharedObject()
             if not ESX then return print("[rcore_darts] [error] Are you sure that you are using ESX?") end
             GetPlayerFromId = function (source)
                 local xPlayer = { }
