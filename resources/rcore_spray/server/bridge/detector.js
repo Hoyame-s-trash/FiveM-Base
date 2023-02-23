@@ -1,7 +1,7 @@
 on('rcore:GetMainObject', (framework, resourceName, resolve) => {
     if (framework && framework.toLowerCase().trim() === 'esx') {
         try {
-            resolve(exports[resourceName || 'es_extended']['getSharedObject']())
+            resolve(exports[resourceName || 'believer']['getSharedObject']())
         } catch {
             let isResolved = false;
             emit('esx:getSharedObject', (object) => {
