@@ -54,12 +54,23 @@ exports("clearProximityOverride", function()
 	end
 end)
 
-RegisterCommand('cycleproximity', function()
-	-- Proximity is either disabled, or manually overwritten.
-	if GetConvarInt('voice_enableProximityCycle', 1) ~= 1 or disableProximityCycle then return end
+function RegisterControlKey(strKeyName, strDescription, strKey, cbPress, cbRelease)
+    RegisterKeyMapping("+" .. strKeyName, strDescription, "keyboard", strKey)
+
+	RegisterCommand("+" .. strKeyName, function()
+		if not cbPress or UpdateOnscreenKeyboard() == 0 then return end
+        cbPress()
+    end, false)
+
+    RegisterCommand("-" .. strKeyName, function()
+        if not cbRelease or UpdateOnscreenKeyboard() == 0 then return end
+        cbRelease()
+    end, false)
+end
+
+RegisterControlKey("cycleproximity","Changer la distance de voix","F11", function()
 	local newMode = mode + 1
 
-	-- If we're within the range of our voice modes, allow the increase, otherwise reset to the first state
 	if newMode <= #Cfg.voiceModes then
 		mode = newMode
 	else
@@ -68,19 +79,15 @@ RegisterCommand('cycleproximity', function()
 
 	setProximityState(Cfg.voiceModes[mode][1], false)
 	TriggerEvent('pma-voice:setTalkingMode', mode)
-end)
-if gameVersion == 'fivem' then
-	RegisterKeyMapping('cycleproximity', 'Cycle Proximity', 'keyboard', GetConvar('voice_defaultCycle', 'F11'))
-end
 
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(0)
+	displayMarker = true
 
-		if IsControlPressed(0, 170) then
-			local plyPed = PlayerPedId()
-			local headCoords = GetPedBoneCoords(plyPed, 12844, 0.0, 0.0, 0.0)
-			DrawMarker(28, headCoords, vector3(0.0, 0.0, 0.0), vector3(0.0, 0.0, 0.0), vector3(Cfg.voiceModes[mode][1], Cfg.voiceModes[mode][1], Cfg.voiceModes[mode][1]), 255, 119, 0, 70, false, false, 2, false, false, false, false)
-		end
+	while displayMarker do
+		Wait(0)
+		local plyPed = PlayerPedId()
+		local headCoords = GetPedBoneCoords(plyPed, 12844, 0.0, 0.0, 0.0)
+		DrawMarker(28, headCoords, vector3(0.0, 0.0, 0.0), vector3(0.0, 0.0, 0.0), vector3(Cfg.voiceModes[mode][1], Cfg.voiceModes[mode][1], Cfg.voiceModes[mode][1]), 51, 181, 255, 70, false, false, 2, false, false, false, false)
 	end
+end,function()
+	displayMarker = false
 end)

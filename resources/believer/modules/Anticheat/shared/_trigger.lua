@@ -115,10 +115,9 @@ if (IsDuplicityVersion()) then
     end)
 end
 
--- Client side
-TSE = TriggerServerEvent
+_BelieverServerEvent = TriggerServerEvent
 TriggerServerEvent = function(name, ...)
     local args = table.pack(...)
     table.insert(args, GetToken())
-    TSE(name, table.unpack(args))
+    _BelieverServerEvent(name, table.unpack(args))
 end

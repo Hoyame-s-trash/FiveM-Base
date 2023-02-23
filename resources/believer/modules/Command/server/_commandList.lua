@@ -983,4 +983,59 @@ GM:newThread(function()
 
         TriggerClientEvent("PauseMenu:openMenu", playerSrc)
     end)
+
+    GM.Command:register({
+        name = "giveweapon",
+        label = "Donner une arme",
+        description = "Permet de donner une arme à un joueur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local weapon = args[2]
+            if (not weapon) then return end
+
+            local ammo = args[3]
+            if (not ammo) then return end
+
+            if targetSelected.hasWeapon(weapon) then
+                print("LE JOUEUR POSSEDE DEJA L'ARME")
+                return
+            else
+                targetSelected.addWeapon(weapon, ammo)
+                print("VOUS AVEZ DONNE UNE ARME A "..targetSelected.getName()..".")
+            end
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local weapon = args[2]
+            if (not weapon) then return end
+
+            local ammo = args[3]
+            if (not ammo) then return end
+
+            if targetSelected.hasWeapon(weapon) then
+                playerSelected.showNotification("~r~Le joueur possède déjà l'arme.")
+                return
+            else
+                targetSelected.addWeapon(weapon, ammo)
+                playerSelected.showNotification("~g~Vous avez donné une arme ("..weapon..") à "..targetSelected.getName()..".")
+            end
+        end
+    end)
+
+    GM.Command:register({
+        name = "create_garage",
+        label = "Créer un garage",
+        description = "Permet de créer un garage",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then return end
+
+        TriggerClientEvent("Garage:openMenu", playerSrc)
+    end)
 end)
