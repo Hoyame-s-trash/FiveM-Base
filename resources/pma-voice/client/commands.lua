@@ -68,7 +68,19 @@ RegisterCommand('cycleproximity', function()
 
 	setProximityState(Cfg.voiceModes[mode][1], false)
 	TriggerEvent('pma-voice:setTalkingMode', mode)
-end, false)
+end)
 if gameVersion == 'fivem' then
 	RegisterKeyMapping('cycleproximity', 'Cycle Proximity', 'keyboard', GetConvar('voice_defaultCycle', 'F11'))
 end
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(0)
+
+		if IsControlPressed(0, 170) then
+			local plyPed = PlayerPedId()
+			local headCoords = GetPedBoneCoords(plyPed, 12844, 0.0, 0.0, 0.0)
+			DrawMarker(28, headCoords, vector3(0.0, 0.0, 0.0), vector3(0.0, 0.0, 0.0), vector3(Cfg.voiceModes[mode][1], Cfg.voiceModes[mode][1], Cfg.voiceModes[mode][1]), 255, 119, 0, 70, false, false, 2, false, false, false, false)
+		end
+	end
+end)

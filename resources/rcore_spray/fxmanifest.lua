@@ -21,7 +21,7 @@ server_scripts {
 	'config.lua',
 
 	'server/bridge/detector.js',
-	'@mysql-async/lib/MySQL.lua',
+	'@oxmysql/lib/MySQL.lua',
 
 	'server/bridge/*.lua',
 

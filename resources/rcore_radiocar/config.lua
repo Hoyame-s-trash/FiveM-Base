@@ -7,12 +7,12 @@ Config = {}
 -- 1 oxmysql (if you have older version where mysql-async bridge does not exists turn this on)
 -- 2 Mysql async
 -- 3 ghmattimysql
-Config.MysqlType = 0
+Config.MysqlType = 1
 
 -- 0 standalone
 -- 1 ESX
 -- 2 QBCore
-Config.FrameWork = 0
+Config.FrameWork = 1
 
 -- will force trim even on standalone
 Config.ForceTrim = false
@@ -39,7 +39,7 @@ Config.AutoSaveInterval = 1000 * 60 * 15
 Config.ESX_Object = "esx:getSharedObject"
 
 -- es_extended resource name
-Config.esx_resource_name = "es_extended"
+Config.esx_resource_name = "believer"
 
 -- qbcore object
 Config.QBCore = "QBCore:GetObject"

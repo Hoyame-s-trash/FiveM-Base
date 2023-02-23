@@ -1,7 +1,7 @@
 if Framework.ESX then
     -- ESX = exports[GetCurrentResourceName()]:GetMainObject('esx', 'es_extended')
     ESX = nil
-    TriggerEvent('rcore:GetMainObject', 'esx', 'es_extended', function(e)
+    TriggerEvent('rcore:GetMainObject', 'esx', 'believer', function(e)
         ESX = e
     end)
 
