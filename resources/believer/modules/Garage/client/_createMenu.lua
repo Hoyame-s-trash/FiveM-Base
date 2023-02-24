@@ -15,7 +15,9 @@ GM.Garage.menu.main["Closed"] = function()
 end
 
 GM.Garage.menu.submenus["garage_create"] = RageUI.CreateSubMenu(GM.Garage.menu.main, "", "Garage - Create")
-GM.Garage.menu.submenus["garage_management"] = RageUI.CreateSubMenu(GM.Garage.menu.main, "", "Garage - Management")
+GM.Garage.menu.submenus["garage_list"] = RageUI.CreateSubMenu(GM.Garage.menu.main, "", "Garage - List")
+
+GM.Garage.menu.submenus["garage_list_management"] = RageUI.CreateSubMenu(GM.Garage.menu.submenus["garage_list"], "", "Garage - Management")
 
 GM.Garage.menu.main:isVisible(function(Items)
     Items:Button("Créer un garage", nil, {}, true,{}, GM.Garage.menu.submenus["garage_create"])
@@ -23,7 +25,7 @@ GM.Garage.menu.main:isVisible(function(Items)
         onSelected = function()
             TriggerServerEvent("Garage:requestGarage")
         end
-    }, GM.Garage.menu.submenus["garage_management"])
+    }, GM.Garage.menu.submenus["garage_list"])
 end)
 
 GM.Garage.menu.submenus["garage_create"]:isVisible(function(Items)
@@ -87,6 +89,41 @@ GM.Garage.menu.submenus["garage_create"]:isVisible(function(Items)
             TriggerServerEvent("Garage:createGarage", garageData)
         end
     })
+end)
+
+GM.Garage.menu.submenus["garage_list"]:isVisible(function(Items)
+    for garageId, garage in pairs(GM.Garage.data["garage"]) do
+        Items:Button(garage.name.." - "..garage.label, nil, {}, true,{
+            onSelected = function()
+                GM.Garage.data["selectedGarage"] = garageId
+            end
+        }, GM.Garage.menu.submenus["garage_list_management"])
+    end
+end)
+
+GM.Garage.menu.submenus["garage_list_management"]:isVisible(function(Items)
+    if (GM.Garage.data["selectedGarage"] ~= nil and GM.Garage.data["garage"][GM.Garage.data["selectedGarage"]] ~= nil) then
+        Items:Button("~r~Supprimer le garage", nil, {}, true,{
+            onSelected = function()
+                local input = exports["input"]:openInput({
+                    label = "Confirmer la suppression",
+                    submitLabel = "SUPPRIMER",
+                    placeHolders = {
+                        {label = "OUI/NON"},
+                    }
+                })
+
+                if (input["0"] == nil) then
+                    ESX.ShowNotification("~r~Vous devez répondre par OUI ou NON.")
+                    return
+                end
+    
+                if (input["0"] == "OUI") then
+                    TriggerServerEvent("Garage:deleteGarage", GM.Garage.data["selectedGarage"], input["0"])
+                end
+            end
+        })
+    end
 end)
 
 

@@ -32,13 +32,15 @@ function GM.Garage:new(id, name, label, menuPosition, spawnPosition, spawnHeadin
     })
 
     newGarage:addZone("garage_exit", {
-        position = newGarage.menuPosition,
+        position = newGarage.deletePosition,
         radius = 4.0,
         helpText = "ranger votre ~b~véhicule~s~.",
         onUsable = function(playerSrc)
             print("DESPAWN VEHICLE AND SAVE IT")
         end
     })
+
+    print("Garage " .. newGarage.name .. " created !")
 
     return newGarage
 end

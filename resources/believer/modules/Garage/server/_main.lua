@@ -51,3 +51,30 @@ RegisterServerEvent("Garage:createGarage", function(garageData)
         -- Todo refresh all players
     end)
 end)
+
+RegisterServerEvent("Garage:deleteGarage", function(garageId, input)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not playerRank) then return end
+
+    if (not playerRank:getPermissionsValue("DELETE_GARAGE", playerSelected.source)) then return end
+
+    if (input ~= "OUI") then return end
+
+    MySQL.Async.execute("DELETE FROM user_garage WHERE id = ?", {
+        garageId
+    }, function()
+        GM.Garage["list"][garageId] = nil
+        for adminSrc,_ in pairs(GM.Admin.inAdmin) do
+            TriggerClientEvent("Garage:removeValue", adminSrc, "garage", garageId)
+        end
+        -- Todo remove zone for all players
+    end)
+end)
