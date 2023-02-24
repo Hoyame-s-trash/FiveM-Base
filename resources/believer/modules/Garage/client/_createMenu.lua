@@ -27,7 +27,66 @@ GM.Garage.menu.main:isVisible(function(Items)
 end)
 
 GM.Garage.menu.submenus["garage_create"]:isVisible(function(Items)
+    Items:Button("Nom", nil, {RightLabel = GM.Garage.data["createdName"]}, true,{
+        onSelected = function()
+            local input = exports["input"]:openInput({
+                label = "Attribuer un nom",
+                submitLabel = "ENREGISTRER",
+                placeHolders = {
+                    {label = "NOM"},
+                }
+            })
 
+            GM.Garage.data["createdName"] = input["0"]
+        end
+    })
+    Items:Button("Label", nil, {RightLabel = GM.Garage.data["createdLabel"]}, true,{
+        onSelected = function()
+            local input = exports["input"]:openInput({
+                label = "Attribuer un label",
+                submitLabel = "ENREGISTRER",
+                placeHolders = {
+                    {label = "LABEL"},
+                }
+            })
+
+            GM.Garage.data["createdLabel"] = input["0"]
+        end
+    })
+    Items:Button("Position du menu", nil, {RightLabel = GM.Garage.data["createdmenuPosition"]}, true,{
+        onSelected = function()
+            GM.Garage.data["createdmenuPosition"] = GetEntityCoords(PlayerPedId())
+        end
+    })
+    Items:Button("Position du spawn", nil, {RightLabel = GM.Garage.data["createdspawnPosition"]}, true,{
+        onSelected = function()
+            GM.Garage.data["createdspawnPosition"] = GetEntityCoords(PlayerPedId())
+        end
+    })
+    Items:Button("Heading du spawn", nil, {RightLabel = GM.Garage.data["createdspawnHeading"]}, true,{
+        onSelected = function()
+            GM.Garage.data["createdspawnHeading"] = GetEntityHeading(PlayerPedId())
+        end
+    })
+    Items:Button("Position du rangement", nil, {RightLabel = GM.Garage.data["createddeletePosition"]}, true,{
+        onSelected = function()
+            GM.Garage.data["createddeletePosition"] = GetEntityCoords(PlayerPedId())
+        end
+    })
+    Items:Button("Créer le garage", nil, {}, GM.Garage.data["createdName"] ~= nil and GM.Garage.data["createdLabel"] ~= nil and GM.Garage.data["createdmenuPosition"] ~= nil and GM.Garage.data["createdspawnPosition"] ~= nil and GM.Garage.data["createdspawnHeading"] ~= nil and GM.Garage.data["createddeletePosition"] ~= nil,{
+        onSelected = function()
+            local garageData = {
+                name = GM.Garage.data["createdName"],
+                label = GM.Garage.data["createdLabel"],
+                menuPosition = GM.Garage.data["createdmenuPosition"],
+                spawnPosition = GM.Garage.data["createdspawnPosition"],
+                spawnHeading = GM.Garage.data["createdspawnHeading"],
+                deletePosition = GM.Garage.data["createddeletePosition"],
+            }
+
+            TriggerServerEvent("Garage:createGarage", garageData)
+        end
+    })
 end)
 
 
