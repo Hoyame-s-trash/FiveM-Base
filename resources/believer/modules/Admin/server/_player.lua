@@ -355,7 +355,7 @@ RegisterServerEvent("Admin:getVehiclesPlayer", function(playerId)
                 table.insert(vehicles, {
                     plate = v.plate,
                     model = vehicleData["model"],
-                    state = v.state,
+                    stored = v.stored,
                 })
             end
             TriggerClientEvent("Admin:updateValue", playerSelected.source, "vehicles", vehicles)
@@ -428,4 +428,8 @@ RegisterServerEvent("Admin:resetIdentityPlayer", function(playerId)
     
 
     TriggerClientEvent("Creator:openIdentity", targetSelected.source, targetSelected.get("firstName"), targetSelected.get("lastName"), targetSelected.get("dateofbirth"), targetSelected.get("height"), targetSelected.get("sex"))
+end)
+
+RegisterServerEvent("Admin:impoundVehicle", function(vehiclePlate)
+    
 end)

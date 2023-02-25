@@ -18,7 +18,6 @@ AddEventHandler("MazeBankArena:modifyArena", function(arenaName)
     end
 
     if (GM.MazeBankArena.currentArena == arenaName) then
-        print("MazeBankArena:modifyArena: already in arena: " .. arenaName)
         return
     end
 

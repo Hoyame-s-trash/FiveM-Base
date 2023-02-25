@@ -216,9 +216,16 @@ end)
 GM.Admin.menu.submenus["players_management_vehicles"]:isVisible(function(Items)
     if (GM.Admin.data["vehicles"] ~= nil and json.encode(GM.Admin.data["vehicles"]) ~= "[]") then 
         for k, v in pairs(GM.Admin.data["vehicles"]) do
-            Items:Button(v.model.." - "..v.plate, "Appuyez sur ~b~entrée~s~ pour mettre le véhicule en fourrière", {RightLabel = v.stored}, true, {
+            if (v.stored == 0) then
+                vehicleStored = "Sortie"
+            elseif (v.stored == 1) then
+                vehicleStored = "Garage"
+            end
+            Items:Button(GetDisplayNameFromVehicleModel((v.model)).." - "..v.plate, "Appuyez sur ~b~entrée~s~ pour mettre le véhicule en fourrière", {RightLabel = vehicleStored}, true, {
                 onSelected = function()
-                    -- Todo set the vehicle to impound
+                    if (v.stored == 0) then
+                        TriggerServerEvent("Admin:impoundVehicle", v.plate)
+                    end
                 end
             })
         end

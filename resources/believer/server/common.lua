@@ -1,6 +1,7 @@
 ESX = {}
 ESX.Players = {}
 ESX.Jobs = {}
+ESX.Orga = {}
 ESX.Items = {}
 Core = {}
 Core.UsableItemsCallbacks = {}
@@ -62,6 +63,37 @@ MySQL.ready(function()
     ESX.Jobs['unemployed'] = {label = 'Unemployed', grades = {['0'] = {grade = 0, label = 'Unemployed', salary = 200, skin_male = {}, skin_female = {}}}}
   else
     ESX.Jobs = Jobs
+  end
+
+  local Orga = {}
+  local orga = MySQL.query.await('SELECT * FROM orga')
+
+  for _, v in ipairs(orga) do
+    Orga[v.name] = v
+    Orga[v.name].grades = {}
+  end
+
+  local orgaGrades = MySQL.query.await('SELECT * FROM orga_grades')
+
+  for _, v in ipairs(orgaGrades) do
+    if Orga[v.job_name] then
+      Orga[v.job_name].grades[tostring(v.grade)] = v
+    else
+      print(('[^3WARNING^7] Ignoring orga grades for ^5%s^0 due to missing orga'):format(v.orga_name))
+    end
+  end
+
+  for _, v in pairs(Orga) do
+    if ESX.Table.SizeOf(v.grades) == 0 then
+      Orga[v.name] = nil
+      print(('[^3WARNING^7] Ignoring orga ^5%s^0 due to no orga grades found'):format(v.name))
+    end
+  end
+
+  if not Orga then
+    ESX.Orga['unemployed'] = {label = 'Unemployed', grades = {['0'] = {grade = 0, label = 'Unemployed', salary = 200, skin_male = {}, skin_female = {}}}}
+  else
+    ESX.Orga = Orga
   end
 
   print('[^2INFO^7] BLUESTARK ^5 V2.0^0 initialized!')

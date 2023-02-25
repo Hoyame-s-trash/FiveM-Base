@@ -4,7 +4,7 @@ local DoesEntityExist = DoesEntityExist
 local GetEntityCoords = GetEntityCoords
 local GetEntityHeading = GetEntityHeading
 
-function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, weight, job, loadout, name, coords, uniqueId, is_dead, first_connection)
+function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, weight, job, orga, loadout, name, coords, uniqueId, is_dead, first_connection)
 	local targetOverrides = Config.PlayerFunctionOverride and Core.PlayerFunctionOverrides[Config.PlayerFunctionOverride] or {}
 	
 	local self = {}
@@ -16,6 +16,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	self.identifier = identifier
 	self.inventory = inventory
 	self.job = job
+	self.orga = orga
 	self.loadout = loadout
 	self.name = name
 	self.playerId = playerId
@@ -34,6 +35,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	Player(self.source).state:set("identifier", self.identifier, true)
 	Player(self.source).state:set("license", self.license, true)
 	Player(self.source).state:set("job", self.job, true)
+	Player(self.source).state:set("orga", self.orga, true)
 	Player(self.source).state:set("group", self.group, true)
 	Player(self.source).state:set("name", self.name, true)
 
@@ -228,6 +230,10 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 
 	function self.getJob()
 		return self.job
+	end
+
+	function self.getOrga()
+		return self.orga
 	end
 
 	function self.getLoadout(minimal)
@@ -463,6 +469,42 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 			Player(self.source).state:set("job", self.job, true)
 		else
 			print(('[believer] [^3WARNING^7] Ignoring invalid ^5.setJob()^7 usage for ID: ^5%s^7, Job: ^5%s^7'):format(self.source, job))
+		end
+	end
+
+	function self.setOrga(orga, grade)
+		grade = tostring(grade)
+		local lastOrga = json.decode(json.encode(self.orga))
+
+		if ESX.DoesOrgaExist(orga, grade) then
+			local orgaObject, gradeObject = ESX.Orga[orga], ESX.Orga[orga].grades[grade]
+
+			self.orga.id    = orgaObject.id
+			self.orga.name  = orgaObject.name
+			self.orga.label = orgaObject.label
+
+			self.orga.grade        = tonumber(grade)
+			self.orga.grade_name   = gradeObject.name
+			self.orga.grade_label  = gradeObject.label
+			self.orga.grade_salary = gradeObject.salary
+
+			if gradeObject.skin_male then
+				self.orga.skin_male = json.decode(gradeObject.skin_male)
+			else
+				self.orga.skin_male = {}
+			end
+
+			if gradeObject.skin_female then
+				self.orga.skin_female = json.decode(gradeObject.skin_female)
+			else
+				self.orga.skin_female = {}
+			end
+
+			TriggerEvent('esx:setOrga', self.source, self.orga, lastOrga)
+			self.triggerEvent('esx:setOrga', self.orga)
+			Player(self.source).state:set("orga", self.orga, true)
+		else
+			print(('[believer] [^3WARNING^7] Ignoring invalid ^5.setOrga()^7 usage for ID: ^5%s^7, Orga: ^5%s^7'):format(self.source, orga))
 		end
 	end
 
