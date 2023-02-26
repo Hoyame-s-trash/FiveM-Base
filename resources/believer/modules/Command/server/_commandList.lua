@@ -1093,4 +1093,33 @@ GM:newThread(function()
 
         TriggerClientEvent("Garage:openManagementMenu", playerSrc)
     end)
+
+    GM.Command:register({
+        name = "setarmour",
+        label = "Donner de l'armure",
+        description = "Permet de donner de l'armure à un joueur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local armour = args[2]
+            if (not armour) then return end
+
+            targetSelected.setArmour(armour)
+            print("VOUS AVEZ DONNE DE L'ARMURE A "..targetSelected.getName()..".")
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local armour = args[2]
+            if (not armour) then return end
+
+            targetSelected.setArmour(armour)
+            playerSelected.showNotification("~g~Vous avez donné de l'armure à "..targetSelected.getName()..".")
+        end
+    end)
 end)

@@ -431,5 +431,20 @@ RegisterServerEvent("Admin:resetIdentityPlayer", function(playerId)
 end)
 
 RegisterServerEvent("Admin:impoundVehicle", function(vehiclePlate)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local selectedRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not selectedRank) then return end
+
+    if (not selectedRank:getPermissionsValue("PLAYER_VEHICLES_IMPOUND", playerSelected.source)) then return end
+
+    if (vehiclePlate == nil) then return end
+
     
 end)

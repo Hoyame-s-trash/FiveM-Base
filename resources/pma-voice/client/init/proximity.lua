@@ -2,6 +2,7 @@
 local disableUpdates = false
 local isListenerEnabled = false
 local plyCoords = GetEntityCoords(PlayerPedId())
+local isMuted = false
 
 function orig_addProximityCheck(ply)
 	local tgtPed = GetPlayerPed(ply)
@@ -96,17 +97,17 @@ Citizen.CreateThread(function()
 			Wait(100)
 		end
 		-- Leave the check here as we don't want to do any of this logic 
-		if GetConvarInt('voice_enableUi', 1) == 1 then
-			local curTalkingStatus = MumbleIsPlayerTalking(PlayerId()) == 1
-			if lastRadioStatus ~= radioPressed or lastTalkingStatus ~= curTalkingStatus then
-				lastRadioStatus = radioPressed
-				lastTalkingStatus = curTalkingStatus
-				sendUIMessage({
-					usingRadio = lastRadioStatus,
-					talking = lastTalkingStatus
-				})
-			end
-		end
+		-- if GetConvarInt('voice_enableUi', 1) == 1 then
+		-- 	local curTalkingStatus = MumbleIsPlayerTalking(PlayerId()) == 1
+		-- 	if lastRadioStatus ~= radioPressed or lastTalkingStatus ~= curTalkingStatus then
+		-- 		lastRadioStatus = radioPressed
+		-- 		lastTalkingStatus = curTalkingStatus
+		-- 		sendUIMessage({
+		-- 			usingRadio = lastRadioStatus,
+		-- 			talking = lastTalkingStatus
+		-- 		})
+		-- 	end
+		-- end
 
 		if voiceState == "proximity" then
 			addNearbyPlayers()
@@ -153,4 +154,8 @@ AddEventHandler("onClientResourceStop", function(resource)
 			end
 		end
 	end
+end)
+
+exports('voiceState', function()
+    return isMuted
 end)

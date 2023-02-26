@@ -15,7 +15,7 @@ GM.Interface.PlayerCount = 0
 function GM.Interface:Display(bool)
     SendNUIMessage({
         type = "toggleHud",
-        showHud = bool,
+        showHud = false,
     })
 end
 

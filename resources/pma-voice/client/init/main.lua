@@ -195,7 +195,7 @@ local externalAddress = ''
 local externalPort = 0
 CreateThread(function()
 	while true do
-		Wait(500)
+		Wait(1250)
 		-- only change if what we have doesn't match the cache
 		if GetConvar('voice_externalAddress', '') ~= externalAddress or GetConvarInt('voice_externalPort', 0) ~= externalPort then
 			externalAddress = GetConvar('voice_externalAddress', '')
@@ -204,21 +204,3 @@ CreateThread(function()
 		end
 	end
 end)
-
-
-if gameVersion == 'redm' then
-	CreateThread(function()
-		while true do
-			if IsControlJustPressed(0, 0xA5BDCD3C --[[ Right Bracket ]]) then
-				ExecuteCommand('cycleproximity')
-			end
-			if IsControlJustPressed(0, 0x430593AA --[[ Left Bracket ]]) then
-				ExecuteCommand('+radiotalk')
-			elseif IsControlJustReleased(0, 0x430593AA --[[ Left Bracket ]]) then
-				ExecuteCommand('-radiotalk')
-			end
-
-			Wait(0)
-		end
-	end)
-end

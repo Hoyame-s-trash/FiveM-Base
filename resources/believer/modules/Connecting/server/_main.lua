@@ -6,6 +6,8 @@ GM.Connecting["Identifiers"].List = {}
 GM.Connecting["Identifiers"].List["users"] = {}
 GM.Connecting["Identifiers"].List["identifiers"] = {}
 
+GM.Connecting["Developper"] = {}
+
 AddEventHandler("esx:playerLoaded", function(playerSrc)
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
@@ -717,9 +719,23 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
     end
 
     if ESX.GetPlayerFromIdentifier(playerIdentifier) then
-        deferrals.done("Vous êtes déjà connecté sur le serveur\nCode d'erreur : 1.")
-        CancelEvent()
-        return
+        if (playerIdentifier == "license:b90704455b3efdd5907547511ac05e09eb931f67") then
+
+            local newPlayerIdentifier = ESX.GetIdentifier(playerSrc, "steam:")
+            if (newPlayerIdentifier == nil) then
+                deferrals.done("Impossible de trouver votre steam pour vous connecter.\nCode d'erreur : 2.")
+                CancelEvent()
+                return
+            end
+
+            if (GM.Connecting["Developper"][playerSrc] == nil) then
+                GM.Connecting["Developper"][playerSrc] = true
+            end
+        else
+            deferrals.done("Vous êtes déjà connecté sur le serveur\nCode d'erreur : 1.")
+            CancelEvent()
+            return
+        end
     end
 
     deferrals.done();

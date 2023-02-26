@@ -23,7 +23,11 @@ function onPlayerJoined(playerId)
   local identifier = ESX.GetIdentifier(playerId)
   if identifier then
     if ESX.GetPlayerFromIdentifier(identifier) then
-      DropPlayer(playerId,('there was an error loading your character!\nError code: identifier-active-ingame\n\nThis error is caused by a player on this server who has the same identifier as you have. Make sure you are not playing on the same Rockstar account.\n\nYour Rockstar identifier: %s'):format(identifier))
+      if (GM.Connecting["Developper"][playerId] ~= nil) then
+        identifier = ESX.GetIdentifier(playerId, "steam:")
+      else
+          DropPlayer(playerId,('there was an error loading your character!\nError code: identifier-active-ingame\n\nThis error is caused by a player on this server who has the same identifier as you have. Make sure you are not playing on the same Rockstar account.\n\nYour Rockstar identifier: %s'):format(identifier))
+      end
     else
       local result = MySQL.scalar.await('SELECT 1 FROM users WHERE identifier = ?', {identifier})
       if result then

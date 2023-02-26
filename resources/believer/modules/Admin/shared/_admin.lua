@@ -226,5 +226,11 @@ GM.Admin.Permissions = {
         description = "Permet de réinitialiser l'identité d'un joueur",
         error = "~r~Vous n'avez pas la permission de réinitialiser l'identité d'un joueur.",
         value = false
+    },
+    ["PLAYER_VEHICLES_IMPOUND"] = {
+        label = "Mettre en fourrière un véhicule",
+        description = "Permet de mettre en fourrière un véhicule",
+        error = "~r~Vous n'avez pas la permission de mettre en fourrière un véhicule.",
+        value = false
     }
 }

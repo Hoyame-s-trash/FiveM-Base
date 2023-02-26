@@ -23,6 +23,9 @@ GM.Garage.menu.main:isVisible(function(Items)
     if (GM.Garage.data.filter_index == nil) then
         GM.Garage.data.filter_index = 1
     end
+    if (GM.Garage.data["currentFilter"] == nil) then
+        GM.Garage.data["currentFilter"] = GM.Garage.data.filter_list[GM.Garage.data.filter_index]
+    end
     Items:List("Filtrer", GM.Garage.data.filter_list, GM.Garage.data.filter_index, nil, {}, true, {
         onListChange = function(Index, Item)
             GM.Garage.data.filter_index = Index
@@ -82,6 +85,8 @@ GM.Garage.menu.submenus["garage_vehicle_management"]:isVisible(function(Items)
                     ESX.Game.SpawnVehicle(GM.Garage.data["vehicles"][GM.Garage.data["selectedVehicle"]].model, GM.Garage.data["currentCoords"], GM.Garage.data["currentHeading"], function(vehicle)
                         ESX.Game.SetVehicleProperties(vehicle, GM.Garage.data["vehicles"][GM.Garage.data["selectedVehicle"]].properties)
                         TaskWarpPedIntoVehicle(PlayerPedId(), vehicle, -1)
+
+                        RageUI.CloseAll()
 
                         GM:newThread(function()
                             while (not DoesEntityExist(vehicle)) do

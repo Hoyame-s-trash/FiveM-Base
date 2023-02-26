@@ -692,6 +692,10 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		self.triggerEvent('esx:showHelpNotification', msg, thisFrame, beep, duration)
 	end
 
+	function self.setArmour(armour)
+		SetPedArmour(GetPlayerPed(self.source), armour)
+	end
+
 	for fnName,fn in pairs(targetOverrides) do
 		self[fnName] = fn(self)
 	end
