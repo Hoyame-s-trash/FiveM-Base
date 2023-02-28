@@ -2,11 +2,9 @@
 
 ESX = exports['believer']:getSharedObject()
 
-local talkingStage = 1
-
 local seatbeltOn = false
 local hideHud = false
-local drink,food = 0,0
+local drink, food = 0,0
 local enableField = false
 local FuelLevel = 65
 local blacklistedStrings = {"<", ">", "http", "https", ".png", ".mp4", ".mp3", ".mov", ".webm"}
@@ -37,28 +35,8 @@ AddEventHandler("pma-voice:setTalkingMode", function(mode)
     })
 end)
 
-
-function HideHudComponent()
-    HideHudComponentThisFrame(1)  -- Wanted Stars
-    HideHudComponentThisFrame(2)  -- Weapon Icon
-    HideHudComponentThisFrame(3)  -- Cash
-    HideHudComponentThisFrame(4)  -- MP Cash
-    HideHudComponentThisFrame(6)  -- Vehicle Name
-    HideHudComponentThisFrame(7)  -- Area Name
-    HideHudComponentThisFrame(8)  -- Vehicle Class
-    HideHudComponentThisFrame(9)  -- Street Name
-    HideHudComponentThisFrame(13) -- Cash Change
-    HideHudComponentThisFrame(17) -- Save Game
-    HideHudComponentThisFrame(20) -- Weapon Stats
-end
-
 Citizen.CreateThread(function()
-    while not NetworkIsSessionStarted() do 
-        Citizen.Wait(0)
-    end
-
     while ESX == nil do
-        TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
         Citizen.Wait(0)
     end
 
@@ -92,17 +70,10 @@ end)
 
 CreateThread(function()
     while true do
-        if NetworkIsPlayerTalking(PlayerId()) then
-            SendNUIMessage({
-                action = "updateMicrophone",
-                microphone = 1
-            })
-        else
-            SendNUIMessage({
-                action = "updateMicrophone",
-                microphone = 0
-            })
-        end
+        SendNUIMessage({
+            action = "updateMicrophone",
+            microphone = NetworkIsPlayerTalking(PlayerId())
+        })
         Wait(125)
     end
 end)
@@ -118,13 +89,6 @@ Citizen.CreateThread(function()
 		else
             toggleField(true)
 		end
-	end
-end)
-
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(0)
-        HideHudComponent()
 	end
 end)
 
@@ -239,7 +203,6 @@ Citizen.CreateThread(function()
                 maxkmh = GetVehicleEstimatedMaxSpeed(vehicle) * 5.2
             })
 
-
             SendNUIMessage({
                 action = "setVehFuel",
                 fuel = math.ceil(FuelLevel),
@@ -272,21 +235,13 @@ Citizen.CreateThread(function()
     end
 end)
 
--- Events
-
 AddEventHandler('esx:onPlayerSpawn', function()
     SendNUIMessage({
         action = "setidentifier",
         data = GetPlayerServerId(PlayerId())
     })
-    SendNUIMessage({
-        action = "servername",
-        ServerName = Config.ServerName
-    })
     toggleField(true)
 end)
-
-
 
 if not IsDuplicityVersion() then -- Only register this event for the client
     AddEventHandler('esx:setPlayerData', function(key, val, last)

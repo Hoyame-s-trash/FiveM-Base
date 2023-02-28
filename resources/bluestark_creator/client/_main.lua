@@ -1,45 +1,26 @@
 ESX = exports['believer']:getSharedObject()
 
-if not IsDuplicityVersion() then -- Only register this event for the client
-    AddEventHandler('esx:setPlayerData', function(key, val, last)
-        if GetInvokingResource() == 'believer' then
-            ESX.PlayerData[key] = val
-            if OnPlayerData then
-                OnPlayerData(key, val, last)
-            end
+AddEventHandler('esx:setPlayerData', function(key, val, last)
+    if GetInvokingResource() == 'believer' then
+        ESX.PlayerData[key] = val
+        if OnPlayerData then
+            OnPlayerData(key, val, last)
         end
-    end)
-
-    RegisterNetEvent('esx:playerLoaded', function(xPlayer, isNew, skin)
-        ESX.PlayerData = xPlayer
-        ESX.PlayerLoaded = true
-    end)
-
-    RegisterNetEvent('esx:onPlayerLogout', function()
-        ESX.PlayerLoaded = false
-        ESX.PlayerData = {}
-    end)
-end
-
-local new = false
-
-AddEventHandler('esx:onPlayerSpawn', function()
-    if ESX.PlayerData.firstName == 'John' and ESX.PlayerData.lastName == 'Doe' then
-        new = true
-
-        createCharcreator(new)
     end
 end)
 
-function createCharcreator(new)
+RegisterNetEvent('esx:playerLoaded', function(xPlayer, isNew, skin)
+    ESX.PlayerData = xPlayer
+    ESX.PlayerLoaded = true
+end)
+
+RegisterNetEvent('esx:onPlayerLogout', function()
+    ESX.PlayerLoaded = false
+    ESX.PlayerData = {}
+end)
+
+function createCharcreator()
     local ped = PlayerPedId()
-
-    TriggerServerEvent("main:owndimension", true)
-
-    if new then
-        SetEntityCoordsNoOffset(ped, Config_charcreator.location.x, Config_charcreator.location.y, Config_charcreator.location.z)
-        SetEntityHeading(ped, Config_charcreator.location.h)
-    end
 
     local coords = GetEntityCoords(ped)
     local heading = GetEntityHeading(ped)
@@ -71,7 +52,7 @@ function createCharcreator(new)
     })
 end
 
-RegisterNUICallback('charcreator:change', function(data)
+RegisterNUICallback('change', function(data)
     if Config_charcreator.refreshComponent[data.key] then
         for k,v in pairs(Config_charcreator.refreshComponent[data.key]) do
             SendNUIMessage({
@@ -110,15 +91,11 @@ function getCharacter()
     return Character
 end
 
-RegisterCommand('aaa', function()
-    new = true
-
-    createCharcreator(new)
-end)
-
-RegisterNUICallback("charcreator:submit", function(data)
+RegisterNUICallback("submit", function(data)
     local ped = PlayerPedId()
 
+    SetPlayerControl(PlayerId(), true, 12)
+    SetNuiFocus(false, false)
     SendNUIMessage({
         action = "close",
     })
@@ -131,15 +108,13 @@ RegisterNUICallback("charcreator:submit", function(data)
     end
 
     TriggerEvent('skinchanger:getSkin', function(skin)
-        TriggerServerEvent('skinchanger:save', skin)
+        TriggerServerEvent('esx_skin:save', skin)
     end)
 
-    TriggerServerEvent('charcreator:save', data.firstname, data.lastname, data.date, data.sex, data.height)
-
-    TriggerServerEvent("main:owndimension", false)
+    TriggerServerEvent('save', data.firstname, data.lastname, data.date, data.sex, data.height)
 end)
 
-RegisterNUICallback("charcreator:moveCam", function(data)
+RegisterNUICallback("moveCam", function(data)
     local coords = GetEntityCoords(PlayerPedId())
 
     local get = getMovementData(data.slot)
@@ -150,7 +125,7 @@ RegisterNUICallback("charcreator:moveCam", function(data)
     PointCamAtCoord(cam, targetPositionPoint)
 end)
 
-RegisterNUICallback('charcreator:zoom', function(data)
+RegisterNUICallback('zoom', function(data)
     zoomToSlot(data.slot)
 end)
 
@@ -179,7 +154,7 @@ function getMovementData(slot)
         }
     }
 
-    if slot == "identity" then
+    if slot == "identity" or slot == "clothes" then
         data.distance = 2.4
         data.camPos.z = data.camPos.z + 0.2
         data.pointPos.z = data.pointPos.z + 0.2
@@ -198,3 +173,9 @@ function offsetPosition(x, y, rot, distance)
     }
     return obj
 end
+
+RegisterNetEvent("Creator:openMenu", function()
+    DisplayRadar(false)
+    SetPlayerControl(PlayerId(), false, 12)
+    createCharcreator()
+end)

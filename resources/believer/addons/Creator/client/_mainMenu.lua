@@ -361,9 +361,3 @@ end, function()
         end
     }, 3)
 end)
-
-RegisterNetEvent("Creator:openMenu", function()
-    DisplayRadar(false)
-    SetPlayerControl(PlayerId(), false, 12)
-    GM.Creator.menu.main:toggle()
-end)

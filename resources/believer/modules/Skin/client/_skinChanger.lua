@@ -4,189 +4,189 @@ local LoadClothes = nil
 local Character = {}
 
 local Components = {{
-    label = "sex",
+    label = "Sexe",
     name = "sex",
     value = 0,
     min = 0,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "mom",
+    label = "Mère",
     name = "mom",
     value = 21,
     min = 21,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "dad",
+    label = "Père",
     name = "dad",
     value = 0,
     min = 0,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "resemblance",
+    label = "Ressemblance",
     name = "face_md_weight",
     value = 50,
     min = 0,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "skin_tone",
+    label = "Couleur de peau",
     name = "skin_md_weight",
     value = 50,
     min = 0,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "nose_1",
+    label = "Nez 1",
     name = "nose_1",
     value = 0,
     min = -10,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "nose_2",
+    label = "Nez 2",
     name = "nose_2",
     value = 0,
     min = -10,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "nose_3",
+    label = "Nez 3",
     name = "nose_3",
     value = 0,
     min = -10,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "nose_4",
+    label = "Nez 4",
     name = "nose_4",
     value = 0,
     min = -10,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "nose_5",
+    label = "Nez 5",
     name = "nose_5",
     value = 0,
     min = -10,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "nose_6",
+    label = "Nez 6",
     name = "nose_6",
     value = 0,
     min = -10,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "cheeks_1",
+    label = "Joues 1",
     name = "cheeks_1",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "cheeks_2",
+    label = "Joues 2",
     name = "cheeks_2",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "cheeks_3",
+    label = "Joues 3",
     name = "cheeks_3",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "lip_fullness",
+    label = "Plénitude des lèvres",
     name = "lip_thickness",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "jaw_bone_width",
+    label = "Largeur de la mâchoire",
     name = "jaw_1",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "jaw_bone_length",
+    label = "Longueur de la mâchoire",
     name = "jaw_2",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "chin_height",
+    label = "Hauteur du menton",
     name = "chin_1",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "chin_length",
+    label = "Longueur du menton",
     name = "chin_2",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "chin_width",
+    label = "Largeur du menton",
     name = "chin_3",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "chin_hole",
+    label = "Trou du menton",
     name = "chin_4",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "neck_thickness",
+    label = "Épaisseur du cou",
     name = "neck_thickness",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "hair_1",
+    label = "Cheveux 1",
     name = "hair_1",
     value = 0,
     min = 0,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "hair_2",
+    label = "Cheveux 2",
     name = "hair_2",
     value = 0,
     min = 0,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "hair_color_1",
+    label = "Couleur de cheveux 1",
     name = "hair_color_1",
     value = 0,
     min = 0,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "hair_color_2",
+    label = "Couleur de cheveux 2",
     name = "hair_color_2",
     value = 0,
     min = 0,
     zoomOffset = 0.6,
     camOffset = 0.65
 }, {
-    label = "tshirt_1",
+    label = "Tshirt 1",
     name = "tshirt_1",
     value = 0,
     min = 0,
@@ -194,7 +194,7 @@ local Components = {{
     camOffset = 0.15,
     componentId = 8
 }, {
-    label = "tshirt_2",
+    label = "Tshirt 2",
     name = "tshirt_2",
     value = 0,
     min = 0,
@@ -202,7 +202,7 @@ local Components = {{
     camOffset = 0.15,
     textureof = "tshirt_1"
 }, {
-    label = "torso_1",
+    label = "Torses 1",
     name = "torso_1",
     value = 0,
     min = 0,
@@ -210,7 +210,7 @@ local Components = {{
     camOffset = 0.15,
     componentId = 11
 }, {
-    label = "torso_2",
+    label = "Torses 2",
     name = "torso_2",
     value = 0,
     min = 0,
@@ -218,7 +218,7 @@ local Components = {{
     camOffset = 0.15,
     textureof = "torso_1"
 }, {
-    label = "decals_1",
+    label = "Calques 1",
     name = "decals_1",
     value = 0,
     min = 0,
@@ -226,7 +226,7 @@ local Components = {{
     camOffset = 0.15,
     componentId = 10
 }, {
-    label = "decals_2",
+    label = "Calques 2",
     name = "decals_2",
     value = 0,
     min = 0,
@@ -234,21 +234,21 @@ local Components = {{
     camOffset = 0.15,
     textureof = "decals_1"
 }, {
-    label = "arms",
+    label = "Bras",
     name = "arms",
     value = 0,
     min = 0,
     zoomOffset = 0.75,
     camOffset = 0.15
 }, {
-    label = "arms_2",
+    label = "Bras 2",
     name = "arms_2",
     value = 0,
     min = 0,
     zoomOffset = 0.75,
     camOffset = 0.15
 }, {
-    label = "pants_1",
+    label = "Pantalons 1",
     name = "pants_1",
     value = 0,
     min = 0,
@@ -256,7 +256,7 @@ local Components = {{
     camOffset = -0.5,
     componentId = 4
 }, {
-    label = "pants_2",
+    label = "Pantalons 2",
     name = "pants_2",
     value = 0,
     min = 0,
@@ -264,7 +264,7 @@ local Components = {{
     camOffset = -0.5,
     textureof = "pants_1"
 }, {
-    label = "shoes_1",
+    label = "Chaussures 1",
     name = "shoes_1",
     value = 0,
     min = 0,
@@ -272,7 +272,7 @@ local Components = {{
     camOffset = -0.8,
     componentId = 6
 }, {
-    label = "shoes_2",
+    label = "Chaussures 2",
     name = "shoes_2",
     value = 0,
     min = 0,
@@ -280,7 +280,7 @@ local Components = {{
     camOffset = -0.8,
     textureof = "shoes_1"
 }, {
-    label = "mask_1",
+    label = "Masques 1",
     name = "mask_1",
     value = 0,
     min = 0,
@@ -288,7 +288,7 @@ local Components = {{
     camOffset = 0.65,
     componentId = 1
 }, {
-    label = "mask_2",
+    label = "Masques 2",
     name = "mask_2",
     value = 0,
     min = 0,
@@ -296,7 +296,7 @@ local Components = {{
     camOffset = 0.65,
     textureof = "mask_1"
 }, {
-    label = "bproof_1",
+    label = "Gilet par balle 1",
     name = "bproof_1",
     value = 0,
     min = 0,
@@ -304,7 +304,7 @@ local Components = {{
     camOffset = 0.15,
     componentId = 9
 }, {
-    label = "bproof_2",
+    label = "Gilet par balle 2",
     name = "bproof_2",
     value = 0,
     min = 0,
@@ -312,7 +312,7 @@ local Components = {{
     camOffset = 0.15,
     textureof = "bproof_1"
 }, {
-    label = "chain_1",
+    label = "Chaines 1",
     name = "chain_1",
     value = 0,
     min = 0,
@@ -320,7 +320,7 @@ local Components = {{
     camOffset = 0.65,
     componentId = 7
 }, {
-    label = "chain_2",
+    label = "Chaines 2",
     name = "chain_2",
     value = 0,
     min = 0,
@@ -328,7 +328,7 @@ local Components = {{
     camOffset = 0.65,
     textureof = "chain_1"
 }, {
-    label = "helmet_1",
+    label = "Chapeau 1",
     name = "helmet_1",
     value = -1,
     min = -1,
@@ -336,7 +336,7 @@ local Components = {{
     camOffset = 0.65,
     componentId = 0
 }, {
-    label = "helmet_2",
+    label = "Chapeau 2",
     name = "helmet_2",
     value = 0,
     min = 0,
@@ -344,7 +344,7 @@ local Components = {{
     camOffset = 0.65,
     textureof = "helmet_1"
 }, {
-    label = "glasses_1",
+    label = "Lunettes 1",
     name = "glasses_1",
     value = 0,
     min = 0,
@@ -352,7 +352,7 @@ local Components = {{
     camOffset = 0.65,
     componentId = 1
 }, {
-    label = "glasses_2",
+    label = "Lunettes 2",
     name = "glasses_2",
     value = 0,
     min = 0,
@@ -360,7 +360,7 @@ local Components = {{
     camOffset = 0.65,
     textureof = "glasses_1"
 }, {
-    label = "watches_1",
+    label = "Montres 1",
     name = "watches_1",
     value = -1,
     min = -1,
@@ -368,7 +368,7 @@ local Components = {{
     camOffset = 0.15,
     componentId = 6
 }, {
-    label = "watches_2",
+    label = "Montres 2",
     name = "watches_2",
     value = 0,
     min = 0,
@@ -376,7 +376,7 @@ local Components = {{
     camOffset = 0.15,
     textureof = "watches_1"
 }, {
-    label = "bracelets_1",
+    label = "Bracelets 1",
     name = "bracelets_1",
     value = -1,
     min = -1,
@@ -384,7 +384,7 @@ local Components = {{
     camOffset = 0.15,
     componentId = 7
 }, {
-    label = "bracelets_2",
+    label = "Bracelets 2",
     name = "bracelets_2",
     value = 0,
     min = 0,
@@ -392,7 +392,7 @@ local Components = {{
     camOffset = 0.15,
     textureof = "bracelets_1"
 }, {
-    label = "bag",
+    label = "Sacs 1",
     name = "bags_1",
     value = 0,
     min = 0,
@@ -400,7 +400,7 @@ local Components = {{
     camOffset = 0.15,
     componentId = 5
 }, {
-    label = "bag_color",
+    label = "Sacs 2",
     name = "bags_2",
     value = 0,
     min = 0,
@@ -408,119 +408,119 @@ local Components = {{
     camOffset = 0.15,
     textureof = "bags_1"
 }, {
-    label = "eye_color",
+    label = "Couleur des yeux",
     name = "eye_color",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "eye_squint",
+    label = "Strabisme",
     name = "eye_squint",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "eyebrow_size",
+    label = "Taille du sourcil",
     name = "eyebrows_2",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "eyebrow_type",
+    label = "Type de sourcils",
     name = "eyebrows_1",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "eyebrow_color_1",
+    label = "Couleur des sourcils 1",
     name = "eyebrows_3",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "eyebrow_color_2",
+    label = "Couleur des sourcils 2",
     name = "eyebrows_4",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "eyebrow_height",
+    label = "Hauteur des sourcils",
     name = "eyebrows_5",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "eyebrow_depth",
+    label = "Profondeur du sourcil",
     name = "eyebrows_6",
     value = 0,
     min = -10,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "makeup_type",
+    label = "Type de maquillage",
     name = "makeup_1",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "makeup_thickness",
+    label = "Épaisseur du maquillage",
     name = "makeup_2",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "makeup_color_1",
+    label = "Couleur maquillage 1",
     name = "makeup_3",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "makeup_color_2",
+    label = "Couleur maquillage 2",
     name = "makeup_4",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "lipstick_type",
+    label = "Type de rouge à lèvres",
     name = "lipstick_1",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "lipstick_thickness",
+    label = "Épaisseur du rouge à lèvres",
     name = "lipstick_2",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "lipstick_color_1",
+    label = "Couleur rouge à lèvres 1",
     name = "lipstick_3",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "lipstick_color_2",
+    label = "Couleur rouge à lèvres 2",
     name = "lipstick_4",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "ear_accessories",
+    label = "Accessoires d'oreilles",
     name = "ears_1",
     value = -1,
     min = -1,
@@ -528,7 +528,7 @@ local Components = {{
     camOffset = 0.65,
     componentId = 2
 }, {
-    label = "ear_accessories_color",
+    label = "Accessoires d'oreilles 2",
     name = "ears_2",
     value = 0,
     min = 0,
@@ -536,98 +536,98 @@ local Components = {{
     camOffset = 0.65,
     textureof = "ears_1"
 }, {
-    label = "chest_hair",
+    label = "Poils de poitrine",
     name = "chest_1",
     value = 0,
     min = 0,
     zoomOffset = 0.75,
     camOffset = 0.15
 }, {
-    label = "chest_hair_1",
+    label = "Poils de poitrine 2",
     name = "chest_2",
     value = 0,
     min = 0,
     zoomOffset = 0.75,
     camOffset = 0.15
 }, {
-    label = "chest_color",
+    label = "Couleur de la poitrine",
     name = "chest_3",
     value = 0,
     min = 0,
     zoomOffset = 0.75,
     camOffset = 0.15
 }, {
-    label = "bodyb",
+    label = "Bodyb",
     name = "bodyb_1",
     value = -1,
     min = -1,
     zoomOffset = 0.75,
     camOffset = 0.15
 }, {
-    label = "bodyb_size",
+    label = "Bodyb Taille",
     name = "bodyb_2",
     value = 0,
     min = 0,
     zoomOffset = 0.75,
     camOffset = 0.15
 }, {
-    label = "bodyb_extra",
+    label = "Bodyb Extra",
     name = "bodyb_3",
     value = -1,
     min = -1,
     zoomOffset = 0.4,
     camOffset = 0.15
 }, {
-    label = "bodyb_extra_thickness",
+    label = "Bodyb Extra Épaisseur",
     name = "bodyb_4",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.15
 }, {
-    label = "wrinkles",
+    label = "Rides",
     name = "age_1",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "wrinkle_thickness",
+    label = "Épaisseur des rides",
     name = "age_2",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "blemishes",
+    label = "Imperfections",
     name = "blemishes_1",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "blemishes_size",
+    label = "Taille des imperfections",
     name = "blemishes_2",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "blush",
+    label = "Rougeurs",
     name = "blush_1",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "blush_1",
+    label = "Rougeurs 2",
     name = "blush_2",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "blush_color",
+    label = "Couleur des rougeurs",
     name = "blush_3",
     value = 0,
     min = 0,
@@ -662,42 +662,42 @@ local Components = {{
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "freckles",
+    label = "Taches de rousseur",
     name = "moles_1",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "freckles_1",
+    label = "Taches de rousseur 2",
     name = "moles_2",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "beard_type",
+    label = "Type de barbe",
     name = "beard_1",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "beard_size",
+    label = "Taille de la barbe",
     name = "beard_2",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "beard_color_1",
+    label = "Couleur de la barbe 1",
     name = "beard_3",
     value = 0,
     min = 0,
     zoomOffset = 0.4,
     camOffset = 0.65
 }, {
-    label = "beard_color_2",
+    label = "Couleur de la barbe 2",
     name = "beard_4",
     value = 0,
     min = 0,

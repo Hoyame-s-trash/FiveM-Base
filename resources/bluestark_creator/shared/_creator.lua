@@ -28,6 +28,21 @@ Config_charcreator.categories = {
     ['beard'] = {
         icon = 'game-icons:beard',
         components = {'beard_1', 'beard_2', 'beard_3'}
+    },
+    ["clothes"] = {
+        icon = 'mdi:hanger',
+        components = {
+            'tshirt_1', 
+            'tshirt_2', 
+            'torso_1',
+            'torso_2',
+            'arms',
+            'arms_2',
+            'pants_1',
+            'pants_2',
+            'shoes_1',
+            'shoes_2',
+        }
     }
 }
 
