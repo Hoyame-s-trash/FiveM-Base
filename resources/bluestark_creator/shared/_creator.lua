@@ -1,7 +1,5 @@
 Config_charcreator = {}
 
-Config_charcreator.location = {x = -3.0983, y = 523.4305, z = 174.6271, h = 81.0245}
-
 Config_charcreator.spawnpoint = {x = -1037.6654, y = -2737.5117, z = 20.1693, h = 333.1182}
 
 Config_charcreator.categories = {
