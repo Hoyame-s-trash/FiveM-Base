@@ -36,11 +36,18 @@ AddEventHandler("pma-voice:setTalkingMode", function(mode)
 end)
 
 Citizen.CreateThread(function()
+<<<<<<< Updated upstream
     while ESX == nil do
+        Citizen.Wait(0)
+=======
+    while not NetworkIsSessionStarted() do 
         Citizen.Wait(0)
     end
 
-    Citizen.Wait(1000)
+    while (ESX == nil) do
+        Wait(50)
+>>>>>>> Stashed changes
+    end
     
     local playerData = ESX.GetPlayerData()
     
@@ -49,21 +56,20 @@ Citizen.CreateThread(function()
         data = playerData.money
     })
 
-    for _, account in pairs(playerData.accounts) do 
-        if Config.Money.bank then
-            if account.name == "bank"then
-                SendNUIMessage({
-                    action = "setBank",
-                    data = account.money,
-                })
-            end
-        else
-            if account.name == "black_money"then
-                SendNUIMessage({
-                    action = "setBank",
-                    data = account.money,
-                })
-            end
+    for _, account in pairs(playerData.accounts) do
+
+        if account.name == "bank" then
+            SendNUIMessage({
+                action = "setBank",
+                data = account.money,
+            })
+        end
+
+        if account.name == "black_money" then
+            SendNUIMessage({
+                action = "setBlackMoney",
+                data = account.money,
+            })
         end
     end    
 end)
