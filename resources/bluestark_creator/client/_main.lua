@@ -100,18 +100,15 @@ RegisterNUICallback("submit", function(data)
         action = "close",
     })
 
-    if new then
-        SetEntityCoordsNoOffset(ped, Config_charcreator.spawnpoint.x, Config_charcreator.spawnpoint.y, Config_charcreator.spawnpoint.z)
-        SetEntityHeading(ped, Config_charcreator.spawnpoint.h)
-        RenderScriptCams(false, false, 750, true, true)
-        TriggerEvent('hud:notification', 'success', 'Erfolgreich', 'Willkommen auf gta5sanity.de, '..data.firstname..' '.. data.lastname.. '. Du hast deinen Charakter erfolgreich erstellt.', 10000)
-    end
+    SetEntityCoordsNoOffset(ped, Config_charcreator.spawnpoint.x, Config_charcreator.spawnpoint.y, Config_charcreator.spawnpoint.z)
+    SetEntityHeading(ped, Config_charcreator.spawnpoint.h)
+    RenderScriptCams(false, false, 750, true, true)
 
     TriggerEvent('skinchanger:getSkin', function(skin)
         TriggerServerEvent('esx_skin:save', skin)
     end)
 
-    TriggerServerEvent('save', data.firstname, data.lastname, data.date, data.sex, data.height)
+    TriggerServerEvent('Creator:save', data.firstname, data.lastname, data.date, data.sex, data.height)
 end)
 
 RegisterNUICallback("moveCam", function(data)

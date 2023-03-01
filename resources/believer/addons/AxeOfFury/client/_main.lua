@@ -509,10 +509,7 @@ function CalculateScoreBar(meterValue, scoreMultiplier)
     -- scoreScreen 0 to 1100
 
     -- Check muscle value
-    local muscleStatus = 0
-    TriggerEvent("esx_status:getStatus", "muscle", function(status)
-        muscleStatus = status.val/10000000  -- 0.0 to 0.1
-    end)
+    local muscleStatus = 0.1
 
     local score = (1.0-(math.abs(0.5-meterValue)*2.0))
     score = score * scoreMultiplier * (0.9 + muscleStatus) -- ScoreMultiplier is when you hit to fill the bar

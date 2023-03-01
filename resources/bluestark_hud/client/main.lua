@@ -154,7 +154,6 @@ Citizen.CreateThread(function()
             zone = GetLabelText(zone),
         })
 
-        -- Money
         local playerData = ESX.GetPlayerData()
         for _, account in pairs(playerData.accounts) do 
             if account.name == "money" then
@@ -195,7 +194,7 @@ Citizen.CreateThread(function()
             local retval, lightsOn, highbeamsOn = GetVehicleLightsState(vehicle)
             local lockStatus = GetVehicleDoorLockStatus(vehicle)
     
-            sleep = 100
+            sleep = 1
 
             SendNUIMessage({
                 action = "setSpeed",
