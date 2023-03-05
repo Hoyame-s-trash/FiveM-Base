@@ -4,16 +4,16 @@ fx_version 'cerulean'
 
 lua54 'yes'
 
-ui_page 'html/ui.html'
+ui_page 'dist/ui.html'
 
 files {
-	'html/css/fonts/*.ttf',
-	'html/ui.html',
-	'html/css/*.css',
-	'html/listener.js',
-	'html/progressbar.js',
-	'html/images/*.png',
-	'html/images/*.gif',
+	'dist/css/fonts/*.ttf',
+	'dist/ui.html',
+	'dist/css/*.css',
+	'dist/listener.js',
+	'dist/progressbar.js',
+	'dist/images/*.png',
+	'dist/images/*.gif',
 }
 
 shared_scripts {

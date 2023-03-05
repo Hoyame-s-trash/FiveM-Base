@@ -14,7 +14,7 @@ files {
 
 shared_scripts {
   '@believer/imports.lua',
-  'Config.lua'
+  'shared/*.lua'
 }
 
 client_scripts {

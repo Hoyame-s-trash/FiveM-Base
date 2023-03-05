@@ -31,7 +31,7 @@ AddEventHandler('esx_skin:save', function(skin)
 		['@skin'] = json.encode(skin),
 		['@identifier'] = playerIdentifier
 	}, function()
-		playerSelected.showNotification("~g~Sauvegarde de votre personnage effectué ✅.")
+		--playerSelected.showNotification("~g~Sauvegarde de votre personnage effectué ✅.")
 	end)
 end)
 
@@ -53,7 +53,7 @@ ESX.RegisterServerCallback('esx_skin:getPlayerSkin', function(source, cb)
 		if user.skin then
 			skin = json.decode(user.skin)
 		end
-
+		
 		cb(skin)
 	end)
 end)

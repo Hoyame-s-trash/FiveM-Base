@@ -347,39 +347,26 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	end
 
 	function self.getInventoryItem(name, metadata)
-		for k,v in ipairs(self.inventory) do
-			if v.name == name then
+		for k,v in pairs(GetItems(self.source)) do
+			if v._tpl == name then
 				return v
 			end
 		end
+		return nil
 	end
 
 	function self.addInventoryItem(name, count, metadata, slot)
-		local item = self.getInventoryItem(name)
-
-		if item then
-			count = ESX.Math.Round(count)
-			item.count = item.count + count
-			self.weight = self.weight + (item.weight * count)
-
-			TriggerEvent('esx:onAddInventoryItem', self.source, item.name, item.count)
-			self.triggerEvent('esx:addInventoryItem', item.name, item.count)
-		end
+		AddItem(self.source, name, count, metadata)
 	end
 
 	function self.removeInventoryItem(name, count, metadata, slot)
-		local item = self.getInventoryItem(name)
-
-		if item then
-			count = ESX.Math.Round(count)
-			local newCount = item.count - count
-
-			if newCount >= 0 then
-				item.count = newCount
-				self.weight = self.weight - (item.weight * count)
-
-				TriggerEvent('esx:onRemoveInventoryItem', self.source, item.name, item.count)
-				self.triggerEvent('esx:removeInventoryItem', item.name, item.count)
+		local foundItem = GetItem(self.source, name)
+		if foundItem ~= nil then
+			RemoveItem(self.source, name, count)
+		else
+			local findItem = self.getInventoryItem(name)
+			if findItem ~= nil then
+				RemoveItem(self.source, findItem._id, count)
 			end
 		end
 	end

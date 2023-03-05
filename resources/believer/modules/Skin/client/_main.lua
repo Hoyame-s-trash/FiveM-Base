@@ -241,6 +241,8 @@ function OpenSaveableMenu(submitCb, cancelCb, restrict)
             if submitCb ~= nil then
                 submitCb(data, menu)
             end
+			
+			TriggerEvent("Inventory:giveClothesItem", skin, lastSkin, false)
         end)
 
     end, cancelCb, restrict)

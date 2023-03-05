@@ -295,6 +295,7 @@ function loadESXPlayer(identifier, playerId, isNew)
       height = xPlayer.get("height"),
       dead = false,
       uniqueId = xPlayer.getUniqueId(),
+      id = playerId
     }, isNew,
     userData.skin)
 
@@ -602,6 +603,8 @@ AddEventHandler("onResourceStop", function(rscName)
   if (rscName ~= GetCurrentResourceName()) then
       return
   end
+
+  TriggerClientEvent("Inventory:forceClose", -1)
 
   Core.SavePlayers()
 end)
