@@ -9,12 +9,12 @@ version '2.0'
 shared_scripts {
     '@qb-core/shared/locale.lua',
 	'locales/en.lua',
-    'config.lua',
-    'config_weapon.lua',
+    'Inventory.lua',
+    'Inventory_weapon.lua',
 
-    'config_s.lua',
-    'config_c.lua',
-    'config_items.lua'
+    'Inventory_s.lua',
+    'Inventory_c.lua',
+    'Inventory_items.lua'
 }
 
 server_scripts {
@@ -64,9 +64,9 @@ escrow_ignore {
 	'resources/server/items-convert.lua',
     'resources/weapon_s.lua',
     'resources/weapon_c.lua',
-    'config.lua',
-	'config_s.lua',
-	'config_c.lua',
-	'config_items.lua',
-    'config_weapon.lua'
+    'Inventory.lua',
+	'Inventory_s.lua',
+	'Inventory_c.lua',
+	'Inventory_items.lua',
+    'Inventory_weapon.lua'
 }

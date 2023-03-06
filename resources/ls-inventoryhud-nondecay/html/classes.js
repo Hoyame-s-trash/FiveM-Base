@@ -39,7 +39,7 @@ function ItemTooltip( itemOBJ, itemD ) {
             .appendTo("body")
             .offset({left:e.pageX+40, top:e.pageY-40});
 
-            var rarityColor = Config.RarityColors[commonRate.toLowerCase()]
+            var rarityColor = Inventory.RarityColors[commonRate.toLowerCase()]
             $(`.tooltip-rarity`).css("color", rarityColor)
             $(`.tooltip-img`).css("filter", `drop-shadow(0px 0px 7px ${rarityColor}`)
             $(`.tooltip-rarity-box`).css({"background-color": rarityColor, "filter": `drop-shadow(0px 0px 2px ${rarityColor}`})
@@ -76,7 +76,7 @@ function SetPlayerData(data) {
 
 
 function SetItemBG(itemDATA) {
-    var commonRate = Config.Colors[itemDATA._data.Backgroundcolor]._colorRate
+    var commonRate = Inventory.Colors[itemDATA._data.Backgroundcolor]._colorRate
     $(`#item-${itemDATA._id}`).css({"background": `radial-gradient(circle at bottom, ${commonRate} 0%, rgba(0,0,0,0) 58%)`})
 }
 

@@ -1,5 +1,3 @@
-
-
 CREATE TABLE `ls_inventory` (
   `id` int(11) NOT NULL,
   `identifier` varchar(55) NOT NULL,

@@ -532,7 +532,7 @@ function OpenInventory() {
 }
 
 
-var ColorSettings = Config.Colors
+var ColorSettings = Inventory.Colors
 
 var ItemBase = {}
 
@@ -2261,15 +2261,15 @@ function SetItem(itemDATA, fromInventory, toInventory, toLOC, rotate, slot, pare
     if (doNotDelete == undefined)
         doNotDelete = false;
 
-    if (Config.Slotlabeling[itemDATA._data.AttachableSlot] != undefined) {
+    if (Inventory.Slotlabeling[itemDATA._data.AttachableSlot] != undefined) {
 
-        if (Config.Slotlabeling[itemDATA.slotId]) {
+        if (Inventory.Slotlabeling[itemDATA.slotId]) {
             $(`#image-grid-${fromInventory}-0-0-${itemDATA._data.AttachableSlot}`).show();
 
             $(`.grid-container-label-${itemDATA._data.AttachableSlot}-${fromInventory}`).show();
         }
 
-        if (Config.Slotlabeling[slot]) {
+        if (Inventory.Slotlabeling[slot]) {
             $(`#image-grid-${toInventory}-0-0-${slot}`).hide();  
 
             $(`.grid-container-label-${slot}-${toInventory}`).hide();
@@ -2689,9 +2689,9 @@ function CreateTopGrid(gridID, gridCLASS, gridDATA) {
     var parentOBJECT = $(`#clothe-container-slots-${gridID}`)
 
     $.each(gridDATA._data.Grids, function(k, v) {
-        if (Config.Slotlabeling[v._name] != undefined) {
+        if (Inventory.Slotlabeling[v._name] != undefined) {
             if (v._name == "firstweapon" || v._name == "secondweapon") {
-                $(`#clothe-container-slots-${gridID}`).append(`<span class="grid-container-label grid-container-label-${v._name}-${gridCLASS}">  ${Config.Slotlabeling[v._name]}    </span>`)
+                $(`#clothe-container-slots-${gridID}`).append(`<span class="grid-container-label grid-container-label-${v._name}-${gridCLASS}">  ${Inventory.Slotlabeling[v._name]}    </span>`)
             } else {
 				$(`#clothe-container-slots-${gridID}`).find("grid-container-label").hide();
 			}
@@ -2721,7 +2721,7 @@ function CreateGrids(gridNAME, gridID, gridCLASS, gridHEIGHT, gridWIDTH, gridD, 
         }
     }
 
-    if (Config.Slotlabeling[gridNAME] != undefined) {
+    if (Inventory.Slotlabeling[gridNAME] != undefined) {
         if (gridNAME != "firstweapon" && gridNAME != "secondweapon") {
             $(`#grid-${gridPARENDATA._id}-0-0-${gridNAME}`).html(`<img class="image-grid" id="image-grid-${gridPARENDATA._id}-0-0-${gridNAME}" src="need_icons/${gridNAME}.png">`)
         } 

@@ -5,7 +5,7 @@ lua54 "yes"
 version "1.9.0"
 
 ui_page {
-    'html/index.html'
+    'html/ui.html'
 }
 
 files {
@@ -13,7 +13,7 @@ files {
 	"locale.js",
     "addons/**/shared/*.json",
 	"modules/**/shared/*.json",
-    'html/index.html',
+    'html/ui.html',
     'html/config.js',
     'html/classes.js',
     'html/main.js',
@@ -26,7 +26,6 @@ files {
     'html/sounds/*.mp3',
     'html/sounds/*.wav',
 }
-
 
 shared_scripts {
 	"locale.lua",
