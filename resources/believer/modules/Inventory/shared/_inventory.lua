@@ -2,45 +2,18 @@
 Inventory                                  = {}
 Inventory.Functions                        = {}
 
--- This variable declaration, uses your database
-Inventory.DatabaseName = "oxmysql"
-
 Inventory.Notify = function(message, type) 
-    Inventory.ServerFramework.Functions.Notify(message, type)
+    ESX.ShowNotification(message)
 end
-
-Inventory.Version = "1.0.3" -- DO NOT CHANGE IT WILL BE UPDATED!
 
 Inventory.Debug = true -- IF YOU WANT TO STABLE VERSION OF INVENTORY DO NOT MAKE TRUE!
 
 Inventory.CheckInventoryEveryStart = true
 
-Inventory.FivemAppeareance = true
-
--- Database function do not change, if your database doesnt in here you can add
+Inventory.FivemAppeareance = false
 
 Inventory.Database                         = function(plugin,type,query,var)
     local wait = promise.new()
-    if type == 'fetchAll' and plugin == 'mysql-async' then
-        MySQL.Async.fetchAll(query, var, function(result)
-            wait:resolve(result)
-        end)
-    end
-    if type == 'execute' and plugin == 'mysql-async' then
-        MySQL.Async.execute(query, var, function(result)
-            wait:resolve(result)
-        end)
-    end
-    if type == 'execute' and plugin == 'ghmattisql' then
-        exports['ghmattimysql']:execute(query, var, function(result)
-            wait:resolve(result)
-        end)
-    end
-    if type == 'fetchAll' and plugin == 'ghmattisql' then
-        exports.ghmattimysql:execute(query, var, function(result)
-            wait:resolve(result)
-        end)
-    end
     if type == 'execute' and plugin == 'oxmysql' then
         exports.oxmysql:query(query, var, function(result)
             wait:resolve(result)
@@ -57,7 +30,7 @@ end
 -- When click "TAB" or custom key will be make blur screen
 -- to close you need to change true to false
 
-Inventory.Blur                     = true
+Inventory.Blur                     = false
 
 Inventory.HAHud                    = true -- Enables armor and health hud top on character
 
@@ -72,14 +45,6 @@ Inventory.Weight.Divide                = 1
 Inventory.Weight.MaxPlayerWeight       = 92
 Inventory.Weight.OverweightMultiplier  = 2
 Inventory.Weight.OverweightDisableJump = 1.2
-
-
--- Drop settings
--- "Inventory.RefreshDrops", refreshes all drops in typed seconds, used in client-side
--- "Inventory.RefreshServerDrops", refreshes and check all drops in typed seconds, used in server-side
-
-Inventory.RefreshDrops         = 1 -- In seconds
-Inventory.RefreshServerDrops   = 1 -- In seconds
 
 BackEngineVehicles = {
     ["ninef"] = true,
@@ -832,7 +797,7 @@ Inventory.WeaponAttachment.Ammo = Inventory.WeaponList
 
 Inventory.Functions.Server = {
     GetFramework                    = function ()
-        local coreData = exports['qb-core']:GetCoreObject()
+        local coreData = ESX
         return coreData
     end,
 
@@ -7309,39 +7274,3 @@ Inventory.Items = {
         }
 
 }
-
-local Translations = {
-    error = {
-        canceled = 'Annulé',
-        max_ammo = 'Capacitée maximale de munition',
-        no_weapon = 'Vous n\'avez pas d\'arme.',
-        no_support_attachment = 'Cette arme ne supporte pas cet accessoire.',
-        no_weapon_in_hand = 'Vous n\'avez pas d\'arme dans vos mains.',
-        weapon_broken = 'Cette arme est cassée est ne peux donc pas être utilisée.',
-        no_damage_on_weapon = 'Cette arme n\'est pas endommagée..',
-        weapon_broken_need_repair = 'Votre arme est cassée, Vous devez la réparée pour vous en reservir.',
-        attachment_already_on_weapon = 'Vous aviez déjà un %{value} sur votre arme.'
-    },
-    success = {
-        reloaded = 'Rechargée'
-    },
-    info = {
-        loading_bullets = 'Charger les munitions',
-        repairshop_not_usable = 'L\'atelier de réparation n\'est ~r~PAS~w~ utilisable.',
-        weapon_will_repair = 'Votre arme va être réparée.',
-        take_weapon_back = '[E] - Récuperer votre arme',
-        repair_weapon_price = '[E] Réparer l\'arme, ~g~$%{value}~w~',
-        removed_attachment = 'Vous avez retiré %{value} de votre arme!',
-        hp_of_weapon = 'Durabilité de votre arme'
-    },
-    mail = {
-        sender = 'Tyrone',
-        subject = 'Réparation',
-        message = 'Votre %{value} Est réparé et vous pouvez venir le récuperer. <br><br> Peace out madafaka'
-    },
-}
-
-Lang = Locale:new({
-    phrases = Translations,
-    warnOnMissing = true
-})

@@ -34,7 +34,7 @@ Callback.Functions.CreateCallback("ls-inventory:s:getPlayerInventory", function(
         if CurrentInventorys[PlayerID] ~= nil then
             cb(CurrentInventorys[PlayerID])
         else
-            local resultCheck = Inventory.Database(Inventory.DatabaseName, 'fetchAll', 'SELECT * FROM `ls_inventory` WHERE `identifier` = @identifier', {['@identifier'] = PlayerID})
+            local resultCheck = Inventory.Database("oxmysql", 'fetchAll', 'SELECT * FROM `user_inventory` WHERE `identifier` = @identifier', {['@identifier'] = PlayerID})
             if resultCheck[1] ~= nil then
                 CurrentInventorys[PlayerID] = json.decode(resultCheck[1].data)
 
@@ -53,7 +53,7 @@ Callback.Functions.CreateCallback("ls-inventory:s:getSecondInventory", function(
         if CurrentInventorys[inventory.identifier] ~= nil then
             cb(CurrentInventorys[inventory.identifier])
         else
-            local resultCheck = Inventory.Database(Inventory.DatabaseName, 'fetchAll', 'SELECT * FROM `ls_inventory` WHERE `identifier` = @identifier', {['@identifier'] = inventory.identifier})
+            local resultCheck = Inventory.Database("oxmysql", 'fetchAll', 'SELECT * FROM `user_inventory` WHERE `identifier` = @identifier', {['@identifier'] = inventory.identifier})
             if resultCheck[1] ~= nil then
                 CurrentInventorys[inventory.identifier] = json.decode(resultCheck[1].data)
 
@@ -70,7 +70,7 @@ Callback.Functions.CreateCallback("ls-inventory:s:getSecondInventory", function(
         if CurrentInventorys[inventory.identifier] ~= nil then
             cb(CurrentInventorys[inventory.identifier])
         else
-            local resultCheck = Inventory.Database(Inventory.DatabaseName, 'fetchAll', 'SELECT * FROM `ls_inventory` WHERE `identifier` = @identifier', {['@identifier'] = inventory.identifier})
+            local resultCheck = Inventory.Database("oxmysql", 'fetchAll', 'SELECT * FROM `user_inventory` WHERE `identifier` = @identifier', {['@identifier'] = inventory.identifier})
             if resultCheck[1] ~= nil then
                 CurrentInventorys[inventory.identifier] = json.decode(resultCheck[1].data)
 
@@ -128,12 +128,12 @@ end)
 
 RegisterNetEvent("ls-inventory:s:UseItem", function(data)
     local item = CurrentInventorys[data.fastUseInventory].items[CurrentInventorys[data.fastUseInventory].fastUse["Item"..data.key]]
-    exports["ls-inventoryhud"]:Inventory().UseItem(source, item)
+    Inventory.UseItem(source, item)
 end)
 
 RegisterNetEvent("ls-inventory:s:UseItemContext", function(data)
     local item = data.inventoryItem
-    exports["ls-inventoryhud"]:Inventory().UseItem(source, item)
+    Inventory.UseItem(source, item)
 end)
 
 RegisterNetEvent("ls-inventory:s:UpdateItem", function(data)
@@ -150,7 +150,7 @@ RegisterNetEvent("ls-inventory:s:RemoveItem", function(data)
 end)
 
 RegisterNetEvent("ls-inventory:s:AddItemFromAttachment", function(data)
-    exports["ls-inventoryhud"]:Inventory().AddItem(source, data.itemData._id, 1)
+    Inventory.AddItem(source, data.itemData._id, 1)
     
 end)
 
@@ -158,19 +158,19 @@ end)
 function saveInventory()
     for _,v in pairs(CurrentInventorys) do
         if (v.temporary == nil or not v.temporary) then
-            Inventory.Database(Inventory.DatabaseName, 'execute', 'UPDATE `ls_inventory` SET `data` = @data WHERE `identifier` = @identifier', {
+            Inventory.Database("oxmysql", 'execute', 'UPDATE `user_inventory` SET `data` = @data WHERE `identifier` = @identifier', {
                 ['@identifier'] = v._inventoryId,
                 ['@data']       = json.encode(v)
             })
         end
     end
-    RconPrint('[ls-inventory] All inventories saved!' .. "\n")
+    print('[ls-inventory] All inventories saved!' .. "\n")
 end
 
 
 
 Callback.Functions.CreateCallback("ls-inventoryhud:s:checkPrice", function(source, cb, data)
-    cb(exports["ls-inventoryhud"]:Inventory().BuyItem(source, data.item, data.amount))
+    cb(Inventory.BuyItem(source, data.item, data.amount))
 end)
 
 
@@ -202,7 +202,7 @@ end)
 
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(1000*Inventory.RefreshServerDrops)
+		Citizen.Wait(1000*1)
 		if CurrentInventorys ~= nil then
 			for k,v in pairs(CurrentInventorys) do
                 if string.match(v._inventoryId, "DROP-") then
@@ -237,12 +237,12 @@ function GetCurrentInventory()
 end
 
 local function CreateUsableItem(itemName, data)
-	Inventory.ServerFramework.Functions.CreateUseableItem(itemName, data)
+	ESX.RegisterUsableItem(itemName, data)
 end
 exports("CreateUsableItem", CreateUsableItem)
 
 local function GetUsableItem(itemName)
-	return Inventory.ServerFramework.Functions.CanUseItem(itemName)
+	return ESX.CanUseItem(itemName)
 end
 exports("GetUsableItem", GetUsableItem)
 
@@ -300,7 +300,7 @@ end
 
 Inventory = {
     AddItem = function ( source, itemID, itemAmount, itemData )
-        if Inventory.Items[itemID] == nil then return RconPrint("Invalid Item " .. itemID .. "\n") end
+        if Inventory.Items[itemID] == nil then return print("Invalid Item " .. itemID .. "\n") end
 
         if itemAmount == nil then itemAmount = 1 end
 
@@ -370,7 +370,7 @@ Inventory = {
     end,
 
     BuyItem = function ( source, item, amount)
-        local Player = Inventory.ServerFramework.Functions.GetPlayer(source)
+        local Player = ESX.GetPlayerFromId(source)
 
         if Player == nil then return false end
 
@@ -445,27 +445,23 @@ RegisterCommand('saveInventories', function(src, args, raw)
     end
 end)
 
-Inventory.ServerFramework.Commands.Add("giveitem", "Give An Item (Admin Only)", {{name="id", help="Player ID"},{name="item", help="Name of the item (not a label)"}, {name="amount", help="Amount of items"}}, false, function(source, args)
-	local id = tonumber(args[1])
-	local Player = Inventory.ServerFramework.Functions.GetPlayer(id)
-	local amount = tonumber(args[3]) or 1
-	local itemData = tostring(args[2])
-	if Player then
-        Inventory.AddItem(id, itemData, amount)
-	end
-end, "admin")
+-- Inventory.Commands.Add("giveitem", "Give An Item (Admin Only)", {{name="id", help="Player ID"},{name="item", help="Name of the item (not a label)"}, {name="amount", help="Amount of items"}}, false, function(source, args)
+-- 	local id = tonumber(args[1])
+-- 	local Player = Inventory.Functions.GetPlayer(id)
+-- 	local amount = tonumber(args[3]) or 1
+-- 	local itemData = tostring(args[2])
+-- 	if Player then
+--         Inventory.AddItem(id, itemData, amount)
+-- 	end
+-- end, "admin")
 
 CreateUsableItem("14ehcp8zup6cqffe3nxwy8pz", function(source, item)
 	print(json.encode(item))
 end)
 
 CreateUsableItem("zehd54y3no4yfvizu17qwe98", function(source, item)
-    print("ASDASD")
-	exports["ls-inventoryhud"]:Inventory().RemoveItem(source, item._id, 1)
+	Inventory.RemoveItem(source, item._id, 1)
 end)
-
-
-
 
 if Inventory.CheckInventoryEveryStart then
     AddEventHandler('onResourceStart', function(resourceName)
@@ -476,7 +472,6 @@ if Inventory.CheckInventoryEveryStart then
         ExecuteCommand("checkinventory")
     end)
 end
-
 
 InventoryCheck = {
     isWorking = false,
@@ -489,45 +484,45 @@ RegisterCommand("checkinventory", function( src, args ,raw )
         InventoryCheck.isTriggered = false
 
         InventoryCheck.isWorking = true
-        RconPrint('[ls-inventory] Inventory will be checking...' .. "\n")
-        RconPrint('^1[ls-inventory] Warning this checking will not give definitive results!' .. "^7\n\n")
+        print('[ls-inventory] Inventory will be checking...' .. "\n")
+        print('^1[ls-inventory] Warning this checking will not give definitive results!' .. "^7\n\n")
         Citizen.Wait(1000)
         local resourcename = "qb-core"
-        if GetResourceState(resourcename) ~= 'missing' then RconPrint('[ls-inventory] '..resourcename..' enabled and working!' .. "\n")
-        else InventoryCheck.isWorking = false return RconPrint('[ls-inventory] '..resourcename..' not working it causes several issues!' .. "\n") 
+        if GetResourceState(resourcename) ~= 'missing' then print('[ls-inventory] '..resourcename..' enabled and working!' .. "\n")
+        else InventoryCheck.isWorking = false return print('[ls-inventory] '..resourcename..' not working it causes several issues!' .. "\n") 
         end
 
         Citizen.Wait(100)
         resourcename = "fivem-appearance"
         if GetResourceState(resourcename) == 'missing' then
             resourcename = "qb-clothing"
-            if GetResourceState(resourcename) ~= 'missing' then RconPrint('[ls-inventory] '..resourcename..' enabled and working!' .. "\n")
-            else InventoryCheck.isWorking = false return RconPrint('[ls-inventory] '..resourcename..' not working it causes several issues!' .. "\n")
+            if GetResourceState(resourcename) ~= 'missing' then print('[ls-inventory] '..resourcename..' enabled and working!' .. "\n")
+            else InventoryCheck.isWorking = false return print('[ls-inventory] '..resourcename..' not working it causes several issues!' .. "\n")
             end
 
         else
-            if GetResourceState(resourcename) ~= 'missing' then RconPrint('[ls-inventory] '..resourcename..' enabled and working!' .. "\n")
-            else InventoryCheck.isWorking = false return RconPrint('[ls-inventory] '..resourcename..' not working it causes several issues!' .. "\n")
+            if GetResourceState(resourcename) ~= 'missing' then print('[ls-inventory] '..resourcename..' enabled and working!' .. "\n")
+            else InventoryCheck.isWorking = false return print('[ls-inventory] '..resourcename..' not working it causes several issues!' .. "\n")
             end
         end
 
 
         Citizen.Wait(100)
-        RconPrint('[ls-inventory] Dependecies checked, everything fine starting next step...' .. "\n")
+        print('[ls-inventory] Dependecies checked, everything fine starting next step...' .. "\n")
         Citizen.Wait(1000)
-        RconPrint('\n[ls-inventory] qb-core checking...' .. "\n")
+        print('\n[ls-inventory] qb-core checking...' .. "\n")
 
         local isFound = FindFolder(io.popen"cd":read'*l'.."/resources", "qb-core")
 
         if not isFound then
             InventoryCheck.isWorking = false 
-            return RconPrint('[ls-inventory] qb-core not found!' .. "\n")
+            return print('[ls-inventory] qb-core not found!' .. "\n")
         end
 
         local file = io.open(isFound.."/server/player.lua", "rb")
         if file == nil then 
             InventoryCheck.isWorking = false 
-            return RconPrint('[ls-inventory] qb-core not found!' .. "\n")
+            return print('[ls-inventory] qb-core not found!' .. "\n")
         end
 
         local content = file:read "*a"
@@ -536,39 +531,39 @@ RegisterCommand("checkinventory", function( src, args ,raw )
 
         if not string.match(content, ':AddItem') then
             InventoryCheck.isWorking = false 
-            return RconPrint('[ls-inventory] AddItem not implemented!' .. "\n")
+            return print('[ls-inventory] AddItem not implemented!' .. "\n")
         else
-            RconPrint('[ls-inventory] AddItem implemented!' .. "\n")
+            print('[ls-inventory] AddItem implemented!' .. "\n")
         end
 
         if not string.match(content, ':RemoveItem') then
             InventoryCheck.isWorking = false 
-            return RconPrint('[ls-inventory] RemoveItem not implemented!' .. "\n")
+            return print('[ls-inventory] RemoveItem not implemented!' .. "\n")
         else
-            RconPrint('[ls-inventory] RemoveItem implemented!' .. "\n")
+            print('[ls-inventory] RemoveItem implemented!' .. "\n")
         end
 
-        RconPrint('[ls-inventory] qb-core is works fine!' .. "\n")
+        print('[ls-inventory] qb-core is works fine!' .. "\n")
         Citizen.Wait(1000)
-        RconPrint('\n^1[ls-inventory] Warning clothing check will not give definitive results!' .. "^7\n")
+        print('\n^1[ls-inventory] Warning clothing check will not give definitive results!' .. "^7\n")
         resourcename = "fivem-appearance"
         if GetResourceState(resourcename) == 'missing' then
 
 
-            RconPrint('[ls-inventory] qb-clothing checking...' .. "\n")
+            print('[ls-inventory] qb-clothing checking...' .. "\n")
             Citizen.Wait(1000)
     
             local isFound = FindFolder(io.popen"cd":read'*l'.."/resources", "qb-clothing")
 
             if not isFound then
                 InventoryCheck.isWorking = false 
-                return RconPrint('[ls-inventory] qb-clothing not found!' .. "\n")
+                return print('[ls-inventory] qb-clothing not found!' .. "\n")
             end
     
             local file = io.open(isFound.."/client/main.lua", "rb")
             if file == nil then 
                 InventoryCheck.isWorking = false 
-                return RconPrint('[ls-inventory] qb-clothing not found!' .. "\n")
+                return print('[ls-inventory] qb-clothing not found!' .. "\n")
             end
     
             local content = file:read "*a"
@@ -577,36 +572,36 @@ RegisterCommand("checkinventory", function( src, args ,raw )
     
             if not string.match(content, 'giveClothesAsItem') then
                 InventoryCheck.isWorking = false 
-                return RconPrint('[ls-inventory] Clothing not implemented!' .. "\n")
+                return print('[ls-inventory] Clothing not implemented!' .. "\n")
             else
-                RconPrint('[ls-inventory] Clothing implemented!' .. "\n")
+                print('[ls-inventory] Clothing implemented!' .. "\n")
             end
 
         else
 
-            RconPrint('[ls-inventory] fivem-appearance didnt\'t know how it worls currently!' .. "\n")
+            print('[ls-inventory] fivem-appearance didnt\'t know how it worls currently!' .. "\n")
 
         end
 
-        RconPrint('[ls-inventory] Resources checked, everything fine starting next step...' .. "\n\n")
+        print('[ls-inventory] Resources checked, everything fine starting next step...' .. "\n\n")
         Citizen.Wait(1000)
         if GetCurrentResourceName() ~= "ls-inventoryhud" then
             InventoryCheck.isWorking = false 
-            return RconPrint('[ls-inventory] Change inventory name to ^1ls-inventoryhud!' .. "^7\n")
+            return print('[ls-inventory] Change inventory name to ^1ls-inventoryhud!' .. "^7\n")
         else
-            RconPrint('[ls-inventory] Inventory name correct!' .. "\n")
+            print('[ls-inventory] Inventory name correct!' .. "\n")
         end
 
         Citizen.Wait(250)
 
-        if Inventory.ServerFramework == nil then
-            RconPrint('[ls-inventory] Framework not works fine!' .. "^7\n")
+        if ESX == nil then
+            print('[ls-inventory] Framework not works fine!' .. "^7\n")
         else
-            RconPrint('[ls-inventory] Framework works fine!' .. "^7\n")
+            print('[ls-inventory] Framework works fine!' .. "^7\n")
         end
 
         Citizen.Wait(250)
-        RconPrint('^2[ls-inventory] Inventory checking process finished, there is no important errors!' .. "^7\n")
+        print('^2[ls-inventory] Inventory checking process finished, there is no important errors!' .. "^7\n")
         InventoryCheck.isWorking = false
         InventoryCheck.isTriggered = false
     end
@@ -643,18 +638,6 @@ function CheckEveryFolder(DIR, searching)
         end
     end
 end
-
-Citizen.CreateThread(function()
-    Citizen.Wait(2000)
-    if GetResourceState("ls-core") == "missing" or GetResourceState("ls-core") == "stopped" then
-        while true do
-            Citizen.Wait(2000)
-            print("[ls-inventory] ls-core is missing, download before using!")
-        end
-    else
-        exports["ls-core"]:CheckVersion(Inventory.Version, "ls-inventoryhud")
-    end
-end)
 
 local charset = {}  do -- [0-9a-zA-Z]
     for c = 48, 57  do table.insert(charset, string.char(c)) end
@@ -694,7 +677,7 @@ function CreateDB(Player, Identifier)
         fastUse = {}
     }
 
-    Inventory.Database(Inventory.DatabaseName, 'execute', 'INSERT INTO `ls_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
+    Inventory.Database("oxmysql", 'execute', 'INSERT INTO `user_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
         ['@identifier'] = Identifier,
         ['@data']       = json.encode(data)
     })
@@ -800,7 +783,7 @@ function CreateSecondDB(InventoryData, Identifier)
             end
         end
 
-        Inventory.Database(Inventory.DatabaseName, 'execute', 'INSERT INTO `ls_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
+        Inventory.Database("oxmysql", 'execute', 'INSERT INTO `user_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
             ['@identifier'] = Identifier,
             ['@data']       = json.encode(data)
         })
@@ -847,7 +830,7 @@ function CreateSecondDB(InventoryData, Identifier)
         }
 		
 		if not InventoryData.isTemporary then
-            Inventory.Database(Inventory.DatabaseName, 'execute', 'INSERT INTO `ls_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
+            Inventory.Database("oxmysql", 'execute', 'INSERT INTO `user_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
                 ['@identifier'] = Identifier,
                 ['@data']       = json.encode(data)
             })
@@ -856,7 +839,7 @@ function CreateSecondDB(InventoryData, Identifier)
         local customID = randomString(22)
 
         for k,v in pairs(InventoryData.inventoryItems)do
-            if Inventory.Items[k] == nil then return RconPrint("Invalid Item " .. k .. "\n") end
+            if Inventory.Items[k] == nil then return print("Invalid Item " .. k .. "\n") end
 
             local createdItem = json.decode(json.encode(Inventory.Items[k].item))
 
@@ -907,7 +890,7 @@ Callback.Functions.CreateCallback("ls-inventoryhud:s:getPlayerId", function(sour
 end)
 
 Callback.Functions.CreateCallback("ls-inventoryhud:s:getSkin", function(source, cb)
-	local result = Inventory.Database(Inventory.DatabaseName, 'fetchAll', 'SELECT * FROM playerskins where citizenid = ? AND active = ?', { Inventory.Functions.Server.GetIdentifier(source), 1 })
+	local result = Inventory.Database("oxmysql", 'fetchAll', 'SELECT * FROM playerskins where citizenid = ? AND active = ?', { Inventory.Functions.Server.GetIdentifier(source), 1 })
     if result[1] ~= nil then
         cb(result[1].model, result[1].skin)
     else
@@ -932,7 +915,7 @@ end)
 
 RegisterCommand('convertitems', function(src, args, raw)
     if src == 0 then
-        local convertDB, convertedDB = Inventory.ServerFramework.Shared.Items, {}
+        local convertDB, convertedDB = ESX.Items, {}
         
         for k,v in pairs(convertDB) do
             local rarity = "common"
@@ -1256,30 +1239,30 @@ end, "god")
 -- Items
 
 -- AMMO
-QBCore.Functions.CreateUseableItem('pistol_ammo', function(source, item)
+ESX.RegisterUsableItem('pistol_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_PISTOL', 12, item)
 end)
 
-QBCore.Functions.CreateUseableItem('rifle_ammo', function(source, item)
+ESX.RegisterUsableItem('rifle_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_RIFLE', 30, item)
 end)
 
-QBCore.Functions.CreateUseableItem('smg_ammo', function(source, item)
+ESX.RegisterUsableItem('smg_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_SMG', 20, item)
 end)
 
-QBCore.Functions.CreateUseableItem('shotgun_ammo', function(source, item)
+ESX.RegisterUsableItem('shotgun_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_SHOTGUN', 10, item)
 end)
 
-QBCore.Functions.CreateUseableItem('mg_ammo', function(source, item)
+ESX.RegisterUsableItem('mg_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_MG', 30, item)
 end)
 
-QBCore.Functions.CreateUseableItem('snp_ammo', function(source, item)
+ESX.RegisterUsableItem('snp_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_SNIPER', 10, item)
 end)
 
-QBCore.Functions.CreateUseableItem('emp_ammo', function(source, item)
+ESX.CreateUseableItem('emp_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_EMPLAUNCHER', 10, item)
 end)

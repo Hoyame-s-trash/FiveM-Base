@@ -302,7 +302,7 @@ Citizen.CreateThread(function()
             end
             
         end)
-        Citizen.Wait(Inventory.RefreshDrops*1000)
+        Citizen.Wait(1*1000)
     end
 end)
 
