@@ -98,8 +98,6 @@ Callback.Functions.CreateCallback("Inventory:s:getSecondInventory", function(sou
                 cb(CurrentInventorys[inventory.identifier])
             end
         end
-    elseif inventory.type == "shop" then
-        cb(CreateSecondDB(inventory, inventory.identifier))
     end
 end)
 
@@ -159,7 +157,6 @@ RegisterNetEvent("Inventory:s:AddItemFromAttachment", function(data)
     
 end)
 
-
 function saveInventory()
     for _,v in pairs(CurrentInventorys) do
         if (v.temporary == nil or not v.temporary) then
@@ -169,9 +166,8 @@ function saveInventory()
             })
         end
     end
-    RconPrint('[Inventory] All inventories saved!' .. "\n")
+    print('[Inventory] All inventories saved!' .. "\n")
 end
-
 
 Callback.Functions.CreateCallback("inventory:s:checkPrice", function(source, cb, data)
     cb(Inventory.BuyItem(source, data.item, data.amount))
