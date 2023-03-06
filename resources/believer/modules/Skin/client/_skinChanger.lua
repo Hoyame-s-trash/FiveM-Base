@@ -235,7 +235,7 @@ local Components = {{
     textureof = "decals_1"
 }, {
     label = "Bras",
-    name = "arms",
+    name = "arms_1",
     value = 0,
     min = 0,
     zoomOffset = 0.75,
@@ -820,7 +820,7 @@ function GetMaxVals()
         torso_2 = GetNumberOfPedTextureVariations(playerPed, 11, Character["torso_1"]) - 1,
         decals_1 = GetNumberOfPedDrawableVariations(playerPed, 10) - 1,
         decals_2 = GetNumberOfPedTextureVariations(playerPed, 10, Character["decals_1"]) - 1,
-        arms = GetNumberOfPedDrawableVariations(playerPed, 3) - 1,
+        arms_1 = GetNumberOfPedDrawableVariations(playerPed, 3) - 1,
         arms_2 = 10,
         pants_1 = GetNumberOfPedDrawableVariations(playerPed, 4) - 1,
         pants_2 = GetNumberOfPedTextureVariations(playerPed, 4, Character["pants_1"]) - 1,
@@ -941,7 +941,7 @@ function ApplySkin(skin, clothes)
 
     SetPedComponentVariation(playerPed, 8, Character["tshirt_1"], Character["tshirt_2"], 2) -- Tshirt
     SetPedComponentVariation(playerPed, 11, Character["torso_1"], Character["torso_2"], 2) -- torso parts
-    SetPedComponentVariation(playerPed, 3, Character["arms"], Character["arms_2"], 2) -- Arms
+    SetPedComponentVariation(playerPed, 3, Character["arms_1"], Character["arms_2"], 2) -- Arms
     SetPedComponentVariation(playerPed, 10, Character["decals_1"], Character["decals_2"], 2) -- decals
     SetPedComponentVariation(playerPed, 4, Character["pants_1"], Character["pants_2"], 2) -- pants
     SetPedComponentVariation(playerPed, 6, Character["shoes_1"], Character["shoes_2"], 2) -- shoes

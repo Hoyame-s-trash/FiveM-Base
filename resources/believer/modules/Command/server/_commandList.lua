@@ -60,16 +60,16 @@ GM:newThread(function()
             local targetSelected = ESX.GetPlayerFromId(args[1])
             if (not targetSelected) then return end
 
-            if (GM.Ambulance["dead_list"][targetSelected.source] == nil) then
+            if (GM.Death["dead_list"][targetSelected.source] == nil) then
                 print("LE JOUEUR "..targetSelected.getName().." N'EST PAS MORT")
                 return
             end
 
-            if (GM.Ambulance["calls_list"][targetSelected.source] ~= nil) then
-                if (GM.Ambulance["calls_list"][targetSelected.source].taken_src) then
-                    TriggerClientEvent("esx:showNotification", GM.Ambulance["calls_list"][targetSelected.source].taken_src, "~r~L'appel en cours à été annulé le patient à été réanimer par un staff.")
+            if (GM.Death["calls_list"][targetSelected.source] ~= nil) then
+                if (GM.Death["calls_list"][targetSelected.source].taken_src) then
+                    TriggerClientEvent("esx:showNotification", GM.Death["calls_list"][targetSelected.source].taken_src, "~r~L'appel en cours à été annulé le patient à été réanimer par un staff.")
                 end
-                GM.Ambulance["calls_list"][targetSelected.source] = nil
+                GM.Death["calls_list"][targetSelected.source] = nil
         
                 local ambulanceList = GM.Service:getPeopleService("ambulance")
             
@@ -78,8 +78,8 @@ GM:newThread(function()
                 end
             end
         
-            if (GM.Ambulance["dead_list"][targetSelected.source] ~= nil) then
-                GM.Ambulance["dead_list"][targetSelected.source] = nil
+            if (GM.Death["dead_list"][targetSelected.source] ~= nil) then
+                GM.Death["dead_list"][targetSelected.source] = nil
             end
         
             targetSelected.setDead(false)
@@ -99,16 +99,16 @@ GM:newThread(function()
             local targetSelected = ESX.GetPlayerFromId(args[1])
             if (not targetSelected) then return end
 
-            if (GM.Ambulance["dead_list"][targetSelected.source] == nil) then
+            if (GM.Death["dead_list"][targetSelected.source] == nil) then
                 playerSelected.showNotification("~r~Le joueur "..targetSelected.getName().." n'est pas mort.")
                 return
             end
 
-            if (GM.Ambulance["calls_list"][targetSelected.source] ~= nil) then
-                if (GM.Ambulance["calls_list"][targetSelected.source].taken_src) then
-                    TriggerClientEvent("esx:showNotification", GM.Ambulance["calls_list"][targetSelected.source].taken_src, "~r~L'appel en cours à été annulé le patient à été réanimer par un staff.")
+            if (GM.Death["calls_list"][targetSelected.source] ~= nil) then
+                if (GM.Death["calls_list"][targetSelected.source].taken_src) then
+                    TriggerClientEvent("esx:showNotification", GM.Death["calls_list"][targetSelected.source].taken_src, "~r~L'appel en cours à été annulé le patient à été réanimer par un staff.")
                 end
-                GM.Ambulance["calls_list"][targetSelected.source] = nil
+                GM.Death["calls_list"][targetSelected.source] = nil
         
                 local ambulanceList = GM.Service:getPeopleService("ambulance")
             
@@ -117,8 +117,8 @@ GM:newThread(function()
                 end
             end
         
-            if (GM.Ambulance["dead_list"][targetSelected.source] ~= nil) then
-                GM.Ambulance["dead_list"][targetSelected.source] = nil
+            if (GM.Death["dead_list"][targetSelected.source] ~= nil) then
+                GM.Death["dead_list"][targetSelected.source] = nil
             end
         
             targetSelected.setDead(false)

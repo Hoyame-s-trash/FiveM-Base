@@ -4,27 +4,11 @@ game "gta5"
 lua54 "yes"
 version "1.9.0"
 
-ui_page {
-    'html/ui.html'
-}
-
 files {
 	"imports.lua",
 	"locale.js",
     "addons/**/shared/*.json",
 	"modules/**/shared/*.json",
-    'html/ui.html',
-    'html/config.js',
-    'html/classes.js',
-    'html/main.js',
-    'html/main.css',
-    'html/icons/*.png',
-	'html/icons/*.jpg',
-    'html/need_icons/*.png',
-    'html/style.css',
-    'html/clothing.css',
-    'html/sounds/*.mp3',
-    'html/sounds/*.wav',
 }
 
 shared_scripts {

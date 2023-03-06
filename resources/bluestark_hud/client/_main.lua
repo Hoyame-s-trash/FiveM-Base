@@ -3,7 +3,6 @@
 ESX = exports['believer']:getSharedObject()
 
 local seatbeltOn = false
-local hideHud = false
 local drink, food = 0,0
 local enableField = false
 local FuelLevel = 65
@@ -274,8 +273,8 @@ RegisterNetEvent('pma-voice:setTalkingOnRadio', function(plySource, enabled)
 end)
 
 RegisterNetEvent('hud:hide')
-AddEventHandler('hud:hide', function(parameter) -- true or false
-    toggleField(false)
+AddEventHandler('hud:hide', function(BOOLEAN) -- true or false
+    toggleField(BOOLEAN)
 end)
 
 RegisterNetEvent('hud:updateplayers')
