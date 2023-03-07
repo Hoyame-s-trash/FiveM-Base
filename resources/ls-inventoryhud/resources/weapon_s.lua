@@ -1,10 +1,10 @@
-local QBCore = Config.ServerFramework
+local QBCore = BlueStarkInventory.ServerFramework
 
 -- Functions
 
 local function IsWeaponBlocked(WeaponName)
     local retval = false
-    for _, name in pairs(Config.DurabilityBlockedWeapons) do
+    for _, name in pairs(BlueStarkInventory.DurabilityBlockedWeapons) do
         if name == WeaponName then
             retval = true
             break
@@ -18,11 +18,11 @@ end
 RegisterNetEvent('QBCore:Server:RemoveItem', function(itemName, amount, slot)
     local src = source
 	print(slot)
-    exports["ls-inventoryhud"]:RemoveItem(src, slot, amount)
+    RemoveItem(src, slot, amount)
 end)
 
 QBCore.RegisterServerCallback("weapons:server:GetConfig", function(_, cb)
-    cb(Config.WeaponRepairPoints)
+    cb(BlueStarkInventory.WeaponRepairPoints)
 end)
 
 QBCore.RegisterServerCallback("weapon:server:GetWeaponAmmo", function(source, cb, WeaponData)
@@ -41,34 +41,34 @@ QBCore.RegisterServerCallback("weapons:server:RepairWeapon", function(source, cb
     local Player = QBCore.GetPlayerFromId(src)
     local minute = 60 * 1000
     local Timeout = math.random(5 * minute, 10 * minute)
-    local WeaponData = Config.WeaponList[GetHashKey(data._name)]
+    local WeaponData = BlueStarkInventory.WeaponList[GetHashKey(data._name)]
     local WeaponClass = (QBCore.Shared.SplitStr(WeaponData.ammotype, "_")[2]):lower()
 
-    local wpn = exports["ls-inventoryhud"]:GetItem(src, data._id)
+    local wpn = GetItem(src, data._id)
     if wpn then
         if wpn.info.quality then
             if wpn.info.quality ~= 100 then
-                Player.removeMoney(Config.WeaponRepairCosts[WeaponClass])
+                Player.removeMoney(BlueStarkInventory.WeaponRepairCosts[WeaponClass])
                 if true then
-                    Config.WeaponRepairPoints[RepairPoint].IsRepairing = true
-                    Config.WeaponRepairPoints[RepairPoint].RepairingData = {
+                    BlueStarkInventory.WeaponRepairPoints[RepairPoint].IsRepairing = true
+                    BlueStarkInventory.WeaponRepairPoints[RepairPoint].RepairingData = {
                         CitizenId = Player.identifier,
                         WeaponData = wpn,
                         Ready = false,
                     }
                     Player.removeInventoryItem(data._id, 1)
                     TriggerClientEvent("inventory:client:CheckWeapon", src, data.name)
-                    TriggerClientEvent('weapons:client:SyncRepairShops', -1, Config.WeaponRepairPoints[RepairPoint], RepairPoint)
+                    TriggerClientEvent('weapons:client:SyncRepairShops', -1, BlueStarkInventory.WeaponRepairPoints[RepairPoint], RepairPoint)
 
                     SetTimeout(Timeout, function()
-                        Config.WeaponRepairPoints[RepairPoint].IsRepairing = false
-                        Config.WeaponRepairPoints[RepairPoint].RepairingData.Ready = true
-                        TriggerClientEvent('weapons:client:SyncRepairShops', -1, Config.WeaponRepairPoints[RepairPoint], RepairPoint)
+                        BlueStarkInventory.WeaponRepairPoints[RepairPoint].IsRepairing = false
+                        BlueStarkInventory.WeaponRepairPoints[RepairPoint].RepairingData.Ready = true
+                        TriggerClientEvent('weapons:client:SyncRepairShops', -1, BlueStarkInventory.WeaponRepairPoints[RepairPoint], RepairPoint)
                         SetTimeout(7 * 60000, function()
-                            if Config.WeaponRepairPoints[RepairPoint].RepairingData.Ready then
-                                Config.WeaponRepairPoints[RepairPoint].IsRepairing = false
-                                Config.WeaponRepairPoints[RepairPoint].RepairingData = {}
-                                TriggerClientEvent('weapons:client:SyncRepairShops', -1, Config.WeaponRepairPoints[RepairPoint], RepairPoint)
+                            if BlueStarkInventory.WeaponRepairPoints[RepairPoint].RepairingData.Ready then
+                                BlueStarkInventory.WeaponRepairPoints[RepairPoint].IsRepairing = false
+                                BlueStarkInventory.WeaponRepairPoints[RepairPoint].RepairingData = {}
+                                TriggerClientEvent('weapons:client:SyncRepairShops', -1, BlueStarkInventory.WeaponRepairPoints[RepairPoint], RepairPoint)
                             end
                         end)
                     end)
@@ -96,10 +96,10 @@ end)
 RegisterNetEvent("weapons:server:AddWeaponAmmo", function(CurrentWeaponData, amount)
     local src = source
     amount = tonumber(amount)
-    local itemNew = exports["ls-inventoryhud"]:GetItem(src, CurrentWeaponData._id)
+    local itemNew = GetItem(src, CurrentWeaponData._id)
     if itemNew then
         itemNew.info.ammo = amount
-        exports["ls-inventoryhud"]:UpdateItem(src, itemNew._id, itemNew.info)
+        UpdateItem(src, itemNew._id, itemNew.info)
     end
 end)
 
@@ -107,10 +107,10 @@ RegisterNetEvent("weapons:server:UpdateWeaponAmmo", function(CurrentWeaponData, 
     local src = source
     amount = tonumber(amount)
 	if CurrentWeaponData then
-		local itemNew = exports["ls-inventoryhud"]:GetItem(src, CurrentWeaponData._id)
+		local itemNew = GetItem(src, CurrentWeaponData._id)
 		if itemNew then
 			itemNew.info.ammo = amount
-			exports["ls-inventoryhud"]:UpdateItem(src, itemNew._id, itemNew.info)
+			UpdateItem(src, itemNew._id, itemNew.info)
 		end
 	end
 end)
@@ -118,28 +118,28 @@ end)
 RegisterNetEvent("weapons:server:TakeBackWeapon", function(k)
     local src = source
     local Player = QBCore.GetPlayerFromId(src)
-    local itemdata = Config.WeaponRepairPoints[k].RepairingData.WeaponData
+    local itemdata = BlueStarkInventory.WeaponRepairPoints[k].RepairingData.WeaponData
     itemdata.info.quality = 100
     Player.Functions.AddItem(itemdata._name, 1, false, itemdata.info)
-    TriggerClientEvent('inventory:client:ItemBox', src, Config.Items[itemdata._name], "add")
-    Config.WeaponRepairPoints[k].IsRepairing = false
-    Config.WeaponRepairPoints[k].RepairingData = {}
-    TriggerClientEvent('weapons:client:SyncRepairShops', -1, Config.WeaponRepairPoints[k], k)
+    TriggerClientEvent('inventory:client:ItemBox', src, BlueStarkInventory.Items[itemdata._name], "add")
+    BlueStarkInventory.WeaponRepairPoints[k].IsRepairing = false
+    BlueStarkInventory.WeaponRepairPoints[k].RepairingData = {}
+    TriggerClientEvent('weapons:client:SyncRepairShops', -1, BlueStarkInventory.WeaponRepairPoints[k], k)
 end)
 
 RegisterNetEvent("weapons:server:SetWeaponQuality", function(CurrentWeaponData, hp)
     local src = source
 
     CurrentWeaponData.info.quality = hp
-    exports["ls-inventoryhud"]:UpdateItem(src, CurrentWeaponData._id, CurrentWeaponData.info)
+    UpdateItem(src, CurrentWeaponData._id, CurrentWeaponData.info)
 end)
 
 RegisterNetEvent('weapons:server:UpdateWeaponQuality', function(data, RepeatAmount)
     local src = source
     Citizen.Wait(10)
-    local WeaponData = Config.WeaponList[GetHashKey(data._name)]
-    local WeaponSlot = exports["ls-inventoryhud"]:GetItem(src, data._id)
-    local DecreaseAmount = Config.DurabilityMultiplier[data._name]
+    local WeaponData = BlueStarkInventory.WeaponList[GetHashKey(data._name)]
+    local WeaponSlot = GetItem(src, data._id)
+    local DecreaseAmount = BlueStarkInventory.DurabilityMultiplier[data._name]
     if WeaponSlot then
         if not IsWeaponBlocked(WeaponData._name) then
             if WeaponSlot.info.quality then
@@ -148,7 +148,7 @@ RegisterNetEvent('weapons:server:UpdateWeaponQuality', function(data, RepeatAmou
                         WeaponSlot.info.quality = WeaponSlot.info.quality - DecreaseAmount
                     else
                         WeaponSlot.info.quality = 0
-                        exports["ls-inventoryhud"]:UseItem(src, data)
+                        UseItem(src, data)
                         TriggerEvent('Notification',"Weapon broken need to be repaired!")
                         break
                     end
@@ -160,7 +160,7 @@ RegisterNetEvent('weapons:server:UpdateWeaponQuality', function(data, RepeatAmou
                         WeaponSlot.info.quality = WeaponSlot.info.quality - DecreaseAmount
                     else
                         WeaponSlot.info.quality = 0
-                        exports["ls-inventoryhud"]:UseItem(src, data)
+                        UseItem(src, data)
                         TriggerEvent('Notification',"Weapon broken need to be repaired!")
                         break
                     end
@@ -168,7 +168,7 @@ RegisterNetEvent('weapons:server:UpdateWeaponQuality', function(data, RepeatAmou
             end
         end
     end
-    exports["ls-inventoryhud"]:UpdateItem(src, data._id, WeaponSlot.info)
+    UpdateItem(src, data._id, WeaponSlot.info)
 end)
 
 -- Items

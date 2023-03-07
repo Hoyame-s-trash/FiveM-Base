@@ -1,4 +1,4 @@
-Config.Functions.Server = {
+BlueStarkInventory.Functions.Server = {
     GetFramework                    = function ()
         coreData = exports['believer']:getSharedObject()
         return coreData
@@ -6,7 +6,7 @@ Config.Functions.Server = {
 
 
     GetPlayer                       = function ( source )
-        local EasyFramework = Config.ServerFramework
+        local EasyFramework = BlueStarkInventory.ServerFramework
 		if EasyFramework == nil then
             print("^1Empty framework detected!\n^7It's causes from framework, inventory doesn't affect framework!")
             return nil
@@ -16,15 +16,15 @@ Config.Functions.Server = {
     end,
 
     GetName                         = function ( source )
-        return Config.Functions.Server.GetPlayer( source ).identifier 
+        return BlueStarkInventory.Functions.Server.GetPlayer( source ).identifier 
     end,
 
     GetIdentifier                   = function(source)
-        if Config.Functions.Server.GetPlayer(source) == nil then
+        if BlueStarkInventory.Functions.Server.GetPlayer(source) == nil then
             print("^1Empty Identifier detected!\n^7It's causes from framework or it wasn\'t important stuff.\nIf inventory doesn\'t works resetup the inventory!")
             return nil
         else
-            local identifier = Config.Functions.Server.GetPlayer( source ).identifier
+            local identifier = BlueStarkInventory.Functions.Server.GetPlayer( source ).identifier
             local new = identifier
             if string.match(identifier, ":") then
                 new = identifier:gsub(":", "-")
@@ -34,17 +34,17 @@ Config.Functions.Server = {
     end,
 
     GetPlayerFromUniqueValue        = function(id)
-        local EasyFramework = Config.ServerFramework
+        local EasyFramework = BlueStarkInventory.ServerFramework
         return EasyFramework.GetPlayerFromIdentifier(id)
     end,
 }
-Config.VehiclesInventory = {}
-Config.VehiclesInventory.Models = {
+BlueStarkInventory.VehiclesInventory = {}
+BlueStarkInventory.VehiclesInventory.Models = {
     ["ASEA"] = {
         ["glovebox"] = "hhm3eomwf3cygww8e6kcgpt6",
     }
 }
-Config.VehiclesInventory.Classes = {
+BlueStarkInventory.VehiclesInventory.Classes = {
     [0] = {
         ["trunk"] = "coks1u2elb452g0hsd25w6if",
     },
@@ -92,4 +92,4 @@ Config.VehiclesInventory.Classes = {
     },
 }
 
-Config.ServerFramework = Config.Functions.Server.GetFramework()
+BlueStarkInventory.ServerFramework = BlueStarkInventory.Functions.Server.GetFramework()

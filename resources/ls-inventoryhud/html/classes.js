@@ -39,7 +39,7 @@ function ItemTooltip( itemOBJ, itemD ) {
             .appendTo("body")
             .offset({left:e.pageX+40, top:e.pageY-40});
 
-            var rarityColor = Config.RarityColors[commonRate.toLowerCase()]
+            var rarityColor = BlueStarkInventory.RarityColors[commonRate.toLowerCase()]
             $(`.tooltip-rarity`).css("color", rarityColor)
             $(`.tooltip-img`).css("filter", `drop-shadow(0px 0px 7px ${rarityColor}`)
             $(`.tooltip-rarity-box`).css({"background-color": rarityColor, "filter": `drop-shadow(0px 0px 2px ${rarityColor}`})
@@ -76,7 +76,7 @@ function SetPlayerData(data) {
 
 
 function SetItemBG(itemDATA) {
-    var commonRate = Config.Colors[itemDATA._data.Backgroundcolor]._colorRate
+    var commonRate = BlueStarkInventory.Colors[itemDATA._data.Backgroundcolor]._colorRate
     $(`#item-${itemDATA._id}`).css({"background": `radial-gradient(circle at bottom, ${commonRate} 0%, rgba(0,0,0,0) 58%)`})
 }
 
@@ -370,7 +370,7 @@ function UpdateItem(data) {
 
     $(`#item-${data.itemID}`).data("itemData", oldItem)
 
-    $.post("https://ls-inventoryhud/UpdateItem", JSON.stringify({
+    $.post("https://believer/UpdateItem", JSON.stringify({
         itemData: oldItem,
         inventoryId: data.inventoryID,
         itemIdentifier: data.itemID,
@@ -486,7 +486,7 @@ function getWidth(itemD) {
 function checkClothing(itemDATA, toInventory, slot){
     if (SlotIsClothing(itemDATA.slotId)) {
         if (slot != itemDATA.slotId) {
-            $.post("https://ls-inventoryhud/changeClothes", JSON.stringify({
+            $.post("https://believer/changeClothes", JSON.stringify({
                 animation: true,
                 clothingname: itemDATA._data.AttachableSlot,
                 dress: false,
@@ -496,7 +496,7 @@ function checkClothing(itemDATA, toInventory, slot){
         }
     } else {
         if (SlotIsClothing(slot)) {
-            $.post("https://ls-inventoryhud/changeClothes", JSON.stringify({
+            $.post("https://believer/changeClothes", JSON.stringify({
                 animation: true,
                 clothingname: itemDATA._data.AttachableSlot,
                 dress: true,
@@ -516,7 +516,7 @@ function CheckClothesFully() {
     })
     $.each(firstInventory.items, function(key, value) {
         if (SlotIsClothing(value.slotId)) {
-            $.post("https://ls-inventoryhud/changeClothes", JSON.stringify({
+            $.post("https://believer/changeClothes", JSON.stringify({
                 animation: false,
                 clothingname: value._data.AttachableSlot,
                 dress: true,
@@ -530,7 +530,7 @@ function CheckClothesFully() {
     $.each(OccupiedClothingSlots, function(key, value) {
 
         if (!value) {
-            $.post("https://ls-inventoryhud/changeClothes", JSON.stringify({
+            $.post("https://believer/changeClothes", JSON.stringify({
                 animation: false,
                 clothingname: key,
                 dress: false,
@@ -544,7 +544,7 @@ function CheckClothes() {
     $.each(OccupiedClothingSlots, function(key, value) {
         if (key == "gloves") {
             if (!value) {
-                $.post("https://ls-inventoryhud/changeClothes", JSON.stringify({
+                $.post("https://believer/changeClothes", JSON.stringify({
                     animation: false,
                     clothingname: key,
                     dress: false,

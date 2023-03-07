@@ -1,18 +1,18 @@
 local CurrentInventorys = {}
 
 Callback.Functions.CreateCallback("ls-inventory:s:getAllItems", function(source, cb, inventory)
-    cb(Config.Items)
+    cb(BlueStarkInventory.Items)
 end)
 
 Callback.Functions.CreateCallback("ls-inventory:s:getPlayerInventory", function(source, cb)
-    local Player = Config.Functions.Server.GetPlayer(source)
-    local PlayerID =  Config.Functions.Server.GetIdentifier(source)
+    local Player = BlueStarkInventory.Functions.Server.GetPlayer(source)
+    local PlayerID =  BlueStarkInventory.Functions.Server.GetIdentifier(source)
 	print(PlayerID)
     if PlayerID ~= nil then
         if CurrentInventorys[PlayerID] ~= nil then
             cb(CurrentInventorys[PlayerID])
         else
-            local resultCheck = Config.Database(Config.DatabaseName, 'fetchAll', 'SELECT * FROM `ls_inventory` WHERE `identifier` = @identifier', {['@identifier'] = PlayerID})
+            local resultCheck = BlueStarkInventory.Database(BlueStarkInventory.DatabaseName, 'fetchAll', 'SELECT * FROM `user_inventory` WHERE `identifier` = @identifier', {['@identifier'] = PlayerID})
 			print("TEST")
 			print(resultCheck[1])
             if resultCheck[1] ~= nil then
@@ -35,7 +35,7 @@ Callback.Functions.CreateCallback("ls-inventory:s:getSecondInventory", function(
         if CurrentInventorys[inventory.identifier] ~= nil then
             cb(CurrentInventorys[inventory.identifier])
         else
-            local resultCheck = Config.Database(Config.DatabaseName, 'fetchAll', 'SELECT * FROM `ls_inventory` WHERE `identifier` = @identifier', {['@identifier'] = inventory.identifier})
+            local resultCheck = BlueStarkInventory.Database(BlueStarkInventory.DatabaseName, 'fetchAll', 'SELECT * FROM `user_inventory` WHERE `identifier` = @identifier', {['@identifier'] = inventory.identifier})
             if resultCheck[1] ~= nil then
                 CurrentInventorys[inventory.identifier] = json.decode(resultCheck[1].data)
 
@@ -52,7 +52,7 @@ Callback.Functions.CreateCallback("ls-inventory:s:getSecondInventory", function(
         if CurrentInventorys[inventory.identifier] ~= nil then
             cb(CurrentInventorys[inventory.identifier])
         else
-            local resultCheck = Config.Database(Config.DatabaseName, 'fetchAll', 'SELECT * FROM `ls_inventory` WHERE `identifier` = @identifier', {['@identifier'] = inventory.identifier})
+            local resultCheck = BlueStarkInventory.Database(BlueStarkInventory.DatabaseName, 'fetchAll', 'SELECT * FROM `user_inventory` WHERE `identifier` = @identifier', {['@identifier'] = inventory.identifier})
             if resultCheck[1] ~= nil then
                 CurrentInventorys[inventory.identifier] = json.decode(resultCheck[1].data)
 
@@ -105,12 +105,12 @@ end)
 
 RegisterNetEvent("ls-inventory:s:UseItem", function(data)
     local item = CurrentInventorys[data.fastUseInventory].items[CurrentInventorys[data.fastUseInventory].fastUse["Item"..data.key]]
-    exports["ls-inventoryhud"]:Inventory().UseItem(source, item)
+    Inventory.UseItem(source, item)
 end)
 
 RegisterNetEvent("ls-inventory:s:UseItemContext", function(data)
     local item = data.inventoryItem
-    exports["ls-inventoryhud"]:Inventory().UseItem(source, item)
+    Inventory.UseItem(source, item)
 end)
 
 RegisterNetEvent("ls-inventory:s:UpdateItem", function(data)
@@ -127,7 +127,7 @@ RegisterNetEvent("ls-inventory:s:RemoveItem", function(data)
 end)
 
 RegisterNetEvent("ls-inventory:s:AddItemFromAttachment", function(data)
-    exports["ls-inventoryhud"]:Inventory().AddItem(source, data.itemData._id, 1)
+    Inventory.AddItem(source, data.itemData._id, 1)
     
 end)
 
@@ -135,7 +135,7 @@ end)
 function saveInventory()
     for _,v in pairs(CurrentInventorys) do
         if (v.temporary == nil or not v.temporary) then
-            Config.Database(Config.DatabaseName, 'execute', 'UPDATE `ls_inventory` SET `data` = @data WHERE `identifier` = @identifier', {
+            BlueStarkInventory.Database(BlueStarkInventory.DatabaseName, 'execute', 'UPDATE `user_inventory` SET `data` = @data WHERE `identifier` = @identifier', {
                 ['@identifier'] = v._inventoryId,
                 ['@data']       = json.encode(v)
             })
@@ -146,7 +146,7 @@ end
 
 
 Callback.Functions.CreateCallback("ls-inventoryhud:s:checkPrice", function(source, cb, data)
-    cb(exports["ls-inventoryhud"]:Inventory().BuyItem(source, data.item, data.amount))
+    cb(Inventory.BuyItem(source, data.item, data.amount))
 end)
 
 
@@ -179,7 +179,7 @@ end)
 
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(1000*Config.RefreshServerDrops)
+		Citizen.Wait(1000*BlueStarkInventory.RefreshServerDrops)
 		if CurrentInventorys ~= nil then
 			for k,v in pairs(CurrentInventorys) do
                 if string.match(v._inventoryId, "DROP-") then

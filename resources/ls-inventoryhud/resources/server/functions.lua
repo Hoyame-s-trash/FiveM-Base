@@ -37,7 +37,7 @@ function CreateDB(Player, Identifier)
         fastUse = {}
     }
 
-    Config.Database(Config.DatabaseName, 'execute', 'INSERT INTO `ls_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
+    BlueStarkInventory.Database(BlueStarkInventory.DatabaseName, 'execute', 'INSERT INTO `user_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
         ['@identifier'] = Identifier,
         ['@data']       = json.encode(data)
     })
@@ -46,14 +46,14 @@ function CreateDB(Player, Identifier)
 end
 
 function FindIsEmpty(InventoryData)
-    if Config.VehiclesInventory.Models[InventoryData.vehicleModel] ~= nil then
-        if Config.VehiclesInventory.Models[InventoryData.vehicleModel][InventoryData.vehicleStorageType] ~= nil then
+    if BlueStarkInventory.VehiclesInventory.Models[InventoryData.vehicleModel] ~= nil then
+        if BlueStarkInventory.VehiclesInventory.Models[InventoryData.vehicleModel][InventoryData.vehicleStorageType] ~= nil then
             return "Model"
         end
     end
 
-    if Config.VehiclesInventory.Classes[InventoryData.vehicleClass] ~= nil then
-        if Config.VehiclesInventory.Classes[InventoryData.vehicleClass][InventoryData.vehicleStorageType] ~= nil then
+    if BlueStarkInventory.VehiclesInventory.Classes[InventoryData.vehicleClass] ~= nil then
+        if BlueStarkInventory.VehiclesInventory.Classes[InventoryData.vehicleClass][InventoryData.vehicleStorageType] ~= nil then
             return "Class"
         end
     end
@@ -66,7 +66,7 @@ function CreateSecondDB(InventoryData, Identifier)
         local vehicleID = randomString(22)
 
         if FindIsEmpty(InventoryData) == "Model" then
-            local vehicleModel = Config.VehiclesInventory.Models[InventoryData.vehicleModel][InventoryData.vehicleStorageType]
+            local vehicleModel = BlueStarkInventory.VehiclesInventory.Models[InventoryData.vehicleModel][InventoryData.vehicleStorageType]
             data = {
                 _inventoryId = Identifier,
                 items = {
@@ -85,7 +85,7 @@ function CreateSecondDB(InventoryData, Identifier)
                 fastUse = {},
             }
         elseif FindIsEmpty(InventoryData) == "Class" then
-            local vehicleModel = Config.VehiclesInventory.Classes[InventoryData.vehicleClass][InventoryData.vehicleStorageType]
+            local vehicleModel = BlueStarkInventory.VehiclesInventory.Classes[InventoryData.vehicleClass][InventoryData.vehicleStorageType]
             data = {
                 _inventoryId = Identifier,
                 items = {
@@ -143,7 +143,7 @@ function CreateSecondDB(InventoryData, Identifier)
             end
         end
 
-        Config.Database(Config.DatabaseName, 'execute', 'INSERT INTO `ls_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
+        BlueStarkInventory.Database(BlueStarkInventory.DatabaseName, 'execute', 'INSERT INTO `user_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
             ['@identifier'] = Identifier,
             ['@data']       = json.encode(data)
         })
@@ -190,7 +190,7 @@ function CreateSecondDB(InventoryData, Identifier)
         }
 
         if not InventoryData.isTemporary then
-            Config.Database(Config.DatabaseName, 'execute', 'INSERT INTO `ls_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
+            BlueStarkInventory.Database(BlueStarkInventory.DatabaseName, 'execute', 'INSERT INTO `user_inventory` (`identifier`, `data`) VALUES (@identifier, @data)', {
                 ['@identifier'] = Identifier,
                 ['@data']       = json.encode(data)
             })
@@ -199,9 +199,9 @@ function CreateSecondDB(InventoryData, Identifier)
         local customID = randomString(22)
 
         for k,v in pairs(InventoryData.inventoryItems)do
-            if Config.Items[k] == nil then return RconPrint("Invalid Item " .. k .. "\n") end
+            if BlueStarkInventory.Items[k] == nil then return RconPrint("Invalid Item " .. k .. "\n") end
 
-            local createdItem = json.decode(json.encode(Config.Items[k].item))
+            local createdItem = json.decode(json.encode(BlueStarkInventory.Items[k].item))
 
             local itemData = {}
 
@@ -246,11 +246,11 @@ function CreateSecondDB(InventoryData, Identifier)
 end
 
 Callback.Functions.CreateCallback("ls-inventoryhud:s:getPlayerId", function(source, cb, checkId)
-    cb(Config.Functions.Server.GetIdentifier(checkId))
+    cb(BlueStarkInventory.Functions.Server.GetIdentifier(checkId))
 end)
 
 Callback.Functions.CreateCallback("ls-inventoryhud:s:getSkin", function(source, cb)
-    local xPlayer = Config.Functions.Server.GetPlayer(source)
+    local xPlayer = BlueStarkInventory.Functions.Server.GetPlayer(source)
     MySQL.Async.fetchAll('SELECT skin FROM users WHERE identifier = @identifier', {
 		['@identifier'] = xPlayer.identifier
 	}, function(users)
@@ -266,7 +266,7 @@ Callback.Functions.CreateCallback("ls-inventoryhud:s:getSkin", function(source, 
 end)
 
 RegisterNetEvent("ls-inventoryhud:s:changeClothes", function(data)
-    local player = Config.Functions.Server.GetPlayerFromUniqueValue(data.inventoryid)
+    local player = BlueStarkInventory.Functions.Server.GetPlayerFromUniqueValue(data.inventoryid)
 	if player ~= nil then
 		TriggerClientEvent("ls-inventoryhud:c:changeClothes", player.PlayerData.source, data)
 	end

@@ -1,6 +1,6 @@
-Config = {};
+BlueStarkInventory = {};
 
-Config.Slotlabeling = {
+BlueStarkInventory.Slotlabeling = {
     "backpack": "Backpack",
     "rig": "Tactical Rig",
     "shirts": "T-Shirt",
@@ -18,7 +18,7 @@ Config.Slotlabeling = {
     "watch": "Watch",
 }
 
-Config.Colors = {
+BlueStarkInventory.Colors = {
     "violet": {
         //_colorRate: "rgba( 0, 0, 0, 0.0)",
         _colorRate: "rgba(238,130,238, 0.4)",
@@ -37,7 +37,7 @@ Config.Colors = {
     },
 }
 
-Config.RarityColors = {
+BlueStarkInventory.RarityColors = {
     "common": "rgb(255,255,255)",
     "uncommon": "#50C878",
     "rare": "#0096FF",

@@ -1,4 +1,4 @@
-Config.Items = {
+BlueStarkInventory.Items = {
     
     ["shop1"] = {
         ["item"] = {

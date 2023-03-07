@@ -133,7 +133,7 @@ function WeightReCalculate() {
         $("#weightProgress").css("box-shadow", `0 0 .2rem ${color}, 0 0 .7rem ${color}, 0 0 1.2rem ${color}, 0 0 1.8rem ${color}`)
         
 
-        $.post("https://ls-inventoryhud/WeightChanged", JSON.stringify({
+        $.post("https://believer/WeightChanged", JSON.stringify({
             weightData: currentWeight,
         }));
     },10)
@@ -417,7 +417,7 @@ function RemoveItem(RemoveData) {
 
         firstInventory.items[RemoveData.itemID] = item
 
-        $.post("https://ls-inventoryhud/RemoveItem", JSON.stringify({
+        $.post("https://believer/RemoveItem", JSON.stringify({
             itemData: item,
             isFullyRemove: false,
             inventoryId: firstInventory._inventoryId,
@@ -436,7 +436,7 @@ function RemoveItem(RemoveData) {
 
         delete firstInventory.items[RemoveData.itemID];
 
-        $.post("https://ls-inventoryhud/RemoveItem", JSON.stringify({
+        $.post("https://believer/RemoveItem", JSON.stringify({
             itemData: item,
             isFullyRemove: true,
             inventoryId: firstInventory._inventoryId,
@@ -453,7 +453,7 @@ function RemoveItem(RemoveData) {
 function UseItemHotbar(key) {
     if (firstInventory.fastUse["Item"+key] != undefined) {
         AudioPlay("sounds/"+firstInventory.fastUse["Item"+key]._data.ItemSound+"_use.wav", 0.5)
-        $.post("https://ls-inventoryhud/UseItem", JSON.stringify({
+        $.post("https://believer/UseItem", JSON.stringify({
             fastUseInventory: firstInventory._inventoryId,
             key: key,
         }));
@@ -465,7 +465,7 @@ function UseItemContext(itemD) {
         IsInContextMenu = false; $("#context-menu").remove();
 
     AudioPlay("sounds/"+itemD._data.ItemSound+"_use.wav", 0.5)
-    $.post("https://ls-inventoryhud/UseItemContext", JSON.stringify({
+    $.post("https://believer/UseItemContext", JSON.stringify({
         inventoryItem: itemD,
     }));
 }
@@ -484,7 +484,7 @@ function CloseInventory() {
     $("#grid-container-label-secinventory").remove();
     secInventory = {};
 
-    $.post("https://ls-inventoryhud/closeNUI", JSON.stringify({}));
+    $.post("https://believer/closeNUI", JSON.stringify({}));
 
     $(`#split-item`).hide();
     $("body").unbind("keypress");
@@ -523,7 +523,7 @@ function OpenInventory() {
 }
 
 
-var ColorSettings = Config.Colors
+var ColorSettings = BlueStarkInventory.Colors
 
 var ItemBase = {}
 
@@ -693,7 +693,7 @@ function AttachToFastUse(key, itemData) {
 }
 
 function SetFastUse(status, toInventory, itemData, fastUseKey) {
-    $.post("https://ls-inventoryhud/FastUseChanged", JSON.stringify({
+    $.post("https://believer/FastUseChanged", JSON.stringify({
         typeFastUse: status,
         fastUseInventory: toInventory,
         fastUseItemData: itemData,
@@ -1435,7 +1435,7 @@ function ItemDraggable(itemC, itemD, itemOBJ, status) {
                                             var amount = $(`#split-range`).val()
 
                                             if (GetItemSlotInventory(dataList.parentId) == secInventory._inventoryId && secInventory._inventoryId.includes("SHOP-")) {
-                                                $.post('https://ls-inventoryhud/checkPrice', JSON.stringify({
+                                                $.post('https://believer/checkPrice', JSON.stringify({
                                                     item: itemD,
                                                     amount: amount
                                                 }), function( callback ) {
@@ -1549,7 +1549,7 @@ function ItemDraggable(itemC, itemD, itemOBJ, status) {
                     }
                 } else {
                     if (GetItemSlotInventory(dataList.parentId) == secInventory._inventoryId && secInventory._inventoryId.includes("SHOP-")) { 
-                        $.post('https://ls-inventoryhud/checkPrice', JSON.stringify({
+                        $.post('https://believer/checkPrice', JSON.stringify({
                             item: itemD,
                             amount: itemD.info.CurrentStack,
                         }), function( callback ) {
@@ -1817,7 +1817,7 @@ function ItemDraggable(itemC, itemD, itemOBJ, status) {
                         delete secInventory.items[itemD._id];
                     }
 
-                    $.post("https://ls-inventoryhud/RemoveItem", JSON.stringify({
+                    $.post("https://believer/RemoveItem", JSON.stringify({
                         itemData: itemD,
                         isFullyRemove: true,
                         inventoryId: GetItemSlotInventory(itemD._id),
@@ -1829,7 +1829,7 @@ function ItemDraggable(itemC, itemD, itemOBJ, status) {
                     itemD.info.CurrentStack = parseInt(itemD.info.CurrentStack) - parseInt(neededAmount);
                     $(`#item-${itemD._id}`).find(".grid-item-amount").html(itemD.info.CurrentStack)
 
-                    $.post("https://ls-inventoryhud/RemoveItem", JSON.stringify({
+                    $.post("https://believer/RemoveItem", JSON.stringify({
                         itemData: itemD,
                         isFullyRemove: false,
                         inventoryId: GetItemSlotInventory(itemD._id),
@@ -1870,7 +1870,7 @@ function ItemDraggable(itemC, itemD, itemOBJ, status) {
 
                 gridITEMDATA.info.attachment = list
 
-                $.post("https://ls-inventoryhud/checkCurrentWeapon", JSON.stringify({
+                $.post("https://believer/checkCurrentWeapon", JSON.stringify({
                     currentWeapon: gridITEMDATA,
                     component: itemD.info.component,
                     remove: false
@@ -1879,7 +1879,7 @@ function ItemDraggable(itemC, itemD, itemOBJ, status) {
                 SetItem(gridITEMDATA, null, GetItemSlotInventory(gridITEMDATA._id), CreateXYITEM(gridITEMDATA), gridITEMDATA.loc.r, paintedBefore._slotId, paintedBefore._parentId)
 
                 $(itemOBJ).remove();
-                $.post("https://ls-inventoryhud/RemoveItem", JSON.stringify({
+                $.post("https://believer/RemoveItem", JSON.stringify({
                     itemData: itemD,
                     isFullyRemove: true,
                     inventoryId: GetItemSlotInventory(itemD._id),
@@ -2254,22 +2254,22 @@ function SetItem(itemDATA, fromInventory, toInventory, toLOC, rotate, slot, pare
     if (doNotDelete == undefined)
         doNotDelete = false;
 
-    if (Config.Slotlabeling[itemDATA._data.AttachableSlot] != undefined) {
+    if (BlueStarkInventory.Slotlabeling[itemDATA._data.AttachableSlot] != undefined) {
 
-        if (Config.Slotlabeling[itemDATA.slotId]) {
+        if (BlueStarkInventory.Slotlabeling[itemDATA.slotId]) {
             $(`#image-grid-${fromInventory}-0-0-${itemDATA._data.AttachableSlot}`).show();
 
             $(`.grid-container-label-${itemDATA._data.AttachableSlot}-${fromInventory}`).show();
         }
 
-        if (Config.Slotlabeling[slot]) {
+        if (BlueStarkInventory.Slotlabeling[slot]) {
             $(`#image-grid-${toInventory}-0-0-${slot}`).hide();  
 
             $(`.grid-container-label-${slot}-${toInventory}`).hide();
         }
     }
 
-    $.post("https://ls-inventoryhud/ItemChanged", JSON.stringify({
+    $.post("https://believer/ItemChanged", JSON.stringify({
         fromInventory: fromInventory,
         itemD: itemDATA,
         toInventory: toInventory,
@@ -2681,9 +2681,9 @@ function CreateTopGrid(gridID, gridCLASS, gridDATA) {
     var parentOBJECT = $(`#clothe-container-slots-${gridID}`)
 
     $.each(gridDATA._data.Grids, function(k, v) {
-        if (Config.Slotlabeling[v._name] != undefined) {
+        if (BlueStarkInventory.Slotlabeling[v._name] != undefined) {
             if (v._name == "firstweapon" || v._name == "secondweapon") {
-                $(`#clothe-container-slots-${gridID}`).append(`<span class="grid-container-label grid-container-label-${v._name}-${gridCLASS}">  ${Config.Slotlabeling[v._name]}    </span>`)
+                $(`#clothe-container-slots-${gridID}`).append(`<span class="grid-container-label grid-container-label-${v._name}-${gridCLASS}">  ${BlueStarkInventory.Slotlabeling[v._name]}    </span>`)
             }
             
         }
@@ -2711,7 +2711,7 @@ function CreateGrids(gridNAME, gridID, gridCLASS, gridHEIGHT, gridWIDTH, gridD, 
         }
     }
 
-    if (Config.Slotlabeling[gridNAME] != undefined) {
+    if (BlueStarkInventory.Slotlabeling[gridNAME] != undefined) {
         if (gridNAME != "firstweapon" && gridNAME != "secondweapon") {
             $(`#grid-${gridPARENDATA._id}-0-0-${gridNAME}`).html(`<img class="image-grid" id="image-grid-${gridPARENDATA._id}-0-0-${gridNAME}" src="need_icons/${gridNAME}.png">`)
         } 
@@ -2740,7 +2740,7 @@ function AttachmentMenu(contextMenuItem) {
     $("#inventory").fadeOut(250);
     $("#attachment").fadeIn(250);
 
-    $.post("https://ls-inventoryhud/attachmentOpen", JSON.stringify({
+    $.post("https://believer/attachmentOpen", JSON.stringify({
         weapon: attachmentItem._name
     }));
     IsInContextMenu = false
@@ -2771,7 +2771,7 @@ function AttachmentMenu(contextMenuItem) {
             var dx = (factor * (x - lastX)) * 4.0;
             var dy = (factor * (y - lastY)) * 4.0;
 
-            $.post("https://ls-inventoryhud/updateAttachRotate", JSON.stringify({
+            $.post("https://believer/updateAttachRotate", JSON.stringify({
                 x: dx,
                 y: dy
             }));
@@ -2801,7 +2801,7 @@ function SetupAttachment(data) {
             $(`#attach-clickabe-${value.attach_component}`).data({"label": value.label, "attach_component": value.attach_component})
             $(`#attachment-box-${value.attach_component}`).data({"attach_component": value.attach_component, "isAttached": true, "component": value.component});
 
-            $.post("https://ls-inventoryhud/addAttachment", JSON.stringify({
+            $.post("https://believer/addAttachment", JSON.stringify({
                 name: attachmentItem._name,
                 component: value.component,
                 attach_component: value.attach_component,
@@ -2854,20 +2854,20 @@ function EnableReClick() {
                         SetItem(attachmentItem, null, GetItemSlotInventory(attachmentItem._id), CreateXYITEM(attachmentItem), attachmentItem.loc.r, attachmentItem.slotId, attachmentItem._parent)
 
                         $(`#item-${foundItem._id}`).remove();
-                        $.post("https://ls-inventoryhud/RemoveItem", JSON.stringify({
+                        $.post("https://believer/RemoveItem", JSON.stringify({
                             itemData: foundItem,
                             isFullyRemove: true,
                             inventoryId: GetItemSlotInventory(foundItem._id),
                         }));
                         firstInventory.items[foundItem._id] = undefined
 
-                        $.post("https://ls-inventoryhud/addAttachment", JSON.stringify({
+                        $.post("https://believer/addAttachment", JSON.stringify({
                             name: attachmentItem._name,
                             component: foundItem.info.component,
                             attach_component: foundItem.info.attach_component,
                         }));
 
-                        $.post("https://ls-inventoryhud/checkCurrentWeapon", JSON.stringify({
+                        $.post("https://believer/checkCurrentWeapon", JSON.stringify({
                             currentWeapon: attachmentItem,
                             component: foundItem.info.component,
                             remove: false
@@ -2895,17 +2895,17 @@ function EnableReClick() {
 
                         SetItem(attachmentItem, null, GetItemSlotInventory(attachmentItem._id), CreateXYITEM(attachmentItem), attachmentItem.loc.r, attachmentItem.slotId, attachmentItem._parent);
 
-                        $.post("https://ls-inventoryhud/AddItemFromAttachment", JSON.stringify({
+                        $.post("https://believer/AddItemFromAttachment", JSON.stringify({
                             itemData: foundItem,
                         }));
 
-                        $.post("https://ls-inventoryhud/removeAttachment", JSON.stringify({
+                        $.post("https://believer/removeAttachment", JSON.stringify({
                             name: attachmentItem._name,
                             component: $(`#attachment-box-${compatch}`).data("attach_component"),
                             attach_component: $(`#attachment-box-${compatch}`).data("attach_component"),
                         }));
 
-                        $.post("https://ls-inventoryhud/checkCurrentWeapon", JSON.stringify({
+                        $.post("https://believer/checkCurrentWeapon", JSON.stringify({
                             currentWeapon: attachmentItem,
                             component: $(`#attachment-box-${compatch}`).data("attach_component"),
                             remove: true

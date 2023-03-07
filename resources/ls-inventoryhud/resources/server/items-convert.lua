@@ -1,6 +1,6 @@
 RegisterCommand('convertitems', function(src, args, raw)
     if src == 0 then
-        local convertDB, convertedDB = Config.ServerFramework.Items, {}
+        local convertDB, convertedDB = BlueStarkInventory.ServerFramework.Items, {}
         
         for k,v in pairs(convertDB) do
 			print(k)

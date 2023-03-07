@@ -1,13 +1,13 @@
-Config.ReloadTime = math.random(4000, 6000)
+BlueStarkInventory.ReloadTime = math.random(4000, 6000)
 
-Config.DurabilityBlockedWeapons = {
+BlueStarkInventory.DurabilityBlockedWeapons = {
     "weapon_stungun",
     "weapon_nightstick",
     "weapon_flashlight",
     "weapon_unarmed",
 }
 
-Config.WeaponList = {
+BlueStarkInventory.WeaponList = {
 	-- // WEAPONS
 	-- Melee
 	[`weapon_unarmed`] 				 = {['name'] = 'weapon_unarmed', 		['label'] = 'Fists', 				['weapontype'] = 'Melee',	['ammotype'] = nil, ['damagereason'] = 'Melee killed / Whacked / Executed / Beat down / Murdered / Battered'},
@@ -155,7 +155,7 @@ Config.WeaponList = {
     [`weapon_cougar`]               = {['name'] = 'weapon_cougar',	['label'] = 'Cougar',	['weapontype'] = 'Animals',	['ammotype'] = nil,	['damagereason'] = 'Mauled'},
 }
 
-Config.DurabilityMultiplier = {
+BlueStarkInventory.DurabilityMultiplier = {
 	-- Melee
 	-- ['weapon_unarmed'] 				 = 0.15,
 	['weapon_dagger'] 				 = 0.15,
@@ -284,7 +284,7 @@ Config.DurabilityMultiplier = {
     ['weapon_fertilizercan'] 		= 0.15,
 }
 
-Config.WeaponRepairPoints = {
+BlueStarkInventory.WeaponRepairPoints = {
     [1] = {
         coords = vector3(964.02, -1267.41, 34.97),
         IsRepairing = false,
@@ -292,7 +292,7 @@ Config.WeaponRepairPoints = {
     }
 }
 
-Config.WeaponRepairCosts = {
+BlueStarkInventory.WeaponRepairCosts = {
     ["pistol"] = 1000,
     ["smg"] = 3000,
     ["mg"] = 4000,
@@ -300,8 +300,8 @@ Config.WeaponRepairCosts = {
     ["sniper"] = 7000,
 }
 
-Config.WeaponAttachment = {}
-Config.WeaponAttachment.Bones = {
+BlueStarkInventory.WeaponAttachment = {}
+BlueStarkInventory.WeaponAttachment.Bones = {
     ["WAPClip"]         = {label = "Magazine", attach_component='clip', slot="0-0", add_left = 42, add_top = 42},
     ["Gun_GripR"]       = {label = "Finish", attach_component='luxary_finish', slot="1-0", add_left = 42, add_top = 42},
     ["WAPSupp"]      = {label = "Muzzle", attach_component='suppressor', slot="2-0", add_left = 42, add_top = -202},
@@ -311,7 +311,7 @@ Config.WeaponAttachment.Bones = {
     ["gun_vfx_eject"]       = {label = "Tint", attach_component='tint', slot="6-0", add_left = 42, add_top = -202},
 }
 
-Config.WeaponAttachment.Weapons = { 
+BlueStarkInventory.WeaponAttachment.Weapons = { 
     { 
         name = 'weapon_pistol', 
         components = { 
@@ -608,5 +608,5 @@ Config.WeaponAttachment.Weapons = {
     } 
 }
 
-Config.Weapons = Config.WeaponAttachment.Weapons
-Config.WeaponAttachment.Ammo = Config.WeaponList
+BlueStarkInventory.Weapons = BlueStarkInventory.WeaponAttachment.Weapons
+BlueStarkInventory.WeaponAttachment.Ammo = BlueStarkInventory.WeaponList

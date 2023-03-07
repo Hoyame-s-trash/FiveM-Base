@@ -71,8 +71,8 @@ RegisterNetEvent("ls-inventory:c:ItemChanged", function(data)
     })
 end)
 
-RegisterNetEvent(Config.Events.PlayerLoaded)
-AddEventHandler(Config.Events.PlayerLoaded, function()
+RegisterNetEvent(BlueStarkInventory.Events.PlayerLoaded)
+AddEventHandler(BlueStarkInventory.Events.PlayerLoaded, function()
     SetupInventory()
 end)
 
@@ -86,9 +86,9 @@ function SetupInventory()
                 action = "setupInventory",
                 items = items,
                 inventory = inventory,
-                weapons = Config.WeaponAttachment.Weapons,
-                weight = Config.Weight,
-                hahud = Config.HAHud,
+                weapons = BlueStarkInventory.WeaponAttachment.Weapons,
+                weight = BlueStarkInventory.Weight,
+                hahud = BlueStarkInventory.HAHud,
             })
         end)
     end)
@@ -102,8 +102,8 @@ function DeleteInventory()
     }) 
 end
 
-RegisterNetEvent(Config.Events.PlayerUnloaded)
-AddEventHandler(Config.Events.PlayerUnloaded, function()
+RegisterNetEvent(BlueStarkInventory.Events.PlayerUnloaded)
+AddEventHandler(BlueStarkInventory.Events.PlayerUnloaded, function()
     DeleteInventory()
 end)
 
@@ -123,7 +123,7 @@ function OpenPlayerInventory(status)
             SetupSecondInventory()
         end
 
-        if Config.Blur then
+        if BlueStarkInventory.Blur then
             TriggerScreenblurFadeIn(250)
         end
     end
@@ -188,7 +188,7 @@ function SetupSecondInventory()
                     isInventoryOpen = true
                     vehicleTrunk = vehicle
                 else
-                    Config.Notify("client", "Vehicle Locked", "error")
+                    BlueStarkInventory.Notify("client", "Vehicle Locked", "error")
                     inventoryFound = false
                     isInventoryOpen = false
                 end
@@ -267,7 +267,7 @@ Citizen.CreateThread(function()
             end
             
         end)
-        Citizen.Wait(Config.RefreshDrops*1000)
+        Citizen.Wait(BlueStarkInventory.RefreshDrops*1000)
     end
 end)
 
@@ -337,7 +337,7 @@ RegisterNUICallback("closeNUI", function()
     
     DeleteDrawedPed()
 
-    if Config.Blur then
+    if BlueStarkInventory.Blur then
         TriggerScreenblurFadeOut(250)
     end
 
@@ -363,7 +363,7 @@ RegisterNUICallback("attachmentOpen", function(data, cb)
     
 end)
 
-if Config.Debug then
+if BlueStarkInventory.Debug then
     CreateThread(function()
         while true do
             Wait(0)

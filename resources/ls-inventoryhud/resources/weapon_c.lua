@@ -1,23 +1,23 @@
 -- Variables
-local QBCore = Config.ServerFramework
+local QBCore = BlueStarkInventory.ServerFramework
 local PlayerData, CurrentWeaponData, CanShoot, MultiplierAmount = {}, {}, true, 0
 
 -- Handlers
 
-AddEventHandler(Config.Events.PlayerLoaded, function()
+AddEventHandler(BlueStarkInventory.Events.PlayerLoaded, function()
     PlayerData = QBCore.GetPlayerData()
     QBCore.TriggerServerCallback("weapons:server:GetConfig", function(RepairPoints)
         for k, data in pairs(RepairPoints) do
-            Config.WeaponRepairPoints[k].IsRepairing = data.IsRepairing
-            Config.WeaponRepairPoints[k].RepairingData = data.RepairingData
+            BlueStarkInventory.WeaponRepairPoints[k].IsRepairing = data.IsRepairing
+            BlueStarkInventory.WeaponRepairPoints[k].RepairingData = data.RepairingData
         end
     end)
 end)
 
-RegisterNetEvent(Config.Events.PlayerUnloaded, function()
-    for k in pairs(Config.WeaponRepairPoints) do
-        Config.WeaponRepairPoints[k].IsRepairing = false
-        Config.WeaponRepairPoints[k].RepairingData = {}
+RegisterNetEvent(BlueStarkInventory.Events.PlayerUnloaded, function()
+    for k in pairs(BlueStarkInventory.WeaponRepairPoints) do
+        BlueStarkInventory.WeaponRepairPoints[k].IsRepairing = false
+        BlueStarkInventory.WeaponRepairPoints[k].RepairingData = {}
     end
 end)
 
@@ -41,8 +41,8 @@ end
 -- Events
 
 RegisterNetEvent("weapons:client:SyncRepairShops", function(NewData, key)
-    Config.WeaponRepairPoints[key].IsRepairing = NewData.IsRepairing
-    Config.WeaponRepairPoints[key].RepairingData = NewData.RepairingData
+    BlueStarkInventory.WeaponRepairPoints[key].IsRepairing = NewData.IsRepairing
+    BlueStarkInventory.WeaponRepairPoints[key].RepairingData = NewData.RepairingData
 end)
 
 
@@ -65,14 +65,14 @@ RegisterNetEvent('weapon:client:AddAmmo', function(type, amount, itemData)
     local ped = PlayerPedId()
     local weapon = GetSelectedPedWeapon(ped)
     if CurrentWeaponData then
-        if Config.WeaponAttachment.Ammo[weapon]["name"] ~= "weapon_unarmed" and Config.WeaponAttachment.Ammo[weapon]["ammotype"] == type:upper() then
+        if BlueStarkInventory.WeaponAttachment.Ammo[weapon]["name"] ~= "weapon_unarmed" and BlueStarkInventory.WeaponAttachment.Ammo[weapon]["ammotype"] == type:upper() then
             local total = GetAmmoInPedWeapon(ped, weapon)
             local _, maxAmmo = GetMaxAmmo(ped, weapon)
             if total < maxAmmo then
-                QBCore.Progressbar("Loading Bullets", Config.AmmoTime,{
+                QBCore.Progressbar("Loading Bullets", BlueStarkInventory.AmmoTime,{
                     FreezePlayer = false, 
                     onFinish = function()
-                        if Config.WeaponAttachment.Ammo[weapon] then
+                        if BlueStarkInventory.WeaponAttachment.Ammo[weapon] then
                             Reloading = false 
 
                             AddAmmoToPed(ped,weapon,amount)
@@ -81,20 +81,20 @@ RegisterNetEvent('weapon:client:AddAmmo', function(type, amount, itemData)
                             TriggerServerEvent('weapons:server:removeWeaponAmmoItem', CurrentWeaponData._name)
                             TriggerServerEvent('QBCore:Server:RemoveItem', itemData.name, 1, itemData._id)
 
-                            Config.Notify("Reloaded", "success")
+                            BlueStarkInventory.Notify("Reloaded", "success")
                         end
                 end, onCancel = function()
-                    Config.Notify("Canceled", "error")
+                    BlueStarkInventory.Notify("Canceled", "error")
                 end
                 })
             else
-                Config.Notify("Max ammo", "error")
+                BlueStarkInventory.Notify("Max ammo", "error")
             end
         else
-            Config.Notify("No weapon", "error")
+            BlueStarkInventory.Notify("No weapon", "error")
         end
     else
-        Config.Notify("No weapon", "error")
+        BlueStarkInventory.Notify("No weapon", "error")
     end
 end)
 
@@ -125,7 +125,7 @@ CreateThread(function()
         local inRange = false
         local ped = PlayerPedId()
         local pos = GetEntityCoords(ped)
-        for k, data in pairs(Config.WeaponRepairPoints) do
+        for k, data in pairs(BlueStarkInventory.WeaponRepairPoints) do
             local distance = #(pos - data.coords)
             if distance < 10 then
                 inRange = true
@@ -143,9 +143,9 @@ CreateThread(function()
                     else
                         if WEAPON_DATA and next(WEAPON_DATA) then
                             if not data.RepairingData.Ready then
-                                local WeaponData = Config.WeaponAttachment.Ammo[GetHashKey(WEAPON_DATA.name)]
+                                local WeaponData = BlueStarkInventory.WeaponAttachment.Ammo[GetHashKey(WEAPON_DATA.name)]
                                 local WeaponClass = (SplitStr(WeaponData.ammotype, "_")[2]):lower()
-                                DrawText3Ds(data.coords.x, data.coords.y, data.coords.z, '[E] Repair Weapon, ~g~'..Config.WeaponRepairCosts[WeaponClass]..'~w~')
+                                DrawText3Ds(data.coords.x, data.coords.y, data.coords.z, '[E] Repair Weapon, ~g~'..BlueStarkInventory.WeaponRepairCosts[WeaponClass]..'~w~')
                                 if IsControlJustPressed(0, 38) then
                                     QBCore.TriggerServerCallback('weapons:server:RepairWeapon', function(HasMoney)
                                         if HasMoney then
@@ -185,6 +185,6 @@ CreateThread(function()
 end)
 
 RegisterNetEvent("weapons:client:SyncRepairShops", function(NewData, key)
-    Config.WeaponRepairPoints[key].IsRepairing = NewData.IsRepairing
-    Config.WeaponRepairPoints[key].RepairingData = NewData.RepairingData
+    BlueStarkInventory.WeaponRepairPoints[key].IsRepairing = NewData.IsRepairing
+    BlueStarkInventory.WeaponRepairPoints[key].RepairingData = NewData.RepairingData
 end)
