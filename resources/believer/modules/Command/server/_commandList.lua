@@ -1043,51 +1043,6 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "giveweapon",
-        label = "Donner une arme",
-        description = "Permet de donner une arme à un joueur",
-    }, function(playerSrc, args)
-        if (playerSrc == 0) then
-            local targetSelected = ESX.GetPlayerFromId(args[1])
-            if (not targetSelected) then return end
-
-            local weapon = args[2]
-            if (not weapon) then return end
-
-            local ammo = args[3]
-            if (not ammo) then return end
-
-            if targetSelected.hasWeapon(weapon) then
-                print("LE JOUEUR POSSEDE DEJA L'ARME")
-                return
-            else
-                targetSelected.addWeapon(weapon, ammo)
-                print("VOUS AVEZ DONNE UNE ARME A "..targetSelected.getName()..".")
-            end
-        else
-            local playerSelected = ESX.GetPlayerFromId(playerSrc)
-            if (not playerSelected) then return end
-
-            local targetSelected = ESX.GetPlayerFromId(args[1])
-            if (not targetSelected) then return end
-
-            local weapon = args[2]
-            if (not weapon) then return end
-
-            local ammo = args[3]
-            if (not ammo) then return end
-
-            if targetSelected.hasWeapon(weapon) then
-                playerSelected.showNotification("~r~Le joueur possède déjà l'arme.")
-                return
-            else
-                targetSelected.addWeapon(weapon, ammo)
-                playerSelected.showNotification("~g~Vous avez donné une arme ("..weapon..") à "..targetSelected.getName()..".")
-            end
-        end
-    end)
-
-    GM.Command:register({
         name = "create_garage",
         label = "Créer un garage",
         description = "Permet de créer un garage",
@@ -1123,6 +1078,41 @@ GM:newThread(function()
 
             targetSelected.setArmour(armour)
             playerSelected.showNotification("~g~Vous avez donné de l'armure à "..targetSelected.getName()..".")
+        end
+    end)
+
+    GM.Command:register({
+        name = "giveitem",
+        label = "Donner un item",
+        description = "Permet de donner un item à un joueur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local itemName = args[2]
+            if (not itemName) then return end
+
+            local itemCount = args[3] or 1
+            if (not itemCount) then return end
+
+            targetSelected.addInventoryItem(itemName, itemCount)
+            print("VOUS AVEZ DONNE "..itemCount.." "..itemName.." A "..targetSelected.getName()..".")
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local itemName = args[2]
+            if (not itemName) then return end
+
+            local itemCount = args[3] or 1
+            if (not itemCount) then return end
+
+            targetSelected.addInventoryItem(itemName, itemCount)
+            playerSelected.showNotification("~g~Vous avez donné "..itemCount.." "..itemName.." à "..targetSelected.getName()..".")
         end
     end)
 end)

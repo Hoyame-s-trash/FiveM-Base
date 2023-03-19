@@ -347,7 +347,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	end
 
 	function self.getInventoryItem(name, metadata)
-		for k,v in pairs(GetItems(self.source)) do
+		for k,v in pairs(exports["inventory"]:GetItems(self.source)) do
 			if v._tpl == name then
 				return v
 			end
@@ -356,17 +356,17 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	end
 
 	function self.addInventoryItem(name, count, metadata, slot)
-		AddItem(self.source, name, count, metadata)
+		exports["inventory"]:AddItem(self.source, name, count, metadata)
 	end
 
 	function self.removeInventoryItem(name, count, metadata, slot)
 		local foundItem = GetItem(self.source, name)
 		if foundItem ~= nil then
-			RemoveItem(self.source, name, count)
+			exports["inventory"]:RemoveItem(self.source, name, count)
 		else
 			local findItem = self.getInventoryItem(name)
 			if findItem ~= nil then
-				RemoveItem(self.source, findItem._id, count)
+				exports["inventory"]:RemoveItem(self.source, findItem._id, count)
 			end
 		end
 	end
