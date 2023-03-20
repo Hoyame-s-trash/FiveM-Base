@@ -140,14 +140,14 @@ AddEmployee = function(ownersrc, source, id, status)
         if not Config.UseServerJobSystem then
             local Emp = json.decode(MysqlMechanic[1].employees)
             if next(Emp) == nil then
-                table.insert(Emp, {name = xPlayer.getPlayerName(), permission = status, identifier = xPlayer.identifier})
+                table.insert(Emp, {name = xPlayer.getName(), permission = status, identifier = xPlayer.identifier})
                 MySQL.Async.execute('UPDATE `mechanics` SET employees = @emp WHERE id = @id', {["@id"] = id, ["@emp"] = json.encode(Emp)})
                 Config.Mechanics[id].Employees = Emp 
                 TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', -1, Config.Mechanics)
                 TriggerClientEvent('kibra:Mechanics:Client:Refresh:BossMenu', ownersrc)
             else
                 if ElemanIsteVarmi(Emp, xPlayer.identifier, ownersrc) then return end
-                table.insert(Emp, {name = xPlayer.getPlayerName(), permission = status, identifier = xPlayer.identifier})
+                table.insert(Emp, {name = xPlayer.getName(), permission = status, identifier = xPlayer.identifier})
                 MySQL.Async.execute('UPDATE `mechanics` SET employees = @emp WHERE id = @id', {["@id"] = id, ["@emp"] = json.encode(Emp)})
                 Config.Mechanics[id].Employees = Emp 
                 TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', -1, Config.Mechanics)
@@ -179,7 +179,7 @@ end
 ESX.RegisterServerCallback('kibra:Mechanics:Server:GetPlayerClosest', function(source, cb, serverid)
     local xPlayer = ESX.GetPlayerFromId(serverid)
     if xPlayer then 
-        cb(xPlayer.getPlayerName())
+        cb(xPlayer.getName())
     end
 end)
 
@@ -217,7 +217,7 @@ ESX.RegisterServerCallback('kibra:VehicleShop:Server:GetJobAmount', function(sou
         local xPlayer = ESX.GetPlayerFromId(players[i])
         if xPlayer.job.name == Config.Mechanics[id].JobName then
             jobCount = jobCount + 1
-            table.insert(jobPlayers, {name = xPlayer.getPlayerName(), permission = xPlayer.job.grade_name, identifier = xPlayer.identifier})
+            table.insert(jobPlayers, {name = xPlayer.getName(), permission = xPlayer.job.grade_name, identifier = xPlayer.identifier})
         end
     end
     cb(jobCount, jobPlayers)
@@ -264,7 +264,7 @@ MechanicAddCustomerHistory = function(source, mid, plate, price)
     local xPlayer = ESX.GetPlayerFromId(source)
     if #MysqlMechanic > 0 then
         local getCustomers = json.decode(MysqlMechanic[1].customers)
-        table.insert(getCustomers, {PlayerName = xPlayer.getPlayerName(), Plate = plate, Price = price})
+        table.insert(getCustomers, {PlayerName = xPlayer.getName(), Plate = plate, Price = price})
         Config.Mechanics[mid].Customers = getCustomers
         MySQL.Async.execute('UPDATE `mechanics` SET customers = @cust WHERE id = @id', {["@id"] = mid, ["@cust"] = json.encode(getCustomers)})
         TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', source, Config.Mechanics)
@@ -312,7 +312,7 @@ LoadMechanic = function()
             Config.Mechanics[v.id].VehicleRepairAndCleaningLaborPrice = v.repairfee
         end
     end
-    print("^2[Kibra Mechanics]^7 Mechanics Loaded")
+    print("^2[Mechanics]^7 Mechanics Loaded")
 end
 
 ESX.RegisterServerCallback("kibra:Mechanics:Server:UpdateDiscount", function(source, cb, id, yuzde)
@@ -445,7 +445,7 @@ RegisterNetEvent('kibra:Mechanics:Server:GetMyAreaPlayers', function(plate)
         if #(vPlayer.getPlayerCoord() - zPlayer.getPlayerCoord()) <= 10.0 then
             table.insert(myAround, {
                 Source = zPlayer.source,
-                PlayerName = zPlayer.getPlayerName()
+                PlayerName = zPlayer.getName()
             })
             TriggerClientEvent('kibra:Mechanics:Client:SendFaturaTable', source, myAround, cex)
         end
@@ -489,7 +489,7 @@ AddEventHandler('kibra:Mechanics:ListOfAroundPlayers', function()
             if zPlayer.identifier ~= vPlayer.identifier then
                 table.insert(myAround, {
                     Source = zPlayer.source,
-                    PlayerName = zPlayer.getPlayerName()
+                    PlayerName = zPlayer.getName()
                 })
                 TriggerClientEvent('kibra:Mechanics:Client:SendIbneler', src, myAround)
             else
@@ -549,7 +549,7 @@ RegisterNetEvent('kibra:Mechanics:Server:RequestMechanicData', function()
     local src = source
     local xPlayer = ESX.GetPlayerFromId(src)
     if xPlayer then
-        TriggerClientEvent('Kibra:Mechanics:Client:SetName', src, xPlayer.getPlayerName())
+        TriggerClientEvent('Kibra:Mechanics:Client:SetName', src, xPlayer.getName())
     end
     TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', src, Config.Mechanics)
 end)
@@ -594,7 +594,7 @@ end)
 ESX.RegisterServerCallback('getKibraName', function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
     if xPlayer then
-        cb(xPlayer.getPlayerName())
+        cb(xPlayer.getName())
     end
 end)
 
