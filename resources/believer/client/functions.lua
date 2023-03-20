@@ -434,6 +434,14 @@ function ESX.Game.GetVehicleInDirection()
     return nil
 end
 
+function ESX.Trim(value)
+	if value then
+		return (string.gsub(value, "^%s*(.-)%s*$", "%1"))
+	else
+		return nil
+	end
+end
+
 function ESX.Game.GetVehicleProperties(vehicle)
     if not DoesEntityExist(vehicle) then
         return

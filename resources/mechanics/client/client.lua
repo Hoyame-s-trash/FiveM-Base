@@ -16,12 +16,12 @@ local AracCikardim = false
 local MechanicAcik = false
 local calisanlarTable = {} 
 local mevcutColorMenu = nil
-local KIBRA = exports["kibra-core"]:GetCore()
+ESX = exports["believer"]:getSharedObject()
 local modifiePart = 0 
 local currentPlate = nil
 local Ahsen = 0
 local AdezTR = 0
-local getVehicleShopVehicles = exports["kibra-vehicleshops"]:GetVehicles()
+local getVehicleShopVehicles = {} -- Todo make a config
 
 local function parcaUcretEndeksleme(vehicle)
     local modelHash = GetEntityModel(vehicle)
@@ -48,7 +48,7 @@ Citizen.CreateThread(function()
             CreateBlip()
             break
         end
-        PlayerData = KIBRA.Natives.GetPlayerData()
+        PlayerData = ESX.GetPlayerData()
     end
 end)
 
@@ -56,16 +56,10 @@ RegisterNetEvent('Kibra:Mechanics:Client:SetName', function(name)
     PlayerName = name
 end)
 
-if KIBRA.Natives.GetFramework() == "ESX" then
-    RegisterNetEvent('esx:setJob')
-    AddEventHandler('esx:setJob', function(job)
-        PlayerData.job = job
-    end)
-else
-    RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
-        PlayerData.job = JobInfo
-    end)
-end
+RegisterNetEvent('esx:setJob')
+AddEventHandler('esx:setJob', function(job)
+    PlayerData.job = job
+end)
 
 RegisterNetEvent('kibra:Mechanics:Client:UpdateMechanics', function(data)
     Config.Mechanics = data
@@ -85,7 +79,7 @@ local function CheckAuth(mechID)
     end
 
     if not Config.UseServerJobSystem then
-        local identifier = KIBRA.Natives.GetPlayerData().identifier
+        local identifier = ESX.GetPlayerData().identifier
         for _, mechanic in pairs(Config.Mechanics) do
             if mechanic.Employees then
                 for _, employee in pairs(mechanic.Employees) do
@@ -97,7 +91,7 @@ local function CheckAuth(mechID)
         end
     else
         local jobName = Config.Mechanics[mechID].JobName
-        local job = KIBRA.Natives.GetPlayerData().job
+        local job = ESX.GetPlayerData().job
         if job and job.name == jobName then
             return true
         end
@@ -109,15 +103,11 @@ end
 
 CheckMechanicOwner = function(no)
     if not Config.UseServerJobSystem then
-        return Config.Mechanics[no].Owner == KIBRA.Natives.GetPlayerData().identifier
+        return Config.Mechanics[no].Owner == ESX.GetPlayerData().identifier
     else
-        local pData = KIBRA.Natives.GetPlayerData()
+        local pData = ESX.GetPlayerData()
         if pData.job and Config.Mechanics[no].JobName == pData.job.name then
-            if KIBRA.Natives.GetFramework() == "ESX" then
-                return pData.job.grade == Config.DefaultBossRank
-            else
-                return pData.job.grade.level == Config.DefaultBossRank
-            end
+            return pData.job.grade == Config.DefaultBossRank
         end
     end
     return false
@@ -159,7 +149,7 @@ UpdateMods = function(data)
             if data.modtype == "plate" or data.modtype == "plateIndex" or data.modtype == "wheelcolor" or data.modtype == "tyreSmokeColor" or data.modtype == "neonColor" then
                 data.modtype = tostring(data.modtype)
                 if data.modtype == "plate" then
-                    KIBRA.Natives.TriggerCallback('kibra:Mechanics:CheckPlate', function(export)      
+                    ESX.TriggerServerCallback('kibra:Mechanics:CheckPlate', function(export)      
                         if export then 
                             if string.len(data.mod) >= Config.PlateMinimumLetter then 
                                 PlateAddBasket(data)
@@ -183,7 +173,7 @@ UpdateMods = function(data)
                 props["xenonColor"] = tonumber(data.mod)
             elseif data.modtype == "plate" then
                 if string.len(data.mod) >= Config.PlateMinimumLetter then 
-                    KIBRA.Natives.SetPlate(vehicle, data.mod)
+                    SetVehicleNumberPlateText(vehicle, data.mod)
                 else
                     MechNotify('error', Config.Text["YetersizHarf"]..'('..Config.PlateMinimumLetter..')')
                 end
@@ -198,12 +188,16 @@ UpdateMods = function(data)
             else
                 props[data.modcengiz] = tonumber(data.mod)
             end
-            KIBRA.Natives.SetVehicleProps(vehicle, props)
+            ESX.Game.SetVehicleProperties(vehicle, props)
             props = {}
             MechNotify("success", Config.Text["transactionsuccessful"])
             LoadAndRefreshMenu({type = data.modtype})
-            if data.modtype == 14 then StartVehicleHorn(vehicle, 500, GetHashKey("normal"), 0) end
-            if data.modtype ~= "plate" then SepeteUrunEkle(data) end
+            if data.modtype == 14 then 
+                StartVehicleHorn(vehicle, 500, GetHashKey("normal"), 0) 
+            end
+            if data.modtype ~= "plate" then 
+                SepeteUrunEkle(data) 
+            end
         end
     else
         MechNotify("error", Config.Text["YourNotAuthorized"])
@@ -215,7 +209,7 @@ RegisterNUICallback("LoadMenu", function(data) LoadAndRefreshMenu(data) end)
 LoadAndRefreshMenu = function(data)
     local playerPed = PlayerPedId()
     local vehicle = GetVehiclePedIsIn(playerPed, false)
-    propsVehicle = KIBRA.Natives.GetVehicleProps(vehicle)
+    propsVehicle = ESX.Game.GetVehicleProperties(vehicle)
     if data.type ~= "plateIndex" then
         data.type = tonumber(data.type)
     end
@@ -283,7 +277,7 @@ LoadAndRefreshMenu = function(data)
         elseif data.type == 23 then
             local props = {}
             props['wheels'] = tonumber(data.whtyp)
-            KIBRA.Natives.SetVehicleProps(vehicle, props)
+            ESX.Game.SetVehicleProperties(vehicle, props)
             icon = ICONS[data.type].icon
             SetVehicleModKit(vehicle, 0)
             cengi = function(value)
@@ -376,7 +370,7 @@ end
 
 RegisterNUICallback('SpawnTownTruck', function(data)
     if not AracCikardim then
-        if KIBRA.Natives.GetAvailableVehicleSpawnPoint(Config.Mechanics[mechanicId].TownTruckSpawnCoord) then
+        if ESX.Game.IsSpawnPointClear(Config.Mechanics[mechanicId].TownTruckSpawnCoord) then
             if GetVehicleModelValue(data.carmodel) then
                 local model = data.carmodel
                 RequestModel(GetHashKey(model))
@@ -384,7 +378,7 @@ RegisterNUICallback('SpawnTownTruck', function(data)
                     Wait(1)
                 end
                 TowTruckxBaba = CreateVehicle(model, Config.Mechanics[mechanicId].TownTruckSpawnCoord, true, true)
-                KIBRA.Natives.SetPlate(TowTruckxBaba, "MECHANIC")
+                SetVehicleNumberPlateText(TowTruckxBaba, "MECHANIC")
                 SetPedIntoVehicle(PlayerPedId(), TowTruckxBaba, -1)
                 if Config.UseVehicleKeys then
                     TriggerEvent(Config.VehicleKeysEvent, "MECHANIC")
@@ -459,7 +453,7 @@ TowTruckEnter = function()
                         inZone = true
                         DrawMarker(21, v.TownTruckSpawnCoord.x, v.TownTruckSpawnCoord.y, v.TownTruckSpawnCoord.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.55, 10, 223, 216, 155, false, false, false, 1, false, false, false)
                         if IsControlJustReleased(0, Config.TowTruckSpawnKey) then
-                            if KIBRA.Natives.GetPlate(GetVehiclePedIsIn(playerPed, false)) == 'MECHANIC' then
+                            if ESX.Trim(GetVehicleNumberPlateText(GetVehiclePedIsIn(playerPed, false))) == 'MECHANIC' then
                                 TaskLeaveVehicle(playerPed, GetVehiclePedIsIn(playerPed, false), 64)
                                 Wait(3400)
                                 DeleteVehicle(TowTruckxBaba)
@@ -505,7 +499,7 @@ end
 RegisterNUICallback('NeonRemove', function()
     local props = {}
     props["neonColor"] = {0, 0, 0}
-    KIBRA.Natives.SetVehicleProps(pVehicle, props)
+    ESX.Game.SetVehicleProperties(pVehicle, props)
     MechNotify('success', Config.Text["RemovedNeon"])
 end)
 
@@ -617,7 +611,7 @@ RegisterNUICallback('RenkUpload', function(data)
         else
             props[mevcutColorMenu] = tonumber(data.color) 
         end
-        KIBRA.Natives.SetVehicleProps(PlayerVehicle, props)
+        ESX.Game.SetVehicleProperties(PlayerVehicle, props)
         props = {}
         SepeteUrunEkle({modtype = tonumber(data.modtype),mod = tonumber(data.color),modprice = modprice, modname = data.modname})
         MechNotify("success", Config.Text["transactionsuccessful"])
@@ -646,7 +640,7 @@ OpenMechanic = function(id, modifiedPart)
     SetVehicleRadioEnabled(pVehicle, false)
     plate = GetVehicleNumberPlateText(PlayerVehicle)
     TriggerServerEvent('kibra:Mechanics:Server:ModifiyeEdilenArac', PlayerVehicle, modifiedPart, plate, id)
-    local VehicleP = KIBRA.Natives.GetVehicleProps(PlayerVehicle)
+    local VehicleP = ESX.Game.GetVehicleProperties(PlayerVehicle)
     currentPlate = VehicleP.plate
     getvehiclecolor = {VehicleP.color1, VehicleP.color2}
     if GetIsVehiclePrimaryColourCustom(PlayerVehicle) then
@@ -763,7 +757,7 @@ RegisterNUICallback('RGBLoad', function(data)
         modname = ICONS[tonumber(data.type)].label
     })
     
-    KIBRA.Natives.SetVehicleProps(vehicle, propsRa)
+    ESX.Game.SetVehicleProperties(vehicle, propsRa)
 end)
 
 
@@ -777,7 +771,7 @@ end
 
 Calculator = function(id)
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
-    local props = KIBRA.Natives.GetVehicleProps(vehicle)
+    local props = ESX.Game.GetVehicleProperties(vehicle)
     local Tank = props.tankHealth
     local Motor = props.engineHealth
     local Body = props.bodyHealth
@@ -803,10 +797,10 @@ RegisterNUICallback("CursorActive", function()
 end)
 
 RegisterNUICallback("BireyselOdeme", function(data)
-    KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:CheckPMoney', function(export)
+    ESX.TriggerServerCallback('kibra:Mechanics:Server:CheckPMoney', function(export)
         if export then
             if Config.AutoPropsUpdate then
-                vehicleJ = KIBRA.Natives.GetVehicleProps(GetVehiclePedIsIn(PlayerPedId(), false))
+                vehicleJ = ESX.Game.GetVehicleProperties(GetVehiclePedIsIn(PlayerPedId(), false))
                 TriggerServerEvent('kibra:Mechanics:Server:VehicleUpdateProps2', vehicleJ, currentPlate, modifiePart, mechanicId)
             end
             if data.mod == "CarFixClean" then
@@ -850,7 +844,7 @@ end)
 
 RegisterCommand('caradmin', function()
     local veh = GetVehiclePedIsIn(PlayerPedId(), false)
-    TriggerServerEvent('kibra:SetVehicleOwner', KIBRA.Natives.GetVehicleProps(veh))
+    TriggerServerEvent('kibra:SetVehicleOwner', ESX.Game.GetVehicleProperties(veh))
 end)
 
 MechNotify = function(typex, text)
@@ -912,8 +906,8 @@ RegisterNUICallback("CloseMechanic", function()
     end
    
     FreezeEntityPosition(PlayerVehicle, false)
-    KIBRA.Natives.SetVehicleProps(PlayerVehicle, lastVehData)
-    KIBRA.Natives.SetVehicleProps(PlayerVehicle, lastVehMeme)
+    ESX.Game.SetVehicleProperties(PlayerVehicle, lastVehData)
+    ESX.Game.SetVehicleProperties(PlayerVehicle, lastVehMeme)
     TriggerScreenblurFadeOut(150)
     lastVehData = nil
     lastVehMeme = nil
@@ -997,7 +991,7 @@ local function JobCheck(id)
         check = true
         return 
     end
-    local PlayerData = KIBRA.Natives.GetPlayerData()
+    local PlayerData = ESX.GetPlayerData()
     local jobName = Config.Mechanics[id].JobName
     local employees = Config.Mechanics[id].Employees
     for k,v in ipairs(Config.Mechanics) do
@@ -1035,7 +1029,7 @@ local function CheckMechanicDistance()
                         if IsPedInAnyVehicle(playerPed, false) and GetPedInVehicleSeat(playerVehicle, -1) then
                             if IsControlJustReleased(0, Config.ModifiedAccessKey) then
                                 if Config.OnlyCarsInTheDatabase then
-                                    KIBRA.Natives.TriggerCallback("kibra:Mechanics:Server:CheckCar", function(export) 
+                                    ESX.TriggerServerCallback("kibra:Mechanics:Server:CheckCar", function(export) 
                                         if export then
                                             OpenMechanic(mechanicNo, areaNo)
                                         else
@@ -1099,7 +1093,7 @@ end
 local function MechanicOwnerCheck(id)
     local check = false
     if Config.MechanicsCompany then
-        local playerIdentifier = KIBRA.Natives.GetPlayerData().identifier 
+        local playerIdentifier = ESX.GetPlayerData().identifier 
         if playerIdentifier == Config.Mechanics[id].Owner then
             check = true
         end
@@ -1152,7 +1146,7 @@ Citizen.CreateThread(function()
 end)
 
 BuyMechanic = function(id)
-    KIBRA.Natives.TriggerCallback("kibra:Mechanics:Server:BuyMechanic", function(export) 
+    ESX.TriggerServerCallback("kibra:Mechanics:Server:BuyMechanic", function(export) 
         if export then
             MechNotify('success', Config.Text["SuccessBuyMechanic"])
         else
@@ -1177,10 +1171,10 @@ DrawText3D = function (x, y, z, text)
   end
 
 RegisterNUICallback('MekanikSell', function(data)
-    local Player, Dist = KIBRA.Natives.GetClosestPlayer()
+    local Player, Dist = ESX.Game.GetClosestPlayer()
 	if Player ~= -1 and Dist <= 2.0 then
         local cPlayer = GetPlayerServerId(Player) 
-        KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:SellMechanic', function(export)
+        ESX.TriggerServerCallback('kibra:Mechanics:Server:SellMechanic', function(export)
             if export then
                 SendNUIMessage({type = "ZorlaKapat"})
             end
@@ -1202,7 +1196,7 @@ RegisterNetEvent('kibra:Mechanics:Client:SendIbneler', function(tablo)
 end)
 
 RegisterNUICallback('UsagiAlIse', function(data)
-    KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:AddEmploye', function(export)
+    ESX.TriggerServerCallback('kibra:Mechanics:Server:AddEmploye', function(export)
         if export then
             OpenMechanicBossMenu(tonumber(data.mekanikID))
             MechNotify('success', Config.Text["SuccessHasJobNew"])
@@ -1225,7 +1219,7 @@ end)
 
 RegisterNUICallback('UpdateWage', function(data)
     if data.yuzde ~= "" then
-        KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:UpdateWage', function(export)
+        ESX.TriggerServerCallback('kibra:Mechanics:Server:UpdateWage', function(export)
             if export then
                 MechNotify('success', Config.Text["Guncelledin"])
                 OpenMechanicBossMenu(tonumber(data.mekanikID))
@@ -1245,7 +1239,7 @@ RegisterNUICallback('ParaIslemleri', function(data)
 end)
 
 DepositWithdraw = function(mekanik, money, type)
-    KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:DepositWithdrawMoney', function(export)
+    ESX.TriggerServerCallback('kibra:Mechanics:Server:DepositWithdrawMoney', function(export)
         if export then
             OpenMechanicBossMenu(tonumber(mekanik))
         end
@@ -1268,7 +1262,7 @@ end
 OpenMechanicBossMenu = function(no)
     local pname = PlayerName
     local data = {}
-    KIBRA.Natives.TriggerCallback('kibra:VehicleShop:Server:GetJobAmount', function(export, the)
+    ESX.TriggerServerCallback('kibra:VehicleShop:Server:GetJobAmount', function(export, the)
         TriggerEvent(Config.HudHideEvent)
         data = {
             playerName = pname,
@@ -1299,7 +1293,7 @@ RegisterNUICallback("MechanicNameUpdate", function(data)
     data.mekanikID = tonumber(data.mekanikID)
     local GetMechanicName = Config.Mechanics[data.mekanikID].MechanicName 
     if GetMechanicName ~= data.yazilanIsim and "" ~= data.yazilanIsim then
-        KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:ChangeMechanicName', function(export)
+        ESX.TriggerServerCallback('kibra:Mechanics:Server:ChangeMechanicName', function(export)
             if export then
                 OpenMechanicBossMenu(tonumber(data.mekanikID))
                 MechNotify('success', Config.Text["SuccessNameChange"])
@@ -1311,7 +1305,7 @@ RegisterNUICallback("MechanicNameUpdate", function(data)
 end)
 
 RegisterNUICallback('UsagiKov', function(data)
-    KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:FiredCalisanFakirMalGey', function(export, tablo)
+    ESX.TriggerServerCallback('kibra:Mechanics:Server:FiredCalisanFakirMalGey', function(export, tablo)
         if export then
             MechNotify('success', Config.Text["SuccessFired"])
             OpenMechanicBossMenu(tonumber(data.mekanikID))
@@ -1376,13 +1370,13 @@ RegisterNUICallback('TablodanSil', function(data)
         props["tankHealth"] = lastVehData["tankHealth"]
         props["bodyHealth"] = lastVehData["bodyHealth"]
         props["engineHealth"] = lastVehData["engineHealth"]
-        KIBRA.Natives.SetVehicleProps(pVehicle, props)
+        ESX.Game.SetVehicleProperties(pVehicle, props)
         props = {} 
     else
         MekanikUrunSepeti[data.modtype] = nil
         local props = {}
         props[ICONS[data.modtype].id] = lastVehData[ICONS[data.modtype].id]
-        KIBRA.Natives.SetVehicleProps(pVehicle, props)
+        ESX.Game.SetVehicleProperties(pVehicle, props)
         props = {} 
     end
     for k,v in pairs(MekanikUrunSepeti) do
@@ -1411,7 +1405,7 @@ end)
 
 RegisterNetEvent('kibra:Mechanics:Client:UseFixKit', function()
     local playerPed = PlayerPedId()
-    local vehicle   = KIBRA.Natives.GetVehicleInDirection()
+    local vehicle   = ESX.Game.GetClosestVehicle()
     local coords    = GetEntityCoords(playerPed)
     local isBusy    = false 
 
@@ -1428,7 +1422,7 @@ RegisterNetEvent('kibra:Mechanics:Client:UseFixKit', function()
             Wait(Config.RepairTime*1000)
             local props = {}
             props["engineHealth"] = 1000.0 
-            KIBRA.Natives.SetVehicleProps(vehicle, props)
+            ESX.Game.SetVehicleProperties(vehicle, props)
             SetVehicleUndriveable(vehicle, false)
             SetVehicleEngineOn(vehicle, true, true)
             ClearPedTasksImmediately(playerPed)
@@ -1441,8 +1435,8 @@ RegisterNetEvent('kibra:Mechanics:Client:UseFixKit', function()
 end)
 
 RegisterNUICallback('BuyModifiye', function(data)
-    KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:CheckPMoney', function(export)
-        getLatestProps = KIBRA.Natives.GetVehicleProps(pVehicle)
+    ESX.TriggerServerCallback('kibra:Mechanics:Server:CheckPMoney', function(export)
+        getLatestProps = ESX.Game.GetVehicleProperties(pVehicle)
         TriggerServerEvent('SetLatestProps', getLatestProps)
         if export then
             s = {}
@@ -1516,7 +1510,7 @@ RegisterNUICallback("Verified", function(data)
         TriggerServerEvent('kibra:Mechanics:Server:VehicleUpdateProps', Ahsen, AdezTR, currentPlate)
     end
     TriggerServerEvent('Kibra:Mechanics:Server:CheckPlateVar', Ahsen..'_'..AdezTR..'_'..currentPlate)
-    KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:Verified', function(export)
+    ESX.TriggerServerCallback('kibra:Mechanics:Server:Verified', function(export)
         if export then
             SendNUIMessage({
                 type = "KapatBan"
@@ -1533,7 +1527,7 @@ RegisterNUICallback("Verified", function(data)
 end)
 
 RegisterNetEvent('Kibra:Mechanic:Client:UpdateClientPlate', function(plate, vehicle)
-    KIBRA.Natives.SetPlate(vehicle, plate)
+    SetVehicleNumberPlateText(vehicle, plate)
 end)
 
 RegisterNetEvent('kibra:Mechanics:Client:VerifiedSuccess', function()
@@ -1550,7 +1544,7 @@ end)
 
 RegisterNUICallback("MechanicDiscountRate", function(data)
     if data.yuzde ~= "" then
-        KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:UpdateDiscount', function(export)
+        ESX.TriggerServerCallback('kibra:Mechanics:Server:UpdateDiscount', function(export)
             if export then
                 MechNotify('succes', Config.Text["UpdateDiscountRate"])
                 OpenMechanicBossMenu(tonumber(data.mekanikID))
@@ -1564,7 +1558,7 @@ RegisterNUICallback("MechanicDiscountRate", function(data)
 end)
 
 RegisterNUICallback("SilTabloyu", function(data)
-    KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:DeleteCustomerTable', function(export)
+    ESX.TriggerServerCallback('kibra:Mechanics:Server:DeleteCustomerTable', function(export)
         if export then
             OpenMechanicBossMenu(tonumber(data.id))
             MechNotify('success' , Config.Text["DeletedCustomerTable"])
@@ -1576,7 +1570,7 @@ end)
 
 RegisterNUICallback("MechanicRepairFee", function(data)
     if data.fee ~= "" then  
-        KIBRA.Natives.TriggerCallback('kibra:Mechanics:Server:UpdateRepairFee', function(export)
+        ESX.TriggerServerCallback('kibra:Mechanics:Server:UpdateRepairFee', function(export)
             if export then
                 MechNotify('succes', Config.Text["RepairFeeSuccessUpdate"])
                 OpenMechanicBossMenu(tonumber(data.mekanikID))

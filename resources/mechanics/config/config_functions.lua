@@ -1,5 +1,5 @@
 Config.Notify = function(textx, type)
-    KIBRA.Natives.Notify(type, textx)
+    ESX.ShowNotification(textx)
 end
 
 Config.ServerNotify = function(src, textx)
@@ -7,14 +7,12 @@ Config.ServerNotify = function(src, textx)
 end
 
 Config.Show = function(button, text)
-    KIBRA.Natives.UI.Show(button, text)
+    ESX.ShowHelpNotification(text)
 end
 
 Config.Hide = function()
-    KIBRA.Natives.UI.Hide()
 end
 
 Config.VehicleKeysEvent = "vehiclekeys:client:SetOwner"
 
 Config.VehicleAddKeyEvent = "qb-vehiclekeys:client:AddKeys"
-

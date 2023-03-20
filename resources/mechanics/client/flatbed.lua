@@ -6,7 +6,7 @@ local DECOR = {
     TIME = 5,
 }
 
-KIBRA = exports["kibra-core"]:GetCore()
+ESX = exports["believer"]:getSharedObject()
 
 KibraMekanikor = function()
     local auth = false
@@ -14,18 +14,18 @@ KibraMekanikor = function()
         if not Config.UseServerJobSystem then
             local MechanicTable = Config.Mechanics[mechIDD].Employees
             for k,v in pairs(MechanicTable) do
-                if v.identifier == KIBRA.Natives.GetPlayerData().identifier then
+                if v.identifier == ESX.GetPlayerData().identifier then
                     auth = true
                 end
             end
             return auth
         else
             if GetCore == "ESX" then
-                if KIBRA.Natives.GetPlayerData().job and Config.Mechanics[mechIDD].JobName == KIBRA.Natives.GetPlayerData().job.name then
+                if ESX.GetPlayerData().job and Config.Mechanics[mechIDD].JobName == ESX.GetPlayerData().job.name then
                     auth = true
                 end
             else
-                if KIBRA.Natives.GetPlayerData().job and Config.Mechanics[mechIDD].JobName == KIBRA.Natives.GetPlayerData().job.name then
+                if ESX.GetPlayerData().job and Config.Mechanics[mechIDD].JobName == ESX.GetPlayerData().job.name then
                     auth = true
                 end
             end

@@ -2,12 +2,6 @@ fx_version "bodacious"
 
 game "gta5"
 
-author "Kibra#9999"
-
-description "Created by Kibra for 0RESMON"
-
-version "1.0.8"
-
 client_scripts {"client/cam.lua","client/colors.lua", "client/client.lua", "client/flatbed.lua", "client/mechanic.lua"}
 
 server_scripts {"@oxmysql/lib/MySQL.lua","server/server.lua", "server/version.lua"}
@@ -41,7 +35,3 @@ data_file "CARMODCOLS_GEN9_FILE" "data/carmodcols_gen9.meta"
 data_file "FIVEM_LOVES_YOU_447B37BE29496FA0" "data/carmodcols.ymt"
 
 lua54 "yes"
-
-dependencies {
-	'kibra-core',
-}
