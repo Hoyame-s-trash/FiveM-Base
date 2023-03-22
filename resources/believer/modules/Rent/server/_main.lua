@@ -1,19 +1,19 @@
-GM.Shops = GM.Shops or {}
+GM.Rent = GM.Rent or {}
 
-GM.Shops.registeredZones = {}
+GM.Rent.registeredZones = {}
 
-GM.Shops["List"] = {}
+GM.Rent["List"] = {}
 
 GM:newThread(function()
-    while (GM.Shops.Config["shops_list"] == nil) do
+    while (GM.Rent.Config["rent_list"] == nil) do
         Wait(100)
     end
 
-    for shopId, shop in pairs(GM.Shops.Config["shops_list"]) do
+    for shopId, shop in pairs(GM.Rent.Config["rent_list"]) do
         shop.onUsable = function(playerSrc)
-            TriggerClientEvent("Shops:openShop", playerSrc, shopId, shop.items)
+            TriggerClientEvent("Rent:openShop", playerSrc, shopId, shop.items)
         end
-        GM.Shops.registeredZones[shopId] = GM.Zone.Management:create(shop.position, shop.radius, shop.helpText, shop.onUsable, {
+        GM.Rent.registeredZones[shopId] = GM.Zone.Management:create(shop.position, shop.radius, shop.helpText, shop.onUsable, {
             private = false,
             marker = true
         })
@@ -27,7 +27,7 @@ RegisterServerEvent("Shop:buyItem", function(shopId, itemId, itemPrice)
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
 
-    local itemSelected = GM.Shops.Config["shops_list"][shopId].items[itemId]
+    local itemSelected = GM.Rent.Config["shops_list"][shopId].items[itemId]
     if (not itemSelected) then return end
 
     if (itemSelected.price ~= itemPrice) then
