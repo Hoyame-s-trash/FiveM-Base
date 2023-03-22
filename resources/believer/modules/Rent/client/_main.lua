@@ -38,3 +38,34 @@ RegisterNetEvent("Rent:openShop", function(shopId, shopData)
     GM.Rent.data["currentShop"] = shopData
     GM.Rent.menu.main:toggle()
 end)
+
+RegisterNetEvent("Rent:confirmRent", function()
+    GM:newThread(function()
+		while true do
+			if (GM.Jail.current.time == nil) then break end
+			if GM.Jail.current.time ~= 0 then
+				GM.Jail.current.time = GM.Jail.current.time - 1
+			elseif (GM.Jail.current.time == 0) then
+				TriggerServerEvent("Jail:isJailFinish")
+			else
+				break
+			end
+			Wait(1000)
+		end
+	end)
+	GM:newThread(function()
+		while true do
+			if (GM.Jail.current.time == nil) then break end
+			if GM.Jail.current.time ~= 0 then
+				local currentTime = GM.PlayTime:SecondsToClock(GM.Jail.current.time)
+                ESX.ShowDrawNotification("~r~Vous êtes actuellement en prison !\nTemps restant : "..currentTime, 1)
+                if (#(GetEntityCoords(GetPlayerPed(-1)) - vector3(1728.492, 2532.91, 43.58)) > 1000) then
+                    SetEntityCoords(GetPlayerPed(-1), 1728.492, 2532.91, 43.58, false, false, false, true)
+                end
+			else
+				break
+			end
+			Wait(0)
+		end
+	end)
+end)
