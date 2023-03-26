@@ -1361,6 +1361,30 @@ BlueStarkInventory.Items = {
         }
     },
 
+    ['radio'] = {
+        ['item'] = {
+            ['_id'] = 'radio',
+            ['_parent'] = '',
+            ['_name'] = 'radio',
+            ['_data'] = {
+                ['ExamineTime'] = 1.0,
+                ['Rarity'] = 'common',
+                ['Label'] = 'Radio',
+                ['MaxStack'] = 100,
+                ['Itemimage'] = 'icons/radio.png',
+                ['Type'] = 'Item',
+                ['Backgroundcolor'] = 'black',
+                ['Description'] = 'A radio works every time',
+                ['Name'] = 'radio',
+                ['Weight'] = 0.0,
+                ['ItemSound'] = 'gear_generic',
+                ['Height'] = 1,
+                ['Width'] = 1
+            },
+            ['_type'] = 'Item'
+        }
+    },
+
     ['weapon_case'] = {
         ['item'] = {
             ['_id'] = 'weapon_case',
