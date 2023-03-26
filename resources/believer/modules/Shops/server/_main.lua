@@ -27,8 +27,6 @@ RegisterServerEvent("Shop:buyItem", function(shopId, itemId, itemPrice)
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
 
-    print(shopId, itemId, itemPrice)
-
     local itemSelected = GM.Shops.Config["shops_list"][shopId].items[itemId]
     if (not itemSelected) then return end
 
@@ -36,6 +34,14 @@ RegisterServerEvent("Shop:buyItem", function(shopId, itemId, itemPrice)
         playerSelected.showNotification("~r~Tentative de triche détecté.")
         -- Todo ban player
         return
+    end
+
+    if (itemSelected.vip and itemSelected.vip == true) then
+        -- Todo check if player is vip
+        if (not playerSelected.getGroup() == "vip") then
+            playerSelected.showNotification("~r~Vous devez être VIP pour acheter cet article.")
+            return
+        end
     end
 
     local playerMoney = playerSelected.getMoney()
@@ -51,7 +57,7 @@ RegisterServerEvent("Shop:buyItem", function(shopId, itemId, itemPrice)
         playerSelected.removeAccountMoney("bank", itemPrice)
         playerSelected.addInventoryItem(itemSelected.name, 1)
     else
-        playerSelected.showNotification("~r~Vous n'avez pas assez d'argent sur vous.")
+        playerSelected.showNotification("~r~Vous n'avez pas assez d'argent.")
     end
 
     playerSelected.showNotification("~g~Vous avez acheté ~w~"..itemSelected.label.." ~g~pour ~w~"..itemPrice.."$~g~.")
