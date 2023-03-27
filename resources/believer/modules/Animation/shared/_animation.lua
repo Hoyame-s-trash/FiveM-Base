@@ -1,22 +1,3 @@
-
-RegisterCommand("e", function(source, args, rawCommand)
-    target_animation = args[1]
-    for k, v in pairs(AnimationList) do
-        if k == target_animation then
-            ClearPedTasks(GetPlayerPed(-1))
-            Citizen.CreateThread(function()
-                _Utiles.animation_load(v[1], v[2])
-                ChosenDict = v[1]
-                ChosenAnimation = v[2]
-                MovementType = 1
-                AnimationDuration = -1
-                --print(ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType)
-                TaskPlayAnim(PlayerPedId(), ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType, 0, false, false, false)
-            end)
-        end
-    end
-end)
-
 AnimationList = {
     ["beast"] = { "anim@mp_fm_event@intro", "beast_transform", "Peté un plomb", AnimationOptions = {
         EmoteMoving = true,

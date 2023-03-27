@@ -1,5 +1,3 @@
-ESX = exports['believer']:getSharedObject()
-
 RegisterServerEvent('animations:syncAccepted')
 AddEventHandler('animations:syncAccepted', function(requester, id)
     local accepted = source
@@ -9,7 +7,6 @@ end)
 
 RegisterServerEvent('animations:requestSynced')
 AddEventHandler('animations:requestSynced', function(target, id)
-    print('animations:syncAccepted')
     local requester = source
     local xPlayer = ESX['GetPlayerFromId'](requester)
     MySQL['Async']['fetchScalar']("SELECT firstname FROM users WHERE identifier=@identifier", {['@identifier'] = xPlayer['identifier']}, function(firstname)
@@ -23,7 +20,6 @@ ESX.RegisterServerCallback('animations:getAnimations', function(source, cb)
     animlist = {}
     MySQL['Async']['fetchAll']("SELECT * FROM fav_emote WHERE licence=@licence", {['@licence'] = xPlayer['identifier']}, function(animations)
         for k,v in pairs(animations) do
-            print(v['name'])
             table.insert(animlist, {['id'] = v['id'], ['name'] = v['name'], ['dict'] = v['dict'], ['anim'] = v['anim'], ['param'] = v['param']})
         end
         cb(animlist)
@@ -51,3 +47,4 @@ AddEventHandler('animations:renameAnimation', function(id, name)
     TriggerClientEvent('esx:showNotification', xPlayer.source,'Emote renommée !')
 end)
 
+-- Todo faire secu server distance et animation name

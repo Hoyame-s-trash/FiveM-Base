@@ -1,5 +1,3 @@
-ESX = exports['believer']:getSharedObject()
-
 local EmoteMenu = RageUI.CreateMenu("Animation",'Que veux-tu faire ?')
 
 local emote_shared = RageUI.CreateSubMenu(EmoteMenu,"Emote paratagé", "Que veux-tu faire ?")
@@ -162,7 +160,6 @@ Open_Menu_Animation = function()
 
                 RageUI.IsVisible(emote_fav,function()
                     if not Fav_Emote_loaded then 
-
                         RageUI.Separator("Chargement des emote favoris")
                     end
                     RageUI.Separator("Vos emote favoris ✨")
@@ -211,8 +208,7 @@ Open_Menu_Animation = function()
                        
                     end
                 end) 
-                RageUI.IsVisible(emote_dance,function()
-                   
+                RageUI.IsVisible(emote_dance, function()
                     for k,v in pairs(danceList) do
                         RageUI.List(v[3],type,selectedtype,nil,{},true,{
                             onListChange = function(Index)
@@ -270,8 +266,7 @@ Open_Menu_Animation = function()
                     end
                 end)
 
-                RageUI.IsVisible(emote_basic,function()
-                   
+                RageUI.IsVisible(emote_basic, function()
                     for k,v in pairs(AnimationList) do
                         RageUI.List(v[3],type,selectedtype,nil,{},true,{
                             onListChange = function(Index)
@@ -430,8 +425,6 @@ Open_Menu_Animation = function()
     end
 end
 
-
-
 function SetPexIndexClosset(animation,animation_name)
     Citizen.CreateThread(function()
         DeleteEntity(peds)
@@ -503,3 +496,23 @@ AddEventHandler('animations:playSynced', function(serverid, v, type)
     end
     ClearPedTasks(PlayerPedId())
 end)
+
+RegisterCommand("e", function(source, args, rawCommand)
+    target_animation = args[1]
+    for k, v in pairs(AnimationList) do
+        if k == target_animation then
+            ClearPedTasks(GetPlayerPed(-1))
+            Citizen.CreateThread(function()
+                _Utiles.animation_load(v[1], v[2])
+                ChosenDict = v[1]
+                ChosenAnimation = v[2]
+                MovementType = 1
+                AnimationDuration = -1
+                --print(ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType)
+                TaskPlayAnim(PlayerPedId(), ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType, 0, false, false, false)
+            end)
+        end
+    end
+end)
+
+-- Todo remake menu with new rage ui and make bind system
