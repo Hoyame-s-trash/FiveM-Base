@@ -18,10 +18,6 @@ shared_scripts {
 	"gmLoad.lua",
 	"modules/**/shared/*.lua",
     "modules/**/shared/objects/*.lua",
-    "addons/**/shared/*.lua",
-    "addons/**/shared/objects/*.lua",
-	"jobs/**/shared/*.lua",
-    "jobs/**/shared/objects/*.lua",
 }
 
 server_scripts {
@@ -42,10 +38,6 @@ server_scripts {
 	"modules/**/server/objects/*.lua",
     "modules/**/server/*.lua",
 	"modules/**/server/*.js",
-    "addons/**/server/*.lua",
-    "addons/**/server/objects/*.lua",
-	"jobs/**/server/*.lua",
-    "jobs/**/server/objects/*.lua",
 }
 
 client_scripts {
@@ -67,10 +59,6 @@ client_scripts {
     "dependencies/menu/**/*.lua",
     "modules/**/client/objects/*.lua",
     "modules/**/client/*.lua",
-    "addons/**/client/objects/*.lua",
-    "addons/**/client/*.lua",
-	"jobs/**/client/objects/*.lua",
-    "jobs/**/client/*.lua",
 }
 
 dependencies {

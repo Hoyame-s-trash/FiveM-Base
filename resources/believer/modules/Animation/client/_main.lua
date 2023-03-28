@@ -1,3 +1,5 @@
+GM.Animation = GM.Animation or {}
+
 local EmoteMenu = RageUI.CreateMenu("Animation",'Que veux-tu faire ?')
 
 local emote_shared = RageUI.CreateSubMenu(EmoteMenu,"Emote paratagé", "Que veux-tu faire ?")
@@ -24,7 +26,6 @@ function input_showBox(TextEntry, ExampleText, MaxStringLenght, isValueInt)
         local result = GetOnscreenKeyboardResult()
         Wait(500)
         blockInput = false
-        print("result: " .. result)
         return result
     else
         Wait(500)
@@ -136,138 +137,10 @@ Open_Menu_Animation = function()
                     
                     }, emote_basic)
 
-                    RageUI.Button("Emote dance", false, {RightLabel = "→→"}, true, {
-                        onSelected = function()
-                        end
-                    }, emote_dance)
-
-                    RageUI.Button("Favorie ✨", false, {RightLabel = "→→"}, true, {
-                        onSelected = function()
-                            Fav_Emote = {}
-                            Citizen.CreateThread(function()
-                                ESX.TriggerServerCallback("animations:getAnimations", function(data)
-                                    Fav_Emote = {}
-                                    Fav_Emote = data
-                                    Fav_Emote_loaded = true
-                                end)
-                            end)
-                            Fav_Emote_loaded = false
-                        end
-                    }, emote_fav)
-
-
-                end)
-
-                RageUI.IsVisible(emote_fav,function()
-                    if not Fav_Emote_loaded then 
-                        RageUI.Separator("Chargement des emote favoris")
-                    end
-                    RageUI.Separator("Vos emote favoris ✨")
-                    if Fav_Emote_loaded then 
-
-                        if #Fav_Emote == 0 then 
-                            RageUI.Separator()
-                            RageUI.Separator("~y~Aucun favori ✨")
-                            RageUI.Separator()
-                        else  
-                            for k,v in pairs(Fav_Emote) do
-                                    RageUI.List(v.name,type3,selectedtype3,nil,{},true,{
-                                        onListChange = function(Index)
-                                            selectedtype3 = Index
-                                            DeleteEntity(peds)
-                                        end,
-                                        onSelected = function(index)
-                                            if index == 1 then 
-                                                SetPexIndexClosset(v.dict, v.anim)
-                                            elseif index == 2 then
-                                                ClearPedTasks(GetPlayerPed(-1))
-                                                Citizen.CreateThread(function()
-                                                    _Utiles.animation_load(v.dict, v.anim)
-                                                    ChosenDict = v.dict 
-                                                    ChosenAnimation = v.anim
-                                                    AnimationOptions = {}
-                                                    table.insert(AnimationOptions, v.param)
-                                                    MovementType = 1
-                                                    AnimationDuration = -1
-                                                    print(ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType)
-                                                    TaskPlayAnim(PlayerPedId(), ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType, 0, false, false, false)
-                                                end)
-                                            elseif index == 3 then
-                                                TriggerServerEvent("animations:removeAnimation", v.id)
-                                                RageUI.GoBack()
-                                            elseif index == 4 then
-                                                local res = input_showBox("Nom de l'emote", "", 100, true)
-                                                TriggerServerEvent("animations:renameAnimation", v.id, res)
-                                                Fav_Emote[k].name = res
-                                            end
-                                                
-                                        end 
-                                    })
-                                end
-                            end
-                       
-                    end
-                end) 
-                RageUI.IsVisible(emote_dance, function()
-                    for k,v in pairs(danceList) do
-                        RageUI.List(v[3],type,selectedtype,nil,{},true,{
-                            onListChange = function(Index)
-                                selectedtype = Index
-                                DeleteEntity(peds)
-                            end,
-                            onSelected = function(index)
-                                if index == 3 then
-                                    TriggerServerEvent("animation:saveemote", v[1], v[2], v[3], v.AnimationOptions)
-                                end
-                                if index == 1 then 
-                                    SetPexIndexClosset(v[1], v[2])
-                                elseif index == 2 then
-                                    ClearPedTasks(GetPlayerPed(-1))
-                                    Citizen.CreateThread(function()
-                                        _Utiles.animation_load(v[1], v[2])
-
-                                        ChosenDict = v[1] 
-                                        ChosenAnimation = v[2]
-
-                                        if v.AnimationOptions then
-                                            if v.AnimationOptions.EmoteLoop then
-                                                MovementType = 1
-                                                if v.AnimationOptions.EmoteMoving then
-                                                    MovementType = 51
-                                                end
-                                
-                                            elseif v.AnimationOptions.EmoteMoving then
-                                                MovementType = 51
-                                            elseif v.AnimationOptions.EmoteMoving == false then
-                                                MovementType = 0
-                                            elseif v.AnimationOptions.EmoteStuck then
-                                                MovementType = 50
-                                            end
-                                
-                                        else
-                                            MovementType = 0
-                                        end
-                                        if v.AnimationOptions then
-                                            if v.AnimationOptions.EmoteDuration == nil then
-                                                v.AnimationOptions.EmoteDuration = -1
-                                                AttachWait = 0
-                                            else
-                                                AnimationDuration = v.AnimationOptions.EmoteDuration
-                                                AttachWait = v.AnimationOptions.EmoteDuration
-                                            end
-                                        else
-                                            PtfxPrompt = false
-                                        end
-                                        TaskPlayAnim(PlayerPedId(), ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType, 0, false, false, false)
-                                    end)
-                                end
-                            end 
-                        })
-                    end
                 end)
 
                 RageUI.IsVisible(emote_basic, function()
-                    for k,v in pairs(AnimationList) do
+                    for k,v in pairs(GM.Animation.List) do
                         RageUI.List(v[3],type,selectedtype,nil,{},true,{
                             onListChange = function(Index)
                                 selectedtype = Index
@@ -424,95 +297,5 @@ Open_Menu_Animation = function()
         end)
     end
 end
-
-function SetPexIndexClosset(animation,animation_name)
-    Citizen.CreateThread(function()
-        DeleteEntity(peds)
-        peds = ClonePed(PlayerPedId(), false, false)
-        Coords = GetEntityCoords(PlayerPedId())
-        ClonePedToTarget(PlayerPedId(), peds)
-        SetEntityAlpha(peds, 200)
-        SetEntityCollision(peds, false, false)
-        SetEntityCoords(peds, Coords.x , Coords.y, Coords.z)
-        AttachEntityToEntity(peds, PlayerPedId(), 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 1, 0, 1, 0, 1)
-        FreezeEntityPosition(peds, true)
-        SetBlockingOfNonTemporaryEvents(peds, true)
-        SetEntityInvincible(peds, true)
-        _Utiles.TaskAnim(peds, animation, animation_name, -1)
-        Wait(1000)
-        while IsEntityPlayingAnim(peds, animation, animation_name, 3) do
-            Wait(0)
-        end
-        DeleteEntity(peds)
-    end)
-end
-
-RegisterNetEvent('animations:syncRequest')
-AddEventHandler('animations:syncRequest', function(requester, v, name)
-    local accepted = false
-    local timer = GetGameTimer() + 5000
-    while timer >= GetGameTimer() do 
-        Wait(0)
-        ESX.ShowNotification('Le joueur ' .. name .. ' veux faire une animation avec vous ( ' .. v['RequesterLabel'] .. ' ) appuyez sur ~g~E~w~ pour accepter')
-        if IsControlJustReleased(0, 194) then
-            break
-        elseif IsControlJustReleased(0, 201) then
-            accepted = true
-            break
-        end
-    end
-    if accepted then
-        TriggerServerEvent('animations:syncAccepted', requester, v)
-    end
-end)
-
-RegisterNetEvent('animations:playSynced')
-AddEventHandler('animations:playSynced', function(serverid, v, type)
-    local anim = v[type]
-
-    local target = GetPlayerPed(GetPlayerFromServerId(serverid))
-    if anim['Attach'] then
-        local attach = anim['Attach']
-        AttachEntityToEntity(PlayerPedId(), target, attach['Bone'], attach['xP'], attach['yP'], attach['zP'], attach['xR'], attach['yR'], attach['zR'], 0, 0, 0, 0, 2, 1)
-    end
-    Wait(750)
-    if anim['Type'] == 'animation' then
-        PlayAnim(PlayerPedId(), anim['Dict'], anim['Anim'], anim['Flags'])
-    end
-    if type == 'Requester' then
-        anim = v['Accepter']
-    else
-        anim = v['Requester']
-    end
-    print("start sync emote " .. anim['Dict'] .. " " .. anim['Anim'])
-    while not IsEntityPlayingAnim(target, anim['Dict'], anim['Anim'], 3) do
-        Wait(0)
-        SetEntityNoCollisionEntity(PlayerPedId(), target, true)
-    end
-    DetachEntity(PlayerPedId())
-    while IsEntityPlayingAnim(target, anim['Dict'], anim['Anim'], 3) do
-        Wait(0)
-        SetEntityNoCollisionEntity(PlayerPedId(), target, true)
-    end
-    ClearPedTasks(PlayerPedId())
-end)
-
-RegisterCommand("e", function(source, args, rawCommand)
-    target_animation = args[1]
-    for k, v in pairs(AnimationList) do
-        if k == target_animation then
-            ClearPedTasks(GetPlayerPed(-1))
-            Citizen.CreateThread(function()
-                _Utiles.animation_load(v[1], v[2])
-                ChosenDict = v[1]
-                ChosenAnimation = v[2]
-                MovementType = 1
-                AnimationDuration = -1
-                --print(ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType)
-                TaskPlayAnim(PlayerPedId(), ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType, 0, false, false, false)
-            end)
-        end
-    end
-end)
 
 -- Todo remake menu with new rage ui and make bind system

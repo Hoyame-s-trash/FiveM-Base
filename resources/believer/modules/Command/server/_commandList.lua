@@ -1115,4 +1115,16 @@ GM:newThread(function()
             playerSelected.showNotification("~g~Vous avez donné "..itemCount.." "..itemName.." à "..targetSelected.getName()..".")
         end
     end)
+
+    GM.Command:register({
+        name = "animation",
+        label = "Menu animation",
+        description = "Permet d'ouvrir le menu d'animation",
+        keys = {"keyboard", "K"},
+        permissions = false,
+    }, function(playerSrc)
+        if (playerSrc == 0) then return end
+
+        TriggerClientEvent("Animation:openMenu", playerSrc)
+    end)
 end)
