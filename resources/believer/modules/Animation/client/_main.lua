@@ -139,63 +139,6 @@ Open_Menu_Animation = function()
 
                 end)
 
-                RageUI.IsVisible(emote_basic, function()
-                    for k,v in pairs(GM.Animation.List) do
-                        RageUI.List(v[3],type,selectedtype,nil,{},true,{
-                            onListChange = function(Index)
-                                selectedtype = Index
-                                DeleteEntity(peds)
-                            end,
-                            onSelected = function(index)
-                                if index == 3 then
-                                    TriggerServerEvent("animation:saveemote", v[1], v[2], v[3], v.AnimationOptions)
-                                end
-                                if index == 1 then 
-                                    SetPexIndexClosset(v[1], v[2])
-                                elseif index == 2 then
-                                    ClearPedTasks(GetPlayerPed(-1))
-                                    Citizen.CreateThread(function()
-                                        _Utiles.animation_load(v[1], v[2])
-
-                                        ChosenDict = v[1] 
-                                        ChosenAnimation = v[2]
-
-                                        if v.AnimationOptions then
-                                            if v.AnimationOptions.EmoteLoop then
-                                                MovementType = 1
-                                                if v.AnimationOptions.EmoteMoving then
-                                                    MovementType = 51
-                                                end
-                                
-                                            elseif v.AnimationOptions.EmoteMoving then
-                                                MovementType = 51
-                                            elseif v.AnimationOptions.EmoteMoving == false then
-                                                MovementType = 0
-                                            elseif v.AnimationOptions.EmoteStuck then
-                                                MovementType = 50
-                                            end
-                                
-                                        else
-                                            MovementType = 0
-                                        end
-                                        if v.AnimationOptions then
-                                            if v.AnimationOptions.EmoteDuration == nil then
-                                                v.AnimationOptions.EmoteDuration = -1
-                                                AttachWait = 0
-                                            else
-                                                AnimationDuration = v.AnimationOptions.EmoteDuration
-                                                AttachWait = v.AnimationOptions.EmoteDuration
-                                            end
-                                        else
-                                            PtfxPrompt = false
-                                        end
-                                        TaskPlayAnim(PlayerPedId(), ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType, 0, false, false, false)
-                                    end)
-                                end
-                            end 
-                        })
-                    end
-                end)
                 RageUI.IsVisible(emote_shared,function()
                     for k,v in pairs(Animation_Config_Synced) do 
                         RageUI.List(v['Label'],type2,selectedtype2,nil,{},true,{

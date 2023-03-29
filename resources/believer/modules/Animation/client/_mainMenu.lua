@@ -1492,6 +1492,310 @@ GM.Animation.Dance  ={
     }},
 }
 
+GM.Animation.Shared = {
+    {
+        ['Label'] = 'Câlin',
+        ['RequesterLabel'] = 'hug',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_ped_interaction', ['Anim'] = 'kisses_guy_a', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_ped_interaction', ['Anim'] = 'kisses_guy_b', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 9816,
+                ['xP'] = 0.05,
+                ['yP'] = 1.15,
+                ['zP'] = -0.05,
+
+                ['xR'] = 0.0,
+                ['yR'] = 0.0,
+                ['zR'] = 180.0,
+            }
+        }
+    },
+    {
+        ['Label'] = 'Câlin amoureux',
+        ['RequesterLabel'] = 'hug2',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'misscarsteal2chad_goodbye', ['Anim'] = 'chad_armsaround_chad', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'misscarsteal2chad_goodbye', ['Anim'] = 'chad_armsaround_girl', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 0,
+                ['xP'] = 0.0,
+                ['yP'] = 0.53,
+                ['zP'] = 0.0,
+
+                ['xR'] = 0.0,
+                ['yR'] = 0.0,
+                ['zR'] = 180.0,
+            }
+        }
+    },
+    {
+        ['Label'] = 'Claque',
+        ['RequesterLabel'] = 'hug2',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'melee@unarmed@streamed_variations', ['Anim'] = 'plyr_takedown_front_slap', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'melee@unarmed@streamed_variations', ['Anim'] = 'victim_takedown_front_slap', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 9816,
+                ['xP'] = 0.05,
+                ['yP'] = 1.15,
+                ['zP'] = -0.05,
+
+                ['xR'] = 0.0,
+                ['yR'] = 0.0,
+                ['zR'] = 180.0,
+            }
+        }
+    },
+    {
+        ['Label'] = 'Grosse claque',
+        ['RequesterLabel'] = 'hug2',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'melee@unarmed@streamed_variations', ['Anim'] = 'plyr_takedown_front_backslap', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'melee@unarmed@streamed_variations', ['Anim'] = 'victim_takedown_front_backslap', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 9816,
+                ['xP'] = 0.05,
+                ['yP'] = 1.15,
+                ['zP'] = -0.05,
+
+                ['xR'] = 0.0,
+                ['yR'] = 0.0,
+                ['zR'] = 180.0,
+            }
+        }
+    },
+    {
+        ['Label'] = 'Petit Bisous',
+        ['RequesterLabel'] = 'hug2',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_ped_interaction', ['Anim'] = 'kisses_guy_a', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_ped_interaction', ['Anim'] = 'kisses_guy_b', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 9816,
+                ['xP'] = 0.05,
+                ['yP'] = 1.15,
+                ['zP'] = -0.05,
+
+                ['xR'] = 0.0,
+                ['yR'] = 0.0,
+                ['zR'] = 180.0,
+            }
+        }
+    },
+
+    {
+        ['Label'] = 'Embrassez',
+        ['RequesterLabel'] = 'kiss',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'hs3_ext-20', ['Anim'] = 'cs_lestercrest_3_dual-20', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'hs3_ext-20', ['Anim'] = 'csb_georginacheng_dual-20', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 0,
+                ['xP'] = 0.0,
+                ['yP'] = 0.53,
+                ['zP'] = 0.0,
+
+                ['xR'] = 0.0,
+                ['yR'] = 0.0,
+                ['zR'] = 180.0,
+            }
+        }
+    },
+    {
+        ['Label'] = 'Tape-là',
+        ['RequesterLabel'] = 'do a high five with',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_ped_interaction', ['Anim'] = 'highfive_guy_a', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_ped_interaction', ['Anim'] = 'highfive_guy_b', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 9816,
+                ['xP'] = -0.5,
+                ['yP'] = 1.25,
+                ['zP'] = 0.0,
+
+                ['xR'] = 0.9,
+                ['yR'] = 0.3,
+                ['zR'] = 180.0,
+            }
+        }
+    },
+    {
+        ['Label'] = 'Câlin de frère',
+        ['RequesterLabel'] = 'do a bro hug with',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_ped_interaction', ['Anim'] = 'hugs_guy_a', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_ped_interaction', ['Anim'] = 'hugs_guy_b', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 9816,
+                ['xP'] = -0.025,
+                ['yP'] = 1.15,
+                ['zP'] = 0.0,
+
+                ['xR'] = 0.0,
+                ['yR'] = 0.0,
+                ['zR'] = 180.0,
+            }
+        }
+    },
+    {
+        ['Label'] = 'Check du poing',
+        ['RequesterLabel'] = 'fistbump',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'anim@mp_player_intcelebrationpaired@f_f_fist_bump', ['Anim'] = 'fist_bump_left', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'anim@mp_player_intcelebrationpaired@f_f_fist_bump', ['Anim'] = 'fist_bump_right', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 9816,
+                ['xP'] = -0.6,
+                ['yP'] = 0.9,
+                ['zP'] = 0.0,
+
+                ['xR'] = 0.0,
+                ['yR'] = 0.0,
+                ['zR'] = 270.0,
+            }
+        }
+    },
+    {
+        ['Label'] = 'Serrer la main (ami)',
+        ['RequesterLabel'] = 'shake hands with',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_ped_interaction', ['Anim'] = 'handshake_guy_a', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_ped_interaction', ['Anim'] = 'handshake_guy_b', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 9816,
+                ['xP'] = 0.0,
+                ['yP'] = 1.2,
+                ['zP'] = 0.0,
+
+                ['xR'] = 0.0,
+                ['yR'] = 0.0,
+                ['zR'] = 180.0,
+            }
+        }
+    },
+    {
+        ['Label'] = 'Serrer la main (travail)',
+        ['RequesterLabel'] = 'shake hands with',
+        ['Requester'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_common', ['Anim'] = 'givetake1_a', ['Flags'] = 0,
+        },
+        ['Accepter'] = {
+            ['Type'] = 'animation', ['Dict'] = 'mp_common', ['Anim'] = 'givetake1_b', ['Flags'] = 0, ['Attach'] = {
+                ['Bone'] = 9816,
+                ['xP'] = 0.075,
+                ['yP'] = 1.0,
+                ['zP'] = 0.0,
+
+                ['xR'] = 0.0,
+                ['yR'] = 0.0,
+                ['zR'] = 180.0,
+            }
+        }
+    },
+        -- NSFW animations vvvvvvvv
+        {
+            ['Label'] = 'Faire une fellation (debout)',
+            ['RequesterLabel'] = 'get a blowjob from',
+            ['Requester'] = {
+                ['Type'] = 'animation', ['Dict'] = 'misscarsteal2pimpsex', ['Anim'] = 'pimpsex_hooker', ['Flags'] = 1, ['Attach'] = {
+                    ['Bone'] = 9816,
+                    ['xP'] = 0.0,
+                    ['yP'] = 0.65,
+                    ['zP'] = 0.0,
+    
+                    ['xR'] = 120.0,
+                    ['yR'] = 0.0,
+                    ['zR'] = 180.0,
+                }
+            },
+            ['Accepter'] = {
+                ['Type'] = 'animation', ['Dict'] = 'misscarsteal2pimpsex', ['Anim'] = 'pimpsex_punter', ['Flags'] = 1,
+            },
+        },
+        {
+            ['Label'] = 'Se faire baiser (debout)',
+            ['RequesterLabel'] = 'fuck',
+            ['Requester'] = {
+                ['Type'] = 'animation', ['Dict'] = 'misscarsteal2pimpsex', ['Anim'] = 'shagloop_hooker', ['Flags'] = 1, ['Attach'] = {
+                    ['Bone'] = 9816,
+                    ['xP'] = 0.05,
+                    ['yP'] = 0.4,
+                    ['zP'] = 0.0,
+    
+                    ['xR'] = 120.0,
+                    ['yR'] = 0.0,
+                    ['zR'] = 180.0,
+                }
+            },
+            ['Accepter'] = {
+                ['Type'] = 'animation', ['Dict'] = 'misscarsteal2pimpsex', ['Anim'] = 'shagloop_pimp', ['Flags'] = 1,
+            },
+        },
+        {
+            ['Label'] = 'Anal (debout)', 
+            ['RequesterLabel'] = 'get taken in the ass by',
+            ['Requester'] = {
+                ['Type'] = 'animation', ['Dict'] = 'rcmpaparazzo_2', ['Anim'] = 'shag_loop_a', ['Flags'] = 1,
+            }, 
+            ['Accepter'] = {
+                ['Type'] = 'animation', ['Dict'] = 'rcmpaparazzo_2', ['Anim'] = 'shag_loop_poppy', ['Flags'] = 1, ['Attach'] = {
+                    ['Bone'] = 9816,
+                    ['xP'] = 0.015,
+                    ['yP'] = 0.35,
+                    ['zP'] = 0.0,
+    
+                    ['xR'] = 0.9,
+                    ['yR'] = 0.3,
+                    ['zR'] = 0.0,
+                },
+            },
+        },
+        {
+            ['Label'] = "Faire l'amour (véhicule)", 
+            ['RequesterLabel'] = 'get fucked by',
+            ['Car'] = true,
+            ['Requester'] = {
+                ['Type'] = 'animation', ['Dict'] = 'oddjobs@assassinate@vice@sex', ['Anim'] = 'frontseat_carsex_loop_m', ['Flags'] = 1,
+            }, 
+            ['Accepter'] = {
+                ['Type'] = 'animation', ['Dict'] = 'oddjobs@assassinate@vice@sex', ['Anim'] = 'frontseat_carsex_loop_f', ['Flags'] = 1,
+            },
+        },
+        {
+            ['Label'] = "Faire l'amour (véhicule)", 
+            ['RequesterLabel'] = 'fuck',
+            ['Car'] = true,
+            ['Requester'] = {
+                ['Type'] = 'animation', ['Dict'] = 'random@drunk_driver_2', ['Anim'] = 'cardrunksex_loop_f', ['Flags'] = 1,
+            }, 
+            ['Accepter'] = {
+                ['Type'] = 'animation', ['Dict'] = 'random@drunk_driver_2', ['Anim'] = 'cardrunksex_loop_m', ['Flags'] = 1,
+            },
+        },
+        {
+            ['Label'] = "Fellation (véhicule)", 
+            ['RequesterLabel'] = 'give blowjob to',
+            ['Car'] = true,
+            ['Requester'] = {
+                ['Type'] = 'animation', ['Dict'] = 'oddjobs@towing', ['Anim'] = 'm_blow_job_loop', ['Flags'] = 1,
+            }, 
+            ['Accepter'] = {
+                ['Type'] = 'animation', ['Dict'] = 'oddjobs@towing', ['Anim'] = 'f_blow_job_loop', ['Flags'] = 1,
+            },
+        },
+}
+
 GM.Animation.menu.main = RageUI.CreateMenu("", "Animation", 0, 0, "banner", "bluestark")
 GM.Animation.menu.main["Closed"] = function()
     DeleteEntity(peds)
@@ -1509,10 +1813,165 @@ GM.Animation.menu.submenus["favorite"] = RageUI.CreateSubMenu(GM.Animation.menu.
 
 GM.Animation.menu.submenus["favorite_management"] = RageUI.CreateSubMenu(GM.Animation.menu.submenus["favorite"], "", "Favorite management")
 
+GM.Animation.menu.submenus["shared"] = RageUI.CreateSubMenu(GM.Animation.menu.main, "", "Shared")
+
+GM.Animation.menu.submenus["shared_management"] = RageUI.CreateSubMenu(GM.Animation.menu.submenus["shared"], "", "Shared Management")
+
 GM.Animation.menu.main:isVisible(function(Items)
    Items:Button("Basic", nil, {}, true, {}, GM.Animation.menu.submenus["basic"])
     Items:Button("Dance", nil, {}, true, {}, GM.Animation.menu.submenus["dance"])
     Items:Button("Favoris", nil, {}, true, {}, GM.Animation.menu.submenus["favorite"])
+    Items:Button("Partagé", nil, {}, true, {}, GM.Animation.menu.submenus["shared"])
+end)
+
+GM.Animation.menu.submenus["shared"]:isVisible(function(Items)
+    if (GM.Animation.Shared ~= nil) then
+       for k,v in pairs(GM.Animation.Shared) do
+           Items:Button(v["Label"], nil, {}, true, {
+               onSelected = function()
+                   GM.Animation.data["currentAnimation"] = v
+               end
+           }, GM.Animation.menu.submenus["shared_management"])
+       end
+    end
+ end)
+
+GM.Animation.menu.submenus["shared_management"]:isVisible(function(Items)
+    if (GM.Animation.data["currentAnimation"] ~= nil) then
+        Items:Button("Visualiser l'animation", nil, {}, true, {
+            onSelected = function()
+                pedsclone2 = ClonePed(PlayerPedId(), false, false)
+                target = ClonePed(PlayerPedId(), false, false)
+                SetBlockingOfNonTemporaryEvents(pedsclone2, true)
+                SetBlockingOfNonTemporaryEvents(target, true)
+                SetEntityAlpha(pedsclone2, 190, 0)
+                SetEntityAlpha(target, 190, 0)
+                CreateThread(function()
+                    local anim = GM.Animation.data["currentAnimation"]['Accepter']
+                    if GM.Animation.data["currentAnimation"]['Car'] then
+                        TaskWarpPedIntoVehicle(target, GetVehiclePedIsUsing(PlayerPedId()), 0)
+                    end
+
+                    if anim['Attach'] then
+                        local attach = anim['Attach']
+                        AttachEntityToEntity(target, pedsclone2, attach['Bone'], attach['xP'], attach['yP'], attach['zP'], attach['xR'], attach['yR'], attach['zR'], 0, 0, 0, 0, 2, 1)
+                    end
+
+                    Wait(750)
+
+                    if anim['Type'] == 'animation' then
+                        RequestAnimDict(anim['Dict'])
+                        while not HasAnimDictLoaded(anim['Dict']) do
+                            Wait(0)
+                        end
+                        TaskPlayAnim(target, anim['Dict'], anim['Anim'], 8.0, -8.0, -1, anim['Flags'] or 0, 0, false, false, false)
+                    end
+
+                    anim = GM.Animation.data["currentAnimation"]['Requester']
+                    
+                    while not IsEntityPlayingAnim(pedsclone2, anim['Dict'], anim['Anim'], 3) do
+                        Wait(0)
+                        SetEntityNoCollisionEntity(PlayerPedId(), pedsclone2, true)
+                        SetEntityNoCollisionEntity(PlayerPedId(), target, true)
+                        SetEntityNoCollisionEntity(target, pedsclone2, true)
+                    end
+                    DetachEntity(target)
+                    while IsEntityPlayingAnim(pedsclone2, anim['Dict'], anim['Anim'], 3) do
+                        Wait(0)
+                        SetEntityNoCollisionEntity(PlayerPedId(), pedsclone2, true)
+                        SetEntityNoCollisionEntity(PlayerPedId(), target, true)
+                        SetEntityNoCollisionEntity(target, pedsclone2, true)
+                    end
+
+                    ClearPedTasks(target)
+                    DeleteEntity(target)
+
+                end)
+                CreateThread(function()
+                    local anim = GM.Animation.data["currentAnimation"]['Requester']
+                    if anim['Attach'] then
+                        local attach = anim['Attach']
+                        AttachEntityToEntity(pedsclone2, target, attach['Bone'], attach['xP'], attach['yP'], attach['zP'], attach['xR'], attach['yR'], attach['zR'], 0, 0, 0, 0, 2, 1)
+                    end
+
+                    Wait(750)
+
+                    if anim['Type'] == 'animation' then
+                        PlayAnim(pedsclone2, anim['Dict'], anim['Anim'], anim['Flags'])
+                    end
+
+                    anim = GM.Animation.data["currentAnimation"]['Accepter']
+
+                    while not IsEntityPlayingAnim(target, anim['Dict'], anim['Anim'], 3) do
+                        Wait(0)
+                        SetEntityNoCollisionEntity(pedsclone2, target, true)
+                    end
+                    DetachEntity(pedsclone2)
+                    while IsEntityPlayingAnim(target, anim['Dict'], anim['Anim'], 3) do
+                        Wait(0)
+                        SetEntityNoCollisionEntity(pedsclone2, target, true)
+                    end
+
+                    ClearPedTasks(pedsclone2)
+                    DeleteEntity(pedsclone2)
+                end)
+            end
+        })
+        Items:Button("Stopper l'animation", nil, {}, true, {
+            onSelected = function()
+                DeleteEntity(peds)
+                ClearPedTasks(GetPlayerPed(-1))
+                ClearPedSecondaryTask(GetPlayerPed(-1))
+            end
+        })
+        Items:Button("Jouer l'animation", nil, {}, true, {
+            onSelected = function()
+              ClearPedTasks(GetPlayerPed(-1))
+              Citizen.CreateThread(function()
+                  _Utiles.animation_load(GM.Animation.data["currentAnimation"]["dict"], GM.Animation.data["currentAnimation"]["anim"])
+  
+                  ChosenDict = GM.Animation.data["currentAnimation"]["dict"] 
+                  ChosenAnimation = GM.Animation.data["currentAnimation"]["anim"]
+  
+                  if GM.Animation.data["currentAnimation"]["options"] then
+                      if GM.Animation.data["currentAnimation"]["options"].EmoteLoop then
+                          MovementType = 1
+                          if GM.Animation.data["currentAnimation"]["options"].EmoteMoving then
+                              MovementType = 51
+                          end
+          
+                      elseif GM.Animation.data["currentAnimation"]["options"].EmoteMoving then
+                          MovementType = 51
+                      elseif GM.Animation.data["currentAnimation"]["options"].EmoteMoving == false then
+                          MovementType = 0
+                      elseif GM.Animation.data["currentAnimation"]["options"].EmoteStuck then
+                          MovementType = 50
+                      end
+          
+                  else
+                      MovementType = 0
+                  end
+                  if GM.Animation.data["currentAnimation"]["options"] then
+                      if GM.Animation.data["currentAnimation"]["options"].EmoteDuration == nil then
+                          GM.Animation.data["currentAnimation"]["options"].EmoteDuration = -1
+                          AttachWait = 0
+                      else
+                          AnimationDuration = GM.Animation.data["currentAnimation"]["options"].EmoteDuration
+                          AttachWait = GM.Animation.data["currentAnimation"]["options"].EmoteDuration
+                      end
+                  else
+                      PtfxPrompt = false
+                  end
+                  TaskPlayAnim(PlayerPedId(), ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType, 0, false, false, false)
+              end)
+            end
+        })
+        Items:Button("Mettre en favoris", nil, {}, true, {
+            onSelected = function()
+               TriggerServerEvent("Animation:saveEmote", GM.Animation.data["currentAnimation"]["dict"], GM.Animation.data["currentAnimation"]["anim"], GM.Animation.data["currentAnimation"]["name"], GM.Animation.data["currentAnimation"]["options"])
+            end
+        })
+    end
 end)
 
 GM.Animation.menu.submenus["basic"]:isVisible(function(Items)
