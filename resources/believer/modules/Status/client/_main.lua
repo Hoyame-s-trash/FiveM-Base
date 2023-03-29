@@ -129,3 +129,54 @@ Citizen.CreateThread(function()
 		TriggerServerEvent('esx_status:update', GetStatusData(true))
 	end
 end)
+
+AddEventHandler('esx_status:loaded', function(status)
+	TriggerEvent('esx_status:registerStatus', 'hunger', 1000000, '#ffae00bd', function(status)
+		return true
+	end, function(status)
+		status.remove(100)
+	end)
+	TriggerEvent('esx_status:registerStatus', 'thirst', 1000000, '#00bedb', function(status)
+		return true
+	end, function(status)
+		status.remove(75)
+	end)
+
+	Citizen.CreateThread(function()
+		while true do
+			Citizen.Wait(1000)
+			local playerPed  = PlayerPedId()
+			local prevHealth = GetEntityHealth(playerPed)
+			local health     = prevHealth
+			TriggerEvent('esx_status:getStatus', 'hunger', function(status)
+				if status.val == 0 then
+					if prevHealth <= 15 then
+						health = health - 5
+					else
+						health = health - 1
+					end
+				end
+				if status.val == 98000 then
+					ESX.ShowNotification("~r~Vous avez mal au ventre.")
+				end
+			end)
+
+			TriggerEvent('esx_status:getStatus', 'thirst', function(status)
+				if status.val == 0 then
+					if prevHealth <= 35 then
+						health = health - 5
+					else
+						health = health - 1
+					end
+				end
+				if status.val == 98000 then
+					ESX.ShowNotification("~r~Vous avez mal au ventre.")
+				end
+			end)
+
+			if health ~= prevHealth then
+				SetEntityHealth(playerPed, health)
+			end
+		end
+	end)
+end)

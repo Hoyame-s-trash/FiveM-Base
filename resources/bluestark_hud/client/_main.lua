@@ -179,6 +179,28 @@ Citizen.CreateThread(function()
     end
 end)
 
+RegisterNetEvent('esx:setAccountMoney')
+AddEventHandler('esx:setAccountMoney', function(account)
+	for i=1, #(ESX.PlayerData.accounts) do
+		if (ESX.PlayerData.accounts[i].name == "money") then
+			SendNUIMessage({
+				action = "setMoney",
+				data = account.money
+			})
+		elseif (ESX.PlayerData.accounts[i].name == "bank") then
+			SendNUIMessage({
+				action = "setBank",
+				data = account.money
+			})
+        elseif (ESX.PlayerData.accounts[i].name == "black_money") then
+			SendNUIMessage({
+				action = "black_money",
+				data = account.money
+			})
+		end
+	end
+end)
+
 Citizen.CreateThread(function()
     local sleep = 1500
 

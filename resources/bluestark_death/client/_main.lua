@@ -23,4 +23,9 @@ AddEventHandler("Dead:openUI", function(bool)
     SetDisplay(bool)
 end)
 
--- Todo remove hud params bool
+RegisterNetEvent("Dead:resetUI")
+AddEventHandler("Dead:resetUI", function()
+    SendNUIMessage({
+        type = "reset",
+    })
+end)

@@ -113,37 +113,54 @@ RegisterServerEvent("Animation:renameFavorite", function(emoteId, newName)
     end)
 end)
 
-RegisterServerEvent('animations:syncAccepted')
-AddEventHandler('animations:syncAccepted', function(requester, id)
-    local accepted = source
-    TriggerClientEvent('animations:playSynced', accepted, requester, id, 'Accepter')
-    TriggerClientEvent('animations:playSynced', requester, accepted, id, 'Requester')
-end)
-
-RegisterServerEvent('animations:requestSynced')
-AddEventHandler('animations:requestSynced', function(target, id)
-    local requester = source
-    local xPlayer = ESX['GetPlayerFromId'](requester)
-    MySQL['Async']['fetchScalar']("SELECT firstname FROM users WHERE identifier=@identifier", {['@identifier'] = xPlayer['identifier']}, function(firstname)
-        TriggerClientEvent('animations:syncRequest', target, requester, id, firstname)
-    end)
-end)
-     
-RegisterServerEvent('animations:renameAnimation')
-AddEventHandler('animations:renameAnimation', function(id, name)
+RegisterServerEvent('Animations:syncAccepted')
+AddEventHandler('Animations:syncAccepted', function(targetSrc, animationId)
     local playerSrc = source
     if (not playerSrc) then return end
 
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
 
-    MySQL['Async']['execute']("UPDATE fav_emote SET name=@name WHERE id=@id", {
-        ['@id'] = id, 
-        ['@name'] = name
-    })
-    TriggerClientEvent('esx:showNotification', playerSelected.source, "~g~Vous avez bien renommé votre emote en "..name..".")
+    local playerCoords = playerSelected.getCoords(true)
+
+    local targetSelected = ESX.GetTargetFromId(targetSrc)
+    if (not targetSelected) then return end
+
+    local targetCoords = targetSelected.getCoords(true)
+
+    if #(playerCoords-targetCoords) > 5.0 then
+        playerSelected.showNotification("~r~Vous êtes trop loin de la personne.")
+        -- Todo suspect this cause maybe cheater
+        return
+    end
+
+
+    TriggerClientEvent('Animations:playSynced', playerSelected.source, targetSelected.source, animationId, 'Accepter')
+    TriggerClientEvent('Animations:playSynced', targetSelected.source, playerSelected.source, animationId, 'Requester')
 end)
 
--- Todo faire secu server distance et animation name
+RegisterServerEvent('Animations:requestSynced')
+AddEventHandler('Animations:requestSynced', function(target, animationId)
+    local playerSrc = source
+    if (not playerSrc) then return end
 
--- Todo faire system with table and stop query every time
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local playerCoords = playerSelected.getCoords(true)
+
+    local targetSelected = ESX.GetPlayerFromId(target)
+    if (not targetSelected) then return end
+
+    local targetCoords = targetSelected.getCoords(true)
+
+    if #(playerCoords-targetCoords) > 5.0 then
+        playerSelected.showNotification("~r~Vous êtes trop loin de la personne.")
+        -- Todo suspect this cause maybe cheater
+        return
+    end
+
+    local firstName = playerSelected.get('firstname')
+
+    TriggerClientEvent('Animations:syncRequest', target, playerSelected.source, animationId, firstName)
+end)

@@ -1926,49 +1926,10 @@ GM.Animation.menu.submenus["shared_management"]:isVisible(function(Items)
         })
         Items:Button("Jouer l'animation", nil, {}, true, {
             onSelected = function()
-              ClearPedTasks(GetPlayerPed(-1))
-              Citizen.CreateThread(function()
-                  _Utiles.animation_load(GM.Animation.data["currentAnimation"]["dict"], GM.Animation.data["currentAnimation"]["anim"])
-  
-                  ChosenDict = GM.Animation.data["currentAnimation"]["dict"] 
-                  ChosenAnimation = GM.Animation.data["currentAnimation"]["anim"]
-  
-                  if GM.Animation.data["currentAnimation"]["options"] then
-                      if GM.Animation.data["currentAnimation"]["options"].EmoteLoop then
-                          MovementType = 1
-                          if GM.Animation.data["currentAnimation"]["options"].EmoteMoving then
-                              MovementType = 51
-                          end
-          
-                      elseif GM.Animation.data["currentAnimation"]["options"].EmoteMoving then
-                          MovementType = 51
-                      elseif GM.Animation.data["currentAnimation"]["options"].EmoteMoving == false then
-                          MovementType = 0
-                      elseif GM.Animation.data["currentAnimation"]["options"].EmoteStuck then
-                          MovementType = 50
-                      end
-          
-                  else
-                      MovementType = 0
-                  end
-                  if GM.Animation.data["currentAnimation"]["options"] then
-                      if GM.Animation.data["currentAnimation"]["options"].EmoteDuration == nil then
-                          GM.Animation.data["currentAnimation"]["options"].EmoteDuration = -1
-                          AttachWait = 0
-                      else
-                          AnimationDuration = GM.Animation.data["currentAnimation"]["options"].EmoteDuration
-                          AttachWait = GM.Animation.data["currentAnimation"]["options"].EmoteDuration
-                      end
-                  else
-                      PtfxPrompt = false
-                  end
-                  TaskPlayAnim(PlayerPedId(), ChosenDict, ChosenAnimation, 2.0, 2.0, AnimationDuration, MovementType, 0, false, false, false)
-              end)
-            end
-        })
-        Items:Button("Mettre en favoris", nil, {}, true, {
-            onSelected = function()
-               TriggerServerEvent("Animation:saveEmote", GM.Animation.data["currentAnimation"]["dict"], GM.Animation.data["currentAnimation"]["anim"], GM.Animation.data["currentAnimation"]["name"], GM.Animation.data["currentAnimation"]["options"])
+                local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
+                if closestPlayer ~= -1 and closestDistance < 2.0 then
+                    TriggerServerEvent('Animations:requestSynced', GetPlayerServerId(closestPlayer), GM.Animation.data["currentAnimation"])
+                end
             end
         })
     end
@@ -1977,7 +1938,7 @@ end)
 GM.Animation.menu.submenus["basic"]:isVisible(function(Items)
    if (GM.Animation.List ~= nil) then
       for k,v in pairs(GM.Animation.List) do
-          Items:Button(v[3], nil, {}, true, {
+          Items:Button(v[3], "/e "..k, {}, true, {
               onSelected = function()
                   GM.Animation.data["currentAnimation"] = {
                       ["id"] = k,
@@ -2248,11 +2209,47 @@ function SetPexIndexClosset(animation,animation_name)
    end)
 end
 
-RegisterNetEvent('animations:syncRequest')
-AddEventHandler('animations:syncRequest', function(requester, v, name)
-   local accepted = false
-   local timer = GetGameTimer() + 5000
-   while timer >= GetGameTimer() do 
+PlayAnim = function(peds, Dict, Anim, Flag)
+    RequestAnimDict(Dict)
+    while not HasAnimDictLoaded(Dict) do
+        Citizen.Wait(0)
+    end
+    TaskPlayAnim(peds, Dict, Anim, 8.0, -8.0, -1, Flag or 0, 0, false, false, false)
+end
+
+local type_GetClosestPed = function(coords, cb)
+    local ped = GetPlayerPed(GetClosestPlayer(coords.x, coords.y, coords.z, 5.0, 0, playerPed))
+    if DoesEntityExist(ped) then
+        cb(ped)
+    end
+end
+
+_Utiles = {} 
+
+_Utiles.animation_load = function(dict)
+    RequestAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+       Wait(1)
+    end
+end
+
+_Utiles.process_load = function(name)
+   RequestAnimSet(name)
+   while not HasAnimSetLoaded(name) do
+       Wait(1)
+   end
+end
+
+_Utiles.TaskAnim = function(ped, animDict, animName)
+   _Utiles.animation_load(animDict)
+   TaskPlayAnim(ped, animDict, animName, 1.0, -1.0, -1, 1, 1, false, false, false)
+end
+
+RegisterNetEvent('Animations:syncRequest')
+AddEventHandler('Animations:syncRequest', function(requester, v, name)
+    local accepted = false
+    local timer = GetGameTimer() + 5000
+    while timer >= GetGameTimer() do 
        Wait(0)
        ESX.ShowNotification('Le joueur ' .. name .. ' veux faire une animation avec vous ( ' .. v['RequesterLabel'] .. ' ) appuyez sur ~g~E~w~ pour accepter')
        if IsControlJustReleased(0, 194) then
@@ -2261,14 +2258,14 @@ AddEventHandler('animations:syncRequest', function(requester, v, name)
            accepted = true
            break
        end
-   end
-   if accepted then
-       TriggerServerEvent('animations:syncAccepted', requester, v)
+    end
+    if accepted then
+       TriggerServerEvent('Animations:syncAccepted', requester, v)
    end
 end)
 
-RegisterNetEvent('animations:playSynced')
-AddEventHandler('animations:playSynced', function(serverid, v, type)
+RegisterNetEvent('Animations:playSynced')
+AddEventHandler('Animations:playSynced', function(serverid, v, type)
    local anim = v[type]
 
    local target = GetPlayerPed(GetPlayerFromServerId(serverid))
@@ -2312,4 +2309,9 @@ RegisterCommand("e", function(source, args, rawCommand)
            end)
        end
    end
+end)
+
+RegisterNetEvent("Animation:cancelAnimation", function()
+    ClearPedTasks(GetPlayerPed(-1))
+    ClearPedSecondaryTask(GetPlayerPed(-1))
 end)

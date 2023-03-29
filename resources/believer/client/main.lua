@@ -131,11 +131,6 @@ end
 AddEventHandler('playerSpawned', onPlayerSpawn)
 AddEventHandler('esx:onPlayerSpawn', onPlayerSpawn)
 
-AddEventHandler('esx:onPlayerDeath', function()
-	ESX.SetPlayerData('ped', PlayerPedId())
-	ESX.SetPlayerData('dead', true)
-end)
-
 AddEventHandler('skinchanger:modelLoaded', function()
 	while not ESX.PlayerLoaded do
 		Wait(100)

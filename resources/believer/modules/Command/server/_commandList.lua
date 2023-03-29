@@ -1127,4 +1127,85 @@ GM:newThread(function()
 
         TriggerClientEvent("Animation:openMenu", playerSrc)
     end)
+
+    GM.Command:register({
+        name = "animation_cancel",
+        label = "Annuler l'animation",
+        description = "Permet d'annuler une animation",
+        keys = {"keyboard", "X"},
+        permissions = false
+    }, function(playerSrc)
+        if (playerSrc == 0) then return end
+
+        TriggerClientEvent("Animation:cancelAnimation", playerSrc)
+    end)
+
+    GM.Command:register({
+        name = "setJob",
+        label = "Attribuer un métier",
+        description = "Permet d'attribuer un métier à un joueur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local jobName = args[2]
+            if (not jobName) then return end
+
+            local jobGrade = args[3] or 0
+            if (not jobGrade) then return end
+
+            if (ESX.DoesJobExist(jobName, jobGrade)) then
+
+                targetSelected.setJob(jobName, jobGrade)
+                print("VOUS AVEZ ATTRIBUE LE METIER "..jobName.." (GRADE : "..jobGrade..") A "..targetSelected.getName()..".")
+            else
+                print("JOB INVALID")
+                return
+            end
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local jobName = args[2]
+            if (not jobName) then return end
+
+            local jobGrade = args[3] or 0
+            if (not jobGrade) then return end
+
+            if (ESX.DoesJobExist(jobName, jobGrade)) then
+
+                targetSelected.setJob(jobName, jobGrade)
+                playerSelected.showNotification("~g~Vous avez attribué le métier "..jobName.." (grade : "..jobGrade..") à "..targetSelected.getName()..".")
+            else
+                playerSelected.showNotification("~r~Ce métier n'existe pas.")
+                return
+            end
+        end
+    end)
+
+    GM.Command:register({
+        name = "society",
+        label = "Menu société",
+        description = "Permet d'ouvrir le menu de la société",
+        keys = {"keyboard", "F9"}
+    }, function(playerSrc)
+        if (playerSrc == 0) then return end
+
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        if (playerSelected.job.name == "unemployed") then
+            playerSelected.showNotification("~r~Vous n'êtes pas employé dans une société.")
+            return
+        end
+
+        if (playerSelected.job.grade_name == "boss") then
+            TriggerClientEvent("Society:openMenu", playerSelected.source, playerSelected.job.name)
+            return
+        end
+    end)
 end)
