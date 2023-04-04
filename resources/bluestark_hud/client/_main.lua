@@ -38,35 +38,34 @@ Citizen.CreateThread(function()
     while ESX == nil do
         Citizen.Wait(0)
     end
-    
+
     local playerData = ESX.GetPlayerData()
-    
-    SendNUIMessage({
-        action = "setMoney",
-        data = playerData.money
-    })
 
     SendNUIMessage({
         action = "setidentifier",
         data = playerData.id
     })
 
-    for _, account in pairs(playerData.accounts) do
-
-        if account.name == "bank" then
+    for _, account in pairs(playerData.accounts) do 
+        if account.name == "money" then
+            SendNUIMessage({
+                action = "setMoney",
+                data = account.money,
+            })
+        end
+        if account.name == "bank"then
             SendNUIMessage({
                 action = "setBank",
                 data = account.money,
             })
         end
-
-        if account.name == "black_money" then
+        if account.name == "black_money"then
             SendNUIMessage({
                 action = "setBlackMoney",
                 data = account.money,
             })
         end
-    end    
+    end
 end)
 
 CreateThread(function()

@@ -167,7 +167,7 @@ RegisterServerEvent("Admin:reviveZone", function(radius)
                 if (distance <= radius) then
                     local targetSelected = ESX.GetPlayerFromId(targetSrc)
                     if (targetSelected) then
-                        if (GM.Ambulance["dead_list"][targetSelected.source] ~= nil) then
+                        if (GM.Death["dead_list"][targetSelected.source] ~= nil) then
                             if (GM.Ambulance["calls_list"][targetSelected.source] ~= nil) then
                                 if (GM.Ambulance["calls_list"][targetSelected.source].taken_src) then
                                     TriggerClientEvent("esx:showNotification", GM.Ambulance["calls_list"][targetSelected.source].taken_src, "~r~L'appel en cours à été annulé le patient à été réanimer par un staff.")
@@ -181,8 +181,8 @@ RegisterServerEvent("Admin:reviveZone", function(radius)
                                 end
                             end
                         
-                            if (GM.Ambulance["dead_list"][targetSelected.source] ~= nil) then
-                                GM.Ambulance["dead_list"][targetSelected.source] = nil
+                            if (GM.Death["dead_list"][targetSelected.source] ~= nil) then
+                                GM.Death["dead_list"][targetSelected.source] = nil
                             end
                         
                             targetSelected.setDead(false)

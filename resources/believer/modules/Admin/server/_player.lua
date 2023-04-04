@@ -288,7 +288,7 @@ RegisterServerEvent("Admin:setWarningPlayer", function(playerId, input)
         admin = playerSelected.getName(),
     }
 
-    MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {playerIdentifier, "Avertissement", json.encode(warn)}, function(id)
+    MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {targetIdentifier, "Avertissement", json.encode(warn)}, function(id)
         playerSelected.showNotification("~b~Vous avez mis un avertissement à "..playerTarget.getName().." pour "..input)
     end)
 end)
