@@ -1840,6 +1840,7 @@ GM.Animation.menu.submenus["shared_management"]:isVisible(function(Items)
     if (GM.Animation.data["currentAnimation"] ~= nil) then
         Items:Button("Visualiser l'animation", nil, {}, true, {
             onSelected = function()
+                DeleteEntity(peds)
                 pedsclone2 = ClonePed(PlayerPedId(), false, false)
                 target = ClonePed(PlayerPedId(), false, false)
                 SetBlockingOfNonTemporaryEvents(pedsclone2, true)
