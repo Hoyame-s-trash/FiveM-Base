@@ -176,10 +176,19 @@ function ESX.TriggerServerCallback(name, requestId, source,Invoke, cb, ...)
 end
 
 function Core.SavePlayer(xPlayer, cb)
-  MySQL.prepare(
-    'UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position` = ?, `inventory` = ?, `loadout` = ?, `is_dead` = ?, `status` = ? WHERE `identifier` = ?',
-    {json.encode(xPlayer.getAccounts(true)), xPlayer.job.name, xPlayer.job.grade, xPlayer.group, json.encode(xPlayer.position or GetEntityCoords(xPlayer.getPed())),
-     json.encode(xPlayer.getInventory(true)), json.encode(xPlayer.getLoadout(true)), xPlayer.getDead(), json.encode(xPlayer.get('status')), xPlayer.identifier}, function(affectedRows)
+  print("Debug status 1 ", json.encode(xPlayer.get('status')))
+  MySQL.prepare('UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position` = ?, `inventory` = ?, `loadout` = ?, `is_dead` = ?, `status` = ? WHERE `identifier` = ?', {
+      json.encode(xPlayer.getAccounts(true)), 
+      xPlayer.job.name, 
+      xPlayer.job.grade, 
+      xPlayer.group, 
+      json.encode(xPlayer.position or GetEntityCoords(xPlayer.getPed())),
+      json.encode(xPlayer.getInventory(true)), 
+      json.encode(xPlayer.getLoadout(true)), 
+      xPlayer.getDead(), 
+      json.encode(xPlayer.get('status')), 
+      xPlayer.identifier
+    }, function(affectedRows)
       if affectedRows == 1 then
         print(('[^2INFO^7] Saved player ^5"%s^7"'):format(xPlayer.name))
         TriggerEvent('esx:playerSaved', xPlayer.playerId, xPlayer)
@@ -187,7 +196,7 @@ function Core.SavePlayer(xPlayer, cb)
       if cb then
         cb()
       end
-    end)
+  end)
 end
 
 function Core.SavePlayers(cb)
@@ -198,21 +207,18 @@ function Core.SavePlayers(cb)
     local time = os.time()
     for i = 1, count do
       local xPlayer = xPlayers[i]
-      parameters[#parameters + 1] = {json.encode(xPlayer.getAccounts(true)), xPlayer.job.name, xPlayer.job.grade, xPlayer.group,
-      json.encode(xPlayer.position or GetEntityCoords(xPlayer.getPed())), json.encode(xPlayer.getInventory(true)), json.encode(xPlayer.getLoadout(true)), xPlayer.getDead(), json.encode(xPlayer.get('status')),
-                                     xPlayer.identifier}
+      print("Debug status 2 ", json.encode(xPlayer.get('status')))
+      parameters[#parameters + 1] = {json.encode(xPlayer.getAccounts(true)), xPlayer.job.name, xPlayer.job.grade, xPlayer.group, json.encode(xPlayer.position or GetEntityCoords(xPlayer.getPed())), json.encode(xPlayer.getInventory(true)), json.encode(xPlayer.getLoadout(true)), xPlayer.getDead(), json.encode(xPlayer.get('status')), xPlayer.identifier}
     end
-    MySQL.prepare(
-      "UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position` = ?, `inventory` = ?, `loadout` = ?, `is_dead` = ?, `status` = ? WHERE `identifier` = ?",
-      parameters, function(results)
-        if results then
-          if type(cb) == 'function' then
-            cb()
-          else
-            print(('[^2INFO^7] Saved ^5%s^7 %s over ^5%s^7 ms'):format(count, count > 1 and 'players' or 'player', ESX.Math.Round((os.time() - time) / 1000000, 2)))
-          end
+    MySQL.prepare("UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position` = ?, `inventory` = ?, `loadout` = ?, `is_dead` = ?, `status` = ? WHERE `identifier` = ?", parameters, function(results)
+      if results then
+        if type(cb) == 'function' then
+          cb()
+        else
+          print(('[^2INFO^7] Saved ^5%s^7 %s over ^5%s^7 ms'):format(count, count > 1 and 'players' or 'player', ESX.Math.Round((os.time() - time) / 1000000, 2)))
         end
-      end)
+      end
+    end)
   end
 end
 
