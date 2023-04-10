@@ -265,6 +265,10 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		end
 	end
 
+	function self.getNickName()
+		return GetPlayerName(self.source)
+	end
+
 	function self.getName()
 		return self.name
 	end

@@ -1,1 +1,0 @@
-Discord_Webhook = "https://ptb.discord.com/api/webhooks/1030185949293969570/_c6u4C0uxLqTpt04IHs45YDVp7JoXaFiSAxgnBA1pGORiB7HJc2FCB_cs8KR3i6kViF0"

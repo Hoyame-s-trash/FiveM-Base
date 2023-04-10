@@ -40,14 +40,14 @@ GM.Blip.Remove = function(blip)
 end
 
 local BlipsList = {
-    -- [1] = {
-    --     pos = vector3(-602.12493896484,-925.86907958984,36.834575653076),
-    --     type = 184, 
-    --     scale = 0.70, 
-    --     name = "Weazel News", 
-    --     color = 0,
-    --     display = 6,
-    -- },
+    [1] = {
+        pos = vector3(-602.12493896484,-925.86907958984,36.834575653076),
+        type = 184, 
+        scale = 0.70, 
+        name = "Weazel News", 
+        color = 0,
+        display = 6,
+    },
 }
 
 local CreatedBlips = {}

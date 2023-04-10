@@ -1,3 +1,0 @@
---Server config only
-SConfig = {}
-

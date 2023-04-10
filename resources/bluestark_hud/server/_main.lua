@@ -8,7 +8,3 @@ Citizen.CreateThread(function()
         Citizen.Wait(30000)
     end
 end)
-
-RegisterCommand("announce", function(source, args)
-    TriggerClientEvent('hud:notification', -1, 'announce', 'Announce ', table.concat(args, " "), 12500)
-end)

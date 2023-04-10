@@ -4,7 +4,7 @@ GM.Jail.current = {}
 
 RegisterNetEvent("Jail:sendInJail", function(time)
     GM.Jail.current.time = time
-	print("Temps de prison", time)
+	
     TriggerEvent('skinchanger:getSkin', function(skin)
 		if skin.sex == 0 then
 			TriggerEvent('skinchanger:loadClothes', skin, {

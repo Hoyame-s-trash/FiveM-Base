@@ -176,7 +176,6 @@ function ESX.TriggerServerCallback(name, requestId, source,Invoke, cb, ...)
 end
 
 function Core.SavePlayer(xPlayer, cb)
-  print("Debug status 1 ", json.encode(xPlayer.get('status')))
   MySQL.prepare('UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position` = ?, `inventory` = ?, `loadout` = ?, `is_dead` = ?, `status` = ? WHERE `identifier` = ?', {
       json.encode(xPlayer.getAccounts(true)), 
       xPlayer.job.name, 
@@ -207,7 +206,6 @@ function Core.SavePlayers(cb)
     local time = os.time()
     for i = 1, count do
       local xPlayer = xPlayers[i]
-      print("Debug status 2 ", json.encode(xPlayer.get('status')))
       parameters[#parameters + 1] = {json.encode(xPlayer.getAccounts(true)), xPlayer.job.name, xPlayer.job.grade, xPlayer.group, json.encode(xPlayer.position or GetEntityCoords(xPlayer.getPed())), json.encode(xPlayer.getInventory(true)), json.encode(xPlayer.getLoadout(true)), xPlayer.getDead(), json.encode(xPlayer.get('status')), xPlayer.identifier}
     end
     MySQL.prepare("UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position` = ?, `inventory` = ?, `loadout` = ?, `is_dead` = ?, `status` = ? WHERE `identifier` = ?", parameters, function(results)

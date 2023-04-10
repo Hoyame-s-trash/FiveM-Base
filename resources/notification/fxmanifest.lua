@@ -3,11 +3,6 @@ game 'gta5'
 
 lua54 'yes'
 
-client_scripts {
-    'config.lua',
-    'notification.lua',
-}
-
 ui_page 'ui/ui.html'
 
 files {
@@ -26,6 +21,11 @@ files {
     'ui/js/*.js'
 }
 
+client_scripts {
+    'config.lua',
+    'notification.lua',
+}
+
 exports {
     'Send',
     'SendAdvanced',
@@ -33,5 +33,3 @@ exports {
     'Update',
     'SetHUDVisibility'
 }
-
-shared_script '@believer/modules/Anticheat/shared/_trigger.lua'

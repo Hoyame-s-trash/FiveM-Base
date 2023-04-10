@@ -12,7 +12,6 @@ input.load = () => {
         if (bool) {
 
             let placeHolders = ""
-            let currentHeight = 570
             let currentIterator = 0
 
             data.placeHolders.forEach(element => {
@@ -84,6 +83,9 @@ input.load = () => {
                     return
                 }
             };
+
+            // Set focus on the first input element
+            $("#allPlaceHolders input:first").focus();
         } else {
             $(".input-container").hide();
         }

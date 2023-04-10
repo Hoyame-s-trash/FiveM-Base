@@ -475,7 +475,7 @@ GM:newThread(function()
         if (not targetSelected) then return end
 
         local message = table.concat(args, " ", 2)
-        targetSelected.showAdvancedNotification("BlueStark", '~b~ADMIN '..playerSelected.getName(), message, "bluestark")
+        targetSelected.showAdvancedNotification("BlueStark Admin", '~b~'..playerSelected.getNickName(), message, "BLUESTARK")
     end)
 
     GM.Command:register({
@@ -1184,28 +1184,6 @@ GM:newThread(function()
                 playerSelected.showNotification("~r~Ce métier n'existe pas.")
                 return
             end
-        end
-    end)
-
-    GM.Command:register({
-        name = "society",
-        label = "Menu société",
-        description = "Permet d'ouvrir le menu de la société",
-        keys = {"keyboard", "F9"}
-    }, function(playerSrc)
-        if (playerSrc == 0) then return end
-
-        local playerSelected = ESX.GetPlayerFromId(playerSrc)
-        if (not playerSelected) then return end
-
-        if (playerSelected.job.name == "unemployed") then
-            playerSelected.showNotification("~r~Vous n'êtes pas employé dans une société.")
-            return
-        end
-
-        if (playerSelected.job.grade_name == "boss") then
-            TriggerClientEvent("Society:openMenu", playerSelected.source, playerSelected.job.name)
-            return
         end
     end)
 end)

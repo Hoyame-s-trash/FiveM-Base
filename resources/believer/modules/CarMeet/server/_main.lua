@@ -1,1 +1,0 @@
-GM.Carmeet = GM.Carmeet or {}

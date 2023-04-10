@@ -12,6 +12,7 @@
     --text-size: 1.6vh;
     --subtext-size: 1.5vh;
     --progress-height: 2px;
+    --blue: rgb(0, 174, 255);
 }
 
 @media screen and (min-height: 1081px) {
@@ -57,7 +58,7 @@ img.emoji {
 
 .notification-notification-container {
     position: absolute;
-    width: 13.5vw;
+    width: 14vw;
     top: auto;
     left: auto;
     bottom: auto;
@@ -69,6 +70,8 @@ img.emoji {
     left: 30px;
     bottom: 20vh;
 }
+
+/* Todo make this class for every position that we want to support */
 
 .notification-notification {
     position: absolute;
@@ -205,7 +208,7 @@ img.emoji {
 
 .notification-notification .notification-progress .notification-bar {
     height: var(--progress-height);
-    background-color: var(--white);
+    background-color: var(--blue);
     ;
     opacity: 0.8;
     width: 100%;

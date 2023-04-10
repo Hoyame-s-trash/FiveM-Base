@@ -67,22 +67,3 @@ dependencies {
 	"oxmysql",
 	"spawnmanager",
 }
-
-ui_page {
-    'html/ui.html'
-}
-
-files {
-    'html/ui.html',
-    'html/config.js',
-    'html/classes.js',
-    'html/main.js',
-    'html/main.css',
-    'html/icons/*.png',
-	'html/icons/*.jpg',
-    'html/need_icons/*.png',
-    'html/style.css',
-    'html/clothing.css',
-    'html/sounds/*.mp3',
-    'html/sounds/*.wav',
-}

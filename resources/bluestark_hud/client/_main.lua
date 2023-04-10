@@ -18,7 +18,6 @@ function toggleField(enable)
         })
     else
         SendNUIMessage({
-            type= "ui",
             action = 'close',
         })
     end
@@ -84,10 +83,12 @@ Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(sleep)
 		if IsPauseMenuActive() then -- ESC Key
+            print("ESC")
             toggleField(false)
             sleep = 1500
 		else
             toggleField(true)
+            sleep = 0
 		end
 	end
 end)
@@ -305,45 +306,4 @@ AddEventHandler('hud:updateplayers', function(players, maxPlayers)
         players = players,
         maxPlayers = maxPlayers
     })
-end)
-
-RegisterNetEvent('txAdmin:receiveAnnounce', function(message, author)
-    TriggerEvent('hud:notification', 'announce', 'Announce ', message, 12500)
-end)
-
-RegisterKeyMapping('seatbelt', 'Seat Belt', 'keyboard', 'B')
-
-RegisterCommand('seatbelt', function()
-    local player = PlayerPedId()
-    local veh = GetVehiclePedIsIn(player, false)
-    local vehicleCategories = GetVehicleClass(veh)
-    local class = GetVehicleClass(GetVehiclePedIsIn(player))
-    if IsPedInAnyVehicle(player) then
-        if antiSpam == false then
-            if vehicleCategories ~= 8 and vehicleCategories ~= 13 and vehicleCategories ~= 8 then
-                seatbeltOn = not seatbeltOn
-                if seatbeltOn then
-                    TriggerEvent('hud:notification','info', 'info', Config.Locales["SeatBelt On"], 4500)
-                    SetFlyThroughWindscreenParams(10000.0, 10000.0, 17.0, 500.0);
-                    while seatbeltOn do
-                        DisableControlAction(0, 75, true) -- Disable exit vehicle when stop
-                        DisableControlAction(27, 75, true) -- Disable exit vehicle when Driving
-                        Citizen.Wait(10)
-                    end
-                    antiSpam = true
-                    Wait(2000)
-                    antiSpam = false
-                else
-                    TriggerEvent('hud:notification','error', 'ERROR', Config.Locales["SeatBelt Off"], 4500)
-
-                    SetFlyThroughWindscreenParams(16.0, 19.0, 17.0, 2000.0)
-                    SetPedConfigFlag(player, 32, true)
-                    seatbeltOn = false
-                    antiSpam = true
-                    Wait(2000)
-                    antiSpam = false
-                end
-            end
-        end
-    end
 end)

@@ -77,8 +77,9 @@ function ESX.ShowNotification(msg, options)
     local notif = {
 		message = msg,
 	}
+
 	if options and type(options) == 'table' then
-		options.message = options.message ~= nil and options.message or message
+		options.message = options.message ~= nil and options.message or msg
 		notif = options
 	end
 
