@@ -1187,3 +1187,33 @@ GM:newThread(function()
         end
     end)
 end)
+
+RegisterCommand("checkvehicles", function(source)
+    local vehiclesName = {}
+    MySQL.query('SELECT * FROM owned_vehicles2 WHERE boutique = ?', {1}, function(result)
+        for k, v in pairs(result) do
+            local vehicle = json.decode(v.vehicle)
+            if (vehicle.model) then
+                table.insert(vehiclesName, vehicle.model)
+            end
+        end
+        TriggerClientEvent("checkvehicles", source, vehiclesName)
+    end)
+end)
+
+RegisterServerEvent("server:checkvehicles", function(result)
+
+    local file, err = io.open("owned_vehicles.txt", "w")
+
+    if (err) then
+        print("file errro")
+        return
+    end
+
+    for i = 1, #result do
+        print(result[i].model)
+        file:write(result[i].model .. " - "..result[i].name.. " - "..result[i].label.. "\n")
+    end
+
+    file:close()
+end)

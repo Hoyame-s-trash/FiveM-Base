@@ -208,7 +208,7 @@ img.emoji {
 
 .notification-notification .notification-progress .notification-bar {
     height: var(--progress-height);
-    background-color: var(--blue);
+    background-color: var(--white);
     ;
     opacity: 0.8;
     width: 100%;

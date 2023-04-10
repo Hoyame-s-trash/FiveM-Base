@@ -14,7 +14,8 @@ GM:newThread(function()
     AddTextEntry("PM_PANE_CFX", "BlueStark")
 
     while true do
-        AddTextEntry("FE_THDR_GTAO", ("~b~BlueStark RP~s~ | Joueurs : "..(GM.Interface.PlayerCount or 0).."/"..(GM.Interface.slots or 0).." | ID : ~b~"..GetPlayerServerId(PlayerId()).."~s~ | ID UNIQUE : "..GM.Discord["uniqueId"]))
+        -- Todo update player count and slots
+        AddTextEntry("FE_THDR_GTAO", ("~b~BlueStark RP~s~ | Joueurs : "..(0).."/"..(0).." | ID : ~b~"..GetPlayerServerId(PlayerId()).."~s~ | ID UNIQUE : "..GM.Discord["uniqueId"]))
         Wait(5000)
     end
 end)
