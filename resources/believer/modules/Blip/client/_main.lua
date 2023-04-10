@@ -1,70 +1,48 @@
 GM.Blip = GM.Blip or {}
+GM.Blip["List"] = {}
 
-GM.Blip.Create = function(params)
-    if params.type == nil then return end
-    if params.scale == nil then return end
-    if params.pos == nil then return end
-    if params.name == nil then return end
-    if params.color == nil then return end
-    local addBlip = AddBlipForCoord(params.pos)
-    SetBlipSprite(addBlip, params.type)
-    SetBlipScale(addBlip, params.scale)
-    SetBlipColour(addBlip, params.color)
-    SetBlipAsShortRange(addBlip, true)
-    if params.display ~= nil then
-        SetBlipDisplay(addBlip, params.display)
-    else
-        SetBlipDisplay(addBlip, 6)
-    end
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentString(params.name)
-    EndTextCommandSetBlipName(addBlip)
-
-    return addBlip
-end
-
-GM.Blip.SetName = function(blip, newName)
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentString(newName)
-    EndTextCommandSetBlipName(blip)
-end
-
-GM.Blip.SetColor = function(blip, newcolor)
-    SetBlipColour(blip, newcolor)
-end
-
-GM.Blip.Remove = function(blip)
-    if DoesBlipExist(blip) then
-        RemoveBlip(blip)
+function GM.Blip:getFromId(blipId)
+    local blips = GM.Blip["List"]
+    for i = 1, #blips do
+        local selectedBlip = blips[i]
+        if (selectedBlip ~= nil and selectedBlip.uniqueId == blipId) then
+            return i
+        end
     end
 end
 
-local BlipsList = {
-    [1] = {
-        pos = vector3(-602.12493896484,-925.86907958984,36.834575653076),
-        type = 184, 
-        scale = 0.70, 
-        name = "Weazel News", 
-        color = 0,
-        display = 6,
-    },
-}
+RegisterNetEvent("Blip:add", function(newBlip)
+    if (not newBlip or GM.Blip:getFromId(newBlip.uniqueId) ~= nil) then
+        return
+    end
+    
+    local createdBlip = AddBlipForCoord(newBlip.position)
+    SetBlipScale(createdBlip, newBlip["blipData"].scale or 0.8)
+    SetBlipSprite(createdBlip, newBlip["blipData"].sprite)
+    SetBlipColour(createdBlip, newBlip["blipData"].colour)
+    SetBlipDisplay(createdBlip, newBlip["blipData"].display or 2)
+    SetBlipAlpha(createdBlip, newBlip["blipData"].alpha or 255)
+    AddTextEntry(("BLIP_NAME_"..newBlip.uniqueId), newBlip["blipData"].name)
+    BeginTextCommandSetBlipName(("BLIP_NAME_"..newBlip.uniqueId))
+    SetBlipCategory(createdBlip, newBlip["blipData"].category or 1)
+    SetBlipAsShortRange(createdBlip, newBlip["blipData"].shortRange or true)
+    EndTextCommandSetBlipName(createdBlip)
 
-local CreatedBlips = {}
+    table.insert(GM.Blip["List"], {
+        uniqueId = newBlip.uniqueId,
+        createdBlip = createdBlip
+    })
+end)
 
-GM:newThread(function()
-    while (GM.Blip == nil) do
-        Wait(50)
+RegisterNetEvent("Blip:remove", function(blipId)
+    local index = GM.Blip:getFromId(blipId)
+    if (not GM.Blip["List"][index]) then
+        return
+    end
+    
+    if (DoesBlipExist(GM.Blip["List"][index].createdBlip)) then
+        RemoveBlip(GM.Blip["List"][index].createdBlip)
     end
 
-    for id, value in pairs(BlipsList) do
-        CreatedBlips[id] = GM.Blip.Create({
-            type = value.type,
-            scale = value.scale,
-            pos = value.pos,
-            display = value.display,
-            name = value.name,
-            color = value.color
-        })
-    end
+    GM.Blip["List"][index] = nil
 end)

@@ -82,7 +82,7 @@ Citizen.CreateThread(function()
 
 	while true do
 		Citizen.Wait(sleep)
-		if IsPauseMenuActive() then -- ESC Key
+		if IsPauseMenuActive() then
             toggleField(false)
             sleep = 1500
 		else

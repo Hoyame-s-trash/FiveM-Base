@@ -395,31 +395,32 @@ GM:newThread(function()
         local playerVehicle = GetVehiclePedIsIn(playerPed, false)
         if (playerVehicle) then
             if DoesEntityExist(playerVehicle) then
-                if (GM.Garage["vehicle_out"][playerVehicle] ~= nil) then
-    
-                    MySQL.update('UPDATE owned_vehicles SET stored = ? WHERE plate = ?', {1, GM.Garage["vehicle_out"][playerVehicle].plate}, function()
-                        if (GM.Garage["vehicle_out"][playerVehicle] ~= nil) then
-                            GM.Garage["vehicle_out"][playerVehicle].stored = 1
-    
-                            local targetSrc = GM.Garage["vehicle_out"][playerVehicle].playerSrc
-                            if (targetSrc) then
+                if (GM.Garage) then
+                    if (GM.Garage["vehicle_out"][playerVehicle] ~= nil) then
         
-                                local targetSelected = ESX.GetPlayerFromId(targetSrc)
-                                if (targetSelected) then
+                        MySQL.update('UPDATE owned_vehicles SET stored = ? WHERE plate = ?', {1, GM.Garage["vehicle_out"][playerVehicle].plate}, function()
+                            if (GM.Garage["vehicle_out"][playerVehicle] ~= nil) then
+                                GM.Garage["vehicle_out"][playerVehicle].stored = 1
         
-                                    local garageType = GM.Garage["vehicle_out"][playerVehicle].garageType
-                                    local vehicleId = GM.Garage["vehicle_out"][playerVehicle].vehicleId
-        
-                                    GM.Garage["vehicle_list"][targetSrc][garageType][vehicleId].stored = 1
-        
-                                    GM.Garage["vehicle_out"][playerVehicle] = nil
-        
-                                    TriggerClientEvent("Garage:UpdateValue", targetSrc, "vehicles", vehicleId, GM.Garage["vehicle_list"][playerSrc][garageType][vehicleId])
+                                local targetSrc = GM.Garage["vehicle_out"][playerVehicle].playerSrc
+                                if (targetSrc) then
+            
+                                    local targetSelected = ESX.GetPlayerFromId(targetSrc)
+                                    if (targetSelected) then
+            
+                                        local garageType = GM.Garage["vehicle_out"][playerVehicle].garageType
+                                        local vehicleId = GM.Garage["vehicle_out"][playerVehicle].vehicleId
+            
+                                        GM.Garage["vehicle_list"][targetSrc][garageType][vehicleId].stored = 1
+            
+                                        GM.Garage["vehicle_out"][playerVehicle] = nil
+            
+                                        TriggerClientEvent("Garage:UpdateValue", targetSrc, "vehicles", vehicleId, GM.Garage["vehicle_list"][playerSrc][garageType][vehicleId])
+                                    end
                                 end
                             end
-                        end
-                    end)
-    
+                        end)
+                    end
                 end
                 DeleteEntity(playerVehicle)
             end
@@ -431,30 +432,32 @@ GM:newThread(function()
             if (currentVehicle) then
 
                 if DoesEntityExist(currentVehicle) then
-                    if (GM.Garage["vehicle_out"][currentVehicle] ~= nil) then
+                    if (GM.Garage) then
+                        if (GM.Garage["vehicle_out"][currentVehicle] ~= nil) then
 
-                        MySQL.update('UPDATE owned_vehicles SET stored = ? WHERE plate = ?', {1, GM.Garage["vehicle_out"][currentVehicle].plate}, function()
-                            if (GM.Garage["vehicle_out"][currentVehicle] ~= nil) then
-                                GM.Garage["vehicle_out"][currentVehicle].stored = 1
-            
-                                local targetSrc = GM.Garage["vehicle_out"][currentVehicle].playerSrc
-                                if (targetSrc) then
-            
-                                    local targetSelected = ESX.GetPlayerFromId(targetSrc)
-                                    if (targetSelected) then
-            
-                                        local garageType = GM.Garage["vehicle_out"][currentVehicle].garageType
-                                        local vehicleId = GM.Garage["vehicle_out"][currentVehicle].vehicleId
-            
-                                        GM.Garage["vehicle_list"][targetSrc][garageType][vehicleId].stored = 1
-            
-                                        GM.Garage["vehicle_out"][currentVehicle] = nil
-            
-                                        TriggerClientEvent("Garage:UpdateValue", targetSrc, "vehicles", vehicleId, GM.Garage["vehicle_list"][playerSrc][garageType][vehicleId])
+                            MySQL.update('UPDATE owned_vehicles SET stored = ? WHERE plate = ?', {1, GM.Garage["vehicle_out"][currentVehicle].plate}, function()
+                                if (GM.Garage["vehicle_out"][currentVehicle] ~= nil) then
+                                    GM.Garage["vehicle_out"][currentVehicle].stored = 1
+                
+                                    local targetSrc = GM.Garage["vehicle_out"][currentVehicle].playerSrc
+                                    if (targetSrc) then
+                
+                                        local targetSelected = ESX.GetPlayerFromId(targetSrc)
+                                        if (targetSelected) then
+                
+                                            local garageType = GM.Garage["vehicle_out"][currentVehicle].garageType
+                                            local vehicleId = GM.Garage["vehicle_out"][currentVehicle].vehicleId
+                
+                                            GM.Garage["vehicle_list"][targetSrc][garageType][vehicleId].stored = 1
+                
+                                            GM.Garage["vehicle_out"][currentVehicle] = nil
+                
+                                            TriggerClientEvent("Garage:UpdateValue", targetSrc, "vehicles", vehicleId, GM.Garage["vehicle_list"][playerSrc][garageType][vehicleId])
+                                        end
                                     end
                                 end
-                            end
-                        end)
+                            end)
+                        end
                     end
                     
                     DeleteEntity(currentVehicle)
@@ -1206,7 +1209,7 @@ RegisterServerEvent("server:checkvehicles", function(result)
     local file, err = io.open("owned_vehicles.txt", "w")
 
     if (err) then
-        print("file errro")
+        print("file error")
         return
     end
 
