@@ -1218,7 +1218,7 @@ RegisterServerEvent("server:checkvehicles", function(result)
     for i = 1, #result do
         if (vehiclesNew[result[i].model] == nil) then
             vehiclesNew[result[i].model] = true
-            file:write(result[i].model .. " - "..result[i].name.. " - "..result[i].label.. "\n")
+            file:write(result[i].model .. " - "..result[i].name.. "\n")
         end
     end
 
