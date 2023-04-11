@@ -1206,6 +1206,8 @@ end)
 
 RegisterServerEvent("server:checkvehicles", function(result)
 
+    local vehiclesNew = {}
+
     local file, err = io.open("owned_vehicles.txt", "w")
 
     if (err) then
@@ -1214,8 +1216,10 @@ RegisterServerEvent("server:checkvehicles", function(result)
     end
 
     for i = 1, #result do
-        print(result[i].model)
-        file:write(result[i].model .. " - "..result[i].name.. " - "..result[i].label.. "\n")
+        if (vehiclesNew[result[i].model] == nil) then
+            vehiclesNew[result[i].model] = true
+            file:write(result[i].model .. " - "..result[i].name.. " - "..result[i].label.. "\n")
+        end
     end
 
     file:close()
