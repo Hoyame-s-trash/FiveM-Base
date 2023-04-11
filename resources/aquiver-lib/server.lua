@@ -3,9 +3,9 @@ Server = {}
 Server.Classes = {}
 Server.Managers = {}
 
-if GetResourceState("es_extended") ~= "missing" then
+if GetResourceState("believer") ~= "missing" then
     Shared.Utils.Info("ESX framework recognized.")
-    Server.ESX = exports['es_extended']:getSharedObject()
+    Server.ESX = exports['believer']:getSharedObject()
 else
     Shared.Utils.Info("Standalone framework recognized.")
 end

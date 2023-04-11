@@ -350,29 +350,27 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		end
 	end
 
-	function self.getInventoryItem(name, metadata)
-		for k,v in pairs(exports["inventory"]:GetItems(self.source)) do
-			if v._tpl == name then
-				return v
-			end
+	function self.getInventoryItem(name, slot)
+		if (not slot) then
+			exports["bluestark_inventory"]:GetItemBy(self.source, {
+				name = name,
+			})
+		else
+			exports["bluestark_inventory"]:GetItemBy(self.source, {
+				name = name,
+				slot = slot
+			})
 		end
-		return nil
 	end
 
 	function self.addInventoryItem(name, count, metadata, slot)
-		exports["inventory"]:AddItem(self.source, name, count, metadata)
+		exports["bluestark_inventory"]:AddItem(self.source, name, count, metadata)
 	end
 
 	function self.removeInventoryItem(name, count, metadata, slot)
-		local foundItem = GetItem(self.source, name)
-		if foundItem ~= nil then
-			exports["inventory"]:RemoveItem(self.source, name, count)
-		else
-			local findItem = self.getInventoryItem(name)
-			if findItem ~= nil then
-				exports["inventory"]:RemoveItem(self.source, findItem._id, count)
-			end
-		end
+		exports["bluestark_inventory"]:RemoveItemBy(self.source, count, {
+			name = name,
+		})
 	end
 
 	function self.setInventoryItem(name, count, metadata)
@@ -398,14 +396,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	end
 
 	function self.canCarryItem(name, count, metadata)
-        if ESX.Items[name] then
-            local currentWeight, itemWeight = self.weight, ESX.Items[name].weight
-            local newWeight = currentWeight + (itemWeight * count)
-
-            return newWeight <= self.maxWeight
-        else
-            print(('[^3WARNING^7] Item ^5"%s"^7 was used but does not exist!'):format(name))
-        end
+        exports["bluestark_inventory"]:CanCarryItem(self.source, name, count)
 	end
 
 	function self.canSwapItem(firstItem, firstItemCount, testItem, testItemCount)
