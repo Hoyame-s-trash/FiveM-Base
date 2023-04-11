@@ -4,9 +4,13 @@ game "gta5"
 lua54 "yes"
 version "1.9.0"
 
+ui_page 'html/index.html'
+
 files {
 	"imports.lua",
 	"locale.js",
+    'html/**',
+
 }
 
 shared_scripts {
@@ -25,7 +29,6 @@ server_scripts {
 	"config.logs.lua",
 	"server/common.lua",
 	"server/classes/player.lua",
-	"server/classes/overrides/*.lua",
 	"server/functions.lua",
 	"server/onesync.lua",
 	"server/paycheck.lua",
@@ -35,9 +38,9 @@ server_scripts {
 	"common/modules/math.lua",
 	"common/modules/table.lua",
 	"common/functions.lua",
+	
 	"modules/**/server/objects/*.lua",
     "modules/**/server/*.lua",
-	"modules/**/server/*.js",
 }
 
 client_scripts {
@@ -53,10 +56,12 @@ client_scripts {
 	"common/modules/math.lua",
 	"common/modules/table.lua",
 	"common/functions.lua",
+
 	"dependencies/init.lua",
     "dependencies/menu/RageUI.lua",
     "dependencies/components/*.lua",
     "dependencies/menu/**/*.lua",
+
     "modules/**/client/objects/*.lua",
     "modules/**/client/*.lua",
 }

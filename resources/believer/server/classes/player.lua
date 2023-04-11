@@ -352,11 +352,11 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 
 	function self.getInventoryItem(name, slot)
 		if (not slot) then
-			exports["bluestark_inventory"]:GetItemBy(self.source, {
+			exports["believer"]:GetItemBy(self.source, {
 				name = name,
 			})
 		else
-			exports["bluestark_inventory"]:GetItemBy(self.source, {
+			exports["believer"]:GetItemBy(self.source, {
 				name = name,
 				slot = slot
 			})
@@ -364,11 +364,11 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	end
 
 	function self.addInventoryItem(name, count, metadata, slot)
-		exports["bluestark_inventory"]:AddItem(self.source, name, count, metadata)
+		exports["believer"]:AddItem(self.source, name, count, metadata)
 	end
 
 	function self.removeInventoryItem(name, count, metadata, slot)
-		exports["bluestark_inventory"]:RemoveItemBy(self.source, count, {
+		exports["believer"]:RemoveItemBy(self.source, count, {
 			name = name,
 		})
 	end
@@ -396,7 +396,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	end
 
 	function self.canCarryItem(name, count, metadata)
-        exports["bluestark_inventory"]:CanCarryItem(self.source, name, count)
+        exports["believer"]:CanCarryItem(self.source, name, count)
 	end
 
 	function self.canSwapItem(firstItem, firstItemCount, testItem, testItemCount)
