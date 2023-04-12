@@ -1,6 +1,6 @@
 GM.Police = GM.Police or {}
 
-GM.Police.Lockers = {
+GM.Police.Locker = {
     vector3(-1098.2945556641,-827.35394287109,26.827430725098),
 }
 
@@ -25,6 +25,9 @@ GM.Police.Garage = {
                 },
                 ["all"] = {
                     "infernus",
+                    "thrax",
+                    "sultan",
+                    "primo2",
                 }
             },
         }
@@ -38,21 +41,132 @@ GM.Police.Duty = {
         position = vector3(-1091.3719482422,-820.21496582031,27.034378051758),
         helpNotification = "pour prendre votre service.",
         ped = {
-            model = GetHashKey("s_f_y_cop_01"),
-            position = vector3(-1075.6857910156,-858.44702148438,5.0418553352356),
-            heading = 243.77
+            model = GetHashKey("s_m_y_cop_01"),
+            position = vector3(-1090.8175048828,-821.10479736328,27.034391403198),
+            heading = 34.01
         },
-        vehicles = {
-            position = {
-                vector4(-1070.6469726563,-857.72442626953,4.240786075592, 308.97),
-            },
-            list = {
-                ["unmarked"] = {
-                    "sultanrs",
+    },
+}
+
+GM.Police.Wardrobe = {
+    {
+        name = "wardrobe_1",
+        label = "Vestiaire 1",
+        position = vector3(-1092.4991455078,-826.40161132813,26.827428817749),
+        helpNotification = "pour ouvrir le vestiaire.",
+        outfits = {
+            {
+                name = "Rookie",
+                grade = 0,
+                male = {
+                    tshirt_1 = 15,  tshirt_2 = 0,
+                    torso_1 = 499,   torso_2 = 0,
+                    decals_1 = 0,   decals_2 = 0,
+                    arms = 1,
+                    pants_1 = 168,   pants_2 = 5,
+                    shoes_1 = 105,   shoes_2 = 0,
+                    helmet_1 = -1,  helmet_2 = 0,
+                    chain_1 = 0,    chain_2 = 0,
+                    ears_1 = -1,     ears_2 = 0,
+                    mask_1 = 0,     mask_2 = 0,
+                    bags_1 = 0,     bags_2 = 0,
+                    bproof_1 = 0,     bproof_2 = 0,
                 },
-                ["all"] = {
-                    "infernus",
-                }
+                female = {
+                    tshirt_1 = 14,  tshirt_2 = 0,
+                    torso_1 = 528,   torso_2 = 0,
+                    decals_1 = 0,   decals_2 = 0,
+                    arms = 0,
+                    pants_1 = 174,   pants_2 = 0,
+                    shoes_1 = 109,   shoes_2 = 0,
+                    helmet_1 = -1,  helmet_2 = 0,
+                    chain_1 = 0,    chain_2 = 0,
+                    ears_1 = -1,     ears_2 = 0,
+                    mask_1 = 0,     mask_2 = 0,
+                    bags_1 = 0,     bags_2 = 0,
+                    bproof_1 = 0,     bproof_2 = 0,
+                },
+            },
+            {
+                name = "Rookie 2",
+                grade = 2,
+                male = {
+                    tshirt_1 = 15,  tshirt_2 = 0,
+                    torso_1 = 499,   torso_2 = 0,
+                    decals_1 = 0,   decals_2 = 0,
+                    arms = 1,
+                    pants_1 = 168,   pants_2 = 5,
+                    shoes_1 = 105,   shoes_2 = 0,
+                    helmet_1 = -1,  helmet_2 = 0,
+                    chain_1 = 0,    chain_2 = 0,
+                    ears_1 = -1,     ears_2 = 0,
+                    mask_1 = 0,     mask_2 = 0,
+                    bags_1 = 0,     bags_2 = 0,
+                    bproof_1 = 0,     bproof_2 = 0,
+                },
+                female = {
+                    tshirt_1 = 14,  tshirt_2 = 0,
+                    torso_1 = 528,   torso_2 = 0,
+                    decals_1 = 0,   decals_2 = 0,
+                    arms = 0,
+                    pants_1 = 174,   pants_2 = 0,
+                    shoes_1 = 109,   shoes_2 = 0,
+                    helmet_1 = -1,  helmet_2 = 0,
+                    chain_1 = 0,    chain_2 = 0,
+                    ears_1 = -1,     ears_2 = 0,
+                    mask_1 = 0,     mask_2 = 0,
+                    bags_1 = 0,     bags_2 = 0,
+                    bproof_1 = 0,     bproof_2 = 0,
+                },
+            },
+        }
+    },
+}
+
+GM.Police.Armory = {
+    {
+        name = "armory_1",
+        label = "Armurerie 1",
+        position = vector3(-1104.5941162109,-822.30407714844,14.282793045044),
+        helpNotification = "pour accéder à l'armurerie.",
+        items = {
+            {
+                name = "weapon_flashlight",
+                label = "Lampe torche",
+                grade = 0,
+            },
+            {
+                name = "weapon_nightstick",
+                label = "Matraque",
+                grade = 0,
+            },
+            {
+                name = "weapon_stungun",
+                label = "Taser",
+                grade = 0,
+            },
+            {
+                name = "weapon_combatpistol",
+                label = "Pistolet de combat",
+                grade = 0,
+            },
+            {
+                name = "handcuff",
+                label = "Menottes",
+                grade = 0,
+                price = 200
+            },
+            {
+                name = "police_shield",
+                label = "Bouclier antiémeute",
+                grade = 0,
+                price = 150
+            },
+            {
+                name = "gpb",
+                label = "GPB",
+                grade = 0,
+                price = 250
             },
         }
     },

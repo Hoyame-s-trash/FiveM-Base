@@ -3,7 +3,8 @@ GM.Service = GM.Service or {}
 GM.Service["Enterprise_list"] = {}
 GM.Service["Player_list"] = {}
 
-RegisterServerEvent("Service:interact", function(bool)
+RegisterServerEvent("Service:interact")
+AddEventHandler("Service:interact", function(source)
     local playerSrc = source
     if (not playerSrc) then return end
 
@@ -21,7 +22,7 @@ RegisterServerEvent("Service:interact", function(bool)
         GM.Service["Enterprise_list"][playerJob] = {}
     end
 
-    if (bool) then
+    if (GM.Service["Player_list"][playerSrc] == nil) then
         GM.Service["Player_list"][playerSrc] = true
         GM.Service["Enterprise_list"][playerJob][playerSrc] = true
         playerSelected.showNotification("~g~Vous avez pris votre service.")
@@ -31,7 +32,11 @@ RegisterServerEvent("Service:interact", function(bool)
         playerSelected.showNotification("~r~Vous avez pris votre fin de service.")
     end
 
-    TriggerClientEvent("Service:sendActivity", playerSrc, bool)
+    if (GM.Service["Player_list"][playerSrc] == nil) then
+        TriggerClientEvent("Service:sendActivity", playerSrc, false)
+    else
+        TriggerClientEvent("Service:sendActivity", playerSrc, true)
+    end
 end)
 
 function GM.Service:getPeopleService(jobName)

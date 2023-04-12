@@ -2,7 +2,7 @@ SetMapName('San Andreas')
 SetGameType('ESX Legacy')
 
 local newPlayer = 'INSERT INTO `users` SET `accounts` = ?, `identifier` = ?, `group` = ?, `first_connection` = ?'
-local loadPlayer = 'SELECT `uniqueId`, `accounts`, `job`, `job_grade`, `orga`, `orga_grade`, `group`, `position`, `inventory`, `skin`, `loadout`, `is_dead`, `first_connection`, `firstname`, `lastname`, `dateofbirth`, `sex`, `height`'
+local loadPlayer = 'SELECT `uniqueId`, `accounts`, `job`, `job_grade`, `group`, `position`, `inventory`, `skin`, `loadout`, `is_dead`, `first_connection`, `firstname`, `lastname`, `dateofbirth`, `sex`, `height`'
 
 loadPlayer = loadPlayer .. ' FROM `users` WHERE identifier = ?'
 
@@ -55,11 +55,10 @@ end
 
 
 function loadESXPlayer(identifier, playerId, isNew)
-  local userData = {uniqueId = 0, accounts = {}, inventory = {}, job = {}, orga = {}, loadout = {}, playerName = GetPlayerName(playerId), weight = 0, is_dead = false, first_connection = os.time(os.date("!*t"))}
+  local userData = {uniqueId = 0, accounts = {}, inventory = {}, job = {}, loadout = {}, playerName = GetPlayerName(playerId), weight = 0, is_dead = false, first_connection = os.time(os.date("!*t"))}
 
   local result = MySQL.prepare.await(loadPlayer, {identifier})
   local job, grade, jobObject, gradeObject = result.job, tostring(result.job_grade)
-  local orga, grade, orgaObject, gradeObject = result.orga, tostring(result.orga_grade)
   local foundAccounts, foundItems = {}, {}
 
   -- UniqueId
@@ -129,34 +128,6 @@ function loadESXPlayer(identifier, playerId, isNew)
   end
   if gradeObject.skin_female then
     userData.job.skin_female = json.decode(gradeObject.skin_female)
-  end
-
-  -- Orga
-  if ESX.DoesOrgaExist(orga, grade) then
-    orgaObject, gradeObject = ESX.Orga[orga], ESX.Orga[orga].grades[grade]
-  else
-    print(('[^3WARNING^7] Ignoring invalid orga for ^5%s^7 [orga: ^5%s^7, grade: ^5%s^7]'):format(identifier, orga, grade))
-    orga, grade = 'unemployed', '0'
-    orgaObject, gradeObject = ESX.Orga[orga], ESX.Orga[orga].grades[grade]
-  end
-
-  userData.orga.id = orgaObject.id
-  userData.orga.name = orgaObject.name
-  userData.orga.label = orgaObject.label
-
-  userData.orga.grade = tonumber(grade)
-  userData.orga.grade_name = gradeObject.name
-  userData.orga.grade_label = gradeObject.label
-  userData.orga.grade_salary = gradeObject.salary
-
-  userData.orga.skin_male = {}
-  userData.orga.skin_female = {}
-
-  if gradeObject.skin_male then
-    userData.orga.skin_male = json.decode(gradeObject.skin_male)
-  end
-  if gradeObject.skin_female then
-    userData.orga.skin_female = json.decode(gradeObject.skin_female)
   end
 
   -- Inventory
@@ -253,8 +224,7 @@ function loadESXPlayer(identifier, playerId, isNew)
     end
   end
 
-  local xPlayer = CreateExtendedPlayer(playerId, identifier, userData.group, userData.accounts, userData.inventory, userData.weight, userData.job, userData.orga,
-    userData.loadout, userData.playerName, userData.coords, userData.uniqueId, userData.is_dead, userData.first_connection)
+  local xPlayer = CreateExtendedPlayer(playerId, identifier, userData.group, userData.accounts, userData.inventory, userData.weight, userData.job, userData.loadout, userData.playerName, userData.coords, userData.uniqueId, userData.is_dead, userData.first_connection)
   ESX.Players[playerId] = xPlayer
 
   if userData.firstname then
@@ -284,7 +254,6 @@ function loadESXPlayer(identifier, playerId, isNew)
       identifier = xPlayer.getIdentifier(), 
       inventory = xPlayer.getInventory(),
       job = xPlayer.getJob(), 
-      orga = xPlayer.getOrga(),
       loadout = xPlayer.getLoadout(), 
       maxWeight = xPlayer.getMaxWeight(), 
       money = xPlayer.getMoney(),
@@ -303,7 +272,7 @@ function loadESXPlayer(identifier, playerId, isNew)
   xPlayer.updateCoords()
   xPlayer.triggerEvent('esx:registerSuggestions', Core.RegisteredCommands)
   print(('[^2INFO^0] Player ^5"%s"^0 group : %s has connected to the server. UNIQUE ID: ^5%s^7 ID: ^5%s^7'):format(xPlayer.getName(), xPlayer.getGroup(), xPlayer.getUniqueId(), playerId))
-  print(('[^2INFO^0] Player ^5"%s"^0 JOB: ^5%s^7 ORGA: ^5%s^7'):format(xPlayer.getName(), xPlayer.job.name, xPlayer.orga.name))
+  print(('[^2INFO^0] Player ^5"%s"^0 JOB: ^5%s^7'):format(xPlayer.getName(), xPlayer.job.name))
 end
 
 AddEventHandler('chatMessage', function(playerId, author, message)

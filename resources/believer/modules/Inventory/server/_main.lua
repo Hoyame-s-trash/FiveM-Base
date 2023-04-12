@@ -2228,7 +2228,6 @@ local accountsAsItems = {
 }
 
 local function Init()
-    print("^1ESX framework recognized.")
 
     local function loadEsxPlayerInventory(xPlayer)
         ScriptServer.Classes.PlayerInventory.new({

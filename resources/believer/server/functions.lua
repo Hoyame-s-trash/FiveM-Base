@@ -408,18 +408,6 @@ function ESX.DoesJobExist(job, grade)
   return false
 end
 
-function ESX.DoesOrgaExist(orga, grade)
-  grade = tostring(grade)
-
-  if orga and grade then
-    if ESX.Orga[orga] and ESX.Orga[orga].grades[grade] then
-      return true
-    end
-  end
-
-  return false
-end
-
 function ESX.generateVariable(length)
 	local res = ""
 	for i = 1, length do

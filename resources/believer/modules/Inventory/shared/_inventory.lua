@@ -503,6 +503,9 @@ ScriptShared.Items = Module
 
 ---@param name string
 function Module:Get(name)
+    if (not self.Registered[name]) then
+        print(("[^1WARNING^0] Inventory ITEM doens't exist : ^5%s^7"):format(name))
+    end
     return self.Registered[name]
 end
 

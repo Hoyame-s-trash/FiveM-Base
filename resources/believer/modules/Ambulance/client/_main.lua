@@ -1,5 +1,3 @@
-GM.Ambulance = GM.Ambulance or {}
-
 GM.Ambulance = {
     menu = {
         submenus = {}
@@ -18,20 +16,6 @@ GM.Ambulance.menu.submenus["calls"] = RageUI.CreateSubMenu(GM.Ambulance.menu.mai
 GM.Ambulance.menu.submenus["calls_management"] = RageUI.CreateSubMenu(GM.Ambulance.menu.submenus["calls"], "", "Détails de l'appels", 0, 0, "banner", "bluestark")
 
 GM.Ambulance.menu.main:isVisible(function(Items)
-    Items:Checkbox("Prendre son service", nil, SERVICE_CHECKED, {}, {
-        onSelected = function(Checked)
-            SERVICE_CHECKED = Checked
-        end,
-        onChecked = function()
-            GM.Ambulance.data.onService = true
-            TriggerServerEvent("Service:interact", true)
-            
-        end,
-        onUnChecked = function()
-            GM.Ambulance.data.onService = false
-            TriggerServerEvent("Service:interact", false)
-        end,
-    })
     Items:Button("Historique des appels", nil, {}, GM.Ambulance.data.onService, {
         onSelected = function()
             TriggerServerEvent("Ambulance:requestCalls")
