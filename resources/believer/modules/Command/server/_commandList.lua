@@ -1085,7 +1085,7 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "giveitem",
+        name = "giveItem",
         label = "Donner un item",
         description = "Permet de donner un item à un joueur",
     }, function(playerSrc, args)
@@ -1187,6 +1187,35 @@ GM:newThread(function()
                 playerSelected.showNotification("~r~Ce métier n'existe pas.")
                 return
             end
+        end
+    end)
+
+    GM.Command:register({
+        name = "heal",
+        label = "Soigner",
+        description = "Permet de soigner un joueur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            TriggerClientEvent("esx_status:set", targetSelected.source, "hunger", 1000000)
+            TriggerClientEvent("esx_status:set", targetSelected.source, "thirst", 1000000)
+            TriggerClientEvent("Ambulance:heal", targetSelected.source)
+
+            print("VOUS AVEZ HEAL "..targetSelected.getName()..".")
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            TriggerClientEvent("esx_status:set", targetSelected.source, "hunger", 1000000)
+            TriggerClientEvent("esx_status:set", targetSelected.source, "thirst", 1000000)
+            TriggerClientEvent("Ambulance:heal", targetSelected.source)
+
+            playerSelected.showNotification("~g~Vous avez heal "..targetSelected.getName()..".")
         end
     end)
 end)

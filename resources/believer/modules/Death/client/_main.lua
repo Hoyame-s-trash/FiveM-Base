@@ -140,6 +140,10 @@ RegisterNetEvent("Ambulance:suicide", function()
     SetEntityHealth(PlayerPedId(), 0)
 end)
 
+RegisterNetEvent("Ambulance:heal", function()
+    SetEntityHealth(PlayerPedId(), GetEntityMaxHealth(PlayerPedId()))
+end)
+
 function getDeathTime()
     return GM.Death.Time
 end

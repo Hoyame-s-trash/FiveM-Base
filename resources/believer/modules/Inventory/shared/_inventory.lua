@@ -446,7 +446,7 @@ CONFIG.VEHICLE_SIZES = {
     DEFAULT_TRUNK_WEIGHT = 50.0,
     DEFAULT_GLOVEBOX_SLOT = 10,
     DEFAULT_GLOVEBOX_WEIGHT = 10.0,
-    DATA = {
+    DATA = { -- CONFIG COFFRE VEHICLES
         [`infernus`] = {
             TRUNK = { SLOT = 10, WEIGHT = 35.0 },
             GLOVEBOX = { SLOT = 7, WEIGHT = 15.0 }
@@ -516,9 +516,9 @@ ScriptShared.Items:Add("money", {
     stackable = true,
     deletable = true,
     tradable = true,
-    label = "Money",
+    label = "Argent",
     weight = 0.0,
-    category = "Currency"
+    category = "Espèces"
 })
 
 ScriptShared.Items:Add("apple", {
@@ -530,7 +530,8 @@ ScriptShared.Items:Add("apple", {
     usable = true,
     category = "Fruits",
     server = {
-        export = "believer.any_function_name",
+        event = "Inventory:testEvent",
+        --export = "resourceName.functionName",
         onUseDeleteAmount = 1
     }
 })
@@ -601,7 +602,7 @@ ScriptShared.Items:Add("at_flashlight", {
     tradable = true,
     label = "Flashlight",
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_suppressor_light", {
     stackable = false,
@@ -609,7 +610,7 @@ ScriptShared.Items:Add("at_suppressor_light", {
     tradable = true,
     label = 'Suppressor (Light)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_suppressor_heavy", {
     stackable = false,
@@ -617,7 +618,7 @@ ScriptShared.Items:Add("at_suppressor_heavy", {
     tradable = true,
     label = 'Suppressor (Heavy)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_grip", {
     stackable = false,
@@ -625,7 +626,7 @@ ScriptShared.Items:Add("at_grip", {
     tradable = true,
     label = 'Grip',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_barrel", {
     stackable = false,
@@ -633,7 +634,7 @@ ScriptShared.Items:Add("at_barrel", {
     tradable = true,
     label = 'Barrel',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_clip_extended_pistol", {
     stackable = false,
@@ -641,7 +642,7 @@ ScriptShared.Items:Add("at_clip_extended_pistol", {
     tradable = true,
     label = 'Extended Clip (Pistol)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_clip_extended_smg", {
     stackable = false,
@@ -649,7 +650,7 @@ ScriptShared.Items:Add("at_clip_extended_smg", {
     tradable = true,
     label = 'Extended Clip (SMG)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_clip_extended_shotgun", {
     stackable = false,
@@ -657,7 +658,7 @@ ScriptShared.Items:Add("at_clip_extended_shotgun", {
     tradable = true,
     label = 'Extended Clip (Shotgun)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_clip_extended_rifle", {
     stackable = false,
@@ -665,7 +666,7 @@ ScriptShared.Items:Add("at_clip_extended_rifle", {
     tradable = true,
     label = 'Extended Clip (Rifle)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_clip_extended_mg", {
     stackable = false,
@@ -673,7 +674,7 @@ ScriptShared.Items:Add("at_clip_extended_mg", {
     tradable = true,
     label = 'Extended Clip (LMG)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_clip_extended_sniper", {
     stackable = false,
@@ -681,7 +682,7 @@ ScriptShared.Items:Add("at_clip_extended_sniper", {
     tradable = true,
     label = 'Extended Clip (SR)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_clip_drum_smg", {
     stackable = false,
@@ -689,7 +690,7 @@ ScriptShared.Items:Add("at_clip_drum_smg", {
     tradable = true,
     label = 'Drum clip (SMG)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_clip_drum_shotgun", {
     stackable = false,
@@ -697,7 +698,7 @@ ScriptShared.Items:Add("at_clip_drum_shotgun", {
     tradable = true,
     label = 'Drum clip (Shotgun)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_clip_drum_rifle", {
     stackable = false,
@@ -705,7 +706,7 @@ ScriptShared.Items:Add("at_clip_drum_rifle", {
     tradable = true,
     label = 'Drum clip (Rifle)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_compensator", {
     stackable = false,
@@ -713,7 +714,7 @@ ScriptShared.Items:Add("at_compensator", {
     tradable = true,
     label = 'Compensator',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_scope_macro", {
     stackable = false,
@@ -721,7 +722,7 @@ ScriptShared.Items:Add("at_scope_macro", {
     tradable = true,
     label = 'Scope (Macro)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_scope_small", {
     stackable = false,
@@ -729,7 +730,7 @@ ScriptShared.Items:Add("at_scope_small", {
     tradable = true,
     label = 'Scope (Small)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_scope_medium", {
     stackable = false,
@@ -737,7 +738,7 @@ ScriptShared.Items:Add("at_scope_medium", {
     tradable = true,
     label = 'Scope (Medium)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_scope_large", {
     stackable = false,
@@ -745,7 +746,7 @@ ScriptShared.Items:Add("at_scope_large", {
     tradable = true,
     label = 'Scope (Large)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_scope_advanced", {
     stackable = false,
@@ -753,7 +754,7 @@ ScriptShared.Items:Add("at_scope_advanced", {
     tradable = true,
     label = 'Scope (Advanced)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_scope_nv", {
     stackable = false,
@@ -761,7 +762,7 @@ ScriptShared.Items:Add("at_scope_nv", {
     tradable = true,
     label = 'Scope (Night Vision)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_scope_thermal", {
     stackable = false,
@@ -769,7 +770,7 @@ ScriptShared.Items:Add("at_scope_thermal", {
     tradable = true,
     label = 'Scope (Thermal)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_scope_holo", {
     stackable = false,
@@ -777,7 +778,7 @@ ScriptShared.Items:Add("at_scope_holo", {
     tradable = true,
     label = 'Scope (Holo)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_muzzle_flat", {
     stackable = false,
@@ -785,7 +786,7 @@ ScriptShared.Items:Add("at_muzzle_flat", {
     tradable = true,
     label = 'Muzzle (Flat)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_muzzle_tactical", {
     stackable = false,
@@ -793,7 +794,7 @@ ScriptShared.Items:Add("at_muzzle_tactical", {
     tradable = true,
     label = 'Muzzle (Tactical)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_muzzle_fat", {
     stackable = false,
@@ -801,7 +802,7 @@ ScriptShared.Items:Add("at_muzzle_fat", {
     tradable = true,
     label = 'Muzzle (Fat)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_muzzle_precision", {
     stackable = false,
@@ -809,7 +810,7 @@ ScriptShared.Items:Add("at_muzzle_precision", {
     tradable = true,
     label = 'Muzzle (Precision)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_muzzle_heavy", {
     stackable = false,
@@ -817,7 +818,7 @@ ScriptShared.Items:Add("at_muzzle_heavy", {
     tradable = true,
     label = 'Muzzle (Heavy)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_muzzle_slanted", {
     stackable = false,
@@ -825,7 +826,7 @@ ScriptShared.Items:Add("at_muzzle_slanted", {
     tradable = true,
     label = 'Muzzle (Slanted)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_muzzle_split", {
     stackable = false,
@@ -833,7 +834,7 @@ ScriptShared.Items:Add("at_muzzle_split", {
     tradable = true,
     label = 'Muzzle (Split)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_muzzle_squared", {
     stackable = false,
@@ -841,7 +842,7 @@ ScriptShared.Items:Add("at_muzzle_squared", {
     tradable = true,
     label = 'Muzzle (Squared)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_muzzle_bell", {
     stackable = false,
@@ -849,7 +850,7 @@ ScriptShared.Items:Add("at_muzzle_bell", {
     tradable = true,
     label = 'Muzzle (Bell)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_luxe", {
     stackable = false,
@@ -857,7 +858,7 @@ ScriptShared.Items:Add("at_skin_luxe", {
     tradable = true,
     label = 'Weapon Skin (Luxe)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_wood", {
     stackable = false,
@@ -865,7 +866,7 @@ ScriptShared.Items:Add("at_skin_wood", {
     tradable = true,
     label = 'Weapon Skin (Wood)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_metal", {
     stackable = false,
@@ -873,7 +874,7 @@ ScriptShared.Items:Add("at_skin_metal", {
     tradable = true,
     label = 'Weapon Skin (Metal)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_pearl", {
     stackable = false,
@@ -881,7 +882,7 @@ ScriptShared.Items:Add("at_skin_pearl", {
     tradable = true,
     label = 'Weapon Skin (Pearl)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_camo", {
     stackable = false,
@@ -889,7 +890,7 @@ ScriptShared.Items:Add("at_skin_camo", {
     tradable = true,
     label = 'Weapon Skin (Camo)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_brushstroke", {
     stackable = false,
@@ -897,7 +898,7 @@ ScriptShared.Items:Add("at_skin_brushstroke", {
     tradable = true,
     label = 'Weapon Skin (Brushstroke)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_woodland", {
     stackable = false,
@@ -905,7 +906,7 @@ ScriptShared.Items:Add("at_skin_woodland", {
     tradable = true,
     label = 'Weapon Skin (Woodland)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_skull", {
     stackable = false,
@@ -913,7 +914,7 @@ ScriptShared.Items:Add("at_skin_skull", {
     tradable = true,
     label = 'Weapon Skin (Skull)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_sessanta", {
     stackable = false,
@@ -921,7 +922,7 @@ ScriptShared.Items:Add("at_skin_sessanta", {
     tradable = true,
     label = 'Weapon Skin (Sessanta)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_perseus", {
     stackable = false,
@@ -929,7 +930,7 @@ ScriptShared.Items:Add("at_skin_perseus", {
     tradable = true,
     label = 'Weapon Skin (Perseus)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_leopard", {
     stackable = false,
@@ -937,7 +938,7 @@ ScriptShared.Items:Add("at_skin_leopard", {
     tradable = true,
     label = 'Weapon Skin (Leopard)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_zebra", {
     stackable = false,
@@ -945,7 +946,7 @@ ScriptShared.Items:Add("at_skin_zebra", {
     tradable = true,
     label = 'Weapon Skin (Zebra)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_geometric", {
     stackable = false,
@@ -953,7 +954,7 @@ ScriptShared.Items:Add("at_skin_geometric", {
     tradable = true,
     label = 'Weapon Skin (Geometric)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_boom", {
     stackable = false,
@@ -961,7 +962,7 @@ ScriptShared.Items:Add("at_skin_boom", {
     tradable = true,
     label = 'Weapon Skin (Boom)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 ScriptShared.Items:Add("at_skin_patriotic", {
     stackable = false,
@@ -969,7 +970,7 @@ ScriptShared.Items:Add("at_skin_patriotic", {
     tradable = true,
     label = 'Weapon Skin (Patriotic)',
     weight = 1.0,
-    category = "Weapon attachment"
+    category = "Accessoire d'armes"
 })
 
 ---@class ShopStaticData

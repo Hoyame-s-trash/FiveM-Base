@@ -9,13 +9,13 @@ loadPlayer = loadPlayer .. ' FROM `users` WHERE identifier = ?'
 
 RegisterNetEvent('esx:onPlayerJoined')
 AddEventHandler('esx:onPlayerJoined', function()
-  local _source = source
+  local playerSrc = source
   while not next(ESX.Jobs) do
     Wait(50)
   end
 
-  if not ESX.Players[_source] then
-    onPlayerJoined(_source)
+  if not ESX.Players[playerSrc] then
+    onPlayerJoined(playerSrc)
   end
 end)
 
@@ -604,7 +604,7 @@ AddEventHandler("onResourceStop", function(rscName)
       return
   end
 
-  TriggerClientEvent("Inventory:forceClose", -1)
+  ScriptServer.Managers.Inventory:SaveInventories()
 
   Core.SavePlayers()
 end)

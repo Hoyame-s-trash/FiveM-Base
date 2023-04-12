@@ -527,25 +527,6 @@ AddEventHandler("esx:noclip", function(input)
 	end)
 end)
 
-RegisterNetEvent("esx:killPlayer")
-AddEventHandler("esx:killPlayer", function()
-  SetEntityHealth(ESX.PlayerData.ped, 0)
-end)
-
-RegisterNetEvent("esx:freezePlayer")
-AddEventHandler("esx:freezePlayer", function(input)
-    local player = PlayerId()
-    if input == 'freeze' then
-        SetEntityCollision(ESX.PlayerData.ped, false)
-        FreezeEntityPosition(ESX.PlayerData.ped, true)
-        SetPlayerInvincible(player, true)
-    elseif input == 'unfreeze' then
-        SetEntityCollision(ESX.PlayerData.ped, true)
-		FreezeEntityPosition(ESX.PlayerData.ped, false)
-        SetPlayerInvincible(player, false)
-    end
-end)
-
 RegisterNetEvent("esx:GetVehicleType", function(Model, Request)
 	if not IsModelInCdimage(Model) then
       return TriggerServerEvent("esx:ReturnVehicleType", false, Request)

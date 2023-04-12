@@ -416,10 +416,14 @@ RegisterNetEvent("Inventory:USE_ITEM", function(data)
         local func <const> = parts[2]
 
         exports[resource][func](source, item)
+    end
 
-        if type(item.data.server.onUseDeleteAmount) == "number" and item.data.server.onUseDeleteAmount > 0 then
-            inventory:removeItemBy(item.data.server.onUseDeleteAmount, { itemHash = itemHash })
-        end
+    if (item.data.server and item.data.server.event) then
+        TriggerEvent(item.data.server.event, source, item)
+    end
+
+    if item.data.server and type(item.data.server.onUseDeleteAmount) == "number" and item.data.server.onUseDeleteAmount > 0 then
+        inventory:removeItemBy(item.data.server.onUseDeleteAmount, { itemHash = itemHash })
     end
 end)
 
@@ -1610,7 +1614,7 @@ ScriptServer.Classes.GloveboxInventory = Module
 
 ---@param data GloveboxInventoryClassCreateInterface
 Module.new = function(data)
-    data.type = "glovebox"
+    data.type = "BOITE A GANT"
 
     local self = setmetatable(
         ScriptServer.Classes.BaseInventory.new(data),
@@ -1909,7 +1913,7 @@ ScriptServer.Classes.TrunkInventory = Module
 
 ---@param data TrunkInventoryClassCreateInterface
 Module.new = function(data)
-    data.type = "trunk"
+    data.type = "COFFRE"
 
     local self = setmetatable(
         ScriptServer.Classes.BaseInventory.new(data),
@@ -2069,6 +2073,10 @@ local function getInventory(inv)
         return ScriptServer.Managers.Inventory:GetInventory({ uniqueID = inv })
     end
 end
+
+exports("GetInventory", function(inv)
+    return getInventory(inv)
+end)
 
 exports("GetInventoryItems", function(inv)
     local inventory = getInventory(inv)
@@ -2307,3 +2315,7 @@ local function Init()
 end
 
 Init()
+
+AddEventHandler("Inventory:testEvent", function(source, item)
+    print("testEvent", source, item)
+end)

@@ -83,6 +83,13 @@ RegisterNUICallback("CLIENT_SET_INTERFACE_STATE", function(d, cb)
     cb({})
 end)
 
+RegisterNetEvent("Inventory:openInventory", function()
+    SEND_NUI_MESSAGE({
+        event = "SET_INTERFACE_OPEN",
+        state = not ScriptClient.Player.State.inventoryOpened
+    })
+end)
+
 RegisterCommand('OPEN_INVENTORY', function()
     SEND_NUI_MESSAGE({
         event = "SET_INTERFACE_OPEN",
@@ -2074,4 +2081,3 @@ end)
 RegisterNetEvent("baseevents:onPlayerDied", function()
     Weapons:Disarm()
 end)
-
