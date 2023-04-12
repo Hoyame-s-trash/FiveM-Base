@@ -1,8 +1,68 @@
-GM.Lift = GM.Lift or {}
-
 GM.Lift = {
     menu = {},
     data = {},
+}
+
+GM.Lift.list = {
+    ["AMBULANCE_1"] = {
+        {
+            name = "Accueil",
+            flooor = "3",
+            pos = vec3(331.41299438477,-595.45880126953,43.284076690674)
+        },
+        {
+            name = "Ambulance garage",
+            floor = "1",
+            pos = vec3(342.11361694336,-585.48492431641,28.799180984497),            
+        }
+    },
+    ["POLICE_1"] = {
+        {
+            name = "Hélipad",
+            floor = "6",
+            pos = vec3(-1095.8507080078,-850.82409667969,4.8841781616211)
+        },
+        {
+            name = "Bureaux",
+            floor = "5",
+            pos = vec3(-1095.8507080078,-850.82409667969,4.8841781616211)
+        },
+        {
+            name = "Bureaux",
+            floor = "4",
+            pos = vec3(-1095.8507080078,-850.82409667969,4.8841781616211)
+        },
+        {
+            name = "Salle de dispatch, vestiaires",
+            floor = "3",
+            pos = vec3(-1095.8507080078,-850.82409667969,4.8841781616211)
+        },
+        {
+            name = "Cafétéria",
+            floor = "2",
+            pos = vec3(-1095.8507080078,-850.82409667969,4.8841781616211)
+        },
+        {
+            name = "Hall principal, salle de conférence",
+            floor = "1",
+            pos = vec3(-1095.8507080078,-850.82409667969,4.8841781616211)
+        },
+        {
+            name = "Armurerie",
+            floor = "-3",
+            pos = vec3(-1095.8507080078,-850.82409667969,4.8841781616211)
+        },
+        {
+            name = "Coffre saisies, laboratoires",
+            floor = "-2",
+            pos = vec3(-1095.8507080078,-850.82409667969,4.8841781616211)
+        },
+        {
+            name = "Cellules, salles d'interrrogatoire, garage",
+            floor = "-1",
+            pos = vec3(-1095.8507080078,-850.82409667969,4.8841781616211)
+        },
+    },
 }
 
 GM.Lift.menu.main = RageUI.CreateMenu("", "Ascenseur", 0, 0, "banner", "bluestark")
@@ -12,7 +72,7 @@ end
 
 GM.Lift.menu.main:isVisible(function(Items)
     for stairSelected, stair in pairs(GM.Lift["list"][GM.Lift.data["currentLift"]]) do 
-        Items:Button(stair.name, nil, {}, true, {
+        Items:Button(stair.name, nil, {RightLabel = stair.floor}, true, {
             onSelected = function()
                 DoScreenFadeOut(200)
                 Wait(500)
@@ -62,3 +122,5 @@ GM:newThread(function()
         Wait(waiting)
     end 
 end)
+
+-- Todo create stairs with object and interact with zone module and not client side and also make blue the current floor and set the heading

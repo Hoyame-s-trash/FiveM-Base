@@ -34,7 +34,7 @@ function GM.Blip:setData(dataName, dataValue)
 end
 
 function GM.Blip:allowedPlayer(playerSrc)
-    local playerSelected = GM.Player:getFromSource(playerSrc)
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
     
     if (not self.allowedPlayers[playerSrc]) then

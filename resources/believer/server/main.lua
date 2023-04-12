@@ -604,7 +604,7 @@ AddEventHandler("onResourceStop", function(rscName)
       return
   end
 
-  ScriptServer.Managers.Inventory:SaveInventories()
+  --ScriptServer.Managers.Inventory:SaveInventories()
 
   Core.SavePlayers()
 end)

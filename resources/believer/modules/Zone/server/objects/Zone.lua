@@ -64,6 +64,11 @@ end
 function GM.Zone.Management:allowedPlayer(playerSrc)
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
+
+    if (self.allowedPlayers == nil) then
+        print("Zone:allowedPlayer - Zone is not private")
+        return
+    end
     
     if (not self.allowedPlayers[playerSrc]) then
         self.allowedPlayers[playerSrc] = true

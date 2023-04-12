@@ -167,7 +167,7 @@ RegisterNetEvent("Inventory:OPEN_VEHICLE_TRUNK_INVENTORY", function(plate, model
     local trunk_inventory = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID }) --[[@as TrunkInventory]]
     if not trunk_inventory then
         trunk_inventory = ScriptServer.Classes.TrunkInventory.new({
-            inventoryName = string.format('Trunk (%s)', plate),
+            inventoryName = string.format('Coffre (%s)', plate),
             maxWeight = CONFIG.VEHICLE_SIZES.getTrunkMaxWeight(modelHash),
             plate = plate,
             slotsAmount = CONFIG.VEHICLE_SIZES.getTrunkSlots(modelHash),
@@ -186,7 +186,7 @@ RegisterNetEvent("Inventory:OPEN_VEHICLE_GLOVEBOX_INVENTORY", function(plate, mo
     local glovebox_inventory = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID }) --[[@as GloveboxInventory]]
     if not glovebox_inventory then
         glovebox_inventory = ScriptServer.Classes.GloveboxInventory.new({
-            inventoryName = string.format('Glovebox (%s)', plate),
+            inventoryName = string.format('Boite à gants (%s)', plate),
             maxWeight = CONFIG.VEHICLE_SIZES.getGloveboxMaxWeight(modelHash),
             plate = plate,
             slotsAmount = CONFIG.VEHICLE_SIZES.getGloveboxSlots(modelHash),

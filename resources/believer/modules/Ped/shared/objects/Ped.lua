@@ -19,7 +19,9 @@ function GM.Ped:create(pedType, modelName, position, heading)
     if (not IsDuplicityVersion()) then
         newPed.isNetwork = false
         RequestModel(modelName)
-        while not HasModelLoaded(modelName) do Wait(0) end
+        while not HasModelLoaded(modelName) do 
+            Wait(0) 
+        end
     else
         newPed.isNetwork = true
     end
