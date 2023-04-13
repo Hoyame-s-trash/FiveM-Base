@@ -13,14 +13,14 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
     if (not playerIdentifier) then return end
 
     if (GM.Ranks["players"][playerIdentifier]) then
-        if (GM.Ranks["players"][playerIdentifier].staffName ~= playerSelected.getName()) then
+        if (GM.Ranks["players"][playerIdentifier].staffName ~= playerSelected.getNickName()) then
 
             local playerRank = GM.Ranks:getFromId(GM.Ranks["players"][playerIdentifier].rankId)
             if (not playerRank) then return end
 
-            playerRank.players[playerIdentifier].name = playerSelected.getName()
+            playerRank.players[playerIdentifier].name = playerSelected.getNickName()
 
-            GM.Ranks["players"][playerIdentifier].staffName = playerSelected.getName()
+            GM.Ranks["players"][playerIdentifier].staffName = playerSelected.getNickName()
 
             MySQL.update("UPDATE user_admin SET players = ? WHERE id = ?", {
                 json.encode(playerRank.players), 
@@ -45,7 +45,7 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
 
     -- Todo get actual vip for player
 
-    GM.Admin.Players:new(playerSelected.getUniqueId(), playerSelected.source, playerSelected.getName(), playerSelected.get("rank_label"), 0)
+    GM.Admin.Players:new(playerSelected.getUniqueId(), playerSelected.source, playerSelected.getNickName(), playerSelected.get("rank_label"), 0)
 end)
 
 RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)

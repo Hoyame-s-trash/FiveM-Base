@@ -385,6 +385,7 @@ RegisterServerEvent("Police:menu:backup", function(backupName)
                     position = playerSelected.getCoords(true),
                     time = os.time(),
                     playerName = playerSelected.getName(),
+                    taken = {},
                 }
 
                 if (GM.Service["Enterprise_list"]) then
@@ -392,14 +393,31 @@ RegisterServerEvent("Police:menu:backup", function(backupName)
                         GM.Service["Enterprise_list"]["police"] = {}
                     end
                     for playerSrc, _ in pairs(GM.Service["Enterprise_list"]["police"]) do
-                        local request = GM.Request:sendMessage(playerSrc, backup.message)
-                        if (request == "accept") then
-                            TriggerClientEvent("esx:showNotification", playerSrc, "~g~Vous avez accepté l'appel.")
-                        elseif (request == "decline") then
-                            TriggerClientEvent("esx:showNotification", playerSrc, "~r~Vous avez refusé l'appel.")
-                        elseif (request == "delay") then
-                            TriggerClientEvent("esx:showNotification", playerSrc, "~r~Vous avez automatiquement refusé l'appel.")
-                        end
+
+                        --if (playerSrc ~= playerSelected.source) then
+                        
+                            local targetSelected = ESX.GetPlayerFromId(playerSrc)
+                            if (targetSelected) then
+                                local request = GM.Request:sendMessage(targetSelected.source, backup.message)
+                                if (request == "accept") then
+                                    TriggerClientEvent("esx:showNotification", targetSelected.source, "~g~Vous avez accepté l'appel.")
+                                    TriggerClientEvent("esx:showNotification", targetSelected.source, "L'appel à été pris par ~g~"..targetSelected.getName().."~s~.")
+                                    
+                                    if (GM.Police.registeredCalls[tonumber(callId)].taken == nil) then
+                                        GM.Police.registeredCalls[tonumber(callId)].taken = {}
+                                    end
+
+                                    if (GM.Police.registeredCalls[tonumber(callId)].taken[targetSelected.source] == nil) then
+                                        table.insert(GM.Police.registeredCalls[tonumber(callId)].taken, targetSelected.getName())
+                                    end
+
+                                elseif (request == "decline") then
+                                    TriggerClientEvent("esx:showNotification", targetSelected.source, "~r~Vous avez refusé l'appel.")
+                                elseif (request == "delay") then
+                                    TriggerClientEvent("esx:showNotification", targetSelected.source, "~r~Vous avez automatiquement refusé l'appel.")
+                                end
+                            end
+                        --end
                     end
                 end
             else

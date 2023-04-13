@@ -187,7 +187,7 @@ RegisterServerEvent("Admin:reviveZone", function(radius)
                         
                             targetSelected.setDead(false)
                             targetSelected.showNotification("~b~Vous avez été réanimer par un staff.")  
-                            playerSelected.showNotification("~b~Vous avez réanimer "..targetSelected.getName()..".")
+                            playerSelected.showNotification("~b~Vous avez réanimer "..targetSelected.getNickName()..".")
                         
                             TriggerClientEvent("Ambulance:revivePlayer", targetSelected.source)
                         end

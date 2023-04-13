@@ -246,7 +246,7 @@ RegisterServerEvent("Admin:getInformationsPlayer", function(playerId)
     if (not targetIdentifier) then return end
 
     local playerInformations = {
-        name = playerTarget.getName(),
+        name = playerTarget.getNickName(),
         uniqueId = playerTarget.getUniqueId(),
         job = playerTarget.job.name,
         money = playerTarget.getAccount("money").money,
@@ -285,11 +285,11 @@ RegisterServerEvent("Admin:setWarningPlayer", function(playerId, input)
     local warn = {
         reason = input,
         date = os.date("%d/%m/%Y %H:%M:%S"),
-        admin = playerSelected.getName(),
+        admin = playerSelected.getNickName(),
     }
 
     MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {targetIdentifier, "Avertissement", json.encode(warn)}, function(id)
-        playerSelected.showNotification("~b~Vous avez mis un avertissement à "..playerTarget.getName().." pour "..input)
+        playerSelected.showNotification("~b~Vous avez mis un avertissement à "..playerTarget.getNickName().." pour "..input)
     end)
 end)
 
@@ -422,7 +422,7 @@ RegisterServerEvent("Admin:resetIdentityPlayer", function(playerId)
     if (not targetSelected) then return end
 
     targetSelected.set("reset_identity", true)
-    playerSelected.showNotification("~b~Vous avez réinitialisé l'identité de "..targetSelected.getName()..".")
+    playerSelected.showNotification("~b~Vous avez réinitialisé l'identité de "..targetSelected.getNickName()..".")
     targetSelected.showNotification("~r~Votre identité a été réinitialisée par un staff.")
 
     
