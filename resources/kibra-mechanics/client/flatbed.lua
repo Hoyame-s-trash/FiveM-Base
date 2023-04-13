@@ -1,3 +1,4 @@
+mechIDD = 0
 local DECOR = {
     FLOAT = 1,
     BOOL = 2,
@@ -6,28 +7,33 @@ local DECOR = {
     TIME = 5,
 }
 
-ESX = exports["believer"]:getSharedObject()
+mechIDD = 0
+
+Citizen.CreateThread(function()
+    while true do
+        for k,v in pairs(Config.Mechanics) do
+            local playerCoord = GetEntityCoords(PlayerPedId())
+            local dist = #(playerCoord - v.BossMenuCoord)
+            if dist <= 100.0 then
+                mechIDD = k
+            end
+        end 
+        Citizen.Wait(4000)
+    end
+end)
+
+KIBRA = exports["kibra-core"]:GetCore()
 
 KibraMekanikor = function()
     local auth = false
     if Config.MechanicsCompany then
-        if not Config.UseServerJobSystem then
-            local MechanicTable = Config.Mechanics[mechIDD].Employees
-            for k,v in pairs(MechanicTable) do
-                if v.identifier == ESX.GetPlayerData().identifier then
-                    auth = true
-                end
+        if KIBRA.Natives.GetFramework() == "ESX" then
+            if KIBRA.Natives.GetPlayerData().job and Config.Mechanics[mechIDD].JobName == KIBRA.Natives.GetPlayerData().job.name then
+                auth = true
             end
-            return auth
         else
-            if GetCore == "ESX" then
-                if ESX.GetPlayerData().job and Config.Mechanics[mechIDD].JobName == ESX.GetPlayerData().job.name then
-                    auth = true
-                end
-            else
-                if ESX.GetPlayerData().job and Config.Mechanics[mechIDD].JobName == ESX.GetPlayerData().job.name then
-                    auth = true
-                end
+            if KIBRA.Natives.GetPlayerData().job and Config.Mechanics[mechIDD].JobName == KIBRA.Natives.GetPlayerData().job.name then
+                auth = true
             end
         end
     else

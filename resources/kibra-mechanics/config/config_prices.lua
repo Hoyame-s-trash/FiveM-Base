@@ -152,5 +152,20 @@ kibraSubMenus = {
     ["windowTint"] = {
         priceDefault = 1080, -- Plugin Level 1 Price.
         pluginLevelPriceIncreaseRate = 1.4,
+    }, 
+
+    ["modTrimA"] = {
+        priceDefault = 500, -- Plugin Level 1 Price.
+        pluginLevelPriceIncreaseRate = 3,
+    },
+
+    ["modHydrolic"] = {
+        priceDefault = 200, -- Plugin Level 1 Price.
+        pluginLevelPriceIncreaseRate = 3,
+    },
+
+    ["modDashboard"] = {
+        priceDefault = 1000,
+        pluginLevelPriceIncreaseRate = 1.5
     }
 }

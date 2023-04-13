@@ -31,6 +31,8 @@ ICONS = {
     [1998] = {id = "pearlescentColor", icon = "fa-sharp fa-solid fa-palette", label = Config.MechanicMenu["PearlescentColor"]},
     [27] = {id = "modTrimA", icon = "../web/img/interior.png", label = Config.MechanicMenu["Interior"]},
     [36] = {id = "modSpeakers", icon = "../web/img/speakers.png", label = Config.MechanicMenu["Speakers"]},
+    [38] = {id = "modHydrolic", icon = "../web/img/modHydrolic.png", label = Config.MechanicMenu["hydrolic"]},
+    [29] = {id = "modDashboard", icon = "../web/img/dashboard.png", label = Config.MechanicMenu["dashboard"]},
 
 }
 
@@ -179,12 +181,21 @@ BodyParts = {
         type = 1
     },
 
+
     {
         menuName = "cage",
         menuLabel = Config.MechanicMenu["Cage"],
         menuIcon = "../web/img/chassis.png",
         menuImg = true, -- If the plugin icon is an image, mark it as true.
         type = 5
+    },
+
+    {
+        menuName = "dashboard",
+        menuLabel = Config.MechanicMenu["dashboard"],
+        menuIcon = "../web/img/dashboard.png",
+        menuImg = true, -- If the plugin icon is an image, mark it as true.
+        type = 29
     },
 
     {
@@ -209,6 +220,22 @@ BodyParts = {
         menuIcon = "../web/img/speakers.png",
         menuImg = true, -- If the plugin icon is an image, mark it as true.
         type = 36
+    },
+
+    {
+        menuName = "interior",
+        menuLabel = Config.MechanicMenu["Interior"],
+        menuIcon = "../web/img/interior.png",
+        menuImg = true, -- If the plugin icon is an image, mark it as true.
+        type = 27
+    },
+
+    {
+        menuName = "modHydrolic",
+        menuLabel = Config.MechanicMenu["hydrolic"],
+        menuIcon = "../web/img/modHydrolic.png",
+        menuImg = true, -- If the plugin icon is an image, mark it as true.
+        type = 38
     },
 
     {
@@ -394,6 +421,44 @@ WheelsCategory = {
         type = 23,
         modtyp = 7
     },
+}
+
+colorTypeMenu = {
+    {
+        type = "normal",
+        label = Config.MechanicMenu["normal"],
+        id = 0
+    },
+
+    {
+        type = "metalic",
+        label = Config.MechanicMenu["metalic"],
+        id = 1
+    },
+
+    {
+        type = "pearl",
+        label = Config.MechanicMenu["pearl"],
+        id = 2
+    },
+
+    {
+        type = "matte",
+        label = Config.MechanicMenu["matte"],
+        id = 3
+    },
+
+    {
+        type = "metal",
+        label = Config.MechanicMenu["metal"],
+        id = 4
+    },
+
+    {
+        type = "chrome",
+        label = Config.MechanicMenu["chrome"],
+        id = 5
+    }
 }
 
 ProhibitedsWords = {

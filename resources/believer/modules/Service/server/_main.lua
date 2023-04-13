@@ -52,3 +52,5 @@ AddEventHandler("playerDropped", function()
         GM.Service["Player_list"][source] = nil
     end
 end)
+
+-- Todo make a script that save player state when crashed and restore the player when it's connected again.

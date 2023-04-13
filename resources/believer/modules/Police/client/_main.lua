@@ -185,3 +185,68 @@ RegisterNetEvent("Police:openArmory", function(armoryData)
 
     GM.Police.armory.menu.main:toggle()
 end)
+
+GM.Police.job = {
+    menu = {
+        submenus = {}
+    },
+    data = {}
+}
+
+GM.Police.job.menu.main = RageUI.CreateMenu("", "Menu métier", 0, 0, "banner", "bluestark")
+GM.Police.job.menu.main["Closed"] = function()
+end
+
+GM.Police.job.menu.submenus["backup"] = RageUI.CreateSubMenu(GM.Police.job.menu.main, "", "Renforts")
+
+GM.Police.job.menu.main:isVisible(function(Items)
+    Items:Button("Historique des appels", nil, {}, true,{
+        onSelected = function()
+            TriggerServerEvent("Police:menu:requestCalls")
+        end
+    })
+    Items:Button("Status agent", nil, {}, true,{
+        onSelected = function()
+            TriggerServerEvent("Police:menu:requestCalls")
+        end
+    })
+    Items:Button("Objets", nil, {}, true,{
+        onSelected = function()
+            TriggerServerEvent("Police:menu:requestCalls")
+        end
+    })
+    Items:Button("Recherche plaque", nil, {}, true,{
+        onSelected = function()
+            TriggerServerEvent("Police:menu:requestCalls")
+        end
+    })
+    Items:Button("Interaction citoyen", nil, {}, true,{
+        onSelected = function()
+            TriggerServerEvent("Police:menu:requestCalls")
+        end
+    })
+    Items:Button("~r~Démissionner", nil, {}, true,{
+        onSelected = function()
+            TriggerServerEvent("Police:menu:requestCalls")
+        end
+    })
+    Items:Button("Renforts", nil, {}, true,{}, GM.Police.job.menu.submenus["backup"])
+end)
+
+GM.Police.job.menu.submenus["backup"]:isVisible(function(Items)
+    if (GM.Police.Menu.backup ~= nil) then
+        for i = 1, #GM.Police.Menu.backup do
+            if (ESX.PlayerData.job.grade >= GM.Police.Menu.backup[i].grade) then
+                Items:Button(GM.Police.Menu.backup[i].label, nil, {}, true, {
+                    onSelected = function()
+                        TriggerServerEvent("Police:menu:backup", GM.Police.Menu.backup[i].name)
+                    end
+                })
+            end
+        end
+    end
+end)
+
+RegisterNetEvent("Police:openMenu", function()
+    GM.Police.job.menu.main:toggle()
+end)

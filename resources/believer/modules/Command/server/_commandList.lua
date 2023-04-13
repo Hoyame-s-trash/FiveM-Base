@@ -1218,6 +1218,30 @@ GM:newThread(function()
             playerSelected.showNotification("~g~Vous avez heal "..targetSelected.getName()..".")
         end
     end)
+
+    GM.Command:register({
+        name = "jobMenu",
+        label = "Menu métier",
+        description = "Permet d'ouvrir le menu métier",
+        keys = {"keyboard", "F6"}
+    }, function(playerSrc)
+        if (playerSrc == 0) then return end
+
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        if (playerSelected.job.name == "unemployed") then
+            playerSelected.showNotification("~r~Vous n'avez pas de métier.")
+            return
+        end
+
+        local jobName = playerSelected.job.name
+        if (not jobName) then return end
+
+        local jobName = string.upper(string.sub(jobName, 1, 1))..string.sub(jobName, 2, #jobName)
+
+        TriggerClientEvent(playerSelected.source, jobName..":openMenu")
+    end)
 end)
 
 RegisterCommand("checkvehicles", function(source)

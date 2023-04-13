@@ -16,9 +16,10 @@ body {
 
 .rgba {
     width: 10vh;
-    height: 6vh;
+    height: 5vh;
     border: 1px;
-    background: #1811114f;
+    outline: 0;
+    background: #00000000;
     margin-top: 1vh;
     cursor: pointer;
 }
@@ -295,7 +296,7 @@ input:focus {
     left: -1vh;
     display: inline-block;
     top: 0.2vh;
-    border-radius: .4vh;
+    border-radius: 1.4vh;
     color: #fff;
 }
 
@@ -319,9 +320,9 @@ input:focus {
 .XPoart h4 {
     text-transform: uppercase;
     font-weight: 500;
-    font-size: 1.7vh;
+    font-size: 1.5vh;
     position: relative;
-    top: -4vh;
+    top: -1vh;
     text-align: center;
     font-family: Inter, sans-serif;
 }
@@ -774,13 +775,13 @@ input:focus {
 
 .BossMenu {
     background: rgba(0,0,0,0.6);
-    width: 77vw;
+    width: 72vw;
     margin: auto;
     display: none;
     position: relative;
     top: 9vh;
     height: 74vh;
-    border-radius: .4vh;
+    border-radius: 1.4vh;
 }
 
 .BossMenu-Header {
@@ -825,7 +826,7 @@ input:focus {
     margin-top: 1vh;
     top: 2vh;
     height: 22vh;
-    border-radius: .4vh;
+    border-radius: 1.4vh;
 }
 
 .LanMal {
@@ -863,11 +864,11 @@ input:focus {
 }
 
 .mechaniclogo {
-    width: 10vh;
-    height: 10vh;
+    width: 8vh;
+    height: 8vh;
     -webkit-transition: all 0.5s;
     position: relative;
-    top: -1vh;
+    top: 1vh;
     -webkit-filter: invert(100%);
 }
 
@@ -875,9 +876,9 @@ input:focus {
 
 
 .ButtonMini {
-    width: 97%;
+    width: 96%;
     font-size: 1.5vh;
-    left: 0.1vh;
+    left: 0vh;
     height: 4vh;
     border: 1px transparent;
     background: rgb(52 52 52 / 50%);
@@ -889,8 +890,8 @@ input:focus {
     border-style: solid;
     cursor: pointer;
     right: 0.6vh;
-    top: 0.9vh;
-    border-radius: .3vh;
+    top: 0.8vh;
+    border-radius: 1.4vh;
 }
 
 .ButtonMini:hover {
@@ -920,19 +921,20 @@ input:focus {
 
 .SagPanel {
     background-color: transparent;
-    width: 45%;
+    width: 36%;
     float: right;
     border-radius: .4vh;
     height: 89%;
 }
 
 .OdemeGecmisi {
-    background-color: transparent;
+    background-color: rgb(0 0 0 / 25%);
     width: 27vw;
-    height: 63vh;
+    height: 60vh;
     position: relative;
-    top: -8vh;
-    border-radius: .4vh;
+    left: -7vh;
+    top: -6.8vh;
+    border-radius: 1.4vh;
 }
 
 .OdemeGecmisiHeader {
@@ -940,14 +942,15 @@ input:focus {
     width: 100%;
     height: 8vh;
     border-radius: .4vh;
-    box-shadow: 0px 12px 2px -12px rgb(114 114 114 / 65%);
+    box-shadow: 0px 42px 4px -42px rgb(114 114 114 / 65%);
 }
 
 .OdemeGecmisiHeader h1 {
     font-family: 'Outfit', sans-serif;
     color: #808080;
     font-weight: 300;
-    font-size: 3.3vh;
+    font-size: 2.5vh;
+    padding-top: 29px;
     text-transform: uppercase;
     text-align: center;
 }
@@ -965,7 +968,7 @@ input:focus {
     width: 100%;
     height: 7vh;
     border-radius: .4vh;
-    box-shadow: 0px 12px 2px -12px rgb(114 114 114 / 65%);
+    box-shadow: 0px 39px 2px -37px rgb(114 114 114 / 65%);
 }
 
 .solLeft {
@@ -987,12 +990,14 @@ input:focus {
 .solLeft p {
     display: inline-block;
     font-family: 'Outfit', sans-serif;
-    font-size: 3vh;
+    font-size: 2vh;
     padding: 0px 16px;
     position: relative;
-    top: -1.5vh;
+    top: 0.5vh;
+    font-weight: 400;
+    left: 2vh;
     text-align: left;
-    color: #919191;
+    color: #ebebeb;
 }
 
 .isimkutusu {
@@ -1006,7 +1011,7 @@ input:focus {
 
 .isimkutusu p {
     font-family: 'Outfit', sans-serif;
-    font-size: 2.5vh;
+    font-size: 2vh;
     text-align: left;
     cursor: pointer;
     color: #919191;
@@ -1020,9 +1025,9 @@ input:focus {
 }
 
 .sagRight p {
-    color: #d4d4d4;
+    color: #5edf55;
     font-family: 'Outfit', sans-serif;
-    font-size: 2.3vh;
+    font-size: 2vh;
     display: inline-block;
 }
 
@@ -1030,9 +1035,11 @@ input:focus {
     font-size: 1.4vh;
     font-family: 'Outfit', sans-serif;
     position: relative;
+    font-weight: 300;
+    padding-left: 14px;
     display: inline-block;
-    top: -0.3vh;
-    color: #fff;
+    top: 0vh;
+    color: #adadad;
 }
 
 .isimkutusu p:hover {

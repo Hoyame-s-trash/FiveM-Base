@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `mechanics` (
+CREATE TABLE IF NOT EXISTS `kibra-mechanics` (
   `id` int(11) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `owner` varchar(46) DEFAULT NULL,

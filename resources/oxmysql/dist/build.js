@@ -918,7 +918,7 @@ var require_lru_cache = __commonJS({
       }
       *indexes({ allowStale = this.allowStale } = {}) {
         if (this.size) {
-          for (let i2 = this.tail; true; ) {
+          for (let i2 = this.tail; true;) {
             if (!this.isValidIndex(i2)) {
               break;
             }
@@ -935,7 +935,7 @@ var require_lru_cache = __commonJS({
       }
       *rindexes({ allowStale = this.allowStale } = {}) {
         if (this.size) {
-          for (let i2 = this.head; true; ) {
+          for (let i2 = this.head; true;) {
             if (!this.isValidIndex(i2)) {
               break;
             }
@@ -3497,7 +3497,7 @@ var require_errors = __commonJS({
 // node_modules/.pnpm/long@5.2.1/node_modules/long/umd/index.js
 var require_umd = __commonJS({
   "node_modules/.pnpm/long@5.2.1/node_modules/long/umd/index.js"(exports, module2) {
-    var Long = function(exports2) {
+    var Long = function (exports2) {
       "use strict";
       Object.defineProperty(exports2, "__esModule", {
         value: true
@@ -4074,7 +4074,7 @@ var require_umd = __commonJS({
       return "default" in exports2 ? exports2.default : exports2;
     }({});
     if (typeof define === "function" && define.amd)
-      define([], function() {
+      define([], function () {
         return Long;
       });
     else if (typeof module2 === "object" && typeof exports === "object")
@@ -4107,7 +4107,7 @@ var require_safer = __commonJS({
     }
     safer.Buffer.prototype = Buffer4.prototype;
     if (!Safer.from || Safer.from === Uint8Array.from) {
-      Safer.from = function(value, encodingOrOffset, length) {
+      Safer.from = function (value, encodingOrOffset, length) {
         if (typeof value === "number") {
           throw new TypeError('The "value" argument must not be of type number. Received type ' + typeof value);
         }
@@ -4118,7 +4118,7 @@ var require_safer = __commonJS({
       };
     }
     if (!Safer.alloc) {
-      Safer.alloc = function(size, fill, encoding) {
+      Safer.alloc = function (size, fill, encoding) {
         if (typeof size !== "number") {
           throw new TypeError('The "size" argument must be of type number. Received type ' + typeof size);
         }
@@ -4164,14 +4164,14 @@ var require_bom_handling = __commonJS({
       this.encoder = encoder;
       this.addBOM = true;
     }
-    PrependBOMWrapper.prototype.write = function(str) {
+    PrependBOMWrapper.prototype.write = function (str) {
       if (this.addBOM) {
         str = BOMChar + str;
         this.addBOM = false;
       }
       return this.encoder.write(str);
     };
-    PrependBOMWrapper.prototype.end = function() {
+    PrependBOMWrapper.prototype.end = function () {
       return this.encoder.end();
     };
     exports.StripBOM = StripBOMWrapper;
@@ -4180,7 +4180,7 @@ var require_bom_handling = __commonJS({
       this.pass = false;
       this.options = options || {};
     }
-    StripBOMWrapper.prototype.write = function(buf) {
+    StripBOMWrapper.prototype.write = function (buf) {
       var res = this.decoder.write(buf);
       if (this.pass || !res)
         return res;
@@ -4192,7 +4192,7 @@ var require_bom_handling = __commonJS({
       this.pass = true;
       return res;
     };
-    StripBOMWrapper.prototype.end = function() {
+    StripBOMWrapper.prototype.end = function () {
       return this.decoder.end();
     };
   }
@@ -4232,44 +4232,44 @@ var require_internal = __commonJS({
     InternalCodec.prototype.decoder = InternalDecoder;
     var StringDecoder = require("string_decoder").StringDecoder;
     if (!StringDecoder.prototype.end)
-      StringDecoder.prototype.end = function() {
+      StringDecoder.prototype.end = function () {
       };
     function InternalDecoder(options, codec) {
       this.decoder = new StringDecoder(codec.enc);
     }
-    InternalDecoder.prototype.write = function(buf) {
+    InternalDecoder.prototype.write = function (buf) {
       if (!Buffer4.isBuffer(buf)) {
         buf = Buffer4.from(buf);
       }
       return this.decoder.write(buf);
     };
-    InternalDecoder.prototype.end = function() {
+    InternalDecoder.prototype.end = function () {
       return this.decoder.end();
     };
     function InternalEncoder(options, codec) {
       this.enc = codec.enc;
     }
-    InternalEncoder.prototype.write = function(str) {
+    InternalEncoder.prototype.write = function (str) {
       return Buffer4.from(str, this.enc);
     };
-    InternalEncoder.prototype.end = function() {
+    InternalEncoder.prototype.end = function () {
     };
     function InternalEncoderBase64(options, codec) {
       this.prevStr = "";
     }
-    InternalEncoderBase64.prototype.write = function(str) {
+    InternalEncoderBase64.prototype.write = function (str) {
       str = this.prevStr + str;
       var completeQuads = str.length - str.length % 4;
       this.prevStr = str.slice(completeQuads);
       str = str.slice(0, completeQuads);
       return Buffer4.from(str, "base64");
     };
-    InternalEncoderBase64.prototype.end = function() {
+    InternalEncoderBase64.prototype.end = function () {
       return Buffer4.from(this.prevStr, "base64");
     };
     function InternalEncoderCesu8(options, codec) {
     }
-    InternalEncoderCesu8.prototype.write = function(str) {
+    InternalEncoderCesu8.prototype.write = function (str) {
       var buf = Buffer4.alloc(str.length * 3), bufIdx = 0;
       for (var i2 = 0; i2 < str.length; i2++) {
         var charCode = str.charCodeAt(i2);
@@ -4286,7 +4286,7 @@ var require_internal = __commonJS({
       }
       return buf.slice(0, bufIdx);
     };
-    InternalEncoderCesu8.prototype.end = function() {
+    InternalEncoderCesu8.prototype.end = function () {
     };
     function InternalDecoderCesu8(options, codec) {
       this.acc = 0;
@@ -4294,7 +4294,7 @@ var require_internal = __commonJS({
       this.accBytes = 0;
       this.defaultCharUnicode = codec.defaultCharUnicode;
     }
-    InternalDecoderCesu8.prototype.write = function(buf) {
+    InternalDecoderCesu8.prototype.write = function (buf) {
       var acc = this.acc, contBytes = this.contBytes, accBytes = this.accBytes, res = "";
       for (var i2 = 0; i2 < buf.length; i2++) {
         var curByte = buf[i2];
@@ -4339,7 +4339,7 @@ var require_internal = __commonJS({
       this.accBytes = accBytes;
       return res;
     };
-    InternalDecoderCesu8.prototype.end = function() {
+    InternalDecoderCesu8.prototype.end = function () {
       var res = 0;
       if (this.contBytes > 0)
         res += this.defaultCharUnicode;
@@ -4369,7 +4369,7 @@ var require_utf32 = __commonJS({
       this.isLE = codec.isLE;
       this.highSurrogate = 0;
     }
-    Utf32Encoder.prototype.write = function(str) {
+    Utf32Encoder.prototype.write = function (str) {
       var src = Buffer4.from(str, "ucs2");
       var dst = Buffer4.alloc(src.length * 2);
       var write32 = this.isLE ? dst.writeUInt32LE : dst.writeUInt32BE;
@@ -4402,7 +4402,7 @@ var require_utf32 = __commonJS({
         dst = dst.slice(0, offset);
       return dst;
     };
-    Utf32Encoder.prototype.end = function() {
+    Utf32Encoder.prototype.end = function () {
       if (!this.highSurrogate)
         return;
       var buf = Buffer4.alloc(4);
@@ -4418,7 +4418,7 @@ var require_utf32 = __commonJS({
       this.badChar = codec.iconv.defaultCharUnicode.charCodeAt(0);
       this.overflow = [];
     }
-    Utf32Decoder.prototype.write = function(src) {
+    Utf32Decoder.prototype.write = function (src) {
       if (src.length === 0)
         return "";
       var i2 = 0;
@@ -4469,7 +4469,7 @@ var require_utf32 = __commonJS({
       dst[offset++] = codepoint >> 8;
       return offset;
     }
-    Utf32Decoder.prototype.end = function() {
+    Utf32Decoder.prototype.end = function () {
       this.overflow.length = 0;
     };
     exports.utf32 = Utf32AutoCodec;
@@ -4485,10 +4485,10 @@ var require_utf32 = __commonJS({
         options.addBOM = true;
       this.encoder = codec.iconv.getEncoder(options.defaultEncoding || "utf-32le", options);
     }
-    Utf32AutoEncoder.prototype.write = function(str) {
+    Utf32AutoEncoder.prototype.write = function (str) {
       return this.encoder.write(str);
     };
-    Utf32AutoEncoder.prototype.end = function() {
+    Utf32AutoEncoder.prototype.end = function () {
       return this.encoder.end();
     };
     function Utf32AutoDecoder(options, codec) {
@@ -4498,7 +4498,7 @@ var require_utf32 = __commonJS({
       this.options = options || {};
       this.iconv = codec.iconv;
     }
-    Utf32AutoDecoder.prototype.write = function(buf) {
+    Utf32AutoDecoder.prototype.write = function (buf) {
       if (!this.decoder) {
         this.initialBufs.push(buf);
         this.initialBufsLen += buf.length;
@@ -4514,7 +4514,7 @@ var require_utf32 = __commonJS({
       }
       return this.decoder.write(buf);
     };
-    Utf32AutoDecoder.prototype.end = function() {
+    Utf32AutoDecoder.prototype.end = function () {
       if (!this.decoder) {
         var encoding = detectEncoding(this.initialBufs, this.options.defaultEncoding);
         this.decoder = this.iconv.getDecoder(encoding, this.options);
@@ -4535,35 +4535,35 @@ var require_utf32 = __commonJS({
       var invalidLE = 0, invalidBE = 0;
       var bmpCharsLE = 0, bmpCharsBE = 0;
       outer_loop:
-        for (var i2 = 0; i2 < bufs.length; i2++) {
-          var buf = bufs[i2];
-          for (var j = 0; j < buf.length; j++) {
-            b.push(buf[j]);
-            if (b.length === 4) {
-              if (charsProcessed === 0) {
-                if (b[0] === 255 && b[1] === 254 && b[2] === 0 && b[3] === 0) {
-                  return "utf-32le";
-                }
-                if (b[0] === 0 && b[1] === 0 && b[2] === 254 && b[3] === 255) {
-                  return "utf-32be";
-                }
+      for (var i2 = 0; i2 < bufs.length; i2++) {
+        var buf = bufs[i2];
+        for (var j = 0; j < buf.length; j++) {
+          b.push(buf[j]);
+          if (b.length === 4) {
+            if (charsProcessed === 0) {
+              if (b[0] === 255 && b[1] === 254 && b[2] === 0 && b[3] === 0) {
+                return "utf-32le";
               }
-              if (b[0] !== 0 || b[1] > 16)
-                invalidBE++;
-              if (b[3] !== 0 || b[2] > 16)
-                invalidLE++;
-              if (b[0] === 0 && b[1] === 0 && (b[2] !== 0 || b[3] !== 0))
-                bmpCharsBE++;
-              if ((b[0] !== 0 || b[1] !== 0) && b[2] === 0 && b[3] === 0)
-                bmpCharsLE++;
-              b.length = 0;
-              charsProcessed++;
-              if (charsProcessed >= 100) {
-                break outer_loop;
+              if (b[0] === 0 && b[1] === 0 && b[2] === 254 && b[3] === 255) {
+                return "utf-32be";
               }
+            }
+            if (b[0] !== 0 || b[1] > 16)
+              invalidBE++;
+            if (b[3] !== 0 || b[2] > 16)
+              invalidLE++;
+            if (b[0] === 0 && b[1] === 0 && (b[2] !== 0 || b[3] !== 0))
+              bmpCharsBE++;
+            if ((b[0] !== 0 || b[1] !== 0) && b[2] === 0 && b[3] === 0)
+              bmpCharsLE++;
+            b.length = 0;
+            charsProcessed++;
+            if (charsProcessed >= 100) {
+              break outer_loop;
             }
           }
         }
+      }
       if (bmpCharsBE - invalidBE > bmpCharsLE - invalidLE)
         return "utf-32be";
       if (bmpCharsBE - invalidBE < bmpCharsLE - invalidLE)
@@ -4586,7 +4586,7 @@ var require_utf16 = __commonJS({
     Utf16BECodec.prototype.bomAware = true;
     function Utf16BEEncoder() {
     }
-    Utf16BEEncoder.prototype.write = function(str) {
+    Utf16BEEncoder.prototype.write = function (str) {
       var buf = Buffer4.from(str, "ucs2");
       for (var i2 = 0; i2 < buf.length; i2 += 2) {
         var tmp = buf[i2];
@@ -4595,12 +4595,12 @@ var require_utf16 = __commonJS({
       }
       return buf;
     };
-    Utf16BEEncoder.prototype.end = function() {
+    Utf16BEEncoder.prototype.end = function () {
     };
     function Utf16BEDecoder() {
       this.overflowByte = -1;
     }
-    Utf16BEDecoder.prototype.write = function(buf) {
+    Utf16BEDecoder.prototype.write = function (buf) {
       if (buf.length == 0)
         return "";
       var buf2 = Buffer4.alloc(buf.length + 1), i2 = 0, j = 0;
@@ -4617,7 +4617,7 @@ var require_utf16 = __commonJS({
       this.overflowByte = i2 == buf.length - 1 ? buf[buf.length - 1] : -1;
       return buf2.slice(0, j).toString("ucs2");
     };
-    Utf16BEDecoder.prototype.end = function() {
+    Utf16BEDecoder.prototype.end = function () {
       this.overflowByte = -1;
     };
     exports.utf16 = Utf16Codec;
@@ -4632,10 +4632,10 @@ var require_utf16 = __commonJS({
         options.addBOM = true;
       this.encoder = codec.iconv.getEncoder("utf-16le", options);
     }
-    Utf16Encoder.prototype.write = function(str) {
+    Utf16Encoder.prototype.write = function (str) {
       return this.encoder.write(str);
     };
-    Utf16Encoder.prototype.end = function() {
+    Utf16Encoder.prototype.end = function () {
       return this.encoder.end();
     };
     function Utf16Decoder(options, codec) {
@@ -4645,7 +4645,7 @@ var require_utf16 = __commonJS({
       this.options = options || {};
       this.iconv = codec.iconv;
     }
-    Utf16Decoder.prototype.write = function(buf) {
+    Utf16Decoder.prototype.write = function (buf) {
       if (!this.decoder) {
         this.initialBufs.push(buf);
         this.initialBufsLen += buf.length;
@@ -4661,7 +4661,7 @@ var require_utf16 = __commonJS({
       }
       return this.decoder.write(buf);
     };
-    Utf16Decoder.prototype.end = function() {
+    Utf16Decoder.prototype.end = function () {
       if (!this.decoder) {
         var encoding = detectEncoding(this.initialBufs, this.options.defaultEncoding);
         this.decoder = this.iconv.getDecoder(encoding, this.options);
@@ -4681,29 +4681,29 @@ var require_utf16 = __commonJS({
       var charsProcessed = 0;
       var asciiCharsLE = 0, asciiCharsBE = 0;
       outer_loop:
-        for (var i2 = 0; i2 < bufs.length; i2++) {
-          var buf = bufs[i2];
-          for (var j = 0; j < buf.length; j++) {
-            b.push(buf[j]);
-            if (b.length === 2) {
-              if (charsProcessed === 0) {
-                if (b[0] === 255 && b[1] === 254)
-                  return "utf-16le";
-                if (b[0] === 254 && b[1] === 255)
-                  return "utf-16be";
-              }
-              if (b[0] === 0 && b[1] !== 0)
-                asciiCharsBE++;
-              if (b[0] !== 0 && b[1] === 0)
-                asciiCharsLE++;
-              b.length = 0;
-              charsProcessed++;
-              if (charsProcessed >= 100) {
-                break outer_loop;
-              }
+      for (var i2 = 0; i2 < bufs.length; i2++) {
+        var buf = bufs[i2];
+        for (var j = 0; j < buf.length; j++) {
+          b.push(buf[j]);
+          if (b.length === 2) {
+            if (charsProcessed === 0) {
+              if (b[0] === 255 && b[1] === 254)
+                return "utf-16le";
+              if (b[0] === 254 && b[1] === 255)
+                return "utf-16be";
+            }
+            if (b[0] === 0 && b[1] !== 0)
+              asciiCharsBE++;
+            if (b[0] !== 0 && b[1] === 0)
+              asciiCharsLE++;
+            b.length = 0;
+            charsProcessed++;
+            if (charsProcessed >= 100) {
+              break outer_loop;
             }
           }
         }
+      }
       if (asciiCharsBE > asciiCharsLE)
         return "utf-16be";
       if (asciiCharsBE < asciiCharsLE)
@@ -4730,12 +4730,12 @@ var require_utf7 = __commonJS({
     function Utf7Encoder(options, codec) {
       this.iconv = codec.iconv;
     }
-    Utf7Encoder.prototype.write = function(str) {
-      return Buffer4.from(str.replace(nonDirectChars, function(chunk) {
+    Utf7Encoder.prototype.write = function (str) {
+      return Buffer4.from(str.replace(nonDirectChars, function (chunk) {
         return "+" + (chunk === "+" ? "" : this.iconv.encode(chunk, "utf16-be").toString("base64").replace(/=+$/, "")) + "-";
       }.bind(this)));
     };
-    Utf7Encoder.prototype.end = function() {
+    Utf7Encoder.prototype.end = function () {
     };
     function Utf7Decoder(options, codec) {
       this.iconv = codec.iconv;
@@ -4750,7 +4750,7 @@ var require_utf7 = __commonJS({
     var plusChar = "+".charCodeAt(0);
     var minusChar = "-".charCodeAt(0);
     var andChar = "&".charCodeAt(0);
-    Utf7Decoder.prototype.write = function(buf) {
+    Utf7Decoder.prototype.write = function (buf) {
       var res = "", lastI = 0, inBase64 = this.inBase64, base64Accum = this.base64Accum;
       for (var i3 = 0; i3 < buf.length; i3++) {
         if (!inBase64) {
@@ -4788,7 +4788,7 @@ var require_utf7 = __commonJS({
       this.base64Accum = base64Accum;
       return res;
     };
-    Utf7Decoder.prototype.end = function() {
+    Utf7Decoder.prototype.end = function () {
       var res = "";
       if (this.inBase64 && this.base64Accum.length > 0)
         res = this.iconv.decode(Buffer4.from(this.base64Accum, "base64"), "utf16-be");
@@ -4809,7 +4809,7 @@ var require_utf7 = __commonJS({
       this.base64Accum = Buffer4.alloc(6);
       this.base64AccumIdx = 0;
     }
-    Utf7IMAPEncoder.prototype.write = function(str) {
+    Utf7IMAPEncoder.prototype.write = function (str) {
       var inBase64 = this.inBase64, base64Accum = this.base64Accum, base64AccumIdx = this.base64AccumIdx, buf = Buffer4.alloc(str.length * 5 + 10), bufIdx = 0;
       for (var i3 = 0; i3 < str.length; i3++) {
         var uChar = str.charCodeAt(i3);
@@ -4846,7 +4846,7 @@ var require_utf7 = __commonJS({
       this.base64AccumIdx = base64AccumIdx;
       return buf.slice(0, bufIdx);
     };
-    Utf7IMAPEncoder.prototype.end = function() {
+    Utf7IMAPEncoder.prototype.end = function () {
       var buf = Buffer4.alloc(10), bufIdx = 0;
       if (this.inBase64) {
         if (this.base64AccumIdx > 0) {
@@ -4865,7 +4865,7 @@ var require_utf7 = __commonJS({
     }
     var base64IMAPChars = base64Chars.slice();
     base64IMAPChars[",".charCodeAt(0)] = true;
-    Utf7IMAPDecoder.prototype.write = function(buf) {
+    Utf7IMAPDecoder.prototype.write = function (buf) {
       var res = "", lastI = 0, inBase64 = this.inBase64, base64Accum = this.base64Accum;
       for (var i3 = 0; i3 < buf.length; i3++) {
         if (!inBase64) {
@@ -4903,7 +4903,7 @@ var require_utf7 = __commonJS({
       this.base64Accum = base64Accum;
       return res;
     };
-    Utf7IMAPDecoder.prototype.end = function() {
+    Utf7IMAPDecoder.prototype.end = function () {
       var res = "";
       if (this.inBase64 && this.base64Accum.length > 0)
         res = this.iconv.decode(Buffer4.from(this.base64Accum, "base64"), "utf16-be");
@@ -4942,18 +4942,18 @@ var require_sbcs_codec = __commonJS({
     function SBCSEncoder(options, codec) {
       this.encodeBuf = codec.encodeBuf;
     }
-    SBCSEncoder.prototype.write = function(str) {
+    SBCSEncoder.prototype.write = function (str) {
       var buf = Buffer4.alloc(str.length);
       for (var i2 = 0; i2 < str.length; i2++)
         buf[i2] = this.encodeBuf[str.charCodeAt(i2)];
       return buf;
     };
-    SBCSEncoder.prototype.end = function() {
+    SBCSEncoder.prototype.end = function () {
     };
     function SBCSDecoder(options, codec) {
       this.decodeBuf = codec.decodeBuf;
     }
-    SBCSDecoder.prototype.write = function(buf) {
+    SBCSDecoder.prototype.write = function (buf) {
       var decodeBuf = this.decodeBuf;
       var newBuf = Buffer4.alloc(buf.length * 2);
       var idx1 = 0, idx2 = 0;
@@ -4965,7 +4965,7 @@ var require_sbcs_codec = __commonJS({
       }
       return newBuf.toString("ucs2");
     };
-    SBCSDecoder.prototype.end = function() {
+    SBCSDecoder.prototype.end = function () {
     };
   }
 });
@@ -5663,7 +5663,7 @@ var require_dbcs_codec = __commonJS({
     }
     DBCSCodec.prototype.encoder = DBCSEncoder;
     DBCSCodec.prototype.decoder = DBCSDecoder;
-    DBCSCodec.prototype._getDecodeTrieNode = function(addr) {
+    DBCSCodec.prototype._getDecodeTrieNode = function (addr) {
       var bytes = [];
       for (; addr > 0; addr >>>= 8)
         bytes.push(addr & 255);
@@ -5682,14 +5682,14 @@ var require_dbcs_codec = __commonJS({
       }
       return node;
     };
-    DBCSCodec.prototype._addDecodeChunk = function(chunk) {
+    DBCSCodec.prototype._addDecodeChunk = function (chunk) {
       var curAddr = parseInt(chunk[0], 16);
       var writeTable = this._getDecodeTrieNode(curAddr);
       curAddr = curAddr & 255;
       for (var k = 1; k < chunk.length; k++) {
         var part = chunk[k];
         if (typeof part === "string") {
-          for (var l = 0; l < part.length; ) {
+          for (var l = 0; l < part.length;) {
             var code = part.charCodeAt(l++);
             if (55296 <= code && code < 56320) {
               var codeTrail = part.charCodeAt(l++);
@@ -5717,13 +5717,13 @@ var require_dbcs_codec = __commonJS({
       if (curAddr > 255)
         throw new Error("Incorrect chunk in " + this.encodingName + " at addr " + chunk[0] + ": too long" + curAddr);
     };
-    DBCSCodec.prototype._getEncodeBucket = function(uCode) {
+    DBCSCodec.prototype._getEncodeBucket = function (uCode) {
       var high = uCode >> 8;
       if (this.encodeTable[high] === void 0)
         this.encodeTable[high] = UNASSIGNED_NODE.slice(0);
       return this.encodeTable[high];
     };
-    DBCSCodec.prototype._setEncodeChar = function(uCode, dbcsCode) {
+    DBCSCodec.prototype._setEncodeChar = function (uCode, dbcsCode) {
       var bucket = this._getEncodeBucket(uCode);
       var low = uCode & 255;
       if (bucket[low] <= SEQ_START)
@@ -5731,7 +5731,7 @@ var require_dbcs_codec = __commonJS({
       else if (bucket[low] == UNASSIGNED)
         bucket[low] = dbcsCode;
     };
-    DBCSCodec.prototype._setEncodeSequence = function(seq, dbcsCode) {
+    DBCSCodec.prototype._setEncodeSequence = function (seq, dbcsCode) {
       var uCode = seq[0];
       var bucket = this._getEncodeBucket(uCode);
       var low = uCode & 255;
@@ -5758,7 +5758,7 @@ var require_dbcs_codec = __commonJS({
       uCode = seq[seq.length - 1];
       node[uCode] = dbcsCode;
     };
-    DBCSCodec.prototype._fillEncodeTable = function(nodeIdx, prefix, skipEncodeChars) {
+    DBCSCodec.prototype._fillEncodeTable = function (nodeIdx, prefix, skipEncodeChars) {
       var node = this.decodeTables[nodeIdx];
       var hasValues = false;
       var subNodeEmpty = {};
@@ -5794,7 +5794,7 @@ var require_dbcs_codec = __commonJS({
       this.defaultCharSingleByte = codec.defCharSB;
       this.gb18030 = codec.gb18030;
     }
-    DBCSEncoder.prototype.write = function(str) {
+    DBCSEncoder.prototype.write = function (str) {
       var newBuf = Buffer4.alloc(str.length * (this.gb18030 ? 4 : 3)), leadSurrogate = this.leadSurrogate, seqObj = this.seqObj, nextChar = -1, i3 = 0, j = 0;
       while (true) {
         if (nextChar === -1) {
@@ -5889,7 +5889,7 @@ var require_dbcs_codec = __commonJS({
       this.leadSurrogate = leadSurrogate;
       return newBuf.slice(0, j);
     };
-    DBCSEncoder.prototype.end = function() {
+    DBCSEncoder.prototype.end = function () {
       if (this.leadSurrogate === -1 && this.seqObj === void 0)
         return;
       var newBuf = Buffer4.alloc(10), j = 0;
@@ -5921,7 +5921,7 @@ var require_dbcs_codec = __commonJS({
       this.defaultCharUnicode = codec.defaultCharUnicode;
       this.gb18030 = codec.gb18030;
     }
-    DBCSDecoder.prototype.write = function(buf) {
+    DBCSDecoder.prototype.write = function (buf) {
       var newBuf = Buffer4.alloc(buf.length * 2), nodeIdx = this.nodeIdx, prevBytes = this.prevBytes, prevOffset = this.prevBytes.length, seqStart = -this.prevBytes.length, uCode;
       for (var i3 = 0, j = 0; i3 < buf.length; i3++) {
         var curByte = i3 >= 0 ? buf[i3] : prevBytes[i3 + prevOffset];
@@ -5967,7 +5967,7 @@ var require_dbcs_codec = __commonJS({
       this.prevBytes = seqStart >= 0 ? Array.prototype.slice.call(buf, seqStart) : prevBytes.slice(seqStart + prevOffset).concat(Array.prototype.slice.call(buf));
       return newBuf.slice(0, j).toString("ucs2");
     };
-    DBCSDecoder.prototype.end = function() {
+    DBCSDecoder.prototype.end = function () {
       var ret = "";
       while (this.prevBytes.length > 0) {
         ret += this.defaultCharUnicode;
@@ -7252,7 +7252,7 @@ var require_dbcs_data = __commonJS({
     module2.exports = {
       "shiftjis": {
         type: "_dbcs",
-        table: function() {
+        table: function () {
           return require_shiftjis();
         },
         encodeAdd: { "\xA5": 92, "\u203E": 126 },
@@ -7270,7 +7270,7 @@ var require_dbcs_data = __commonJS({
       "cp932": "shiftjis",
       "eucjp": {
         type: "_dbcs",
-        table: function() {
+        table: function () {
           return require_eucjp();
         },
         encodeAdd: { "\xA5": 92, "\u203E": 126 }
@@ -7286,13 +7286,13 @@ var require_dbcs_data = __commonJS({
       "936": "cp936",
       "cp936": {
         type: "_dbcs",
-        table: function() {
+        table: function () {
           return require_cp936();
         }
       },
       "gbk": {
         type: "_dbcs",
-        table: function() {
+        table: function () {
           return require_cp936().concat(require_gbk_added());
         }
       },
@@ -7300,10 +7300,10 @@ var require_dbcs_data = __commonJS({
       "isoir58": "gbk",
       "gb18030": {
         type: "_dbcs",
-        table: function() {
+        table: function () {
           return require_cp936().concat(require_gbk_added());
         },
-        gb18030: function() {
+        gb18030: function () {
           return require_gb18030_ranges();
         },
         encodeSkipVals: [128],
@@ -7315,7 +7315,7 @@ var require_dbcs_data = __commonJS({
       "949": "cp949",
       "cp949": {
         type: "_dbcs",
-        table: function() {
+        table: function () {
           return require_cp949();
         }
       },
@@ -7332,14 +7332,14 @@ var require_dbcs_data = __commonJS({
       "950": "cp950",
       "cp950": {
         type: "_dbcs",
-        table: function() {
+        table: function () {
           return require_cp950();
         }
       },
       "big5": "big5hkscs",
       "big5hkscs": {
         type: "_dbcs",
-        table: function() {
+        table: function () {
           return require_cp950().concat(require_big5_added());
         },
         encodeSkipVals: [
@@ -7451,7 +7451,7 @@ var require_streams = __commonJS({
   "node_modules/.pnpm/iconv-lite@0.6.3/node_modules/iconv-lite/lib/streams.js"(exports, module2) {
     "use strict";
     var Buffer4 = require_safer().Buffer;
-    module2.exports = function(stream_module) {
+    module2.exports = function (stream_module) {
       var Transform = stream_module.Transform;
       function IconvLiteEncoderStream(conv, options) {
         this.conv = conv;
@@ -7462,7 +7462,7 @@ var require_streams = __commonJS({
       IconvLiteEncoderStream.prototype = Object.create(Transform.prototype, {
         constructor: { value: IconvLiteEncoderStream }
       });
-      IconvLiteEncoderStream.prototype._transform = function(chunk, encoding, done) {
+      IconvLiteEncoderStream.prototype._transform = function (chunk, encoding, done) {
         if (typeof chunk != "string")
           return done(new Error("Iconv encoding stream needs strings as its input."));
         try {
@@ -7474,7 +7474,7 @@ var require_streams = __commonJS({
           done(e2);
         }
       };
-      IconvLiteEncoderStream.prototype._flush = function(done) {
+      IconvLiteEncoderStream.prototype._flush = function (done) {
         try {
           var res = this.conv.end();
           if (res && res.length)
@@ -7484,13 +7484,13 @@ var require_streams = __commonJS({
           done(e2);
         }
       };
-      IconvLiteEncoderStream.prototype.collect = function(cb) {
+      IconvLiteEncoderStream.prototype.collect = function (cb) {
         var chunks = [];
         this.on("error", cb);
-        this.on("data", function(chunk) {
+        this.on("data", function (chunk) {
           chunks.push(chunk);
         });
-        this.on("end", function() {
+        this.on("end", function () {
           cb(null, Buffer4.concat(chunks));
         });
         return this;
@@ -7504,7 +7504,7 @@ var require_streams = __commonJS({
       IconvLiteDecoderStream.prototype = Object.create(Transform.prototype, {
         constructor: { value: IconvLiteDecoderStream }
       });
-      IconvLiteDecoderStream.prototype._transform = function(chunk, encoding, done) {
+      IconvLiteDecoderStream.prototype._transform = function (chunk, encoding, done) {
         if (!Buffer4.isBuffer(chunk) && !(chunk instanceof Uint8Array))
           return done(new Error("Iconv decoding stream needs buffers as its input."));
         try {
@@ -7516,7 +7516,7 @@ var require_streams = __commonJS({
           done(e2);
         }
       };
-      IconvLiteDecoderStream.prototype._flush = function(done) {
+      IconvLiteDecoderStream.prototype._flush = function (done) {
         try {
           var res = this.conv.end();
           if (res && res.length)
@@ -7526,13 +7526,13 @@ var require_streams = __commonJS({
           done(e2);
         }
       };
-      IconvLiteDecoderStream.prototype.collect = function(cb) {
+      IconvLiteDecoderStream.prototype.collect = function (cb) {
         var res = "";
         this.on("error", cb);
-        this.on("data", function(chunk) {
+        this.on("data", function (chunk) {
           res += chunk;
         });
-        this.on("end", function() {
+        this.on("end", function () {
           cb(null, res);
         });
         return this;
@@ -7618,7 +7618,7 @@ var require_lib = __commonJS({
         }
       }
     };
-    iconv._canonicalizeEncoding = function(encoding) {
+    iconv._canonicalizeEncoding = function (encoding) {
       return ("" + encoding).toLowerCase().replace(/:\d{4}$|[^0-9a-z]/g, "");
     };
     iconv.getEncoder = function getEncoder(encoding, options) {
@@ -7655,7 +7655,7 @@ var require_lib = __commonJS({
     if (stream_module && stream_module.Transform) {
       iconv.enableStreamingAPI(stream_module);
     } else {
-      iconv.encodeStream = iconv.decodeStream = function() {
+      iconv.encodeStream = iconv.decodeStream = function () {
         throw new Error("iconv-lite Streaming API is not enabled. Use iconv.enableStreamingAPI(require('stream')); to enable it.");
       };
     }
@@ -7670,7 +7670,7 @@ var require_string = __commonJS({
   "node_modules/.pnpm/mysql2@3.2.0/node_modules/mysql2/lib/parsers/string.js"(exports) {
     "use strict";
     var Iconv = require_lib();
-    exports.decode = function(buffer, encoding, start, end, options) {
+    exports.decode = function (buffer, encoding, start, end, options) {
       if (Buffer.isEncoding(encoding)) {
         return buffer.toString(encoding, start, end);
       }
@@ -7679,7 +7679,7 @@ var require_string = __commonJS({
       const trail = decoder.end();
       return trail ? res + trail : res;
     };
-    exports.encode = function(string, encoding, options) {
+    exports.encode = function (string, encoding, options) {
       if (Buffer.isEncoding(encoding)) {
         return Buffer.from(string, encoding);
       }
@@ -8436,7 +8436,7 @@ var require_packet = __commonJS({
         return Packet.lengthCodedNumberLength(slen) + slen;
       }
       static MockBuffer() {
-        const noop2 = function() {
+        const noop2 = function () {
         };
         const res = Buffer.alloc(0);
         for (const op in NativeBuffer.prototype) {
@@ -9033,7 +9033,7 @@ var require_auth_41 = __commonJS({
       const stage1 = sha1(password);
       return exports.calculateTokenFromPasswordSha(stage1, scramble1, scramble2);
     }
-    exports.calculateTokenFromPasswordSha = function(passwordSha, scramble1, scramble2) {
+    exports.calculateTokenFromPasswordSha = function (passwordSha, scramble1, scramble2) {
       const authPluginData1 = scramble1.slice(0, 8);
       const authPluginData2 = scramble2.slice(0, 12);
       const stage2 = sha1(passwordSha);
@@ -9041,12 +9041,12 @@ var require_auth_41 = __commonJS({
       return xor(stage3, passwordSha);
     };
     exports.calculateToken = token;
-    exports.verifyToken = function(publicSeed1, publicSeed2, token2, doubleSha) {
+    exports.verifyToken = function (publicSeed1, publicSeed2, token2, doubleSha) {
       const hashStage1 = xor(token2, sha1(publicSeed1, publicSeed2, doubleSha));
       const candidateHash2 = sha1(hashStage1);
       return candidateHash2.compare(doubleSha) === 0;
     };
-    exports.doubleSha1 = function(password) {
+    exports.doubleSha1 = function (password) {
       return sha1(sha1(password));
     };
     function xorRotating(a, seed) {
@@ -9585,9 +9585,9 @@ var require_column_definition = __commonJS({
         return this.schema;
       }
     };
-    var addString = function(name) {
+    var addString = function (name) {
       Object.defineProperty(ColumnDefinition.prototype, name, {
-        get: function() {
+        get: function () {
           const start = this[`_${name}Start`];
           const end = start + this[`_${name}Length`];
           const val = StringParser.decode(
@@ -9643,7 +9643,7 @@ var require_execute = __commonJS({
     function toParameter(value, encoding, timezone) {
       let type = Types.VAR_STRING;
       let length;
-      let writer = function(value2) {
+      let writer = function (value2) {
         return Packet.prototype.writeLengthCodedString.call(this, value2, encoding);
       };
       if (value !== null) {
@@ -9667,7 +9667,7 @@ var require_execute = __commonJS({
             if (Object.prototype.toString.call(value) === "[object Date]") {
               type = Types.DATETIME;
               length = 12;
-              writer = function(value2) {
+              writer = function (value2) {
                 return Packet.prototype.writeDate.call(this, value2, timezone);
               };
             } else if (isJSON(value)) {
@@ -10252,7 +10252,7 @@ var require_resultset_header = __commonJS({
         const bigNumberStrings = connection.config.bigNumberStrings;
         const encoding = connection.serverEncoding;
         const flags = connection._handshakePacket.capabilityFlags;
-        const isSet = function(flag) {
+        const isSet = function (flag) {
           return flags & ClientConstants[flag];
         };
         if (packet.buffer[packet.offset] !== 0) {
@@ -10464,7 +10464,7 @@ var require_packets = __commonJS({
       if (process2.env.NODE_DEBUG) {
         if (ctor.prototype.toPacket) {
           const old = ctor.prototype.toPacket;
-          ctor.prototype.toPacket = function() {
+          ctor.prototype.toPacket = function () {
             const p = old.call(this);
             p._name = name;
             return p;
@@ -10779,7 +10779,7 @@ var require_mysql_clear_password = __commonJS({
     }
     var create_mysql_clear_password_plugin = (pluginOptions) => function mysql_clear_password_plugin({ connection, command }) {
       const password = command.password || pluginOptions.password || connection.config.password;
-      return function() {
+      return function () {
         return bufferFromStr(password);
       };
     };
@@ -10887,7 +10887,7 @@ var require_seq_queue = __commonJS({
     var INIT_ID = 0;
     var EVENT_CLOSED = "closed";
     var EVENT_DRAINED = "drained";
-    var SeqQueue = function(timeout) {
+    var SeqQueue = function (timeout) {
       EventEmitter.call(this);
       if (timeout && timeout > 0) {
         this.timeout = timeout;
@@ -10899,7 +10899,7 @@ var require_seq_queue = __commonJS({
       this.queue = [];
     };
     util.inherits(SeqQueue, EventEmitter);
-    SeqQueue.prototype.push = function(fn, ontimeout, timeout) {
+    SeqQueue.prototype.push = function (fn, ontimeout, timeout) {
       if (this.status !== SeqQueueManager.STATUS_IDLE && this.status !== SeqQueueManager.STATUS_BUSY) {
         return false;
       }
@@ -10910,13 +10910,13 @@ var require_seq_queue = __commonJS({
       if (this.status === SeqQueueManager.STATUS_IDLE) {
         this.status = SeqQueueManager.STATUS_BUSY;
         var self2 = this;
-        process.nextTick(function() {
+        process.nextTick(function () {
           self2._next(self2.curId);
         });
       }
       return true;
     };
-    SeqQueue.prototype.close = function(force) {
+    SeqQueue.prototype.close = function (force) {
       if (this.status !== SeqQueueManager.STATUS_IDLE && this.status !== SeqQueueManager.STATUS_BUSY) {
         return;
       }
@@ -10932,7 +10932,7 @@ var require_seq_queue = __commonJS({
         this.emit(EVENT_CLOSED);
       }
     };
-    SeqQueue.prototype._next = function(tid) {
+    SeqQueue.prototype._next = function (tid) {
       if (tid !== this.curId || this.status !== SeqQueueManager.STATUS_BUSY && this.status !== SeqQueueManager.STATUS_CLOSED) {
         return;
       }
@@ -10955,8 +10955,8 @@ var require_seq_queue = __commonJS({
       task.id = ++this.curId;
       var timeout = task.timeout > 0 ? task.timeout : this.timeout;
       timeout = timeout > 0 ? timeout : DEFAULT_TIMEOUT;
-      this.timerId = setTimeout(function() {
-        process.nextTick(function() {
+      this.timerId = setTimeout(function () {
+        process.nextTick(function () {
           self2._next(task.id);
         });
         self2.emit("timeout", task);
@@ -10966,9 +10966,9 @@ var require_seq_queue = __commonJS({
       }, timeout);
       try {
         task.fn({
-          done: function() {
+          done: function () {
             var res = task.id === self2.curId;
-            process.nextTick(function() {
+            process.nextTick(function () {
               self2._next(task.id);
             });
             return res;
@@ -10976,7 +10976,7 @@ var require_seq_queue = __commonJS({
         });
       } catch (err) {
         self2.emit("error", err, task);
-        process.nextTick(function() {
+        process.nextTick(function () {
           self2._next(task.id);
         });
       }
@@ -10986,7 +10986,7 @@ var require_seq_queue = __commonJS({
     SeqQueueManager.STATUS_BUSY = 1;
     SeqQueueManager.STATUS_CLOSED = 2;
     SeqQueueManager.STATUS_DRAINED = 3;
-    SeqQueueManager.createQueue = function(timeout) {
+    SeqQueueManager.createQueue = function (timeout) {
       return new SeqQueue(timeout);
     };
   }
@@ -11044,7 +11044,7 @@ var require_compressed_protocol = __commonJS({
       const connection = this;
       let packetLen = buffer.length;
       const compressHeader = Buffer.allocUnsafe(7);
-      (function(seqId) {
+      (function (seqId) {
         connection.deflateQueue.push((task) => {
           zlib2.deflate(buffer, (err, compressed) => {
             if (err) {
@@ -11875,31 +11875,31 @@ var require_generate_function = __commonJS({
       RESERVED_MAP[RESERVED[i2]] = true;
     }
     var i2;
-    var isVariable = function(name) {
+    var isVariable = function (name) {
       return isProperty(name) && !RESERVED_MAP.hasOwnProperty(name);
     };
     var formats = {
-      s: function(s2) {
+      s: function (s2) {
         return "" + s2;
       },
-      d: function(d) {
+      d: function (d) {
         return "" + Number(d);
       },
-      o: function(o) {
+      o: function (o) {
         return JSON.stringify(o);
       }
     };
-    var genfun = function() {
+    var genfun = function () {
       var lines = [];
       var indent = 0;
       var vars = {};
-      var push = function(str) {
+      var push = function (str) {
         var spaces = "";
         while (spaces.length < indent * 2)
           spaces += "  ";
         lines.push(spaces + str);
       };
-      var pushLine = function(line2) {
+      var pushLine = function (line2) {
         if (INDENT_END.test(line2.trim()[0]) && INDENT_START.test(line2[line2.length - 1])) {
           indent--;
           push(line2);
@@ -11918,7 +11918,7 @@ var require_generate_function = __commonJS({
         }
         push(line2);
       };
-      var line = function(fmt) {
+      var line = function (fmt) {
         if (!fmt)
           return line;
         if (arguments.length === 1 && fmt.indexOf("\n") > -1) {
@@ -11933,14 +11933,14 @@ var require_generate_function = __commonJS({
       };
       line.scope = {};
       line.formats = formats;
-      line.sym = function(name) {
+      line.sym = function (name) {
         if (!name || !isVariable(name))
           name = "tmp";
         if (!vars[name])
           vars[name] = 0;
         return name + (vars[name]++ || "");
       };
-      line.property = function(obj, name) {
+      line.property = function (obj, name) {
         if (arguments.length === 1) {
           name = obj;
           obj = "";
@@ -11950,21 +11950,21 @@ var require_generate_function = __commonJS({
           return obj ? obj + "." + name : name;
         return obj ? obj + "[" + JSON.stringify(name) + "]" : JSON.stringify(name);
       };
-      line.toString = function() {
+      line.toString = function () {
         return lines.join("\n");
       };
-      line.toFunction = function(scope) {
+      line.toFunction = function (scope) {
         if (!scope)
           scope = {};
         var src = "return (" + line.toString() + ")";
-        Object.keys(line.scope).forEach(function(key) {
+        Object.keys(line.scope).forEach(function (key) {
           if (!scope[key])
             scope[key] = line.scope[key];
         });
-        var keys = Object.keys(scope).map(function(key) {
+        var keys = Object.keys(scope).map(function (key) {
           return key;
         });
-        var vals = keys.map(function(key) {
+        var vals = keys.map(function (key) {
           return scope[key];
         });
         return Function.apply(null, keys.concat(src)).apply(null, vals);
@@ -12095,16 +12095,16 @@ var require_text_parser = __commonJS({
           table: field.table,
           name: field.name,
           charset: field.characterSet,
-          string: function(encoding = field.encoding) {
+          string: function (encoding = field.encoding) {
             if (field.columnType === Types.JSON && encoding === field.encoding) {
               console.warn(`typeCast: JSON column "${field.name}" is interpreted as BINARY by default, recommended to manually set utf8 encoding: \`field.string("utf8")\``);
             }
             return _this.packet.readLengthCodedString(encoding);
           },
-          buffer: function() {
+          buffer: function () {
             return _this.packet.readLengthCodedBuffer();
           },
-          geometry: function() {
+          geometry: function () {
             return _this.packet.parseGeometryValue();
           }
         };
@@ -12222,7 +12222,7 @@ var require_query2 = __commonJS({
         this._receivedFieldsCount = 0;
         this._resultIndex = 0;
         this._localStream = null;
-        this._unpipeStream = function() {
+        this._unpipeStream = function () {
         };
         this._streamFactory = options.infileStreamFactory;
         this._connection = null;
@@ -12336,7 +12336,7 @@ var require_query2 = __commonJS({
         const onPause = () => {
           this._localStream.pause();
         };
-        const onData = function(data) {
+        const onData = function (data) {
           const dataWithHeader = Buffer.allocUnsafe(data.length + 4);
           data.copy(dataWithHeader, 4);
           connection.writePacket(
@@ -12701,7 +12701,7 @@ var require_execute2 = __commonJS({
         this._executeOptions = options;
         this._resultIndex = 0;
         this._localStream = null;
-        this._unpipeStream = function() {
+        this._unpipeStream = function () {
         };
         this._streamFactory = options.infileStreamFactory;
         this._connection = null;
@@ -13685,7 +13685,7 @@ var require_promise = __commonJS({
     var core = require_mysql2();
     var EventEmitter = require("events").EventEmitter;
     function makeDoneCb(resolve, reject, localErr) {
-      return function(err, rows, fields, time) {
+      return function (err, rows, fields, time) {
         if (err) {
           localErr.message = err.message;
           localErr.code = err.code;
@@ -13705,7 +13705,7 @@ var require_promise = __commonJS({
         if (events.indexOf(eventName) >= 0 && !target.listenerCount(eventName)) {
           source2.on(
             eventName,
-            listeners[eventName] = function() {
+            listeners[eventName] = function () {
               const args = [].slice.call(arguments);
               args.unshift(eventName);
               target.emit.apply(target, args);
@@ -13928,12 +13928,12 @@ var require_promise = __commonJS({
         });
       });
     }
-    (function(functionsToWrap) {
+    (function (functionsToWrap) {
       for (let i2 = 0; functionsToWrap && i2 < functionsToWrap.length; i2++) {
         const func = functionsToWrap[i2];
         if (typeof core.Connection.prototype[func] === "function" && PromiseConnection.prototype[func] === void 0) {
           PromiseConnection.prototype[func] = function factory(funcName) {
-            return function() {
+            return function () {
               return core.Connection.prototype[funcName].apply(
                 this.connection,
                 arguments
@@ -14047,12 +14047,12 @@ var require_promise = __commonJS({
       }
       return new PromisePool(corePool, thePromise);
     }
-    (function(functionsToWrap) {
+    (function (functionsToWrap) {
       for (let i2 = 0; functionsToWrap && i2 < functionsToWrap.length; i2++) {
         const func = functionsToWrap[i2];
         if (typeof core.Pool.prototype[func] === "function" && PromisePool.prototype[func] === void 0) {
           PromisePool.prototype[func] = function factory(funcName) {
-            return function() {
+            return function () {
               return core.Pool.prototype[funcName].apply(this.pool, arguments);
             };
           }(func);
@@ -14133,12 +14133,12 @@ var require_promise = __commonJS({
         });
       }
     };
-    (function(functionsToWrap) {
+    (function (functionsToWrap) {
       for (let i2 = 0; functionsToWrap && i2 < functionsToWrap.length; i2++) {
         const func = functionsToWrap[i2];
         if (typeof core.PoolCluster.prototype[func] === "function" && PromisePoolCluster.prototype[func] === void 0) {
           PromisePoolCluster.prototype[func] = function factory(funcName) {
-            return function() {
+            return function () {
               return core.PoolCluster.prototype[funcName].apply(this.poolCluster, arguments);
             };
           }(func);
@@ -14215,7 +14215,7 @@ var require_connection = __commonJS({
         this._paused_packets = new Queue();
         this._statements = new LRU({
           max: this.config.maxPreparedStatements,
-          dispose: function(statement) {
+          dispose: function (statement) {
             statement.close();
           }
         });
@@ -14680,7 +14680,7 @@ var require_connection = __commonJS({
         const executeCommand = new Commands.Execute(options, cb);
         const prepareCommand = new Commands.Prepare(options, (err, stmt) => {
           if (err) {
-            executeCommand.start = function() {
+            executeCommand.start = function () {
               return null;
             };
             if (cb) {
@@ -14760,7 +14760,7 @@ var require_connection = __commonJS({
       createBinlogStream(opts) {
         let test = 1;
         const stream = new Readable({ objectMode: true });
-        stream._read = function() {
+        stream._read = function () {
           return {
             data: test++
           };
@@ -14791,7 +14791,7 @@ var require_connection = __commonJS({
         }
         let connectCalled = 0;
         function callbackOnce(isErrorHandler) {
-          return function(param) {
+          return function (param) {
             if (!connectCalled) {
               if (isErrorHandler) {
                 cb(param);
@@ -14927,7 +14927,7 @@ var require_connection = __commonJS({
         securePair.cleartext.on("data", (data) => {
           this.packetParser.execute(data);
         });
-        this.write = function(buffer) {
+        this.write = function (buffer) {
           securePair.cleartext.write(buffer);
         };
         securePair.on("secure", () => {
@@ -15084,7 +15084,7 @@ var require_pool = __commonJS({
       end(cb) {
         this._closed = true;
         if (typeof cb !== "function") {
-          cb = function(err) {
+          cb = function (err) {
             if (err) {
               throw err;
             }
@@ -15093,7 +15093,7 @@ var require_pool = __commonJS({
         let calledBack = false;
         let closedConnections = 0;
         let connection;
-        const endCB = function(err) {
+        const endCB = function (err) {
           if (calledBack) {
             return;
           }
@@ -15518,7 +15518,7 @@ var require_mysql2 = __commonJS({
     var Connection = require_connection();
     var ConnectionConfig = require_connection_config();
     var parserCache = require_parser_cache();
-    exports.createConnection = function(opts) {
+    exports.createConnection = function (opts) {
       return new Connection({ config: new ConnectionConfig(opts) });
     };
     exports.connect = exports.createConnection;
@@ -15526,18 +15526,18 @@ var require_mysql2 = __commonJS({
     exports.ConnectionConfig = ConnectionConfig;
     var Pool2 = require_pool();
     var PoolCluster = require_pool_cluster();
-    exports.createPool = function(config) {
+    exports.createPool = function (config) {
       const PoolConfig = require_pool_config();
       return new Pool2({ config: new PoolConfig(config) });
     };
-    exports.createPoolCluster = function(config) {
+    exports.createPoolCluster = function (config) {
       const PoolCluster2 = require_pool_cluster();
       return new PoolCluster2(config);
     };
     exports.createQuery = Connection.createQuery;
     exports.Pool = Pool2;
     exports.PoolCluster = PoolCluster;
-    exports.createServer = function(handler) {
+    exports.createServer = function (handler) {
       const Server = require_server();
       const s2 = new Server();
       if (handler) {
@@ -15572,10 +15572,10 @@ var require_mysql2 = __commonJS({
       "CharsetToEncoding",
       () => require_charset_encodings()
     );
-    exports.setMaxParserCache = function(max) {
+    exports.setMaxParserCache = function (max) {
       parserCache.setMaxCache(max);
     };
-    exports.clearParserCache = function() {
+    exports.clearParserCache = function () {
       parserCache.clearCache();
     };
   }
@@ -15912,9 +15912,9 @@ var init_dist = __esm({
 // node_modules/.pnpm/web-streams-polyfill@3.2.1/node_modules/web-streams-polyfill/dist/ponyfill.es2018.js
 var require_ponyfill_es2018 = __commonJS({
   "node_modules/.pnpm/web-streams-polyfill@3.2.1/node_modules/web-streams-polyfill/dist/ponyfill.es2018.js"(exports, module2) {
-    (function(global2, factory) {
+    (function (global2, factory) {
       typeof exports === "object" && typeof module2 !== "undefined" ? factory(exports) : typeof define === "function" && define.amd ? define(["exports"], factory) : (global2 = typeof globalThis !== "undefined" ? globalThis : global2 || self, factory(global2.WebStreamsPolyfill = {}));
-    })(exports, function(exports2) {
+    })(exports, function (exports2) {
       "use strict";
       const SymbolPolyfill = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? Symbol : (description) => `Symbol(${description})`;
       function noop2() {
@@ -16126,10 +16126,10 @@ var require_ponyfill_es2018 = __commonJS({
       const ErrorSteps = SymbolPolyfill("[[ErrorSteps]]");
       const CancelSteps = SymbolPolyfill("[[CancelSteps]]");
       const PullSteps = SymbolPolyfill("[[PullSteps]]");
-      const NumberIsFinite = Number.isFinite || function(x2) {
+      const NumberIsFinite = Number.isFinite || function (x2) {
         return typeof x2 === "number" && isFinite(x2);
       };
-      const MathTrunc = Math.trunc || function(v) {
+      const MathTrunc = Math.trunc || function (v) {
         return v < 0 ? Math.ceil(v) : Math.floor(v);
       };
       function isDictionary(x2) {
@@ -16427,7 +16427,7 @@ var require_ponyfill_es2018 = __commonJS({
       function streamAsyncIteratorBrandCheckException(name) {
         return new TypeError(`ReadableStreamAsyncIterator.${name} can only be used on a ReadableSteamAsyncIterator`);
       }
-      const NumberIsNaN = Number.isNaN || function(x2) {
+      const NumberIsNaN = Number.isNaN || function (x2) {
         return x2 !== x2;
       };
       function CreateArrayFromList(elements) {
@@ -20019,7 +20019,7 @@ async function toFormData(Body2, ct) {
   };
   const decoder = new TextDecoder("utf-8");
   decoder.decode();
-  parser.onPartBegin = function() {
+  parser.onPartBegin = function () {
     parser.onPartData = onPartData;
     parser.onPartEnd = appendEntryToFormData;
     headerField = "";
@@ -20030,13 +20030,13 @@ async function toFormData(Body2, ct) {
     filename = null;
     entryChunks.length = 0;
   };
-  parser.onHeaderField = function(ui8a) {
+  parser.onHeaderField = function (ui8a) {
     headerField += decoder.decode(ui8a, { stream: true });
   };
-  parser.onHeaderValue = function(ui8a) {
+  parser.onHeaderValue = function (ui8a) {
     headerValue += decoder.decode(ui8a, { stream: true });
   };
-  parser.onHeaderEnd = function() {
+  parser.onHeaderEnd = function () {
     headerValue += decoder.decode();
     headerField = headerField.toLowerCase();
     if (headerField === "content-disposition") {
@@ -20473,12 +20473,14 @@ var init_body = __esm({
       blob: { enumerable: true },
       json: { enumerable: true },
       text: { enumerable: true },
-      data: { get: (0, import_node_util.deprecate)(
-        () => {
-        },
-        "data doesn't exist, use json(), text(), arrayBuffer(), or body instead",
-        "https://github.com/node-fetch/node-fetch/issues/1000 (response)"
-      ) }
+      data: {
+        get: (0, import_node_util.deprecate)(
+          () => {
+          },
+          "data doesn't exist, use json(), text(), arrayBuffer(), or body instead",
+          "https://github.com/node-fetch/node-fetch/issues/1000 (response)"
+        )
+      }
     });
     clone = (instance, highWaterMark) => {
       let p1;
@@ -21687,12 +21689,12 @@ var logQuery = (invokingResource, query, executionTime, parameters) => {
       );
     }
   } else if (mysql_debug || executionTime >= mysql_slow_query_warning)
-    console.log(
-      `^3[${mysql_debug ? "DEBUG" : "WARNING"}] ${invokingResource} took ${executionTime}ms to execute a query!
-    ${query} ${JSON.stringify(parameters)}^0`
-    );
-  if (!mysql_ui)
-    return;
+    // console.log(
+    //   `^3[${mysql_debug ? "DEBUG" : "WARNING"}] ${invokingResource} took ${executionTime}ms to execute a query!
+    // ${query} ${JSON.stringify(parameters)}^0`
+    // );
+    if (!mysql_ui)
+      return;
   if (logStorage[invokingResource] === void 0)
     logStorage[invokingResource] = [];
   logStorage[invokingResource].push({

@@ -17,8 +17,8 @@ Config.Mechanics = {
         BlipShow = true,
         Blip = {Id = 446, Scale = 1.0, Color = 2, Display = 4},
         ModifiedAreas = {
-            {Coord = vector3(-338.6139831543,-137.64077758789,39.00968170166), Distance = 3.0},
-            {Coord = vector3(490.57504272461,5590.2646484375,794.02239990234), Distance = 4.0}
+            {Coord = vector3(-338.6139831543,-137.64077758789,39.00968170166), Distance = 5.0},
+            {Coord = vector3(490.57504272461,5590.2646484375,794.02239990234), Distance = 5.0}
         }
     },
 }

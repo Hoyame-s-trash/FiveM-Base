@@ -38,7 +38,7 @@ GM.Police.Duty = {
     {
         name = "duty_1",
         label = "Prise de service 1",
-        position = vector3(-1091.3719482422,-820.21496582031,27.034378051758),
+        position = vector3(-1070.3204345703,-865.87982177734,4.867723941803),
         helpNotification = "pour prendre votre service.",
         ped = {
             model = GetHashKey("s_m_y_cop_01"),
@@ -170,4 +170,15 @@ GM.Police.Armory = {
             },
         }
     },
+}
+
+GM.Police.Menu = {
+    backup = {
+        {
+            name = "backup_1",
+            label = "Backup 1",
+            grade = 0,
+            message = "Message de backup 1",
+        },
+    }
 }

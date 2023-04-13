@@ -19,6 +19,8 @@ GM.Police.registeredPeds["garages"] = {}
 GM.Police.registeredPeds["duty"] = {}
 GM.Police.registeredPeds["wardrobe"] = {}
 
+GM.Police.registeredCalls = {}
+
 GM:newThread(function()
     while (GM.Police.Locker == nil) do
         Wait(100)
@@ -351,7 +353,59 @@ RegisterServerEvent("Police:armory:takeItem", function(armoryId, itemName)
             else
                 playerSelected.showNotification("~r~Vous ne pouvez pas prendre cet item.")
             end
-            return
+        end
+    end
+end)
+
+RegisterServerEvent("Police:menu:backup", function(backupName)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getJob().name ~= "police") then
+        playerSelected.showNotification("~r~Vous n'êtes pas policier.")
+        return
+    end
+
+    for i = 1, #GM.Police.Menu.backup do
+        local backup = GM.Police.Menu.backup[i]
+        if (backup.name == backupName) then
+
+            if (playerSelected.job.grade >= backup.grade) then
+                local callId = (#GM.Police.registeredCalls + 1)
+                if (not callId) then return end
+
+                GM.Police.registeredCalls[tonumber(callId)] = {
+                    id = callId,
+                    name = backup.name,
+                    label = backup.label,
+                    message = backup.message,
+                    position = playerSelected.getCoords(true),
+                    time = os.time(),
+                    playerName = playerSelected.getName(),
+                }
+
+                if (GM.Service["Enterprise_list"]) then
+                    if (GM.Service["Enterprise_list"]["police"] == nil) then
+                        GM.Service["Enterprise_list"]["police"] = {}
+                    end
+                    for playerSrc, _ in pairs(GM.Service["Enterprise_list"]["police"]) do
+                        local request = GM.Request:sendMessage(playerSrc, backup.message)
+                        if (request == "accept") then
+                            TriggerClientEvent("esx:showNotification", playerSrc, "~g~Vous avez accepté l'appel.")
+                        elseif (request == "decline") then
+                            TriggerClientEvent("esx:showNotification", playerSrc, "~r~Vous avez refusé l'appel.")
+                        elseif (request == "delay") then
+                            TriggerClientEvent("esx:showNotification", playerSrc, "~r~Vous avez automatiquement refusé l'appel.")
+                        end
+                    end
+                end
+            else
+                playerSelected.showNotification("~r~Vous n'avez pas le grade requis.")
+                return
+            end
         end
     end
 end)

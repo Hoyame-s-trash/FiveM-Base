@@ -7,36 +7,18 @@ local props = "vehicleprops"
 local araba = nil 
 local modificationCars = {}
 Mechanic = {}
-ESX = exports["believer"]:getSharedObject()
+KIBRA = exports["kibra-core"]:GetCore()
 
 StartServer = function()
     for k,v in pairs(Config.Mechanics) do
-        local MC_DATA = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = '..k..'')
+        local MC_DATA = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = '..k..'')
         if #MC_DATA == 0 then
-            MySQL.Async.execute('INSERT into `mechanics` (id, name, owner, money, wage, discountrate, customers, repairfee) VALUES(@id, @name, @owner, @money, @wage, @dr, @cust, @rpr)', {
-                ["@id"] = k, 
-                ["@name"] = Config.DefaultMechanicName..' '..k, 
-                ["@owner"] = nil, 
-                ["@money"] = Config.DefaultMechanicMoney, 
-                ["@wage"] = 30, 
-                ["@dr"] = 30, 
-                ["@cust"] = "[]", 
-                ["@rpr"] = 1000
-            })
+            MySQL.Async.execute('INSERT into `kibra-mechanics` (id, name, owner, money, wage, discountrate, customers, repairfee) VALUES(@id, @name, @owner, @money, @wage, @dr, @cust, @rpr)', {["@id"] = k, ["@name"] = Config.DefaultMechanicName..' '..k, ["@owner"] = nil, ["@money"] = Config.DefaultMechanicMoney, ["@wage"] = 30, ["@dr"] = 30, ["@cust"] = "[]", ["@rpr"] = 1000})
         end
     end
     Wait(500)
     LoadMechanic()
 end
-
-RegisterNetEvent('kibra:SetVehicleOwner', function(props)
-    local src = source
-    local v = MySQL.Sync.fetchAll('SELECT * FROM owned_vehicles WHERE plate = @plt', {["@plt"] = props.plate})
-    if #v == 0 then
-        local xTarget = ESX.GetPlayerFromId(src)
-        MySQL.insert('INSERT INTO owned_vehicles (owner, plate, vehicle) VALUES (?, ?, ?)', {xTarget.identifier, props.plate, json.encode(props)})
-    end
-end)
 
 RegisterNetEvent('kibra:Mechanics:Server:ModifiyeEdilenArac', function(vehicleOne, modifiepart, plate, id)
     local get = id..'_'..modifiepart..'_'..plate
@@ -45,7 +27,8 @@ end)
 
 RegisterNetEvent('kibra:Mechanics:Server:PlateVarMoruk', function(ex, modifiepart, id, plate)
     local get = id..'_'..modifiepart..'_'..ex
-    modificationCars[get] = {plate = ex, platevar = true, plateNew = plate}
+    local vehicle = modificationCars[get].vehicle
+    modificationCars[get] = {vehicle = vehicle, plate = ex, platevar = true, plateNew = plate}
 end)
 
 RegisterNetEvent('ServerDeleteCarMods', function(mod, id, p)
@@ -67,9 +50,11 @@ RegisterNetEvent('DelTamir', function(id, get, plate)
     modificationCars[id..'_'..get..'_'..plate].fix = false
 end)
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:CheckCar', function(source, cb, plate)
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:CheckCar', function(source, cb, plate)
     local getTable = "owned_vehicles"
-    
+    if KIBRA.Natives.GetFramework() == "QBCore" then
+        getTable = "player_vehicles"
+    end
     local allVehicles = MySQL.Sync.fetchAll('SELECT * FROM '..getTable..' WHERE plate = @plt', {["@plt"] = plate})
     if #allVehicles >= 1 then
         cb(true)
@@ -78,13 +63,34 @@ ESX.RegisterServerCallback('kibra:Mechanics:Server:CheckCar', function(source, c
     end
 end)
 
+RegisterNetEvent('Kibra:Mechanics:ArkadanGuncelle', function(props, plateV)
+    local getTable = "owned_vehicles"
+    local kolon = "vehicle"
+    if KIBRA.Natives.GetFramework() == "QBCore" then
+        getTable = "player_vehicles"
+        kolon = "mods"
+    end    
+    props.plate = plateV
+
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM '..getTable..' WHERE plate = @plt', {["@plt"] = plateV})
+    if #MysqlMechanic >= 1 then
+        MySQL.Async.execute('UPDATE '..getTable..' SET '..kolon..' = @mods WHERE plate = @plt', {["@plt"] = plateV, ["@mods"] = json.encode(props)})
+    end
+end)
+
 RegisterNetEvent('kibra:Mechanics:Server:VehicleUpdateProps', function(modpart, id, plaka)
     local source = source
     local getTable = "owned_vehicles"
     local kolon = "vehicle"
-      
+    if KIBRA.Natives.GetFramework() == "QBCore" then
+        getTable = "player_vehicles"
+        kolon = "mods"
+    end    
     local getID = id..'_'..modpart..'_'..plaka
     local plateV = modificationCars[getID].plate
+    if modificationCars[getID].platevar then
+        props.plate = modificationCars[getID].plateNew
+    end
     TriggerClientEvent('Kibra:Mechanic:Client:UpdateClientPlate', source, plateV, modificationCars[getID].vehicle)
     local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM '..getTable..' WHERE plate = @plt', {["@plt"] = plateV})
     if #MysqlMechanic >= 1 then
@@ -97,16 +103,19 @@ RegisterNetEvent('kibra:Mechanics:Server:VehicleUpdateProps2', function(propsB, 
     local kolon = "vehicle"
     local getID = id..'_'..modpart..'_'..plate
     local plate = modificationCars[getID].plate
-     
+    if KIBRA.Natives.GetFramework() == "QBCore" then
+        getTable = "player_vehicles"
+        kolon =  "mods"
+    end    
     local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM '..getTable..' WHERE plate = @plt', {["@plt"] = plate})
     if #MysqlMechanic >= 1 then
         MySQL.Async.execute('UPDATE '..getTable..' SET '..kolon..' = @mods WHERE plate = @plt', {["@plt"] = plate, ["@mods"] = json.encode(propsB)})
     end
 end)
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:BuyMechanic', function(source, cb, id)
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = id})
-    local xPlayer = ESX.GetPlayerFromId(source)
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:BuyMechanic', function(source, cb, id)
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = id})
+    local xPlayer = KIBRA.Natives.SourceFromPlayer(source)
     local mechanic = Config.Mechanics[id]
     if not mechanic or mechanic.Owner ~= nil then
         cb(false)
@@ -119,14 +128,11 @@ ESX.RegisterServerCallback('kibra:Mechanics:Server:BuyMechanic', function(source
         return
     end
     
-    if Config.UseServerJobSystem then
-        xPlayer.setJob(mechanic.JobName, Config.DefaultBossRank)
-    else
-        AddEmployee(source, source, id, Config.Text["Owner"])
-    end
+    KIBRA.Natives.SetJobSQL(mechanic.JobName, Config.DefaultBossRank, xPlayer.identifier)
+    xPlayer.setPlayerJob(mechanic.JobName, Config.DefaultBossRank)
     
     xPlayer.removePlayerMoney("bank", price)
-    MySQL.Async.execute('UPDATE `mechanics` SET owner = @owner WHERE id = @id', {["@id"] = id, ["@owner"] = xPlayer.identifier})
+    MySQL.Async.execute('UPDATE `kibra-mechanics` SET owner = @owner WHERE id = @id', {["@id"] = id, ["@owner"] = xPlayer.identifier})
     mechanic.Owner = xPlayer.identifier
     TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', -1, Config.Mechanics)
     cb(true) 
@@ -134,34 +140,16 @@ end)
 
 
 AddEmployee = function(ownersrc, source, id, status)
-    local xPlayer = ESX.GetPlayerFromId(source)
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = id})
+    local xPlayer = KIBRA.Natives.SourceFromPlayer(source)
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = id})
     if MysqlMechanic then
-        if not Config.UseServerJobSystem then
-            local Emp = json.decode(MysqlMechanic[1].employees)
-            if next(Emp) == nil then
-                table.insert(Emp, {name = xPlayer.getName(), permission = status, identifier = xPlayer.identifier})
-                MySQL.Async.execute('UPDATE `mechanics` SET employees = @emp WHERE id = @id', {["@id"] = id, ["@emp"] = json.encode(Emp)})
-                Config.Mechanics[id].Employees = Emp 
-                TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', -1, Config.Mechanics)
-                TriggerClientEvent('kibra:Mechanics:Client:Refresh:BossMenu', ownersrc)
-            else
-                if ElemanIsteVarmi(Emp, xPlayer.identifier, ownersrc) then return end
-                table.insert(Emp, {name = xPlayer.getName(), permission = status, identifier = xPlayer.identifier})
-                MySQL.Async.execute('UPDATE `mechanics` SET employees = @emp WHERE id = @id', {["@id"] = id, ["@emp"] = json.encode(Emp)})
-                Config.Mechanics[id].Employees = Emp 
-                TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', -1, Config.Mechanics)
-                TriggerClientEvent('kibra:Mechanics:Client:Refresh:BossMenu', ownersrc)
-                TriggerClientEvent('kibra:Mechanics:UI:Notify', ownersrc, 'success', Config.Text["SuccessEmployee"])
-            end
+        if xPlayer.job.name ~= Config.Mechanics[id].JobName then
+            xPlayer.setPlayerJob(Config.Mechanics[id].JobName, Config.DefaultTechRank)
+            KIBRA.Natives.SetJobSQL(Config.Mechanics[id].JobName, Config.DefaultTechRank, xPlayer.identifier)
+            TriggerClientEvent('kibra:Mechanics:UI:Notify', ownersrc, 'success', Config.Text["SuccessEmployee"])
+            TriggerClientEvent('kibra:Mechanics:Client:CloseBossMenu', ownersrc, id)
         else
-            if xPlayer.getPlayerJob() ~= Config.Mechanics[id].JobName then
-                xPlayer.setJob(Config.Mechanics[id].JobName, Config.DefaultTechRank)
-                TriggerClientEvent('kibra:Mechanics:UI:Notify', ownersrc, 'success', Config.Text["SuccessEmployee"])
-                TriggerClientEvent('kibra:Mechanics:Client:CloseBossMenu', ownersrc, id)
-            else
-                TriggerClientEvent('kibra:Mechanics:UI:Notify', ownersrc, 'error', Config.Text["AlreadyWorking"])
-            end
+            TriggerClientEvent('kibra:Mechanics:UI:Notify', ownersrc, 'error', Config.Text["AlreadyWorking"])
         end
     end
 end
@@ -176,28 +164,30 @@ ElemanIsteVarmi = function(table, identifier, source)
     end
 end
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:GetPlayerClosest', function(source, cb, serverid)
-    local xPlayer = ESX.GetPlayerFromId(serverid)
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:GetPlayerClosest', function(source, cb, serverid)
+    local xPlayer = KIBRA.Natives.SourceFromPlayer(serverid)
     if xPlayer then 
-        cb(xPlayer.getName())
+        cb(xPlayer.getPlayerName())
     end
 end)
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:SellMechanic', function(source, cb, targetID, id)
-    local xTarget = ESX.GetPlayerFromId(targetID)
-    local xPlayer = ESX.GetPlayerFromId(source)
-    local MySQLMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = id})
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:SellMechanic', function(source, cb, targetID, id)
+    local xTarget = KIBRA.Natives.SourceFromPlayer(targetID)
+    local xPlayer = KIBRA.Natives.SourceFromPlayer(source)
+    local MySQLMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = id})
     if xTarget then
         if MySQLMechanic then
-            MySQL.Async.execute('UPDATE `mechanics` SET owner = @owner WHERE id = @id', {["@owner"] = xTarget.identifier, ["@id"] = id})
+            MySQL.Async.execute('UPDATE `kibra-mechanics` SET owner = @owner WHERE id = @id', {["@owner"] = xTarget.identifier, ["@id"] = id})
             Config.Mechanics[id].Owner = xTarget.identifier
             TriggerClientEvent('kibra:Mechanics:UI:Notify', xPlayer.source, 'success', Config.Text["SuccesTransfer"])
             TriggerClientEvent('kibra:Mechanics:UI:Notify', xTarget.source, 'success', Config.Text["TransferSuccess"])
             TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', xPlayer.source, Config.Mechanics)
             TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', xTarget.source, Config.Mechanics)
             if Config.UseServerJobSystem then
-                xTarget.setJob(Config.Mechanics[id].JobName, Config.DefaultBossRank)
-                xPlayer.setJob("unemployed", 0)
+                KIBRA.Natives.SetJobSQL(Config.Mechanics[id].JobName, Config.DefaultBossRank, xTarget.identifier)
+                xTarget.setPlayerJob(Config.Mechanics[id].JobName, Config.DefaultBossRank)
+                KIBRA.Natives.SetJobSQL("unemployed", 0, xPlayer.identifier)
+                xPlayer.setPlayerJob("unemployed", 0)
             end
             cb(true)
         else
@@ -209,72 +199,59 @@ ESX.RegisterServerCallback('kibra:Mechanics:Server:SellMechanic', function(sourc
     end
 end)
 
-ESX.RegisterServerCallback('kibra:VehicleShop:Server:GetJobAmount', function(source, cb, id)
-    local players = ESX.GetPlayers()
-    local jobCount = 0
+KIBRA.Natives.CreateCallback('kibra:VehicleShop:Server:GetJobAmount', function(source, cb, id)
     local jobPlayers = {}
-    for i=1, #players, 1 do
-        local xPlayer = ESX.GetPlayerFromId(players[i])
+    local sayi = 0
+    local xPlayerV = KIBRA.Natives.SourceFromPlayer(source)
+    local xPlayers = KIBRA.Natives.AllPlayers()
+	for i=1, #xPlayers, 1 do
+        local xPlayer = KIBRA.Natives.SourceFromPlayer(xPlayers[i])
         if xPlayer.job.name == Config.Mechanics[id].JobName then
-            jobCount = jobCount + 1
-            table.insert(jobPlayers, {name = xPlayer.getName(), permission = xPlayer.job.grade_name, identifier = xPlayer.identifier})
+            sayi = sayi + 1
+            table.insert(jobPlayers, {name = xPlayer.getPlayerName(), permission = xPlayer.job.grade_name, identifier = xPlayer.identifier})
         end
     end
-    cb(jobCount, jobPlayers)
+    cb(sayi, jobPlayers, xPlayerV.getPlayerName())
+    return sayi
 end)
 
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:FiredCalisanFakirMalGey', function(source, cb, identifier, id)
-    local xPlayer = ESX.GetPlayerFromId(source)
-    local xTarget = ESX.GetPlayerFromIdentifier(identifier)
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = id})
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:FiredCalisanFakirMalGey', function(source, cb, identifier, id)
+    local xPlayer = KIBRA.Natives.SourceFromPlayer(source)
+    local xTargetSource = KIBRA.Natives.GetPlayerFromIdentifier(identifier)
+    local xTarget = KIBRA.Natives.SourceFromPlayer(xTargetSource)
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = id})
     local Employees = json.decode(MysqlMechanic[1].employees)
     if xPlayer.identifier ~= identifier then 
-        if not Config.UseServerJobSystem then
-            for k,v in pairs(Employees) do
-                if v.identifier == identifier then
-                    table.remove(Employees,k)
-                    MySQL.Async.execute('UPDATE `mechanics` SET employees = @emp', {["@emp"] = json.encode(Employees), ["@id"] = id})
-                    Config.Mechanics[id].Employees = Employees
-                    TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', xPlayer.source, Config.Mechanics)
-                    if xTarget then
-                        TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', xTarget.source, Config.Mechanics)
-                    end
-                    cb(true, Employees)
-                end
-            end
-        else
-            if xTarget ~= nil then
-                if exports["kibra-core"]:GetFramework() == "ESX" then
-                    xTarget.setJob("unemployed", 0, identifier)
-                else
-                    xTarget.Functions.setJob("unemployed", 0, identifier)
-                end
-            end
-            TriggerClientEvent('kibra:Mechanics:Client:CloseBossMenu', source, id)
-            TriggerClientEvent('kibra:Mechanics:UI:Notify', source, 'success', Config.Text["SuccessFired"])
+        if xTarget ~= nil then
+            xTarget.setPlayerJob("unemployed", 0)
         end
+        KIBRA.Natives.SetJobSQL("unemployed", 0, identifier)
+        TriggerClientEvent('kibra:Mechanics:Client:CloseBossMenu', source, id)
+        TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', -1, Config.Mechanics)
+        TriggerClientEvent('kibra:Mechanics:UI:Notify', source, 'success', Config.Text["SuccessFired"])
+        cb(true)
     else
         cb(false)
     end
 end)
 
 MechanicAddCustomerHistory = function(source, mid, plate, price)
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = mid})
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = mid})
+    local xPlayer = KIBRA.Natives.SourceFromPlayer(source)
     if #MysqlMechanic > 0 then
         local getCustomers = json.decode(MysqlMechanic[1].customers)
-        table.insert(getCustomers, {PlayerName = xPlayer.getName(), Plate = plate, Price = price})
+        table.insert(getCustomers, {PlayerName = xPlayer.getPlayerName(), Plate = plate, Price = price})
         Config.Mechanics[mid].Customers = getCustomers
-        MySQL.Async.execute('UPDATE `mechanics` SET customers = @cust WHERE id = @id', {["@id"] = mid, ["@cust"] = json.encode(getCustomers)})
+        MySQL.Async.execute('UPDATE `kibra-mechanics` SET customers = @cust WHERE id = @id', {["@id"] = mid, ["@cust"] = json.encode(getCustomers)})
         TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', source, Config.Mechanics)
     end
 end
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:ChangeMechanicName', function(source, cb, mid, isim)
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = mid})
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:ChangeMechanicName', function(source, cb, mid, isim)
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = mid})
     if MysqlMechanic then
-        MySQL.Async.execute('UPDATE `mechanics` SET name = @name WHERE id = @id', {["@name"] = isim, ["@id"] = mid})
+        MySQL.Async.execute('UPDATE `kibra-mechanics` SET name = @name WHERE id = @id', {["@name"] = isim, ["@id"] = mid})
         Config.Mechanics[mid].MechanicName = isim 
         TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', -1, Config.Mechanics)
         cb(true)
@@ -284,9 +261,9 @@ end)
 
 RegisterNetEvent('kibra:Mechanics:Server:GetMyAroundPlayers', MyAroundPlayers)
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:AddEmploye', function(source, cb, mid, source2)
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:AddEmploye', function(source, cb, mid, source2)
     if source ~= source2 then
-        local HiredPlayer = ESX.GetPlayerFromId(source2)
+        local HiredPlayer = KIBRA.Natives.SourceFromPlayer(source2)
         if HiredPlayer then
             AddEmployee(source, source2, mid, Config.Text["Techinician"])
         else
@@ -298,7 +275,7 @@ ESX.RegisterServerCallback('kibra:Mechanics:Server:AddEmploye', function(source,
 end)
 
 LoadMechanic = function()
-    local McData = MySQL.Sync.fetchAll('SELECT * FROM `mechanics`')
+    local McData = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics`')
     if #McData > 0 then
         for k,v in pairs(McData) do
             v.id = tonumber(v.id)
@@ -312,12 +289,12 @@ LoadMechanic = function()
             Config.Mechanics[v.id].VehicleRepairAndCleaningLaborPrice = v.repairfee
         end
     end
-    print("^2[Mechanics]^7 Mechanics Loaded")
+    print("^2[Kibra Mechanics]^7 Mechanics Loaded")
 end
 
-ESX.RegisterServerCallback("kibra:Mechanics:Server:UpdateDiscount", function(source, cb, id, yuzde)
+KIBRA.Natives.CreateCallback("kibra:Mechanics:Server:UpdateDiscount", function(source, cb, id, yuzde)
     if yuzde ~= "" and yuzde >= 0 and yuzde <= 100 then
-        MySQL.Async.execute('UPDATE `mechanics` SET discountrate = @disc WHERE id = @id', {["@id"] = id, ["@disc"] = yuzde})
+        MySQL.Async.execute('UPDATE `kibra-mechanics` SET discountrate = @disc WHERE id = @id', {["@id"] = id, ["@disc"] = yuzde})
         Config.Mechanics[id].DiscountRate = yuzde 
         TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', source, Config.Mechanics)
         cb(true)
@@ -326,21 +303,21 @@ ESX.RegisterServerCallback("kibra:Mechanics:Server:UpdateDiscount", function(sou
     end
 end)
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:UpdateWage', function(source, cb, yuzde, mID)
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = mID})
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:UpdateWage', function(source, cb, yuzde, mID)
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = mID})
     if #MysqlMechanic >= 1 then
-        MySQL.Async.execute('UPDATE `mechanics` SET wage = @wage WHERE id = @id', {["@wage"] = yuzde, ["@id"] = mID})
+        MySQL.Async.execute('UPDATE `kibra-mechanics` SET wage = @wage WHERE id = @id', {["@wage"] = yuzde, ["@id"] = mID})
         Config.Mechanics[mID].SalaryPerMod = yuzde 
         TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', source, Config.Mechanics)
         cb(true)
     end
 end)
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:DepositWithdrawMoney', function(source, cb, mid, money, type)
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:DepositWithdrawMoney', function(source, cb, mid, money, type)
     local RequestMoney = tonumber(money)
-    local xPlayer = ESX.GetPlayerFromId(source)
+    local xPlayer = KIBRA.Natives.SourceFromPlayer(source)
     local PlayerCash = xPlayer.getPlayerMoney().cash
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = mid})
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = mid})
     local MechanicMoney = tonumber(MysqlMechanic[1].money)
 
     if type == "cekBank" then
@@ -362,11 +339,11 @@ ESX.RegisterServerCallback('kibra:Mechanics:Server:DepositWithdrawMoney', functi
     end
 end)
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:UpdateRepairFee', function(source, cb, id, fee)
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = id})
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:UpdateRepairFee', function(source, cb, id, fee)
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = id})
     if MysqlMechanic then
         if fee > 0 and fee ~= "" then
-            MySQL.Async.execute('UPDATE `mechanics` SET repairfee = @rpr WHERE id = @id', {["@rpr"] = fee, ["@id"] = id})
+            MySQL.Async.execute('UPDATE `kibra-mechanics` SET repairfee = @rpr WHERE id = @id', {["@rpr"] = fee, ["@id"] = id})
             Config.Mechanics[id].VehicleRepairAndCleaningLaborPrice = fee
             TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', -1, Config.Mechanics)
             cb(true)
@@ -377,7 +354,7 @@ ESX.RegisterServerCallback('kibra:Mechanics:Server:UpdateRepairFee', function(so
 end)
 
 Mechanic.AddMoney = function(type, id, money, source)
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = id})
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = id})
     local mechanicMoney = tonumber(MysqlMechanic[1].money)
     local addedMoney = tonumber(money)
     if type == "addMoney" then
@@ -388,29 +365,29 @@ Mechanic.AddMoney = function(type, id, money, source)
         Config.Mechanics[id].Money = mechanicMoney-addedMoney
     end
     Config.Mechanics[id].Money = mechanicMoney
-    MySQL.Async.execute('UPDATE `mechanics` SET money = @money WHERE id = @id', {["@money"] = mechanicMoney, ["@id"] = id})
+    MySQL.Async.execute('UPDATE `kibra-mechanics` SET money = @money WHERE id = @id', {["@money"] = mechanicMoney, ["@id"] = id})
     TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', source, Config.Mechanics)
 end
 
 AddRemoveMoneyMechanic = function(bla, money, mid, source)
-    local ThePlayer = ESX.GetPlayerFromId(source)
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {["@id"] = mid})
+    local ThePlayer = KIBRA.Natives.SourceFromPlayer(source)
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {["@id"] = mid})
     local MechanicMoney = tonumber(MysqlMechanic[1].money)
     if bla == "ekle" then
 
         -- TotalMoney = MechanicMoney+money
-        -- MySQL.Async.execute('UPDATE `mechanics` SET money = @money WHERE id = @id', {["@money"] = TotalMoney, ["@id"] = mid})
+        -- MySQL.Async.execute('UPDATE `kibra-mechanics` SET money = @money WHERE id = @id', {["@money"] = TotalMoney, ["@id"] = mid})
         -- ThePlayer.removePlayerMoney("cash", money)
         -- Config.Mechanics[mid].Money = TotalMoney 
         -- TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', source, Config.Mechanics)
     elseif bla == "cikart" then
         TotalMoney = MechanicMoney-money
         ThePlayer.giveAccountMoney("cash", money)
-        MySQL.Async.execute('UPDATE `mechanics` SET money = @money WHERE id = @id', {["@money"] = TotalMoney, ["@id"] = mid})
+        MySQL.Async.execute('UPDATE `kibra-mechanics` SET money = @money WHERE id = @id', {["@money"] = TotalMoney, ["@id"] = mid})
         Config.Mechanics[mid].Money = TotalMoney 
         TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', source, Config.Mechanics)
     elseif bla == "amcik" then
-        MySQL.Async.execute('UPDATE `mechanics` SET money = @money WHERE id = @id', {["@money"] = MechanicMoney+money, ["@id"] = mid})
+        MySQL.Async.execute('UPDATE `kibra-mechanics` SET money = @money WHERE id = @id', {["@money"] = MechanicMoney+money, ["@id"] = mid})
         Config.Mechanics[mid].Money = MechanicMoney+money
         TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', source, Config.Mechanics)
     end
@@ -418,8 +395,9 @@ end
 
 RegisterNetEvent('kibra:Mechanics:Server:SendInvoiceRequest', function(data, table, mod, id, plate)
     local mysource = source
-    local Customer = ESX.GetPlayerFromId(tonumber(data.MusteriSource))
+    local Customer = KIBRA.Natives.SourceFromPlayer(tonumber(data.MusteriSource))
     if Customer then
+        TriggerClientEvent('kibra:Mechanics:UI:Notify', mysource, 'success', Config.Text["InvoiceStart"])
         TriggerClientEvent('kibra:Mechanics:Client:ShowRequestScreen', tonumber(data.MusteriSource), data, table, mysource, mod, id, plate)
     else
         TriggerClientEvent('kibra:Mechanics:UI:Notify', mysource, 'error', Config.Text["InNotGame"])
@@ -429,38 +407,28 @@ end)
 RegisterNetEvent('kibra:Mechanics:Server:GetMyAreaPlayers', function(plate)
     local source = source
     local getTable = "owned_vehicles"
-  
+    if KIBRA.Natives.GetFramework() == "QBCore" then
+        getTable = "player_vehicles"
+    end    
     local m = MySQL.Sync.fetchAll('SELECT * FROM '..getTable..' WHERE plate = @plate', {["@plate"] = plate})
     if #m >= 1 then
         cex = m[1].owner
     else
         cex = "Abuzer"
     end
-
-    local vPlayer = ESX.GetPlayerFromId(source) 
-    local allPlayers = ESX.GetPlayers()
-    local myAround = {}
-    for i = 1, #allPlayers do
-        local zPlayer = ESX.GetPlayerFromId(allPlayers[i])
-        if #(vPlayer.getPlayerCoord() - zPlayer.getPlayerCoord()) <= 10.0 then
-            table.insert(myAround, {
-                Source = zPlayer.source,
-                PlayerName = zPlayer.getName()
-            })
-            TriggerClientEvent('kibra:Mechanics:Client:SendFaturaTable', source, myAround, cex)
-        end
-    end
+    local myAround = NearbyPlayers(source)
+    TriggerClientEvent('kibra:Mechanics:Client:SendFaturaTable', source, myAround, cex)
 end)
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:Verified', function(source, cb, data)
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:Verified', function(source, cb, data)
     data.MusteriSource = tonumber(data.MusteriSource)
-    local Customer = ESX.GetPlayerFromId(tonumber(data.MusteriSource))
-    local Isci = ESX.GetPlayerFromId(source)
-    local totalucret = tonumber(data.Total) - tonumber(data.CalisanPara)
+    local Customer = KIBRA.Natives.SourceFromPlayer(tonumber(data.MusteriSource))
+    Isci = KIBRA.Natives.SourceFromPlayer(tonumber(data.CalisanSrc))
+    local totalucret = math.abs(tonumber(data.Total) - tonumber(data.CalisanPara))
     if Customer then
         if Customer.getPlayerMoney().bank >= tonumber(data.Total) then
-            Mechanic.AddMoney("addMoney", tonumber(data.MechanicId), tonumber(totalucret), tonumber(data.CalisanSrc))
-            Isci.giveAccountMoney("bank", tonumber(data.CalisanPara))
+            Mechanic.AddMoney("addMoney", tonumber(data.MechanicId), totalucret, tonumber(data.CalisanSrc))
+            Isci.giveAccountMoney("cash", tonumber(data.CalisanPara))
             Customer.removePlayerMoney("bank", data.Total)
             TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', -1, Config.Mechanics)
             TriggerClientEvent('kibra:Mechanics:Client:CloseOff', Customer.source)
@@ -477,35 +445,47 @@ ESX.RegisterServerCallback('kibra:Mechanics:Server:Verified', function(source, c
     end
 end)
 
-RegisterNetEvent('kibra:Mechanics:ListOfAroundPlayers')
-AddEventHandler('kibra:Mechanics:ListOfAroundPlayers', function()
-    local src = source 
-    local vPlayer = ESX.GetPlayerFromId(src) 
-    local allPlayers = ESX.GetPlayers()
-    local myAround = {}
-    for i = 1, #allPlayers do
-        local zPlayer = ESX.GetPlayerFromId(allPlayers[i])
-        if #(vPlayer.getPlayerCoord() - zPlayer.getPlayerCoord()) <= 10.0 then
-            if zPlayer.identifier ~= vPlayer.identifier then
-                table.insert(myAround, {
-                    Source = zPlayer.source,
-                    PlayerName = zPlayer.getName()
-                })
-                TriggerClientEvent('kibra:Mechanics:Client:SendIbneler', src, myAround)
-            else
-                TriggerClientEvent('kibra:Mechanics:UI:Notify', vPlayer.source, 'error', Config.Text["kimseyok"])
-            end
+function NearbyPlayers(source)
+    local players = {}
+    local source = source
+    local sourcePos = GetEntityCoords(GetPlayerPed(source), true)
+    local oyuncular = KIBRA.Natives.AllPlayers()
+    for _, player in pairs(oyuncular) do
+        local targetPos = GetEntityCoords(GetPlayerPed(player), true)
+        local distance = #(sourcePos - targetPos)
+        local zPlayer = KIBRA.Natives.SourceFromPlayer(player)
+        if distance <= 30.0 then 
+            table.insert(players, {
+                Source = zPlayer.source,
+                PlayerName = zPlayer.getPlayerName()
+            })
         end
+    end
+    return players
+end
+
+RegisterNetEvent('kibra:Mechanics:ListOfAroundPlayers', function()
+    local source = source
+    local players = NearbyPlayers(source)
+
+    TriggerClientEvent('Kibra:Mechanics:Client:SendIbneler', source, players)
+end) 
+
+KIBRA.Natives.CreateCallback('kibra:Mechanics:New:addEmployee', function(source, cb, data)
+    local GET = Config.Mechanics[data] 
+    local players = NearbyPlayers(source) 
+    if players then
+        cb(players)
     end
 end)
 
 RegisterNetEvent('PlayerMoneyRemove', function(money)
     local source = source 
-    ESX.GetPlayerFromId(source).removePlayerMoney("bank", money)
+    KIBRA.Natives.SourceFromPlayer(source).removePlayerMoney("bank", money)
 end)
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:CheckPMoney', function(source, cb, src, money, d)
-    local xPlayer = ESX.GetPlayerFromId(src)
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:CheckPMoney', function(source, cb, src, money, d)
+    local xPlayer = KIBRA.Natives.SourceFromPlayer(src)
     if xPlayer.getPlayerMoney().bank >= money then
         cb(true)
     else
@@ -521,17 +501,20 @@ end)
 RegisterNetEvent('kibra:Mechanics:Server:PropsUpdate', function(props, plate)
     local getTable = "owned_vehicles"
     local kolon = "vehicle"
-   
+    if KIBRA.Natives.GetFramework() == "QBCore" then
+        getTable = "player_vehicles"
+        kolon = "mods"
+    end    
     MySQL.Async.execute('UPDATE '..getTable..' SET '..kolon..' = @mod WHERE plate = @plate', {
         ["@mod"] = props,
         ["@plate"] = plate
     })
 end)
 
-ESX.RegisterServerCallback('kibra:Mechanics:Server:DeleteCustomerTable', function(source, cb, id)
-    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `mechanics` WHERE id = @id', {id})
+KIBRA.Natives.CreateCallback('kibra:Mechanics:Server:DeleteCustomerTable', function(source, cb, id)
+    local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM `kibra-mechanics` WHERE id = @id', {id})
     if MysqlMechanic then
-        MySQL.Async.execute('UPDATE `mechanics` SET customers = @c WHERE id = @id', {["@id"] = id, ["@c"] = "[]"})
+        MySQL.Async.execute('UPDATE `kibra-mechanics` SET customers = @c WHERE id = @id', {["@id"] = id, ["@c"] = "[]"})
         Config.Mechanics[id].Customers = {}
         TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', source, Config.Mechanics)
         cb(true)
@@ -547,22 +530,30 @@ end)
 
 RegisterNetEvent('kibra:Mechanics:Server:RequestMechanicData', function()
     local src = source
-    local xPlayer = ESX.GetPlayerFromId(src)
+    local xPlayer = KIBRA.Natives.SourceFromPlayer(src)
     if xPlayer then
-        TriggerClientEvent('Kibra:Mechanics:Client:SetName', src, xPlayer.getName())
+        TriggerClientEvent('Kibra:Mechanics:Client:SetName', src, xPlayer.getPlayerName())
     end
     TriggerClientEvent('kibra:Mechanics:Client:UpdateMechanics', src, Config.Mechanics)
 end)
 
-RegisterNetEvent('kibra:Mechanics:Server:PlateVar', function(d, e)
-    platevar = d
-    olmasigerekenplate = e
+RegisterNetEvent('kibra:Mechanics:Server:PlateVar', function(e, f)
+    local g = "owned_vehicles"
+    if KIBRA.Natives.GetFramework() == "QBCore" then
+        g = "player_vehicles"
+    end
+    local getVehicle = MySQL.Sync.fetchAll('SELECT * FROM '..g..' WHERE plate = ?', {f})
+    if #getVehicle >= 1 then
+        MySQL.update('UPDATE '..g..' SET plate = ? WHERE plate = ?', {e,f})
+    end
 end)
 
 RegisterNetEvent('Kibra:Mechanics:Server:CheckPlateVar', function(id)
     local source = source
     local getTable = "owned_vehicles"
-  
+    if KIBRA.Natives.GetFramework() == "QBCore" then
+        getTable = "player_vehicles"
+    end    
     local get = id
     if modificationCars[get].platevar then
         pilate = modificationCars[get].plate
@@ -580,9 +571,11 @@ RegisterNetEvent('Kibra:Mechanics:Server:CheckPlateVar', function(id)
 end)
 
 
-ESX.RegisterServerCallback('kibra:Mechanics:CheckPlate', function(source, cb, plate)
+KIBRA.Natives.CreateCallback('kibra:Mechanics:CheckPlate', function(source, cb, plate)
     local getTable = "owned_vehicles"
-   
+    if KIBRA.Natives.GetFramework() == "QBCore" then
+        getTable = "player_vehicles"
+    end    
     local MysqlMechanic = MySQL.Sync.fetchAll('SELECT * FROM '..getTable..' WHERE plate = @plt', {["@plt"] = plate})
     if #MysqlMechanic <= 0 then
         cb(true)
@@ -591,10 +584,10 @@ ESX.RegisterServerCallback('kibra:Mechanics:CheckPlate', function(source, cb, pl
     end
 end)
 
-ESX.RegisterServerCallback('getKibraName', function(source, cb)
-    local xPlayer = ESX.GetPlayerFromId(source)
+KIBRA.Natives.CreateCallback('getKibraName', function(source, cb)
+    local xPlayer = KIBRA.Natives.SourceFromPlayer(source)
     if xPlayer then
-        cb(xPlayer.getName())
+        cb(xPlayer.getPlayerName())
     end
 end)
 
