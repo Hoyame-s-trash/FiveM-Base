@@ -10,7 +10,7 @@ GM.Admin.menu.submenus["my_player"]:isVisible(function(Items)
     })
     Items:Button("NoClip", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
-            ExecuteCommand("noclip")
+            ExecuteCommand("noClip")
         end
     })
     Items:Checkbox("Invisible", nil, CHECKED_INVISIBLE, {}, {

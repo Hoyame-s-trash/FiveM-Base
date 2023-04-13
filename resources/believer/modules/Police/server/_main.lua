@@ -13,6 +13,7 @@ GM.Police.registeredBlips["garages"] = {}
 GM.Police.registeredBlips["duty"] = {}
 GM.Police.registeredBlips["wardrobe"] = {}
 GM.Police.registeredBlips["armory"] = {}
+GM.Police.registeredBlips["calls"] = {}
 
 GM.Police.registeredPeds = {}
 GM.Police.registeredPeds["garages"] = {}
@@ -388,36 +389,55 @@ RegisterServerEvent("Police:menu:backup", function(backupName)
                     taken = {},
                 }
 
+                GM.Police.registeredBlips["calls"][callId] = GM.Blip:add(GM.Police.registeredCalls[tonumber(callId)].position, {
+                    sprite = 1,
+                    colour = 3,
+                    name = i.." - "..GM.Police.registeredCalls[tonumber(callId)].label,
+                }, {
+                    isPrivate = true
+                })
+
                 if (GM.Service["Enterprise_list"]) then
                     if (GM.Service["Enterprise_list"]["police"] == nil) then
                         GM.Service["Enterprise_list"]["police"] = {}
                     end
                     for playerSrc, _ in pairs(GM.Service["Enterprise_list"]["police"]) do
 
-                        --if (playerSrc ~= playerSelected.source) then
+                        if (playerSrc ~= playerSelected.source) then
                         
-                            local targetSelected = ESX.GetPlayerFromId(playerSrc)
-                            if (targetSelected) then
-                                local request = GM.Request:sendMessage(targetSelected.source, backup.message)
-                                if (request == "accept") then
-                                    TriggerClientEvent("esx:showNotification", targetSelected.source, "~g~Vous avez accepté l'appel.")
-                                    TriggerClientEvent("esx:showNotification", targetSelected.source, "L'appel à été pris par ~g~"..targetSelected.getName().."~s~.")
-                                    
+                            local request = GM.Request:sendMessage(playerSrc, backup.message)
+                            if (request == "accept") then
+                                local acceptPlayer = ESX.GetPlayerFromId(playerSrc)
+                                if (acceptPlayer) then
+                                    TriggerClientEvent("esx:showNotification", acceptPlayer.source, "~g~Vous avez accepté l'appel.")
+
                                     if (GM.Police.registeredCalls[tonumber(callId)].taken == nil) then
                                         GM.Police.registeredCalls[tonumber(callId)].taken = {}
                                     end
-
-                                    if (GM.Police.registeredCalls[tonumber(callId)].taken[targetSelected.source] == nil) then
-                                        table.insert(GM.Police.registeredCalls[tonumber(callId)].taken, targetSelected.getName())
+    
+                                    if (GM.Police.registeredCalls[tonumber(callId)].taken[acceptPlayer.source] == nil) then
+                                        table.insert(GM.Police.registeredCalls[tonumber(callId)].taken, acceptPlayer.getName())
                                     end
+                                    
+                                    GM.Police.registeredBlips["calls"][callId]:allowedPlayer(acceptPlayer.source)
 
-                                elseif (request == "decline") then
-                                    TriggerClientEvent("esx:showNotification", targetSelected.source, "~r~Vous avez refusé l'appel.")
-                                elseif (request == "delay") then
-                                    TriggerClientEvent("esx:showNotification", targetSelected.source, "~r~Vous avez automatiquement refusé l'appel.")
+                                    -- Todo send client event to send position in client and remove blip when proximity
                                 end
+
+                                for playerSrc, _ in pairs(GM.Service["Enterprise_list"]["police"]) do
+                                    local policePlayer = ESX.GetPlayerFromId(playerSrc)
+                                    if (policePlayer) then
+                                        if (policePlayer.source ~= acceptPlayer.source) then
+                                            TriggerClientEvent("esx:showNotification", policePlayer.source, "L'appel à été pris par ~g~"..acceptPlayer.getName().."~s~.")
+                                        end
+                                    end
+                                end
+                            elseif (request == "decline") then
+                                TriggerClientEvent("esx:showNotification", targetSelected.source, "~r~Vous avez refusé l'appel.")
+                            elseif (request == "delay") then
+                                TriggerClientEvent("esx:showNotification", targetSelected.source, "~r~Vous avez automatiquement refusé l'appel.")
                             end
-                        --end
+                        end
                     end
                 end
             else

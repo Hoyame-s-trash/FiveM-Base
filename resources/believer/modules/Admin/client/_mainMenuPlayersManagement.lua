@@ -57,7 +57,7 @@ GM.Admin.menu.submenus["players_management"]:isVisible(function(Items)
     })
     Items:Button("Bring back", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
-            ExecuteCommand("bringback "..GM.Admin.data["selectedPlayer"])
+            ExecuteCommand("bringBack "..GM.Admin.data["selectedPlayer"])
         end
     })
     Items:Button("Message", nil, {}, GM.Admin.inAdmin, {

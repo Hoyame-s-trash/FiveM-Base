@@ -1675,7 +1675,7 @@ function Settings:SetCharacterState(state)
     if ScriptClient.Player.State.inventoryOpened then
         if self.characterEnabled then
             -- Todo check preferences in personnal menu
-            ScriptClient.PedScreen:Create()
+            --ScriptClient.PedScreen:Create()
         else
             ScriptClient.PedScreen:Delete()
         end

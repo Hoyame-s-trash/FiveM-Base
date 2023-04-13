@@ -130,7 +130,7 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "noclip",
+        name = "noClip",
         label = "Noclip",
         description = "Permet de passer en mode noclip",
         keys = {"keyboard", "O"}
@@ -182,7 +182,7 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "setcoords",
+        name = "setCoords",
         label = "Se téléporter à une position",
         description = "Permet de se téléporter à une position",
     }, function(playerSrc, args)
@@ -221,7 +221,7 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "bringback",
+        name = "bringBack",
         label = "Téléporter une personne à sa dernière position",
         description = "Permet de téléporter une personne à sa dernière position",
     }, function(playerSrc, args)
@@ -638,7 +638,7 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "removegroup",
+        name = "removeRank",
         label = "Retirer le rank d'un joueur",
         description = "Permet de retirer le rank d'un joueur",
     }, function(playerSrc, args)
@@ -700,9 +700,10 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "closereport",
+        name = "closeReport",
         label = "Fermer son report actuel",
         description = "Permet de fermer son report actuel",
+        permissions = false,
     }, function(playerSrc)
         if (playerSrc == 0) then return end
 
@@ -1034,29 +1035,7 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "pause",
-        label = "Pause Menu",
-        description = "Permet d'ouvrir le menu pause",
-        keys = {"keyboard", "ESCAPE"},
-        permissions = false,
-    }, function(playerSrc)
-        if (playerSrc == 0) then return end
-
-        TriggerClientEvent("PauseMenu:openMenu", playerSrc)
-    end)
-
-    GM.Command:register({
-        name = "create_garage",
-        label = "Créer un garage",
-        description = "Permet de créer un garage",
-    }, function(playerSrc, args)
-        if (playerSrc == 0) then return end
-
-        TriggerClientEvent("Garage:openManagementMenu", playerSrc)
-    end)
-
-    GM.Command:register({
-        name = "setarmour",
+        name = "setArmour",
         label = "Donner de l'armure",
         description = "Permet de donner de l'armure à un joueur",
     }, function(playerSrc, args)
@@ -1132,7 +1111,7 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "animation_cancel",
+        name = "animationCancel",
         label = "Annuler l'animation",
         description = "Permet d'annuler une animation",
         keys = {"keyboard", "X"},
