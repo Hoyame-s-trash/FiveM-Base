@@ -33,18 +33,3 @@ RegisterNetEvent("Command:keyMapping", function(commandData)
 	end)
 	RegisterKeyMapping(commandData.name, commandData.description, commandData.keys[1], commandData.keys[2])
 end)
-
-RegisterNetEvent("checkvehicles", function(vehicleData)
-	local newData = {}
-	for i = 1, #vehicleData do
-		local vehicleModel = vehicleData[i]
-		local vehicleName = GetDisplayNameFromVehicleModel(vehicleModel)
-		local vehicleLabel = GetLabelText(vehicleName)
-		table.insert(newData, {
-			model = vehicleModel,
-			name = vehicleName,
-			label = vehicleLabel,
-		})
-	end
-	TriggerServerEvent("server:checkvehicles", newData)
-end)

@@ -98,7 +98,7 @@ RegisterServerEvent("Admin:takeReport", function(reportId)
             TriggerClientEvent("Admin:updateValue", adminSrc, "ranks", playerSelected.get("rank_id"), playerRank)
             TriggerClientEvent("chat:addMessage", adminSrc, { args = { '^5REPORT PRIS - '..reportSelected.id, reportSelected.taken_name .. ' à pris le report du joueur (' .. reportSelected.name .. ' - '..reportSelected.source..') '}}, true)
         end
-        TriggerClientEvent("Interface:totalReportCount", playerSrc, playerRank.players[playerIdentifier].reports)
+        -- TriggerClientEvent("Interface:totalReportCount", playerSrc, playerRank.players[playerIdentifier].reports)
     end)
 end)
 
@@ -123,7 +123,7 @@ RegisterServerEvent("Admin:closeReport", function(reportId)
 
     for adminSrc,_ in pairs(GM.Admin.inAdmin) do
         TriggerClientEvent("Admin:removeValue", adminSrc, "reports", reportId)
-        TriggerClientEvent("Interface:currentReportCount", adminSrc, tostring(GM.Admin.Reports:count()))
+        -- TriggerClientEvent("Interface:currentReportCount", adminSrc, tostring(GM.Admin.Reports:count()))
         TriggerClientEvent("chat:addMessage", adminSrc, { args = { '^5REPORT CLOSE - '..reportSelected.id, playerSelected.getNickName() .. ' à close le report ID - (' .. reportId..') '}}, true)
     end
 end)

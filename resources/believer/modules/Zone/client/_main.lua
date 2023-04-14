@@ -92,6 +92,7 @@ RegisterNetEvent("Zone:add", function(zoneData)
     if (GM.Zone:getFromId(zoneData.uniqueId) ~= nil) then
         return
     end
+    
     table.insert(GM.Zone.List, zoneData)
 end)
 

@@ -88,11 +88,3 @@ AddEventHandler('esx_skin:responseSaveSkin', function(skin)
 		print(('[^2INFO^7] ^5%s^7 attempted saving skin to file'):format(xPlayer.getIdentifier()))
 	end
 end)
-
-ESX.RegisterCommand('skin', 'admin', function(xPlayer, args, showError)
-	xPlayer.triggerEvent('esx_skin:openSaveableMenu')
-end, false, {help = 'changer de skin'})
-
-ESX.RegisterCommand('skinsave', 'admin', function(xPlayer, args, showError)
-	xPlayer.triggerEvent('esx_skin:requestSaveSkin')
-end, false, {help = 'sauvegarder skin dans un fichier'})

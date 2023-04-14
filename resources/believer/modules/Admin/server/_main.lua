@@ -68,13 +68,13 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
     if (boolean == true) then
         if (not GM.Admin.inAdmin[playerSelected.source]) then
             GM.Admin.inAdmin[playerSelected.source] = true
-            TriggerClientEvent("Interface:admin", playerSelected.source, {
-                type = "updateAdmin",
-                admin = true,
-                reports = true,
-                currentReports = tostring(GM.Admin.Reports:count()),
-                totalReports = tostring(playerSelected.get("report_count"))
-            })
+            -- TriggerClientEvent("Interface:admin", playerSelected.source, {
+            --     type = "updateAdmin",
+            --     admin = true,
+            --     reports = true,
+            --     currentReports = tostring(GM.Admin.Reports:count()),
+            --     totalReports = tostring(playerSelected.get("report_count"))
+            -- })
             for adminSrc,_ in pairs(GM.Admin.inAdmin) do
                 TriggerClientEvent("Admin:updateValue", adminSrc, "players", staffSelected.id, staffSelected)
             end
@@ -84,13 +84,13 @@ RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)
         -- Todo check if number report increase and if it"s the case updat in DB number report of player
         if (GM.Admin.inAdmin[playerSelected.source]) then
             GM.Admin.inAdmin[playerSelected.source] = nil
-            TriggerClientEvent("Interface:admin", playerSelected.source, {
-                type = "updateAdmin",
-                admin = false,
-                reports = false,
-                currentReports = "0",
-                totalReports = "0"
-            })
+            -- TriggerClientEvent("Interface:admin", playerSelected.source, {
+            --     type = "updateAdmin",
+            --     admin = false,
+            --     reports = false,
+            --     currentReports = "0",
+            --     totalReports = "0"
+            -- })
             for adminSrc,_ in pairs(GM.Admin.inAdmin) do
                 TriggerClientEvent("Admin:updateValue", adminSrc, "players", staffSelected.id, staffSelected)
             end

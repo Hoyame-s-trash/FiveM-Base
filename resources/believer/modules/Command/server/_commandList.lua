@@ -130,11 +130,13 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "noClip",
+        name = "adminNoclip",
         label = "Noclip",
         description = "Permet de passer en mode noclip",
         keys = {"keyboard", "O"}
     }, function(playerSrc)
+        if (playerSrc == 0) then return end
+
         local playerSelected = ESX.GetPlayerFromId(playerSrc)
         if (not playerSelected) then return end
 
@@ -151,23 +153,7 @@ GM:newThread(function()
             playerSelected.showNotification("~b~Vous avez désactivé le mode noclip.")
         end
 
-        TriggerClientEvent("Admin:noClip", playerSrc)
-    end)
-
-    GM.Command:register({
-        name = "enterprises",
-        label = "Ouvrir le menu des entreprises",
-        description = "Permet d'ouvrir le menu des entreprises",
-    }, function(playerSrc)
-        local playerSelected = ESX.GetPlayerFromId(playerSrc)
-        if (not playerSelected) then return end
-
-        if (GM.Admin.inAdmin[playerSelected.source] == nil) then
-            playerSelected.showNotification("~r~Vous n'êtes pas en mode admin.")
-            return
-        end
-
-        TriggerClientEvent("EnterpriseManagement:openMenu", playerSrc)
+        TriggerClientEvent("Admin:noClip", playerSelected.source)
     end)
 
     GM.Command:register({
@@ -1139,6 +1125,56 @@ GM:newThread(function()
 
             if (ESX.DoesJobExist(jobName, jobGrade)) then
 
+                local actualJob = targetSelected.job.name
+                if (actualJob) then
+                    local actualJob = string.upper(string.sub(actualJob, 1, 1))..string.sub(actualJob, 2, #actualJob)
+
+                    if (GM[actualJob]) then
+                        if (GM[actualJob].registeredZones) then
+                            for zoneType, _ in pairs(GM[actualJob].registeredZones) do
+                                for zoneId, _ in pairs(GM[actualJob].registeredZones[zoneType]) do
+                                    print("remove player zone police", zoneType)
+                                    GM[actualJob].registeredZones[zoneType][zoneId]:allowedPlayer(targetSelected.source, false)
+                                end
+                            end
+                        end
+
+                        if (GM[actualJob].registeredBlips) then
+                            for blipType, _ in pairs(GM[actualJob].registeredBlips) do
+                                for blipId, _ in pairs(GM[actualJob].registeredBlips[blipType]) do
+                                    print("remove player blip police", blipType)
+                                    GM[actualJob].registeredBlips[blipType][blipId]:allowedPlayer(targetSelected.source, false)
+                                end
+                            end
+                        end
+                    end
+                end
+
+                local newJob = jobName
+                if (newJob) then
+                    local newJob = string.upper(string.sub(newJob, 1, 1))..string.sub(newJob, 2, #newJob)
+
+                    if (GM[newJob]) then
+                        if (GM[newJob].registeredZones) then
+                            for zoneType, _ in pairs(GM[newJob].registeredZones) do
+                                for zoneId, _ in pairs(GM[newJob].registeredZones[zoneType]) do
+                                    print("add player zone police", zoneType)
+                                    GM[newJob].registeredZones[zoneType][zoneId]:allowedPlayer(targetSelected.source, true)
+                                end
+                            end
+                        end
+
+                        if (GM[newJob].registeredBlips) then
+                            for blipType, _ in pairs(GM[newJob].registeredBlips) do
+                                for blipId, _ in pairs(GM[newJob].registeredBlips[blipType]) do
+                                    print("add player blip police", blipType)
+                                    GM[newJob].registeredBlips[blipType][blipId]:allowedPlayer(targetSelected.source, true)
+                                end
+                            end
+                        end
+                    end
+                end
+
                 targetSelected.setJob(jobName, jobGrade)
                 print("VOUS AVEZ ATTRIBUE LE METIER "..jobName.." (GRADE : "..jobGrade..") A "..targetSelected.getName()..".")
             else
@@ -1159,6 +1195,52 @@ GM:newThread(function()
             if (not jobGrade) then return end
 
             if (ESX.DoesJobExist(jobName, jobGrade)) then
+
+                local actualJob = targetSelected.job.name
+                if (actualJob) then
+                    local actualJob = string.upper(string.sub(actualJob, 1, 1))..string.sub(actualJob, 2, #actualJob)
+
+                    if (GM[actualJob]) then
+                        if (GM[actualJob].registeredZones) then
+                            for zoneType, _ in pairs(GM[actualJob].registeredZones) do
+                                for zoneId, _ in pairs(GM[actualJob].registeredZones[zoneType]) do
+                                    GM[actualJob].registeredZones[zoneType][zoneId]:allowedPlayer(targetSelected.source, false)
+                                end
+                            end
+                        end
+
+                        if (GM[actualJob].registeredBlips) then
+                            for blipType, _ in pairs(GM[actualJob].registeredBlips) do
+                                for blipId, _ in pairs(GM[actualJob].registeredBlips[blipType]) do
+                                    GM[actualJob].registeredBlips[blipType][blipId]:allowedPlayer(targetSelected.source, false)
+                                end
+                            end
+                        end
+                    end
+                end
+
+                local newJob = jobName
+                if (newJob) then
+                    local newJob = string.upper(string.sub(newJob, 1, 1))..string.sub(newJob, 2, #newJob)
+
+                    if (GM[newJob]) then
+                        if (GM[newJob].registeredZones) then
+                            for zoneType, _ in pairs(GM[newJob].registeredZones) do
+                                for zoneId, _ in pairs(GM[newJob].registeredZones[zoneType]) do
+                                    GM[newJob].registeredZones[zoneType][zoneId]:allowedPlayer(targetSelected.source, true)
+                                end
+                            end
+                        end
+
+                        if (GM[newJob].registeredBlips) then
+                            for blipType, _ in pairs(GM[newJob].registeredBlips) do
+                                for blipId, _ in pairs(GM[newJob].registeredBlips[blipType]) do
+                                    GM[newJob].registeredBlips[blipType][blipId]:allowedPlayer(targetSelected.source, true)
+                                end
+                            end
+                        end
+                    end
+                end
 
                 targetSelected.setJob(jobName, jobGrade)
                 playerSelected.showNotification("~g~Vous avez attribué le métier "..jobName.." (grade : "..jobGrade..") à "..targetSelected.getName()..".")
@@ -1221,38 +1303,4 @@ GM:newThread(function()
 
         TriggerClientEvent(playerSelected.source, jobName..":openMenu")
     end)
-end)
-
-RegisterCommand("checkvehicles", function(source)
-    local vehiclesName = {}
-    MySQL.query('SELECT * FROM owned_vehicles2 WHERE boutique = ?', {1}, function(result)
-        for k, v in pairs(result) do
-            local vehicle = json.decode(v.vehicle)
-            if (vehicle.model) then
-                table.insert(vehiclesName, vehicle.model)
-            end
-        end
-        TriggerClientEvent("checkvehicles", source, vehiclesName)
-    end)
-end)
-
-RegisterServerEvent("server:checkvehicles", function(result)
-
-    local vehiclesNew = {}
-
-    local file, err = io.open("owned_vehicles.txt", "w")
-
-    if (err) then
-        print("file error")
-        return
-    end
-
-    for i = 1, #result do
-        if (vehiclesNew[result[i].model] == nil) then
-            vehiclesNew[result[i].model] = true
-            file:write(result[i].model .. " - "..result[i].name.. "\n")
-        end
-    end
-
-    file:close()
 end)

@@ -277,10 +277,6 @@ function GM.Admin.Noclip:Spectate(pPos)
     GM.Admin.Noclip.InSpec = not GM.Admin.Noclip.InSpec
     GM.Admin.Noclip.SpeedNoclip = tonumber(GM.Preferences:loadPreferences("admin_noclip_speed")) or 0.6
     ESX.ShowNotification("~b~Vitesse du noclip définie à ("..GM.Admin.Noclip.SpeedNoclip..") d'après vos préférences.")
-    TriggerEvent("Interface:noclip", {
-        type = "updateNoclip",
-        noclip = GM.Admin.Noclip.InSpec
-    })
     Wait(0)
     if not GM.Admin.Noclip.InSpec then
         GM.Admin.NoclipActive = false
@@ -333,6 +329,7 @@ function GM.Admin.Noclip:Spectate(pPos)
 end
 
 RegisterNetEvent("Admin:noClip", function()
+    print("Admin:noClip")
     GM.Admin.Noclip:Spectate()
 end)
 

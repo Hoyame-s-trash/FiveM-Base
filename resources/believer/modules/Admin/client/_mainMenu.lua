@@ -71,36 +71,9 @@ GM.Admin.menu.main:isVisible(function(Items)
         Items:Button("Préférences", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["preferences"])
         Items:Button("Ouvrir le wiki", nil, {}, GM.Admin.inAdmin, {
             onSelected = function()
-                TriggerEvent("Interface:openUrl", "https://trello.com/b/ZUuvDFEy/bluestark-v2")
+                -- Todo open wiki in browser
             end
         })
-    else
-        -- local ADMIN_SHOW_REPORTS = GM.Preferences:loadPreferences("admin_show_reports")
-        -- Items:Checkbox("Afficher le nombre de reports", nil, ADMIN_SHOW_REPORTS, {}, {
-        --     onSelected = function(Checked)
-        --         ADMIN_SHOW_REPORTS = Checked
-        --     end,
-        --     onChecked = function()
-        --         GM.Preferences:Save("admin_show_reports", true)
-        --         TriggerServerEvent("Admin:showReportCount")
-        --     end,
-        --     onUnChecked = function()
-        --         GM.Preferences:Save("admin_show_reports", false)
-        --         TriggerEvent("Interface:disableReportCount")
-        --     end,
-        -- })
-        -- local ADMIN_SOUND_REPORTS = GM.Preferences:loadPreferences("admin_sound_reports")
-        -- Items:Checkbox("Notification sonore lors d'un report", nil, ADMIN_SOUND_REPORTS, {}, {
-        --     onSelected = function(Checked)
-        --         ADMIN_SOUND_REPORTS = Checked
-        --     end,
-        --     onChecked = function()
-        --         GM.Preferences:Save("admin_sound_reports", true)
-        --     end,
-        --     onUnChecked = function()
-        --         GM.Preferences:Save("admin_sound_reports", false)
-        --     end,
-        -- })
     end
 end)
 
@@ -112,9 +85,6 @@ RegisterNetEvent("Admin:updateValue", function(ADMIN_DATA, ADMIN_KEY, ADMIN_VALU
     if (not ADMIN_VALUE) then
         GM.Admin.data[ADMIN_DATA] = ADMIN_KEY
     else
-        print(ADMIN_DATA)
-        print(ADMIN_KEY)
-        print(ADMIN_VALUE)
         GM.Admin.data[ADMIN_DATA][ADMIN_KEY] = ADMIN_VALUE
     end
 end)

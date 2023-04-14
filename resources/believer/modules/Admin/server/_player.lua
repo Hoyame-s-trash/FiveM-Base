@@ -375,13 +375,13 @@ RegisterServerEvent("Admin:showReportCount", function()
 
     if (playerSelected.getGroup() == "user") then return end
 
-    TriggerClientEvent("Interface:admin", playerSelected.source, {
-        type = "updateAdmin",
-        admin = true,
-        reports = true,
-        currentReports = tostring(GM.Admin.Reports:count()),
-        totalReports = tostring(GM.Ranks["players"][playerIdentifier].reports)
-    })
+    -- TriggerClientEvent("Interface:admin", playerSelected.source, {
+    --     type = "updateAdmin",
+    --     admin = true,
+    --     reports = true,
+    --     currentReports = tostring(GM.Admin.Reports:count()),
+    --     totalReports = tostring(GM.Ranks["players"][playerIdentifier].reports)
+    -- })
 end)
 
 RegisterServerEvent("Admin:killPlayer", function(playerId)

@@ -54,7 +54,6 @@ GM.Admin.menu.submenus["preferences"]:isVisible(function(Items)
         end,
         onUnChecked = function()
             GM.Preferences:Save("admin_show_reports", false)
-            TriggerEvent("Interface:disableReportCount")
         end,
     })
     local ADMIN_SOUND_REPORTS = GM.Preferences:loadPreferences("admin_sound_reports")

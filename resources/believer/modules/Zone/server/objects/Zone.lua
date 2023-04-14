@@ -61,7 +61,7 @@ function GM.Zone.Management:setData(dataName, dataValue)
     end
 end
 
-function GM.Zone.Management:allowedPlayer(playerSrc)
+function GM.Zone.Management:allowedPlayer(playerSrc, bool)
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
 
@@ -69,13 +69,31 @@ function GM.Zone.Management:allowedPlayer(playerSrc)
         print("Zone:allowedPlayer - Zone is not private")
         return
     end
-    
-    if (not self.allowedPlayers[playerSrc]) then
-        self.allowedPlayers[playerSrc] = true
-        TriggerClientEvent("Zone:add", playerSrc, self)
+
+    if (not bool) then
+        if (not self.allowedPlayers[playerSrc]) then
+            self.allowedPlayers[playerSrc] = true
+            TriggerClientEvent("Zone:add", playerSrc, self)
+            return
+        else
+            TriggerClientEvent("Zone:remove", playerSrc, self.uniqueId)
+            self.allowedPlayers[playerSrc] = nil
+            return
+        end
+    end
+
+    if (bool == true) then
+        if (not self.allowedPlayers[playerSrc]) then
+            self.allowedPlayers[playerSrc] = true
+            TriggerClientEvent("Zone:add", playerSrc, self)
+            return
+        end
     else
-        TriggerClientEvent("Zone:remove", playerSrc, self.uniqueId)
-        self.allowedPlayers[playerSrc] = nil
+        if (self.allowedPlayers[playerSrc]) then
+            TriggerClientEvent("Zone:remove", playerSrc, self.uniqueId)
+            self.allowedPlayers[playerSrc] = nil
+            return
+        end
     end
 end
 

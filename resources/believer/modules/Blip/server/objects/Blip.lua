@@ -33,16 +33,39 @@ function GM.Blip:setData(dataName, dataValue)
     self[dataName] = dataValue
 end
 
-function GM.Blip:allowedPlayer(playerSrc)
+function GM.Blip:allowedPlayer(playerSrc, bool)
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
-    
-    if (not self.allowedPlayers[playerSrc]) then
-        self.allowedPlayers[playerSrc] = true
-        TriggerClientEvent("Blip:add", playerSrc, self)
+
+    if (self.allowedPlayers == nil) then
+        print("Blip:allowedPlayer - Blip is not private")
+        return
+    end
+
+    if (bool == nil) then
+        if (not self.allowedPlayers[playerSrc]) then
+            self.allowedPlayers[playerSrc] = true
+            TriggerClientEvent("Blip:add", playerSrc, self)
+            return
+        else
+            TriggerClientEvent("Blip:remove", playerSrc, self.uniqueId)
+            self.allowedPlayers[playerSrc] = nil
+            return
+        end
+    end
+
+    if (bool == true) then
+        if (not self.allowedPlayers[playerSrc]) then
+            self.allowedPlayers[playerSrc] = true
+            TriggerClientEvent("Blip:add", playerSrc, self)
+            return
+        end
     else
-        TriggerClientEvent("Blip:remove", playerSrc, self.uniqueId)
-        self.allowedPlayers[playerSrc] = nil
+        if (self.allowedPlayers[playerSrc]) then
+            TriggerClientEvent("Blip:remove", playerSrc, self.uniqueId)
+            self.allowedPlayers[playerSrc] = nil
+            return
+        end
     end
 end
 
