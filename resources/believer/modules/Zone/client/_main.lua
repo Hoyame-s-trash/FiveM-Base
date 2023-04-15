@@ -63,7 +63,7 @@ RegisterNetEvent("Zone:init", function(zoneList)
                 elseif (GM.Zone.inZone ~= nil and GM.Zone.inZone["uniqueId"] == thisZone.uniqueId and #(thisZone.position-playerCoords) > thisZone.radius) then
                     loopInterval = 0
                     GM.Zone:onExited(thisZone.uniqueId)
-                elseif (thisZone.marker ~= false and (#(thisZone.position-playerCoords) < (thisZone.radius + 5.0))) then
+                elseif (thisZone.marker ~= false and (#(thisZone.position-playerCoords) < (thisZone.radius + 10.0))) then
                     loopInterval = 0
                     DrawMarker(25, thisZone.position.x, thisZone.position.y, thisZone.position.z-0.98, 0.0, 0.0, 0.0, 0.0,0.0,0.0, 0.7, 0.7, 0.7, 46, 134, 193, 178, false, false, false, false)    
                 end

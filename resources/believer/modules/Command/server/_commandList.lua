@@ -21,28 +21,6 @@ GM:newThread(function()
     end)
 
     GM.Command:register({
-        name = "jobs",
-        label = "Ouvrir le menu d'interaction de son métier'",
-        description = "Permet d'ouvrir le menu d'interaction de son métier",
-        keys = {"keyboard", "F6"},
-    }, function(playerSrc)
-        if (playerSrc == 0) then return end
-        
-        local playerSelected = ESX.GetPlayerFromId(playerSrc)
-        if (not playerSelected) then return end
-        
-        local playerJob = playerSelected.job.name
-
-        if (playerJob == "unemployed") then
-            TriggerClientEvent("esx:showNotification", playerSrc, "Vous n'avez pas de métier")
-            return
-        end
-
-        local jobName = playerJob:sub(1, 1):upper() .. playerJob:sub(2)
-        TriggerClientEvent(jobName..":openMenu", playerSrc)
-    end)
-
-    GM.Command:register({
         name = "die",
         label = "Se suicider",
         description = "Permet de se suicider",
@@ -1124,57 +1102,6 @@ GM:newThread(function()
             if (not jobGrade) then return end
 
             if (ESX.DoesJobExist(jobName, jobGrade)) then
-
-                local actualJob = targetSelected.job.name
-                if (actualJob) then
-                    local actualJob = string.upper(string.sub(actualJob, 1, 1))..string.sub(actualJob, 2, #actualJob)
-
-                    if (GM[actualJob]) then
-                        if (GM[actualJob].registeredZones) then
-                            for zoneType, _ in pairs(GM[actualJob].registeredZones) do
-                                for zoneId, _ in pairs(GM[actualJob].registeredZones[zoneType]) do
-                                    print("remove player zone police", zoneType)
-                                    GM[actualJob].registeredZones[zoneType][zoneId]:allowedPlayer(targetSelected.source, false)
-                                end
-                            end
-                        end
-
-                        if (GM[actualJob].registeredBlips) then
-                            for blipType, _ in pairs(GM[actualJob].registeredBlips) do
-                                for blipId, _ in pairs(GM[actualJob].registeredBlips[blipType]) do
-                                    print("remove player blip police", blipType)
-                                    GM[actualJob].registeredBlips[blipType][blipId]:allowedPlayer(targetSelected.source, false)
-                                end
-                            end
-                        end
-                    end
-                end
-
-                local newJob = jobName
-                if (newJob) then
-                    local newJob = string.upper(string.sub(newJob, 1, 1))..string.sub(newJob, 2, #newJob)
-
-                    if (GM[newJob]) then
-                        if (GM[newJob].registeredZones) then
-                            for zoneType, _ in pairs(GM[newJob].registeredZones) do
-                                for zoneId, _ in pairs(GM[newJob].registeredZones[zoneType]) do
-                                    print("add player zone police", zoneType)
-                                    GM[newJob].registeredZones[zoneType][zoneId]:allowedPlayer(targetSelected.source, true)
-                                end
-                            end
-                        end
-
-                        if (GM[newJob].registeredBlips) then
-                            for blipType, _ in pairs(GM[newJob].registeredBlips) do
-                                for blipId, _ in pairs(GM[newJob].registeredBlips[blipType]) do
-                                    print("add player blip police", blipType)
-                                    GM[newJob].registeredBlips[blipType][blipId]:allowedPlayer(targetSelected.source, true)
-                                end
-                            end
-                        end
-                    end
-                end
-
                 targetSelected.setJob(jobName, jobGrade)
                 print("VOUS AVEZ ATTRIBUE LE METIER "..jobName.." (GRADE : "..jobGrade..") A "..targetSelected.getName()..".")
             else
@@ -1195,53 +1122,6 @@ GM:newThread(function()
             if (not jobGrade) then return end
 
             if (ESX.DoesJobExist(jobName, jobGrade)) then
-
-                local actualJob = targetSelected.job.name
-                if (actualJob) then
-                    local actualJob = string.upper(string.sub(actualJob, 1, 1))..string.sub(actualJob, 2, #actualJob)
-
-                    if (GM[actualJob]) then
-                        if (GM[actualJob].registeredZones) then
-                            for zoneType, _ in pairs(GM[actualJob].registeredZones) do
-                                for zoneId, _ in pairs(GM[actualJob].registeredZones[zoneType]) do
-                                    GM[actualJob].registeredZones[zoneType][zoneId]:allowedPlayer(targetSelected.source, false)
-                                end
-                            end
-                        end
-
-                        if (GM[actualJob].registeredBlips) then
-                            for blipType, _ in pairs(GM[actualJob].registeredBlips) do
-                                for blipId, _ in pairs(GM[actualJob].registeredBlips[blipType]) do
-                                    GM[actualJob].registeredBlips[blipType][blipId]:allowedPlayer(targetSelected.source, false)
-                                end
-                            end
-                        end
-                    end
-                end
-
-                local newJob = jobName
-                if (newJob) then
-                    local newJob = string.upper(string.sub(newJob, 1, 1))..string.sub(newJob, 2, #newJob)
-
-                    if (GM[newJob]) then
-                        if (GM[newJob].registeredZones) then
-                            for zoneType, _ in pairs(GM[newJob].registeredZones) do
-                                for zoneId, _ in pairs(GM[newJob].registeredZones[zoneType]) do
-                                    GM[newJob].registeredZones[zoneType][zoneId]:allowedPlayer(targetSelected.source, true)
-                                end
-                            end
-                        end
-
-                        if (GM[newJob].registeredBlips) then
-                            for blipType, _ in pairs(GM[newJob].registeredBlips) do
-                                for blipId, _ in pairs(GM[newJob].registeredBlips[blipType]) do
-                                    GM[newJob].registeredBlips[blipType][blipId]:allowedPlayer(targetSelected.source, true)
-                                end
-                            end
-                        end
-                    end
-                end
-
                 targetSelected.setJob(jobName, jobGrade)
                 playerSelected.showNotification("~g~Vous avez attribué le métier "..jobName.." (grade : "..jobGrade..") à "..targetSelected.getName()..".")
             else
@@ -1301,6 +1181,6 @@ GM:newThread(function()
 
         local jobName = string.upper(string.sub(jobName, 1, 1))..string.sub(jobName, 2, #jobName)
 
-        TriggerClientEvent(playerSelected.source, jobName..":openMenu")
+        TriggerClientEvent(jobName..":openMenu", playerSelected.source)
     end)
 end)

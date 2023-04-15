@@ -1,7 +1,7 @@
 GM.Police = GM.Police or {}
 
 GM.Police.Locker = {
-    vector3(-1098.2945556641,-827.35394287109,26.827430725098),
+    vector3(-1061.7990722656,-856.48248291016,4.8677086830139),
 }
 
 GM.Police.Garage = {
@@ -127,46 +127,19 @@ GM.Police.Armory = {
     {
         name = "armory_1",
         label = "Armurerie 1",
-        position = vector3(-1104.5941162109,-822.30407714844,14.282793045044),
+        position = vector3(-1065.7542724609,-848.26275634766,5.0419421195984),
         helpNotification = "pour accéder à l'armurerie.",
         items = {
+            -- {
+            --     name = "weapon_flashlight",
+            --     label = "Lampe torche",
+            --     grade = 0,
+            -- },
             {
-                name = "weapon_flashlight",
-                label = "Lampe torche",
-                grade = 0,
-            },
-            {
-                name = "weapon_nightstick",
-                label = "Matraque",
-                grade = 0,
-            },
-            {
-                name = "weapon_stungun",
-                label = "Taser",
-                grade = 0,
-            },
-            {
-                name = "weapon_combatpistol",
-                label = "Pistolet de combat",
-                grade = 0,
-            },
-            {
-                name = "handcuff",
+                name = "handcuffs",
                 label = "Menottes",
                 grade = 0,
                 price = 200
-            },
-            {
-                name = "police_shield",
-                label = "Bouclier antiémeute",
-                grade = 0,
-                price = 150
-            },
-            {
-                name = "gpb",
-                label = "GPB",
-                grade = 0,
-                price = 250
             },
         }
     },
@@ -181,4 +154,11 @@ GM.Police.Menu = {
             message = "Message de backup 1",
         },
     }
+}
+
+GM.Police.QuitJob = {
+    {
+        name = "handcuffs",
+        label = "Menottes",
+    },
 }

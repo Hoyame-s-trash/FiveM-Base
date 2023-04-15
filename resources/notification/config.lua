@@ -25,4 +25,6 @@ Config.SoundVolume      = 0.4           -- 0.0 - 1.0
 
 Config.Pictures = {
     BLUESTARK = "bluestark.png",
+    CALL = "call.png",
+    POLICE = "police.png",
 }

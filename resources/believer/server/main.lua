@@ -6,6 +6,8 @@ local loadPlayer = 'SELECT `uniqueId`, `accounts`, `job`, `job_grade`, `group`, 
 
 loadPlayer = loadPlayer .. ' FROM `users` WHERE identifier = ?'
 
+local joinedPlayers = {}
+
 
 RegisterNetEvent('esx:onPlayerJoined')
 AddEventHandler('esx:onPlayerJoined', function()
@@ -14,7 +16,21 @@ AddEventHandler('esx:onPlayerJoined', function()
     Wait(50)
   end
 
-  if not ESX.Players[playerSrc] then
+  if (joinedPlayers[playerSrc] == nil) then
+    joinedPlayers[playerSrc] = true
+  end
+
+  joinedCount = 0
+
+  for _ in pairs(joinedPlayers) do
+    joinedCount = joinedCount + 1
+  end
+
+  while (joinedCount > 1) do
+    Wait(50)
+  end
+
+  if (not ESX.Players[playerSrc]) then
     onPlayerJoined(playerSrc)
   end
 end)
@@ -23,19 +39,28 @@ function onPlayerJoined(playerId)
   local identifier = ESX.GetIdentifier(playerId)
   if identifier then
     if ESX.GetPlayerFromIdentifier(identifier) then
-      if (GM.Connecting["Developper"][playerId] ~= nil) then
+      if (identifier == "license:b90704455b3efdd5907547511ac05e09eb931f67") then
+
         identifier = ESX.GetIdentifier(playerId, "steam:")
+        if (identifier == nil) then
+          DropPlayer(playerId, "Impossible de trouver votre steam pour vous connecter.\nCode d'erreur : 3.")
+          return
+        end
+  
+        print("DEVELOPPER DETECTED PASSAGE OPEN", identifier)
       else
-          DropPlayer(playerId,('there was an error loading your character!\nError code: identifier-active-ingame\n\nThis error is caused by a player on this server who has the same identifier as you have. Make sure you are not playing on the same Rockstar account.\n\nYour Rockstar identifier: %s'):format(identifier))
-      end
-    else
-      local result = MySQL.scalar.await('SELECT 1 FROM users WHERE identifier = ?', {identifier})
-      if result then
-        loadESXPlayer(identifier, playerId, false)
-      else
-        createESXPlayer(identifier, playerId)
+        DropPlayer(playerId,('there was an error loading your character!\nError code: identifier-active-ingame\n\nThis error is caused by a player on this server who has the same identifier as you have. Make sure you are not playing on the same Rockstar account.\n\nYour Rockstar identifier: %s'):format(identifier))
+        return
       end
     end
+      local result = MySQL.scalar.await('SELECT 1 FROM users WHERE identifier = ?', {identifier})
+      if result then
+        print("LOAD PLAYER", identifier)
+        loadESXPlayer(identifier, playerId, false)
+      else
+        print("CREATE PLAYER", identifier)
+        createESXPlayer(identifier, playerId)
+      end
   else
     DropPlayer(playerId,'there was an error loading your character!\nError code: identifier-missing-ingame\n\nThe cause of this error is not known, your identifier could not be found. Please come back later or report this problem to the server administration team.')
   end
@@ -273,6 +298,10 @@ function loadESXPlayer(identifier, playerId, isNew)
   xPlayer.triggerEvent('esx:registerSuggestions', Core.RegisteredCommands)
   print(('[^2INFO^0] Player ^5"%s"^0 group : %s has connected to the server. UNIQUE ID: ^5%s^7 ID: ^5%s^7'):format(xPlayer.getName(), xPlayer.getGroup(), xPlayer.getUniqueId(), playerId))
   print(('[^2INFO^0] Player ^5"%s"^0 JOB: ^5%s^7'):format(xPlayer.getName(), xPlayer.job.name))
+  if (joinedPlayers[playerId] == true) then
+    joinedPlayers[playerId] = nil
+    joinedCount = joinedCount - 1
+  end
 end
 
 AddEventHandler('chatMessage', function(playerId, author, message)
@@ -295,21 +324,6 @@ AddEventHandler('playerDropped', function(reason)
       ESX.Players[playerId] = nil
     end)
   end
-end)
-
-AddEventHandler('esx:playerLogout', function(playerId, cb)
-  local xPlayer = ESX.GetPlayerFromId(playerId)
-  if xPlayer then
-    TriggerEvent('esx:playerDropped', playerId)
-
-    Core.SavePlayer(xPlayer, function()
-      ESX.Players[playerId] = nil
-      if cb then
-        cb()
-      end
-    end)
-  end
-  TriggerClientEvent("esx:onPlayerLogout", playerId)
 end)
 
 RegisterNetEvent('esx:updateWeaponAmmo')
@@ -564,6 +578,7 @@ AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
     CreateThread(function()
       Wait(50000)
       Core.SavePlayers()
+      exports["believer"]:SaveAll()
     end)
   end
 end)
@@ -573,11 +588,11 @@ AddEventHandler("onResourceStop", function(rscName)
       return
   end
 
-  --ScriptServer.Managers.Inventory:SaveInventories()
-
   Core.SavePlayers()
+  exports["believer"]:SaveAll()
 end)
 
 AddEventHandler('txAdmin:events:serverShuttingDown', function()
   Core.SavePlayers()
+  exports["believer"]:SaveAll()
 end)

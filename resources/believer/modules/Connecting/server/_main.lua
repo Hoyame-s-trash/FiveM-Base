@@ -15,13 +15,15 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
     local playerIdentifier = playerSelected.getIdentifier()
     if (not playerIdentifier) then return end
 
-    if (GM.Connecting["Identifiers"].List["users"][playerIdentifier].uniqueId == nil) then
-        MySQL.update("UPDATE user_identifiers set uniqueId = ? WHERE owner = ?", {
-            playerSelected.getUniqueId(),
-            playerIdentifier
-        }, function()
-            GM.Connecting["Identifiers"].List["users"][playerIdentifier].uniqueId = playerSelected.getUniqueId()
-        end)
+    if (GM.Connecting["Identifiers"].List["users"][playerIdentifier] ~= nil) then
+        if (GM.Connecting["Identifiers"].List["users"][playerIdentifier].uniqueId == nil) then
+            MySQL.update("UPDATE user_identifiers set uniqueId = ? WHERE owner = ?", {
+                playerSelected.getUniqueId(),
+                playerIdentifier
+            }, function()
+                GM.Connecting["Identifiers"].List["users"][playerIdentifier].uniqueId = playerSelected.getUniqueId()
+            end)
+        end
     end
 end)
 
@@ -726,10 +728,6 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
                 deferrals.done("Impossible de trouver votre steam pour vous connecter.\nCode d'erreur : 2.")
                 CancelEvent()
                 return
-            end
-
-            if (GM.Connecting["Developper"][playerSrc] == nil) then
-                GM.Connecting["Developper"][playerSrc] = true
             end
         else
             deferrals.done("Vous êtes déjà connecté sur le serveur\nCode d'erreur : 1.")

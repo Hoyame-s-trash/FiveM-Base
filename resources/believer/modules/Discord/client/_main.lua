@@ -7,7 +7,7 @@ GM:newThread(function()
     SetDiscordRichPresenceAsset("bluestark_big")
     SetDiscordRichPresenceAssetSmall("discord")
     SetDiscordRichPresenceAssetSmallText("discord.gg/bluestark")
-    SetRichPresence(("%s [%s]"):format(GetPlayerName(PlayerId()), GetPlayerServerId(PlayerId())))
+    SetRichPresence(("[%s] %s | %s/%s"):format(GetPlayerServerId(PlayerId()), GetPlayerName(PlayerId()), 2, 2))
     SetDiscordRichPresenceAction(0, "🔔 Discord", "https://discord.gg/bluestark")
     SetDiscordRichPresenceAction(1, "🌸 Se Connecter", "fivem://connect/755brd")
 

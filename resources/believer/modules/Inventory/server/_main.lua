@@ -1249,12 +1249,18 @@ function Module:canCarryWeight(name, quantity)
 end
 
 function Module:canCarryItem(name, quantity)
+    print("canCarryItem", name, quantity)
     if not self:canCarryWeight(name, quantity) then return false end
+
+    print("canCarryWeight", name, quantity)
     
     local slot = self:getEmptySlot()
     if type(slot) == "number" then
+        print("true")
         return true
     end
+
+    print("false")
 
     return false
 end
@@ -1297,7 +1303,7 @@ function Module:save()
         }
     end
 
-    exports.oxmysql:query_async([[
+    MySQL.query.await([[
         INSERT INTO inventory_items (uniqueID, type, items)
         VALUES (@uniqueID, @type, @items)
         ON DUPLICATE KEY UPDATE
@@ -1505,7 +1511,7 @@ function Module:save()
         }
     end
 
-    exports.oxmysql:query_async([[
+    MySQL.query.await([[
         INSERT INTO inventory_items (uniqueID, type, originX, originY, originZ, expires, items)
         VALUES (@uniqueID, @type, @originX, @originY, @originZ, @expires, @items)
         ON DUPLICATE KEY UPDATE

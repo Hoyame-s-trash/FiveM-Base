@@ -176,13 +176,7 @@ function ESX.TriggerServerCallback(name, requestId, source,Invoke, cb, ...)
 end
 
 function Core.SavePlayer(xPlayer, cb)
-  -- local inventory = ScriptServer.Managers.Inventory:GetInventory({ source = xPlayer.source })
-
-  -- if inventory then
-  --   inventory:save()
-  --   inventory:destroy()
-  -- end
-
+  exports["believer"]:Save(xPlayer.source)
   MySQL.prepare('UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position` = ?, `inventory` = ?, `loadout` = ?, `is_dead` = ?, `status` = ? WHERE `identifier` = ?', {
       json.encode(xPlayer.getAccounts(true)), 
       xPlayer.job.name, 
@@ -197,7 +191,6 @@ function Core.SavePlayer(xPlayer, cb)
     }, function(affectedRows)
       if affectedRows == 1 then
         print(('[^2INFO^7] Saved player ^5"%s^7"'):format(xPlayer.name))
-        TriggerEvent('esx:playerSaved', xPlayer.playerId, xPlayer)
       end
       if cb then
         cb()
@@ -213,8 +206,18 @@ function Core.SavePlayers(cb)
     local time = os.time()
     for i = 1, count do
       local xPlayer = xPlayers[i]
-      
-      parameters[#parameters + 1] = {json.encode(xPlayer.getAccounts(true)), xPlayer.job.name, xPlayer.job.grade, xPlayer.group, json.encode(xPlayer.position or GetEntityCoords(xPlayer.getPed())), json.encode(xPlayer.getInventory(true)), json.encode(xPlayer.getLoadout(true)), xPlayer.getDead(), json.encode(xPlayer.get('status')), xPlayer.identifier}
+      parameters[#parameters + 1] = {
+        json.encode(xPlayer.getAccounts(true)), 
+        xPlayer.job.name, 
+        xPlayer.job.grade, 
+        xPlayer.group, 
+        json.encode(xPlayer.position or GetEntityCoords(xPlayer.getPed())), 
+        json.encode(xPlayer.getInventory(true)), 
+        json.encode(xPlayer.getLoadout(true)), 
+        xPlayer.getDead(), 
+        json.encode(xPlayer.get('status')), 
+        xPlayer.identifier
+      }
     end
     MySQL.prepare("UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position` = ?, `inventory` = ?, `loadout` = ?, `is_dead` = ?, `status` = ? WHERE `identifier` = ?", parameters, function(results)
       if results then
@@ -266,10 +269,7 @@ end
 
 function ESX.GetIdentifier(playerId, type)
   local type = type or "license:"
-  local fxDk = GetConvarInt('sv_fxdkMode', 0) 
-  if fxDk == 1 then
-    return "ESX-DEBUG-LICENCE"
-  end
+
   for k, v in ipairs(GetPlayerIdentifiers(playerId)) do
       if string.match(v, type) then
         local identifier = v

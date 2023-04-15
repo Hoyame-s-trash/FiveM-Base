@@ -346,14 +346,16 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 
 	function self.getInventoryItem(name, slot)
 		if (not slot) then
-			exports["believer"]:GetItemBy(self.source, {
+			local inventoryItem = exports["believer"]:GetItemBy(self.source, {
 				name = name,
 			})
+			return inventoryItem
 		else
-			exports["believer"]:GetItemBy(self.source, {
+			local slotItem = exports["believer"]:GetItemBy(self.source, {
 				name = name,
 				slot = slot
 			})
+			return slotItem
 		end
 	end
 
@@ -390,21 +392,8 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	end
 
 	function self.canCarryItem(name, count, metadata)
-        exports["believer"]:CanCarryItem(self.source, name, count)
-	end
-
-	function self.canSwapItem(firstItem, firstItemCount, testItem, testItemCount)
-		local firstItemObject = self.getInventoryItem(firstItem)
-		local testItemObject = self.getInventoryItem(testItem)
-
-		if firstItemObject.count >= firstItemCount then
-			local weightWithoutFirstItem = ESX.Math.Round(self.weight - (firstItemObject.weight * firstItemCount))
-			local weightWithTestItem = ESX.Math.Round(weightWithoutFirstItem + (testItemObject.weight * testItemCount))
-
-			return weightWithTestItem <= self.maxWeight
-		end
-
-		return false
+		local boolean = exports["believer"]:CanCarryItem(self.source, name, count)
+		return boolean
 	end
 
 	function self.setMaxWeight(newWeight)
@@ -414,9 +403,54 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 
 	function self.setJob(job, grade)
 		grade = tostring(grade)
-		local lastJob = json.decode(json.encode(self.job))
 
 		if ESX.DoesJobExist(job, grade) then
+			local actualJob = self.job.name
+			if (actualJob) then
+				local actualJob = string.upper(string.sub(actualJob, 1, 1))..string.sub(actualJob, 2, #actualJob)
+
+				if (GM[actualJob]) then
+					if (GM[actualJob].registeredZones) then
+						for zoneType, _ in pairs(GM[actualJob].registeredZones) do
+							for zoneId, _ in pairs(GM[actualJob].registeredZones[zoneType]) do
+								GM[actualJob].registeredZones[zoneType][zoneId]:allowedPlayer(self.source, false)
+							end
+						end
+					end
+
+					if (GM[actualJob].registeredBlips) then
+						for blipType, _ in pairs(GM[actualJob].registeredBlips) do
+							for blipId, _ in pairs(GM[actualJob].registeredBlips[blipType]) do
+								GM[actualJob].registeredBlips[blipType][blipId]:allowedPlayer(self.source, false)
+							end
+						end
+					end
+				end
+			end
+
+			local newJob = job
+			if (newJob) then
+				local newJob = string.upper(string.sub(newJob, 1, 1))..string.sub(newJob, 2, #newJob)
+
+				if (GM[newJob]) then
+					if (GM[newJob].registeredZones) then
+						for zoneType, _ in pairs(GM[newJob].registeredZones) do
+							for zoneId, _ in pairs(GM[newJob].registeredZones[zoneType]) do
+								GM[newJob].registeredZones[zoneType][zoneId]:allowedPlayer(self.source, true)
+							end
+						end
+					end
+
+					if (GM[newJob].registeredBlips) then
+						for blipType, _ in pairs(GM[newJob].registeredBlips) do
+							for blipId, _ in pairs(GM[newJob].registeredBlips[blipType]) do
+								GM[newJob].registeredBlips[blipType][blipId]:allowedPlayer(self.source, true)
+							end
+						end
+					end
+				end
+			end
+
 			local jobObject, gradeObject = ESX.Jobs[job], ESX.Jobs[job].grades[grade]
 
 			self.job.id    = jobObject.id
@@ -428,19 +462,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 			self.job.grade_label  = gradeObject.label
 			self.job.grade_salary = gradeObject.salary
 
-			if gradeObject.skin_male then
-				self.job.skin_male = json.decode(gradeObject.skin_male)
-			else
-				self.job.skin_male = {}
-			end
-
-			if gradeObject.skin_female then
-				self.job.skin_female = json.decode(gradeObject.skin_female)
-			else
-				self.job.skin_female = {}
-			end
-
-			TriggerEvent('esx:setJob', self.source, self.job, lastJob)
+			TriggerEvent('esx:setJob', self.source, self.job)
 			self.triggerEvent('esx:setJob', self.job)
 			Player(self.source).state:set("job", self.job, true)
 		else

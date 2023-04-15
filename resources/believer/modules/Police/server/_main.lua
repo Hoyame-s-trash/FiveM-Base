@@ -21,6 +21,8 @@ GM.Police.registeredPeds["duty"] = {}
 GM.Police.registeredPeds["wardrobe"] = {}
 
 GM.Police.registeredCalls = {}
+GM.Police.registeredCalls["list"] = {}
+GM.Police.registeredCalls["accepted"] = {}
 
 GM:newThread(function()
     while (GM.Police.Locker == nil) do
@@ -61,7 +63,7 @@ GM:newThread(function()
             sprite = 1,
             colour = 3,
             name = "Police - Casier - "..i,
-            display = 5,
+            --display = 5,
         }, {
             isPrivate = true
         })
@@ -101,7 +103,7 @@ GM:newThread(function()
             sprite = 1,
             colour = 3,
             name = "Police - Garage - "..i,
-            display = 5,
+            --display = 5,
         }, {
             isPrivate = true
         })
@@ -139,7 +141,7 @@ GM:newThread(function()
             sprite = 1,
             colour = 3,
             name = "Police - Prise de service - "..i,
-            display = 5,
+            --display = 5,
         }, {
             isPrivate = true
         })
@@ -179,7 +181,7 @@ GM:newThread(function()
             sprite = 1,
             colour = 3,
             name = "Police - Vestiaire - "..i,
-            display = 5,
+            --display = 5,
         }, {
             isPrivate = true
         })
@@ -212,7 +214,7 @@ GM:newThread(function()
             sprite = 1,
             colour = 3,
             name = "Police - Armurerie - "..i,
-            display = 5,
+            --display = 5,
         }, {
             isPrivate = true
         })
@@ -350,7 +352,7 @@ RegisterServerEvent("Police:armory:takeItem", function(armoryId, itemName)
             end
             if (playerSelected.canCarryItem(item.name, 1)) then
                 playerSelected.addInventoryItem(item.name, 1)
-                playerSelected.showNotification("~g~Vous avez pris un(e) ~b~"..item.label.."~g~.")
+                playerSelected.showNotification("~g~Vous avez pris un(e) "..item.label..".")
             else
                 playerSelected.showNotification("~r~Vous ne pouvez pas prendre cet item.")
             end
@@ -375,10 +377,10 @@ RegisterServerEvent("Police:menu:backup", function(backupName)
         if (backup.name == backupName) then
 
             if (playerSelected.job.grade >= backup.grade) then
-                local callId = (#GM.Police.registeredCalls + 1)
+                local callId = (#GM.Police.registeredCalls["list"] + 1)
                 if (not callId) then return end
 
-                GM.Police.registeredCalls[tonumber(callId)] = {
+                GM.Police.registeredCalls["list"][tonumber(callId)] = {
                     id = callId,
                     name = backup.name,
                     label = backup.label,
@@ -389,10 +391,11 @@ RegisterServerEvent("Police:menu:backup", function(backupName)
                     taken = {},
                 }
 
-                GM.Police.registeredBlips["calls"][callId] = GM.Blip:add(GM.Police.registeredCalls[tonumber(callId)].position, {
+                GM.Police.registeredBlips["calls"][callId] = GM.Blip:add(GM.Police.registeredCalls["list"][tonumber(callId)].position, {
                     sprite = 1,
                     colour = 3,
-                    name = i.." - "..GM.Police.registeredCalls[tonumber(callId)].label,
+                    name = i.." - "..GM.Police.registeredCalls["list"][tonumber(callId)].label,
+                    route = true,
                 }, {
                     isPrivate = true
                 })
@@ -405,23 +408,42 @@ RegisterServerEvent("Police:menu:backup", function(backupName)
 
                         if (playerSrc ~= playerSelected.source) then
                         
-                            local request = GM.Request:sendMessage(playerSrc, backup.message)
+                            local request = GM.Request:sendCallMessage(playerSrc, "Centrale", "Appel d'urgence - "..callId, "CALL", {
+                                position = GM.Police.registeredCalls["list"][tonumber(callId)].position,
+                                callId = callId,
+                                message = GM.Police.registeredCalls["list"][tonumber(callId)].message,
+                            })
                             if (request == "accept") then
                                 local acceptPlayer = ESX.GetPlayerFromId(playerSrc)
                                 if (acceptPlayer) then
                                     TriggerClientEvent("esx:showNotification", acceptPlayer.source, "~g~Vous avez accepté l'appel.")
 
-                                    if (GM.Police.registeredCalls[tonumber(callId)].taken == nil) then
-                                        GM.Police.registeredCalls[tonumber(callId)].taken = {}
+                                    if (GM.Police.registeredCalls["list"][tonumber(callId)].taken == nil) then
+                                        GM.Police.registeredCalls["list"][tonumber(callId)].taken = {}
                                     end
     
-                                    if (GM.Police.registeredCalls[tonumber(callId)].taken[acceptPlayer.source] == nil) then
-                                        table.insert(GM.Police.registeredCalls[tonumber(callId)].taken, acceptPlayer.getName())
+                                    if (GM.Police.registeredCalls["list"][tonumber(callId)].taken[acceptPlayer.source] == nil) then
+                                        GM.Police.registeredCalls["list"][tonumber(callId)].taken[acceptPlayer.source] = acceptPlayer.getName()
+                                    end
+
+                                    if (GM.Police.registeredCalls["accepted"][acceptPlayer.source] ~= nil) then
+                                        -- Todo remove player from taken list of previous call
+                                        if (GM.Police.registeredCalls["list"][tonumber(callId)].taken[acceptPlayer.source] ~= nil) then
+                                            GM.Police.registeredCalls["list"][tonumber(callId)].taken[acceptPlayer.source] = nil
+                                            -- Todo remove for every police player in service in client value
+                                        end
+                                        print("REMOVE PREVIOUS CALL")
+                                        GM.Police.registeredBlips["calls"][GM.Police.registeredCalls["accepted"][acceptPlayer.source]]:allowedPlayer(acceptPlayer.source, false)
                                     end
                                     
                                     GM.Police.registeredBlips["calls"][callId]:allowedPlayer(acceptPlayer.source)
+                                    GM.Police.registeredCalls["accepted"][acceptPlayer.source] = callId
 
-                                    -- Todo send client event to send position in client and remove blip when proximity
+                                    TriggerClientEvent("Police:call:onAccept", acceptPlayer.source, {
+                                        onActive = true,
+                                        callId = callId,
+                                        position = GM.Police.registeredCalls["list"][tonumber(callId)].position,
+                                    })
                                 end
 
                                 for playerSrc, _ in pairs(GM.Service["Enterprise_list"]["police"]) do
@@ -432,10 +454,6 @@ RegisterServerEvent("Police:menu:backup", function(backupName)
                                         end
                                     end
                                 end
-                            elseif (request == "decline") then
-                                TriggerClientEvent("esx:showNotification", targetSelected.source, "~r~Vous avez refusé l'appel.")
-                            elseif (request == "delay") then
-                                TriggerClientEvent("esx:showNotification", targetSelected.source, "~r~Vous avez automatiquement refusé l'appel.")
                             end
                         end
                     end
@@ -446,4 +464,79 @@ RegisterServerEvent("Police:menu:backup", function(backupName)
             end
         end
     end
+end)
+
+RegisterServerEvent("Police:call:finish", function(callId)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getJob().name ~= "police") then
+        playerSelected.showNotification("~r~Vous n'êtes pas policier.")
+        return
+    end
+
+    if (GM.Police.registeredCalls["list"][tonumber(callId)] ~= nil) then
+        if (GM.Police.registeredCalls["list"][tonumber(callId)].taken ~= nil) then
+            if (GM.Police.registeredCalls["list"][tonumber(callId)].taken[playerSelected.source] ~= nil) then
+                GM.Police.registeredCalls["list"][tonumber(callId)].taken[playerSelected.source] = nil
+            end
+        end
+    end
+
+    if (GM.Police.registeredCalls["accepted"][playerSelected.source] ~= nil) then
+        GM.Police.registeredCalls["accepted"][playerSelected.source] = nil
+    end
+
+    if (GM.Police.registeredBlips["calls"][callId] ~= nil) then
+        GM.Police.registeredBlips["calls"][callId]:allowedPlayer(playerSelected.source, false)
+    end
+end)
+
+RegisterServerEvent("Police:menu:quitJob", function()
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getJob().name ~= "police") then
+        playerSelected.showNotification("~r~Vous n'êtes pas policier.")
+        return
+    end
+
+    local canQuit = true
+
+    for i = 1, #GM.Police.QuitJob do
+        local item = GM.Police.QuitJob[i]
+        local itemQuantity = exports["believer"]:GetItemQuantityBy(playerSelected.source, {
+            name = item.name,
+        })
+        if (itemQuantity > 0) then
+            playerSelected.showNotification("~r~Vous ne pouvez pas quitter votre emploi car vous avez ("..itemQuantity..") "..item.label..".")
+            canQuit = false
+        end
+    end
+
+    if (canQuit == false) then return end 
+
+    playerSelected.setJob("unemployed", 0)
+    playerSelected.showNotification("~g~Vous avez quitté votre emploi.")
+end)
+
+RegisterServerEvent("Police:menu:requestCalls", function()
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getJob().name ~= "police") then
+        playerSelected.showNotification("~r~Vous n'êtes pas policier.")
+        return
+    end
+
+    
 end)

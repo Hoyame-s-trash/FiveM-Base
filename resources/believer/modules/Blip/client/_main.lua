@@ -22,6 +22,12 @@ RegisterNetEvent("Blip:add", function(newBlip)
     SetBlipColour(createdBlip, newBlip["blipData"].colour)
     SetBlipDisplay(createdBlip, newBlip["blipData"].display or 2)
     SetBlipAlpha(createdBlip, newBlip["blipData"].alpha or 255)
+
+    if (newBlip["blipData"].route and newBlip["blipData"].route == true) then
+        SetBlipRoute(createdBlip, newBlip["blipData"].route)
+        SetBlipRouteColour(createdBlip, newBlip["blipData"].routeColour or 1)
+    end
+
     AddTextEntry(("BLIP_NAME_"..newBlip.uniqueId), newBlip["blipData"].name)
     BeginTextCommandSetBlipName(("BLIP_NAME_"..newBlip.uniqueId))
     SetBlipCategory(createdBlip, newBlip["blipData"].category or 1)
