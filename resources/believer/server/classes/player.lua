@@ -559,7 +559,7 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 	end
 
 	function self.getPed()
-		reutrn GetPlayerPed(self.source)
+		return GetPlayerPed(self.source)
 	end
 
 	for fnName,fn in pairs(targetOverrides) do

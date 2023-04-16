@@ -327,7 +327,7 @@ GM:newThread(function()
         local playerPosition = playerSelected.getCoords(true)
         if (not playerPosition) then return end
 
-        ESX.OneSync.SpawnVehicle(vehicleName, playerPosition - vector3(0,0, 0.9), GetEntityHeading(playerPed), false, false, function(networkId)
+        ESX.OneSync.SpawnVehicle(vehicleName, playerPosition - vector3(0,0, 0.9), GetEntityHeading(playerPed), {}, function(networkId)
             if networkId then
                 local vehicle = NetworkGetEntityFromNetworkId(networkId)
                 for i = 1, 20 do
@@ -337,9 +337,6 @@ GM:newThread(function()
                     if GetVehiclePedIsIn(playerPed, false) == vehicle then
                         break
                     end
-                end
-                if GetVehiclePedIsIn(playerPed, false) ~= vehicle then
-                    playerSelected.showNotification("~r~Impossible de rentrer dans le véhicule !")
                 end
             end
         end)

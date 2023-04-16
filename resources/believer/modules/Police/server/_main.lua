@@ -294,7 +294,7 @@ RegisterServerEvent("Police:spawnVehicle", function(vehicleName, garagePosition)
     local playerPosition = playerSelected.getCoords(true)
     if (not playerPosition) then return end
 
-    ESX.OneSync.SpawnVehicle(vehicleName, garagePosition, garagePosition.w, false, false, function(networkId)
+    ESX.OneSync.SpawnVehicle(vehicleName, garagePosition, garagePosition.w, {}, function(networkId)
         if networkId then
             local vehicle = NetworkGetEntityFromNetworkId(networkId)
             for i = 1, 20 do
@@ -304,9 +304,6 @@ RegisterServerEvent("Police:spawnVehicle", function(vehicleName, garagePosition)
                 if GetVehiclePedIsIn(playerPed, false) == vehicle then
                     break
                 end
-            end
-            if GetVehiclePedIsIn(playerPed, false) ~= vehicle then
-                playerSelected.showNotification("~r~Impossible de rentrer dans le véhicule !")
             end
         end
     end)
