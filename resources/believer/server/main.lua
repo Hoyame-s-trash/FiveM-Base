@@ -52,17 +52,17 @@ function onPlayerJoined(playerId)
         DropPlayer(playerId,('there was an error loading your character!\nError code: identifier-active-ingame\n\nThis error is caused by a player on this server who has the same identifier as you have. Make sure you are not playing on the same Rockstar account.\n\nYour Rockstar identifier: %s'):format(identifier))
         return
       end
-    else
+    end
       local result = MySQL.scalar.await('SELECT 1 FROM users WHERE identifier = ?', {identifier})
       if result then
+        print("LOAD PLAYER", identifier)
         loadESXPlayer(identifier, playerId, false)
       else
+        print("CREATE PLAYER", identifier)
         createESXPlayer(identifier, playerId)
       end
-    end
   else
-    DropPlayer(playerId,
-      'there was an error loading your character!\nError code: identifier-missing-ingame\n\nThe cause of this error is not known, your identifier could not be found. Please come back later or report this problem to the server administration team.')
+    DropPlayer(playerId,'there was an error loading your character!\nError code: identifier-missing-ingame\n\nThe cause of this error is not known, your identifier could not be found. Please come back later or report this problem to the server administration team.')
   end
 end
 

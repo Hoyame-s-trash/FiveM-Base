@@ -291,10 +291,7 @@ RegisterServerEvent("Police:spawnVehicle", function(vehicleName, garagePosition)
     local playerPed = playerSelected.getPed()
     if (not playerPed) then return end
 
-    local playerPosition = playerSelected.getCoords(true)
-    if (not playerPosition) then return end
-
-    ESX.OneSync.SpawnVehicle(vehicleName, garagePosition, garagePosition.w, {}, function(networkId)
+    ESX.OneSync.SpawnVehicle(vehicleName, vector3(garagePosition.x, garagePosition.y, garagePosition.z), garagePosition.w, {}, function(networkId)
         if networkId then
             local vehicle = NetworkGetEntityFromNetworkId(networkId)
             for i = 1, 20 do

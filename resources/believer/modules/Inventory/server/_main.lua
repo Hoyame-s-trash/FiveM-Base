@@ -2208,6 +2208,21 @@ local function Init()
 
     RegisterNetEvent("esx:playerLoaded", function(playerId, xPlayer, isNew)
         loadEsxPlayerInventory(xPlayer)
+
+        for k, v in pairs(xPlayer.accounts) do
+            if (v.name ~= "bank") then
+                local currentMoney = exports["believer"]:GetItemQuantityBy(playerId, {
+                  name = v.name,
+                })
+                if (v.money == 0) then
+                    exports["believer"]:RemoveItemBy(playerId, currentMoney, {
+                        name = v.name,
+                    })
+                else
+                    exports["believer"]:SetItemQuantity(playerId, v.name, v.money)
+                end
+            end
+        end
     end)
 end
 

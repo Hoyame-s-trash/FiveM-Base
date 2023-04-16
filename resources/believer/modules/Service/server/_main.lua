@@ -2,6 +2,7 @@ GM.Service = GM.Service or {}
 
 GM.Service["Enterprise_list"] = {}
 GM.Service["Player_list"] = {}
+GM.Service["Crash_list"] = {}
 
 RegisterServerEvent("Service:interact")
 AddEventHandler("Service:interact", function(source)
@@ -51,13 +52,17 @@ AddEventHandler("playerDropped", function(reason)
     local playerSrc = source
     if (not playerSrc) then return end
 
-
-    print(reason)
-
-    print(GetEntityCoords(GetPlayerPed(playerSrc)))
-
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+    
     if (GM.Service["Player_list"][playerSrc]) then
-        GM.Service["Player_list"][playerSrc] = nil
+        if (reason == "Disconnected." or reason == "Exiting") then
+            GM.Service["Player_list"][playerSrc] = nil
+        else
+            if (GM.Service["Crash_list"][playerSelected.getIdentifier()] == nil) then
+                GM.Service["Crash_list"][playerSelected.getIdentifier()] = true
+            end
+        end
     end
 end)
 
