@@ -175,7 +175,8 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 				self.triggerEvent('esx:setAccountMoney', account)
 				TriggerEvent('esx:setAccountMoney', self.source, accountName, money, reason)
 				if (accountName == "money") then
-					print("setItem quantity")
+					exports["believer"]:SetItemQuantity(self.source, accountName, money)
+				elseif (accountName == "black_money") then
 					exports["believer"]:SetItemQuantity(self.source, accountName, money)
 				end
 			else 
@@ -201,7 +202,8 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 				self.triggerEvent('esx:setAccountMoney', account)
 				TriggerEvent('esx:addAccountMoney', self.source, accountName, money, reason)
 				if (accountName == "money") then
-					print("addAccount Money")
+					exports["believer"]:AddItem(self.source, accountName, money)
+				elseif (accountName == "black_money") then
 					exports["believer"]:AddItem(self.source, accountName, money)
 				end
 			else 
@@ -228,7 +230,10 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 				self.triggerEvent('esx:setAccountMoney', account)
 				TriggerEvent('esx:removeAccountMoney', self.source, accountName, money, reason)
 				if (accountName == "money") then
-					print("Remove Account Money")
+					exports["believer"]:RemoveItemBy(self.source, money, {
+						name = accountName,
+					})
+				elseif (accountName == "black_money") then
 					exports["believer"]:RemoveItemBy(self.source, money, {
 						name = accountName,
 					})
@@ -551,6 +556,10 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 
 	function self.getVip()
 		return self.vip
+	end
+
+	function self.getPed()
+		reutrn GetPlayerPed(self.source)
 	end
 
 	for fnName,fn in pairs(targetOverrides) do

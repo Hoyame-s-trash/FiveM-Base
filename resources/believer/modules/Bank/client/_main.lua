@@ -11,10 +11,18 @@ end
 
 GM.Bank.menu.main:isVisible(function(Items)
     if (GM.Bank.data["money"] == nil) then
-        GM.Bank.data["money"] = ESX.PlayerData.accounts[2].money
+        for i = 1, #(ESX.PlayerData.accounts) do
+            if (ESX.PlayerData.accounts[i].name == "money") then
+                GM.Bank.data["money"] = ESX.PlayerData.accounts[i].money
+            end
+        end
     end
     if (GM.Bank.data["bank"] == nil) then
-        GM.Bank.data["bank"] = ESX.PlayerData.accounts[3].money
+        for i = 1, #(ESX.PlayerData.accounts) do
+            if (ESX.PlayerData.accounts[i].name == "bank") then
+                GM.Bank.data["bank"] = ESX.PlayerData.accounts[i].money
+            end
+        end
     end
     Items:Button("Argent liquide : ~g~"..GM.Bank.data["money"].."$", nil, {}, true, {})
     Items:Button("Argent en banque : ~g~"..GM.Bank.data["bank"].."$", nil, {}, true, {})
@@ -47,6 +55,7 @@ GM.Bank.menu.main:isVisible(function(Items)
 end)
 
 RegisterNetEvent("Bank:openMenu", function()
+    print(json.encode(ESX.PlayerData.accounts, {indent = true}))
     GM.Bank.menu.main:toggle()
 end)
 
@@ -57,6 +66,7 @@ GM:newThread(function()
             wait = 0
             ESX.ShowHelpNotification("Appuyez sur ~INPUT_CONTEXT~ pour ~b~accéder~s~ à l'ATM.")
             if (IsControlJustPressed(0, 38)) then
+                print(json.encode(ESX.PlayerData.accounts, {indent = true}))
                 GM.Bank.menu.main:open()
             end
         else

@@ -80,7 +80,6 @@ RegisterNetEvent("Inventory:ITEM_MOVE_TO_SLOT", function(d)
         local addedResult = nil
         if to_inventory.type == "dropped_grid" then
             local pX <const>, pY <const>, pZ <const> = table.unpack(GetEntityCoords(GetPlayerPed(source)))
-            print("Debug 1")
             addedResult = to_inventory:addItem({
                 name = item.name,
                 quantity = quantity,
@@ -97,15 +96,21 @@ RegisterNetEvent("Inventory:ITEM_MOVE_TO_SLOT", function(d)
                 meta = item.meta,
                 toSlot = toSlot
             })
+            if (item.name == "money") then
+                playerSelected.addAccountMoney(item.name, quantity)
+                to_inventory:removeItemBy(quantity, {
+                    name = "money",
+                })
+            elseif (item.name == "black_money") then
+                playerSelected.addAccountMoney(item.name, quantity)
+                to_inventory:removeItemBy(quantity, {
+                    name = "black_money",
+                })
+            end
         end
 
         if addedResult.success then
             grabbed_inventory:removeItemBy(quantity, { slot = fromSlot })
-            if (item.name == "money") then
-                playerSelected.addAccountMoney(item.name, quantity)
-            elseif (item.name == "black_money") then
-                playerSelected.addAccountMoney(item.name, quantity)
-            end
         end
     end
 end)
@@ -256,8 +261,6 @@ RegisterNetEvent("Inventory:BUY_FROM_SHOP", function(data)
         return
     end
 
-    print("Debug 3")
-
     local addedResult = inventory:addItem({
         name = shop_item.name,
         meta = shop_item.meta,
@@ -301,8 +304,6 @@ RegisterNetEvent("Inventory:GIVE_ITEM_TO_TARGET", function(data)
 
     local no_ref <const> = json.decode(json.encode(item))
 
-    print("Debug 4")
-
     local addedResult = target_inventory:addItem({
         meta = no_ref.meta,
         name = no_ref.name,
@@ -341,7 +342,7 @@ RegisterNetEvent("Inventory:DROP_ITEM_ON_GROUND", function(data)
     end
 
     if inventory.type == "dropped_grid" then
-        aPlayer.showNotification("~r~Vous ne pouvez pas jeter un objet sur le sol.")
+        aPlayer.showNotification("~r~Vous ne pouvez pas jeter un objet déjà sur le sol.")
         return
     end
 
@@ -351,8 +352,6 @@ RegisterNetEvent("Inventory:DROP_ITEM_ON_GROUND", function(data)
     if not close_drop_grid then return end
 
     local no_ref <const> = json.decode(json.encode(item))
-
-    print("Debug 5")
 
     local addedResult <const> = close_drop_grid:addItem({
         name = no_ref.name,
@@ -590,8 +589,6 @@ RegisterNetEvent("Inventory:ITEM_REMOVE_ATTACHMENT_WEAPON", function(d)
 
     local attachment <const> = from_item.meta.attachments[fromAttIndex]
     if not attachment then return end
-
-    print("Debug 6")
 
     local response = to_inventory:addItem({
         name = attachment,
@@ -972,7 +969,6 @@ end
 function Module:setItemQuantity(name, quantity)
     local items = self:getItemsBy({ name = name })
     if #items < 1 then
-        print("Debug 7")
         self:addItem({
             name = name,
             quantity = quantity
@@ -985,8 +981,6 @@ function Module:setItemQuantity(name, quantity)
         for i = 1, #items, 1 do
             self:removeItemBy(items[i].quantity, { name = items[i].name }) 
         end
-
-        print("Debug 8")
 
         self:addItem({
             name = name,
@@ -1220,18 +1214,12 @@ function Module:canCarryWeight(name, quantity)
 end
 
 function Module:canCarryItem(name, quantity)
-    print("canCarryItem", name, quantity)
     if not self:canCarryWeight(name, quantity) then return false end
 
-    print("canCarryWeight", name, quantity)
-    
     local slot = self:getEmptySlot()
     if type(slot) == "number" then
-        print("true")
         return true
     end
-
-    print("false")
 
     return false
 end

@@ -56,7 +56,7 @@ Citizen.CreateThread(function()
                 data = account.money,
             })
         end
-        if account.name == "bank"then
+        if account.name == "bank" then
             SendNUIMessage({
                 action = "setBank",
                 data = account.money,
@@ -166,7 +166,7 @@ Citizen.CreateThread(function()
                     data = account.money,
                 })
             end
-            if account.name == "bank"then
+            if account.name == "bank" then
                 SendNUIMessage({
                     action = "setBank",
                     data = account.money,
@@ -184,21 +184,21 @@ end)
 
 RegisterNetEvent('esx:setAccountMoney')
 AddEventHandler('esx:setAccountMoney', function(account)
-	for i=1, #(ESX.PlayerData.accounts) do
+    for i = 1, #(ESX.PlayerData.accounts) do
 		if (ESX.PlayerData.accounts[i].name == "money") then
-			SendNUIMessage({
+            SendNUIMessage({
 				action = "setMoney",
-				data = account.money
+				data = ESX.PlayerData.accounts[i].money
 			})
 		elseif (ESX.PlayerData.accounts[i].name == "bank") then
-			SendNUIMessage({
+            SendNUIMessage({
 				action = "setBank",
-				data = account.money
+				data = ESX.PlayerData.accounts[i].money
 			})
         elseif (ESX.PlayerData.accounts[i].name == "black_money") then
-			SendNUIMessage({
+            SendNUIMessage({
 				action = "black_money",
-				data = account.money
+				data = ESX.PlayerData.accounts[i].money
 			})
 		end
 	end
