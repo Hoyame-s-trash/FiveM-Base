@@ -6,19 +6,21 @@ Citizen.CreateThread(function()
 
 	for _,playerId in ipairs(players) do
 		local playerSelected = ESX.GetPlayerFromId(playerId)
+		if (playerSelected) then
 
-		MySQL.Async.fetchAll('SELECT status FROM users WHERE identifier = @identifier', {
-			['@identifier'] = playerSelected.identifier
-		}, function(result)
-			local data = {}
+			MySQL.Async.fetchAll('SELECT status FROM users WHERE identifier = @identifier', {
+				['@identifier'] = playerSelected.identifier
+			}, function(result)
+				local data = {}
 
-			if result[1].status then
-				data = json.decode(result[1].status)
-			end
+				if result[1].status then
+					data = json.decode(result[1].status)
+				end
 
-			playerSelected.set('status', data)
-			TriggerClientEvent('esx_status:load', playerId, data)
-		end)
+				playerSelected.set('status', data)
+				TriggerClientEvent('esx_status:load', playerId, data)
+			end)
+		end
 	end
 end)
 
@@ -81,12 +83,14 @@ function SaveData()
 
 	for i=1, #xPlayers, 1 do
 		local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-		local status  = xPlayer.get('status')
+		if (xPlayer) then
+			local status  = xPlayer.get('status')
 
-		MySQL.Async.execute('UPDATE users SET status = @status WHERE identifier = @identifier', {
-			['@status']     = json.encode(status),
-			['@identifier'] = xPlayer.identifier
-		})
+			MySQL.Async.execute('UPDATE users SET status = @status WHERE identifier = @identifier', {
+				['@status']     = json.encode(status),
+				['@identifier'] = xPlayer.identifier
+			})
+		end
 	end
 
 	SetTimeout(10 * 60 * 1000, SaveData)

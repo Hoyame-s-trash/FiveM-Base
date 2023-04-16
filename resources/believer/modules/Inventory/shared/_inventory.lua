@@ -515,6 +515,15 @@ function Module:Add(name, d)
     self.Registered[name] = d
 end
 
+ScriptShared.Items:Add("money", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "Espèces",
+    weight = 0.0,
+    category = "Argent"
+})
+
 ScriptShared.Items:Add("handcuffs", {
     stackable = true,
     deletable = true,

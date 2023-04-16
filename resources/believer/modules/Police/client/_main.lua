@@ -4,7 +4,9 @@ GM.Police.garage = {
     menu = {
         submenus = {}
     },
-    data = {},
+    data = {
+        call = {},
+    },
 }
 
 GM.Police.garage.menu.main = RageUI.CreateMenu("", "Garage Police", 0, 0, "banner", "bluestark")
@@ -205,7 +207,7 @@ GM.Police.job.menu.main:isVisible(function(Items)
         onSelected = function()
             TriggerServerEvent("Police:menu:requestCalls")
         end
-    })
+    }, GM.Police.job.menu.submenus["call"])
     Items:Button("Status agent", nil, {}, true,{
         onSelected = function()
             TriggerServerEvent("Police:menu:requestCalls")
@@ -258,11 +260,11 @@ GM.Police.job.menu.submenus["backup"]:isVisible(function(Items)
 end)
 
 GM.Police.job.menu.submenus["call"]:isVisible(function(Items)
-    if (GM.Police.call.data["calls"] ~= nil) then
-        for i = 1, #GM.Police.call.data["calls"] do
-            Items:Button(GM.Police.call.data["calls"][i].label, nil, {}, true, {
+    if (GM.Police.data["call"] ~= nil) then
+        for i = 1, #GM.Police.data["call"] do
+            Items:Button(GM.Police.data["call"][i].label, nil, {}, true, {
                 onSelected = function()
-                    TriggerServerEvent("Police:call:accept", GM.Police.call.data["calls"][i].id)
+                    TriggerServerEvent("Police:call:accept", GM.Police.data["call"][i].id)
                 end
             })
         end
@@ -299,16 +301,16 @@ end)
 
 RegisterNetEvent("Police:updateValue", function(POLICE_DATA, POLICE_KEY, POLICE_VALUE)
     if (not POLICE_VALUE) then
-        GM.Admin.data[POLICE_DATA] = POLICE_KEY
+        GM.Police.data[POLICE_DATA] = POLICE_KEY
     else
-        GM.Admin.data[POLICE_DATA][POLICE_KEY] = POLICE_VALUE
+        GM.Police.data[POLICE_DATA][POLICE_KEY] = POLICE_VALUE
     end
 end)
 
 RegisterNetEvent("Police:removeValue", function(POLICE_DATA, POLICE_KEY)
     if (not POLICE_KEY) then
-        GM.Admin.data[POLICE_DATA] = nil
+        GM.Police.data[POLICE_DATA] = nil
     else
-        GM.Admin.data[POLICE_DATA][POLICE_KEY] = nil
+        GM.Police.data[POLICE_DATA][POLICE_KEY] = nil
     end
 end)

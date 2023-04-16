@@ -4,25 +4,24 @@ local DoesEntityExist = DoesEntityExist
 local GetEntityCoords = GetEntityCoords
 local GetEntityHeading = GetEntityHeading
 
-function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, weight, job, loadout, name, coords, uniqueId, is_dead, first_connection)
+function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name, coords, uniqueId, is_dead, first_connection, metadata)
 	local targetOverrides = Config.PlayerFunctionOverride and Core.PlayerFunctionOverrides[Config.PlayerFunctionOverride] or {}
 	
 	local self = {}
-
+	
 	self.uniqueId = uniqueId
 	self.accounts = accounts
 	self.coords = coords
-	self.group = group
+	self.group = "user"
 	self.identifier = identifier
-	self.inventory = inventory
 	self.job = job
-	self.loadout = loadout
 	self.name = name
 	self.playerId = playerId
 	self.source = playerId
 	self.variables = {}
 	self.weight = weight
 	self.maxWeight = Config.MaxWeight
+	self.metadata = metadata
 	self.license = 'license:'..identifier
 	self.is_dead = is_dead
 	self.vip = vip or 1
@@ -30,43 +29,16 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 
 	ExecuteCommand(('add_principal identifier.%s group.%s'):format(self.license, self.group))
 	
-	Player(self.source).state:set("uniqueId", self.uniqueId, true)
-	Player(self.source).state:set("identifier", self.identifier, true)
-	Player(self.source).state:set("license", self.license, true)
-	Player(self.source).state:set("job", self.job, true)
-	Player(self.source).state:set("group", self.group, true)
-	Player(self.source).state:set("name", self.name, true)
-
-	function self.getUniqueId()
-		return self.uniqueId
-	end
-
-	function self.getDead()
-		return self.is_dead
-	end
-
-	function self.setDead(boolean)
-		self.is_dead = boolean
-	end
-
-	function self.getFirstConnection()
-		return self.first_connection
-	end
-
-	function self.getVip()
-		return self.vip
-	end
+	local stateBag = Player(self.source).state
+	stateBag:set("identifier", self.identifier, true)
+	stateBag:set("license", self.license, true)
+	stateBag:set("job", self.job, true)
+	stateBag:set("group", self.group, true)
+	stateBag:set("name", self.name, true)
+	stateBag:set("metadata", self.metadata, true)
 
 	function self.triggerEvent(eventName, ...)
 		TriggerClientEvent(eventName, self.source, ...)
-	end
-
-	function self.savePosition(savePosition)
-		if (savePosition == true) then
-			self.position = nil
-		else
-			self.position = GetEntityCoords(self.getPed())
-		end
 	end
 
 	function self.setCoords(coords)
@@ -105,44 +77,8 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		end
 	end
 
-	function self.onPosition(position, radius)
-		local isOnPos = true
-		if (#(self.getCoords(true)-position) > radius) then
-			isOnPos = false
-		end
-		return isOnPos
-	end
-
-	function self.kick(reason, author)
-		local kick = {
-			reason = reason,
-			date = os.date("%d/%m/%Y %H:%M:%S"),
-			admin = author,
-		}
-	
-		MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {self.identifier, "Kick", json.encode(kick)}, function()
-			DropPlayer(self.source, "Vous avez été kick de BlueStark !\n"..reason)
-		end)
-	end
-
-	function self.ban(reason, expiration, author)
-		if (not reason or not expiration or type(expiration) ~= "number") then
-			return
-		end
-
-		local playerIdentifier = self.getIdentifier()
-		if (not playerIdentifier) then
-			return
-		end
-
-
-		local currentBan = {
-			reason = reason,
-			expiration = expiration,
-			author = author
-		}
-	
-		GM.Connecting:ban(playerIdentifier, currentBan)
+	function self.kick(reason)
+		DropPlayer(self.source, reason)
 	end
 
 	function self.setMoney(money)
@@ -185,21 +121,21 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	end
 
 	function self.get(k)
-		return self.variables[k] or false
+		return self.variables[k]
 	end
 
 	function self.getAccounts(minimal)
-		if minimal then
-			local minimalAccounts = {}
-
-			for i=1, #self.accounts do
-				minimalAccounts[self.accounts[i].name] = self.accounts[i].money
-			end
-
-			return minimalAccounts
-		else
+		if not minimal then
 			return self.accounts
 		end
+
+		local minimalAccounts = {}
+
+		for i=1, #self.accounts do
+			minimalAccounts[self.accounts[i].name] = self.accounts[i].money
+		end
+
+		return minimalAccounts
 	end
 
 	function self.getAccount(account)
@@ -210,65 +146,12 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		end
 	end
 
-	function self.getInventory(minimal)
-		if minimal then
-			local minimalInventory = {}
-
-			for k, v in ipairs(self.inventory) do
-				if v.count > 0 then
-					minimalInventory[v.name] = v.count
-				end
-			end
-
-			return minimalInventory
-		end
-
-		return self.inventory
-	end
-
 	function self.getJob()
 		return self.job
 	end
 
-	function self.getLoadout(minimal)
-		if minimal then
-			local minimalLoadout = {}
-
-			for k,v in ipairs(self.loadout) do
-				minimalLoadout[v.name] = {ammo = v.ammo}
-				if v.tintIndex > 0 then minimalLoadout[v.name].tintIndex = v.tintIndex end
-
-				if #v.components > 0 then
-					local components = {}
-
-					for k2,component in ipairs(v.components) do
-						if component ~= 'clip_default' then
-							components[#components + 1] = component
-						end
-					end
-
-					if #components > 0 then
-						minimalLoadout[v.name].components = components
-					end
-				end
-			end
-
-			return minimalLoadout
-		else
-			return self.loadout
-		end
-	end
-
-	function self.getNickName()
-		return GetPlayerName(self.source)
-	end
-
 	function self.getName()
 		return self.name
-	end
-
-	function self.getPed()
-		return GetPlayerPed(self.source)
 	end
 
 	function self.setName(newName)
@@ -392,7 +275,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 	end
 
 	function self.canCarryItem(name, count, metadata)
-		local boolean = exports["believer"]:CanCarryItem(self.source, name, count)
+        local boolean = exports["believer"]:CanCarryItem(self.source, name, count)
 		return boolean
 	end
 
@@ -470,192 +353,190 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		end
 	end
 
-	function self.addWeapon(weaponName, ammo)
-		if not self.hasWeapon(weaponName) then
-			local weaponLabel = ESX.GetWeaponLabel(weaponName)
-
-			table.insert(self.loadout, {
-				name = weaponName,
-				ammo = ammo,
-				label = weaponLabel,
-				components = {},
-				tintIndex = 0
-			})
-
-			GiveWeaponToPed(GetPlayerPed(self.source), joaat(weaponName), ammo, false, false)
-			self.triggerEvent('esx:addInventoryItem', weaponLabel, false, true)
-		end
-	end
-
-	function self.addWeaponComponent(weaponName, weaponComponent)
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			local component = ESX.GetWeaponComponent(weaponName, weaponComponent)
-
-			if component then
-				if not self.hasWeaponComponent(weaponName, weaponComponent) then
-					self.loadout[loadoutNum].components[#self.loadout[loadoutNum].components + 1] = weaponComponent
-					local componentHash = ESX.GetWeaponComponent(weaponName, weaponComponent).hash
-					GiveWeaponComponentToPed(GetPlayerPed(self.source), joaat(weaponName), componentHash)
-					self.triggerEvent('esx:addInventoryItem', component.label, false, true)
-				end
-			end
-		end
-	end
-
-	function self.addWeaponAmmo(weaponName, ammoCount)
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			weapon.ammo = weapon.ammo + ammoCount
-			SetPedAmmo(GetPlayerPed(self.source), joaat(weaponName), weapon.ammo)
-		end
-	end
-
-	function self.updateWeaponAmmo(weaponName, ammoCount)
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			weapon.ammo = ammoCount
-		end
-	end
-
-	function self.setWeaponTint(weaponName, weaponTintIndex)
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			local weaponNum, weaponObject = ESX.GetWeapon(weaponName)
-
-			if weaponObject.tints and weaponObject.tints[weaponTintIndex] then
-				self.loadout[loadoutNum].tintIndex = weaponTintIndex
-				self.triggerEvent('esx:setWeaponTint', weaponName, weaponTintIndex)
-				self.triggerEvent('esx:addInventoryItem', weaponObject.tints[weaponTintIndex], false, true)
-			end
-		end
-	end
-
-	function self.getWeaponTint(weaponName)
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			return weapon.tintIndex
-		end
-
-		return 0
-	end
-
-	function self.removeWeapon(weaponName)
-		local weaponLabel
-
-		for k,v in ipairs(self.loadout) do
-			if v.name == weaponName then
-				weaponLabel = v.label
-
-				for k2,v2 in ipairs(v.components) do
-					self.removeWeaponComponent(weaponName, v2)
-				end
-
-				table.remove(self.loadout, k)
-				break
-			end
-		end
-
-		if weaponLabel then
-			self.triggerEvent('esx:removeWeapon', weaponName)
-			self.triggerEvent('esx:removeInventoryItem', weaponLabel, false, true)
-		end
-	end
-
-	function self.removeWeaponComponent(weaponName, weaponComponent)
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			local component = ESX.GetWeaponComponent(weaponName, weaponComponent)
-
-			if component then
-				if self.hasWeaponComponent(weaponName, weaponComponent) then
-					for k,v in ipairs(self.loadout[loadoutNum].components) do
-						if v == weaponComponent then
-							table.remove(self.loadout[loadoutNum].components, k)
-							break
-						end
-					end
-
-					self.triggerEvent('esx:removeWeaponComponent', weaponName, weaponComponent)
-					self.triggerEvent('esx:removeInventoryItem', component.label, false, true)
-				end
-			end
-		end
-	end
-
-	function self.removeWeaponAmmo(weaponName, ammoCount)
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			weapon.ammo = weapon.ammo - ammoCount
-			self.triggerEvent('esx:setWeaponAmmo', weaponName, weapon.ammo)
-		end
-	end
-
-	function self.hasWeaponComponent(weaponName, weaponComponent)
-		local loadoutNum, weapon = self.getWeapon(weaponName)
-
-		if weapon then
-			for k,v in ipairs(weapon.components) do
-				if v == weaponComponent then
-					return true
-				end
-			end
-
-			return false
-		else
-			return false
-		end
-	end
-
-	function self.hasWeapon(weaponName)
-		for k,v in ipairs(self.loadout) do
-			if v.name == weaponName then
-				return true
-			end
-		end
-
-		return false
-	end
-
-	function self.hasItem(item, metadata)
-		for k,v in ipairs(self.inventory) do
-			if (v.name == item) and (v.count >= 1) then
-				return v, v.count
-			end
-		end
-
-		return false
-	end
-
-	function self.getWeapon(weaponName)
-		for k,v in ipairs(self.loadout) do
-			if v.name == weaponName then
-				return k, v
-			end
-		end
-	end
-
 	function self.showNotification(msg, options)
 		self.triggerEvent('esx:showNotification', msg, options)
-	end
-
-	function self.showAdvancedNotification(sender, subject, msg, textureDict, options)
-		self.triggerEvent('esx:showAdvancedNotification', sender, subject, msg, textureDict, options)
 	end
 
 	function self.showHelpNotification(msg, thisFrame, beep, duration)
 		self.triggerEvent('esx:showHelpNotification', msg, thisFrame, beep, duration)
 	end
 
+	function self.getMeta(index, subIndex)
+		if index then
+
+			if type(index) ~= "string" then
+				return print("[^1ERROR^7] xPlayer.getMeta ^5index^7 should be ^5string^7!")
+			end
+
+			if self.metadata[index] then
+
+				if subIndex and type(self.metadata[index]) == "table" then
+					local _type = type(subIndex)
+
+					if _type == "string" then
+						if self.metadata[index][subIndex] then
+							return self.metadata[index][subIndex]
+						end
+						return
+					end
+
+					if _type == "table" then
+						local returnValues = {}
+						for i = 1, #subIndex do
+							if self.metadata[index][subIndex[i]] then
+								returnValues[subIndex[i]] = self.metadata[index][subIndex[i]]
+							else
+								print(("[^1ERROR^7] xPlayer.getMeta ^5%s^7 not esxist on ^5%s^7!"):format(subIndex[i], index))
+							end
+						end
+
+						return returnValues
+					end
+
+				end
+
+				return self.metadata[index]
+			else
+				return print(("[^1ERROR^7] xPlayer.getMeta ^5%s^7 not exist!"):format(index))
+			end
+
+		end
+
+		return self.metadata
+	end
+
+	function self.setMeta(index, value, subValue)
+		if not index then
+			return print("[^1ERROR^7] xPlayer.setMeta ^5index^7 is Missing!")
+		end
+
+		if type(index) ~= "string" then
+			return print("[^1ERROR^7] xPlayer.setMeta ^5index^7 should be ^5string^7!")
+		end
+
+		if not value then
+			return print(("[^1ERROR^7] xPlayer.setMeta ^5%s^7 is Missing!"):format(value))
+		end
+
+		local _type = type(value)
+
+		if not subValue then
+
+			if _type ~= "number" and _type ~= "string" and _type ~= "table" then
+				return print(("[^1ERROR^7] xPlayer.setMeta ^5%s^7 should be ^5number^7 or ^5string^7 or ^5table^7!"):format(value))
+			end
+
+			self.metadata[index] = value
+		else
+
+			if _type ~= "string" then
+				return print(("[^1ERROR^7] xPlayer.setMeta ^5value^7 should be ^5string^7 as a subIndex!"):format(value))
+			end
+
+			self.metadata[index][value] = subValue
+		end
+
+
+		self.triggerEvent('esx:updatePlayerData', 'metadata', self.metadata)
+		Player(self.source).state:set('metadata', self.metadata, true)
+	end
+
+	function self.clearMeta(index)
+		if not index then
+			return print(("[^1ERROR^7] xPlayer.clearMeta ^5%s^7 is Missing!"):format(index))
+		end
+
+		if type(index) == 'table' then
+			for _, val in pairs(index) do
+				self.clearMeta(val)
+			end
+
+			return
+		end
+
+		if not self.metadata[index] then
+			return print(("[^1ERROR^7] xPlayer.clearMeta ^5%s^7 not exist!"):format(index))
+		end
+
+		self.metadata[index] = nil
+		self.triggerEvent('esx:updatePlayerData', 'metadata', self.metadata)
+		Player(self.source).state:set('metadata', self.metadata, true)
+	end
+
 	function self.setArmour(armour)
 		SetPedArmour(GetPlayerPed(self.source), armour)
+	end
+
+	function self.getNickName()
+		return GetPlayerName(self.source)
+	end
+
+	function self.ban(reason, expiration, author)
+		if (not reason or not expiration or type(expiration) ~= "number") then
+			return
+		end
+
+		local playerIdentifier = self.getIdentifier()
+		if (not playerIdentifier) then
+			return
+		end
+
+
+		local currentBan = {
+			reason = reason,
+			expiration = expiration,
+			author = author
+		}
+	
+		GM.Connecting:ban(playerIdentifier, currentBan)
+	end
+
+	function self.kick(reason, author)
+		local kick = {
+			reason = reason,
+			date = os.date("%d/%m/%Y %H:%M:%S"),
+			admin = author,
+		}
+	
+		MySQL.insert('INSERT INTO user_sanctions (identifier, type, data) VALUES (?, ?, ?)', {self.identifier, "Kick", json.encode(kick)}, function()
+			DropPlayer(self.source, "Vous avez été kick de BlueStark !\n"..reason)
+		end)
+	end
+
+	function self.onPosition(position, radius)
+		local isOnPos = true
+		if (#(self.getCoords(true)-position) > radius) then
+			isOnPos = false
+		end
+		return isOnPos
+	end
+
+	function self.savePosition(savePosition)
+		if (savePosition == true) then
+			self.position = nil
+		else
+			self.position = GetEntityCoords(self.getPed())
+		end
+	end
+
+	function self.getUniqueId()
+		return self.uniqueId
+	end
+
+	function self.getDead()
+		return self.is_dead
+	end
+
+	function self.setDead(boolean)
+		self.is_dead = boolean
+	end
+
+	function self.getFirstConnection()
+		return self.first_connection
+	end
+
+	function self.getVip()
+		return self.vip
 	end
 
 	for fnName,fn in pairs(targetOverrides) do

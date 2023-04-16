@@ -1179,6 +1179,11 @@ GM:newThread(function()
         local jobName = playerSelected.job.name
         if (not jobName) then return end
 
+        if (GM.Service["Player_list"][playerSrc] == nil) then
+            playerSelected.showNotification("~r~Vous n'êtes pas en service.")
+            return
+        end
+
         local jobName = string.upper(string.sub(jobName, 1, 1))..string.sub(jobName, 2, #jobName)
 
         TriggerClientEvent(jobName..":openMenu", playerSelected.source)

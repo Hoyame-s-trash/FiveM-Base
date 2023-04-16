@@ -1,10 +1,9 @@
 ESX.OneSync = {}
 
----@class vector3
----@field x number
----@field y number
----@field z number
-
+---@param source number|vector3
+---@param closest boolean
+---@param distance? number
+---@param ignore? table
 local function getNearbyPlayers(source, closest, distance, ignore)
 	local result = {}
 	local count = 0
@@ -44,14 +43,14 @@ end
 
 ---@param source vector3|number playerId or vector3 coordinates
 ---@param maxDistance number
----@param ignore table playerIds to ignore, where the key is playerId and value is true
+---@param ignore? table playerIds to ignore, where the key is playerId and value is true
 function ESX.OneSync.GetPlayersInArea(source, maxDistance, ignore)
 	return getNearbyPlayers(source, false, maxDistance, ignore)
 end
 
 ---@param source vector3|number playerId or vector3 coordinates
 ---@param maxDistance number
----@param ignore table playerIds to ignore, where the key is playerId and value is true
+---@param ignore? table playerIds to ignore, where the key is playerId and value is true
 function ESX.OneSync.GetClosestPlayer(source, maxDistance, ignore)
 	return getNearbyPlayers(source, true, maxDistance, ignore)
 end
@@ -59,42 +58,30 @@ end
 ---@param model number|string
 ---@param coords vector3|table
 ---@param heading number
----@param Properties table
+---@param properties table
 ---@param cb function
-	function ESX.OneSync.SpawnVehicle(model, coords, heading, Properties, Type, cb)
-		local veh_model = type(model) == 'string' and joaat(model) or model
-		Properties = Properties or {}
-		local vector = type(coords) == "vector3" and coords or vec(coords.x, coords.y, coords.z)
-		TriggerClientEvent("esx:requestModel", -1, model)
-		CreateThread(function()
-			if (Type) then
-				local SpawnedEntity = CreateVehicleServerSetter(veh_model, Type, vector, heading)
-				local NetworkId = NetworkGetNetworkIdFromEntity(SpawnedEntity)
-				while not DoesEntityExist(SpawnedEntity) do 
-					Wait(100)
+function ESX.OneSync.SpawnVehicle(model, coords, heading, properties, cb)
+	local vehicleModel = joaat(model)
+	local vehicleProperties = properties
+
+	CreateThread(function()
+		local xPlayer = ESX.OneSync.GetClosestPlayer(coords, 300)
+		ESX.GetVehicleType(vehicleModel, xPlayer.id, function(vehicleType)
+			if vehicleType then
+				local createdVehicle = CreateVehicleServerSetter(vehicleModel, vehicleType, coords, heading)
+				if not DoesEntityExist(createdVehicle) then
+					return print('[^1ERROR^7] Unfortunately, this vehicle has not spawned')
 				end
-				Properties.NetId = NetworkId
-				Entity(SpawnedEntity).state:set('VehicleProperties', Properties, true)
-				cb(NetworkId)
-			else
-				local xPlayer = ESX.OneSync.GetClosestPlayer(vector, 300)
-				ESX.GetVehicleType(veh_model, xPlayer.id, function(Type)
-					if Type then
-						local SpawnedEntity = CreateVehicleServerSetter(veh_model, Type, vector, heading)
-						local NetworkId = NetworkGetNetworkIdFromEntity(SpawnedEntity)
-						while not DoesEntityExist(SpawnedEntity) do 
-							Wait(100)
-						end
-						Properties.NetId = NetworkId
-						Entity(SpawnedEntity).state:set('VehicleProperties', Properties, true)
-						cb(NetworkId)
-					else 
-						print(('[^1ERROR^7] Tried to spawn invalid vehicle - ^5%s^7!'):format(model))
-					end
-				end)
+
+				local networkId = NetworkGetNetworkIdFromEntity(createdVehicle)
+				Entity(createdVehicle).state:set('VehicleProperties', vehicleProperties, true)
+				cb(networkId)
+			else 
+				print(('[^1ERROR^7] Tried to spawn invalid vehicle - ^5%s^7!'):format(model))
 			end
 		end)
-	end
+	end)
+end
 
 
 ---@param model number|string
@@ -121,7 +108,7 @@ function ESX.OneSync.SpawnPed(model, coords, heading, cb)
 	CreateThread(function()
 		local entity = CreatePed(0, model, coords.x, coords.y, coords.z, heading, true, true)
 		while not DoesEntityExist(entity) do Wait(50) end
-		return entity
+		cb(NetworkGetNetworkIdFromEntity(entity))
 	end)
 end
 
@@ -134,7 +121,7 @@ function ESX.OneSync.SpawnPedInVehicle(model, vehicle, seat, cb)
 	CreateThread(function()
 		local entity = CreatePedInsideVehicle(vehicle, 1, model, seat, true, true)
 		while not DoesEntityExist(entity) do Wait(50) end
-		return entity
+		cb(NetworkGetNetworkIdFromEntity(entity))
 	end)
 end
 
@@ -175,7 +162,7 @@ end
 ---@param maxDistance number
 ---@param modelFilter table models to ignore, where the key is the model hash and the value is true
 ---@return table
-function ESX.OneSync.GetVehiclesInArea(coords, maxDistance, modelFilter, cb)
+function ESX.OneSync.GetVehiclesInArea(coords, maxDistance, modelFilter)
 	return getNearbyEntities(GetAllVehicles(), coords, modelFilter, maxDistance)
 end
 

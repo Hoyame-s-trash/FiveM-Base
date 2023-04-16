@@ -427,12 +427,10 @@ RegisterServerEvent("Police:menu:backup", function(backupName)
                                     end
 
                                     if (GM.Police.registeredCalls["accepted"][acceptPlayer.source] ~= nil) then
-                                        -- Todo remove player from taken list of previous call
                                         if (GM.Police.registeredCalls["list"][tonumber(callId)].taken[acceptPlayer.source] ~= nil) then
                                             GM.Police.registeredCalls["list"][tonumber(callId)].taken[acceptPlayer.source] = nil
                                             -- Todo remove for every police player in service in client value
                                         end
-                                        print("REMOVE PREVIOUS CALL")
                                         GM.Police.registeredBlips["calls"][GM.Police.registeredCalls["accepted"][acceptPlayer.source]]:allowedPlayer(acceptPlayer.source, false)
                                     end
                                     
@@ -538,5 +536,5 @@ RegisterServerEvent("Police:menu:requestCalls", function()
         return
     end
 
-    
+    TriggerClientEvent("Police:updateValue", playerSelected.source, "call", GM.Police.registeredCalls["list"])
 end)

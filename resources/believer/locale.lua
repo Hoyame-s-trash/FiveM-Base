@@ -1,17 +1,16 @@
 Locales = {}
 
 function Translate(str, ...)  -- Translate string
-
 	if Locales[Config.Locale] then
 		if Locales[Config.Locale][str] then
 			return string.format(Locales[Config.Locale][str], ...)
-		elseif Config.Locale ~= 'fr' and Locales['fr'][str] then
-			return string.format(Locales['fr'][str], ...)
+		elseif Config.Locale ~= 'en' and Locales['en'] and Locales['en'][str] then
+			return string.format(Locales['en'][str], ...)
 		else
 			return 'Translation [' .. Config.Locale .. '][' .. str .. '] does not exist'
 		end
-	elseif Config.Locale ~= 'fr' and Locales['fr'] and Locales['fr'][str] then
-			return string.format(Locales['fr'][str], ...)
+	elseif Config.Locale ~= 'en' and Locales['en'] and Locales['en'][str] then
+			return string.format(Locales['en'][str], ...)
 	else
 		return 'Locale [' .. Config.Locale .. '] does not exist'
 	end

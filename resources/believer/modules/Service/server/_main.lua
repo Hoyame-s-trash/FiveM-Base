@@ -47,10 +47,19 @@ function GM.Service:getPeopleService(jobName)
     return GM.Service["Enterprise_list"][jobName]
 end
 
-AddEventHandler("playerDropped", function()
-    if (GM.Service["Player_list"][source]) then
-        GM.Service["Player_list"][source] = nil
+AddEventHandler("playerDropped", function(reason)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+
+    print(reason)
+
+    print(GetEntityCoords(GetPlayerPed(playerSrc)))
+
+    if (GM.Service["Player_list"][playerSrc]) then
+        GM.Service["Player_list"][playerSrc] = nil
     end
 end)
 
 -- Todo make a script that save player state when crashed and restore the player when it's connected again.
+

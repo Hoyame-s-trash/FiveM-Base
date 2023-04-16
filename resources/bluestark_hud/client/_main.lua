@@ -45,6 +45,11 @@ Citizen.CreateThread(function()
         data = playerData.id
     })
 
+    while (playerData == nil) do
+        Citizen.Wait(0)
+        playerData = ESX.GetPlayerData()
+    end
+
     for _, account in pairs(playerData.accounts) do 
         if account.name == "money" then
             SendNUIMessage({

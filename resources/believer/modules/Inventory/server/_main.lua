@@ -2262,7 +2262,7 @@ local function Init()
         print("Started converting User inventories...")
 
         local users <const> = exports["oxmysql"]:query_async(
-            "SELECT identifier, inventory, loadout, accounts FROM users")
+            "SELECT identifier, inventory, accounts FROM users")
         if not users then return end
 
         local usersTotal <const> = #users

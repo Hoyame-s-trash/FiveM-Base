@@ -35,7 +35,6 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
         playerSelected.set("rank_label", GM.Ranks["players"][playerIdentifier].label)
         playerSelected.set("report_count", GM.Ranks["players"][playerIdentifier].reports)
         playerSelected.setGroup(GM.Ranks["players"][playerIdentifier].name)
-        --GM.Chat:addPlayerToMode("STAFF", playerSrc)
     else
         playerSelected.set("rank_id", GM.Ranks["rank_user"])
         playerSelected.set("rank_label", "Joueur")

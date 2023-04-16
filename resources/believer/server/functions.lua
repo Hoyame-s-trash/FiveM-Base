@@ -4,22 +4,6 @@ function ESX.Trace(msg)
   end
 end
 
-function ESX.SetTimeout(msec, cb)
-  local id = Core.TimeoutCount + 1
-
-  SetTimeout(msec, function()
-    if Core.CancelledTimeouts[id] then
-      Core.CancelledTimeouts[id] = nil
-    else
-      cb()
-    end
-  end)
-
-  Core.TimeoutCount = id
-
-  return id
-end
-
 function ESX.RegisterCommand(name, group, cb, allowConsole, suggestion)
   if type(name) == 'table' then
     for k, v in ipairs(name) do
@@ -119,7 +103,7 @@ function ESX.RegisterCommand(name, group, cb, allowConsole, suggestion)
               end
             end
 
-            if v.validate == false then
+            if not v.validate then
               error = nil
             end
 
@@ -159,87 +143,69 @@ function ESX.RegisterCommand(name, group, cb, allowConsole, suggestion)
   end
 end
 
-function ESX.ClearTimeout(id)
-  Core.CancelledTimeouts[id] = true
-end
-
-function ESX.RegisterServerCallback(name, cb)
-  Core.ServerCallbacks[name] = cb
-end
-
-function ESX.TriggerServerCallback(name, requestId, source,Invoke, cb, ...)
-  if Core.ServerCallbacks[name] then
-    Core.ServerCallbacks[name](source, cb, ...)
-  else
-    print(('[^1ERROR^7] Server callback ^5"%s"^0 does not exist. Please Check ^5%s^7 for Errors!'):format(name, Invoke))
-  end
-end
-
 function Core.SavePlayer(xPlayer, cb)
-  exports["believer"]:Save(xPlayer.source)
-  MySQL.prepare('UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position` = ?, `inventory` = ?, `loadout` = ?, `is_dead` = ?, `status` = ? WHERE `identifier` = ?', {
-      json.encode(xPlayer.getAccounts(true)), 
-      xPlayer.job.name, 
-      xPlayer.job.grade, 
-      xPlayer.group, 
-      json.encode(xPlayer.position or GetEntityCoords(xPlayer.getPed())),
-      json.encode(xPlayer.getInventory(true)), 
-      json.encode(xPlayer.getLoadout(true)), 
-      xPlayer.getDead(), 
-      json.encode(xPlayer.get('status')), 
-      xPlayer.identifier
-    }, function(affectedRows)
+  local parameters <const> = {
+    json.encode(xPlayer.getAccounts(true)),
+    xPlayer.job.name,
+    xPlayer.job.grade,
+    json.encode(xPlayer.getCoords()),
+    json.encode(xPlayer.getMeta()),
+    xPlayer.identifier
+  }
+
+  MySQL.prepare(
+    'UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `position` = ?, `metadata` = ? WHERE `identifier` = ?',
+    parameters,
+    function(affectedRows)
       if affectedRows == 1 then
         print(('[^2INFO^7] Saved player ^5"%s^7"'):format(xPlayer.name))
+        TriggerEvent('esx:playerSaved', xPlayer.playerId, xPlayer)
       end
       if cb then
         cb()
       end
-  end)
+    end
+  )
 end
 
 function Core.SavePlayers(cb)
-  local xPlayers = ESX.GetExtendedPlayers()
-  local count = #xPlayers
-  if count > 0 then
-    local parameters = {}
-    local time = os.time()
-    for i = 1, count do
-      local xPlayer = xPlayers[i]
-      parameters[#parameters + 1] = {
-        json.encode(xPlayer.getAccounts(true)), 
-        xPlayer.job.name, 
-        xPlayer.job.grade, 
-        xPlayer.group, 
-        json.encode(xPlayer.position or GetEntityCoords(xPlayer.getPed())), 
-        json.encode(xPlayer.getInventory(true)), 
-        json.encode(xPlayer.getLoadout(true)), 
-        xPlayer.getDead(), 
-        json.encode(xPlayer.get('status')), 
-        xPlayer.identifier
-      }
-    end
-    MySQL.prepare("UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `group` = ?, `position` = ?, `inventory` = ?, `loadout` = ?, `is_dead` = ?, `status` = ? WHERE `identifier` = ?", parameters, function(results)
-      if results then
-        if type(cb) == 'function' then
-          cb()
-        else
-          print(('[^2INFO^7] Saved ^5%s^7 %s over ^5%s^7 ms'):format(count, count > 1 and 'players' or 'player', ESX.Math.Round((os.time() - time) / 1000000, 2)))
-        end
+  local xPlayers <const> = ESX.Players
+  if not next(xPlayers) then
+    return
+  end
+  
+  local startTime <const> = os.time()
+  local parameters = {}
+
+  for _, xPlayer in pairs(ESX.Players) do
+    parameters[#parameters + 1] = {
+      json.encode(xPlayer.getAccounts(true)),
+      xPlayer.job.name,
+      xPlayer.job.grade,
+      json.encode(xPlayer.getCoords()),
+      json.encode(xPlayer.getMeta()),
+      xPlayer.identifier
+    }
+  end
+
+  MySQL.prepare(
+    "UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `position` = ?, `metadata` = ? WHERE `identifier` = ?",
+    parameters, 
+    function(results)
+      if not results then
+        return
       end
-    end)
-  end
+
+      if type(cb) == 'function' then
+        return cb()
+      end
+      
+      print(('[^2INFO^7] Saved ^5%s^7 %s over ^5%s^7 ms'):format(#parameters, #parameters > 1 and 'players' or 'player', ESX.Math.Round((os.time() - startTime) / 1000000, 2)))
+    end
+  )
 end
 
-function ESX.GetPlayers()
-  local sources = {}
-
-  for k, v in pairs(ESX.Players) do
-    sources[#sources + 1] = k
-  end
-
-  return sources
-end
+ESX.GetPlayers = GetPlayers
 
 function ESX.GetExtendedPlayers(key, val)
   local xPlayers = {}
@@ -260,11 +226,7 @@ function ESX.GetPlayerFromId(source)
 end
 
 function ESX.GetPlayerFromIdentifier(identifier)
-  for k, v in pairs(ESX.Players) do
-    if v.identifier == identifier then
-      return v
-    end
-  end
+  return Core.playersByIdentifier[identifier]
 end
 
 function ESX.GetIdentifier(playerId, type)
@@ -278,10 +240,69 @@ function ESX.GetIdentifier(playerId, type)
   end
 end
 
-function ESX.GetVehicleType(Vehicle, Player, cb)
-  Core.CurrentRequestId = Core.CurrentRequestId < 65535 and Core.CurrentRequestId + 1 or 0
-  Core.ClientCallbacks[Core.CurrentRequestId] = cb
-  TriggerClientEvent("esx:GetVehicleType", Player, Vehicle, Core.CurrentRequestId)
+---@param model string|number
+---@param player number playerId
+---@param cb function
+
+function ESX.GetVehicleType(model, player, cb)
+  model = type(model) == 'string' and joaat(model) or model
+  
+  if Core.vehicleTypesByModel[model] then
+    return cb(Core.vehicleTypesByModel[model])
+  end
+
+  ESX.TriggerClientCallback(player, "esx:GetVehicleType", function(vehicleType)
+    Core.vehicleTypesByModel[model] = vehicleType
+    cb(vehicleType)
+  end, model)
+end
+
+function ESX.DiscordLog(name, title, color, message)
+
+  local webHook = Config.DiscordLogs.Webhooks[name] or Config.DiscordLogs.Webhooks.default
+  local embedData = {{
+      ['title'] = title,
+      ['color'] = Config.DiscordLogs.Colors[color] or Config.DiscordLogs.Colors.default,
+      ['footer'] = {
+          ['text'] = "| ESX Logs | " .. os.date(),
+          ['icon_url'] = "https://cdn.discordapp.com/attachments/944789399852417096/1020099828266586193/blanc-800x800.png"
+      },
+      ['description'] = message,
+      ['author'] = {
+          ['name'] = "ESX Framework",
+          ['icon_url'] = "https://cdn.discordapp.com/emojis/939245183621558362.webp?size=128&quality=lossless"
+      }
+  }}
+  PerformHttpRequest(webHook, nil, 'POST', json.encode({
+      username = 'Logs',
+      embeds = embedData
+  }), {
+      ['Content-Type'] = 'application/json'
+  })
+end
+
+function ESX.DiscordLogFields(name, title, color, fields)
+  local webHook = Config.DiscordLogs.Webhooks[name] or Config.DiscordLogs.Webhooks.default
+  local embedData = {{
+      ['title'] = title,
+      ['color'] = Config.DiscordLogs.Colors[color] or Config.DiscordLogs.Colors.default,
+      ['footer'] = {
+          ['text'] = "| ESX Logs | " .. os.date(),
+          ['icon_url'] = "https://cdn.discordapp.com/attachments/944789399852417096/1020099828266586193/blanc-800x800.png"
+      },
+      ['fields'] = fields, 
+      ['description'] = "",
+      ['author'] = {
+          ['name'] = "ESX Framework",
+          ['icon_url'] = "https://cdn.discordapp.com/emojis/939245183621558362.webp?size=128&quality=lossless"
+      }
+  }}
+  PerformHttpRequest(webHook, nil, 'POST', json.encode({
+      username = 'Logs',
+      embeds = embedData
+  }), {
+      ['Content-Type'] = 'application/json'
+  })
 end
 
 function ESX.RefreshJobs()
@@ -319,27 +340,6 @@ function ESX.RefreshJobs()
   end
 end
 
-function ESX.RegisterUsableItem(item, cb)
-  Core.UsableItemsCallbacks[item] = cb
-end
-
-function ESX.UseItem(source, item, ...)
-  if ESX.Items[item] then
-    local itemCallback = Core.UsableItemsCallbacks[item]
-
-    if itemCallback then
-      local success, result = pcall(itemCallback, source, item, ...)
-
-      if not success then
-        return result and print(result) or
-                 print(('[^3WARNING^7] An error occured when using item ^5"%s"^7! This was not caused by ESX.'):format(item))
-      end
-    end
-  else
-    print(('[^3WARNING^7] Item ^5"%s"^7 was used but does not exist!'):format(item))
-  end
-end
-
 function ESX.RegisterPlayerFunctionOverrides(index, overrides)
   Core.PlayerFunctionOverrides[index] = overrides
 end
@@ -352,48 +352,8 @@ function ESX.SetPlayerFunctionOverride(index)
   Config.PlayerFunctionOverride = index
 end
 
-function ESX.GetItemExist(item)
-  if (ESX.Items[item]) then
-    return true
-  else
-    return false
-  end
-end
-
-function ESX.GetItemLabel(item)
-  if ESX.Items[item] then
-    return ESX.Items[item].label
-  else
-    print('[^3WARNING^7] Attemting to get invalid Item -> ^5' .. item .. "^7")
-  end
-end
-
 function ESX.GetJobs()
   return ESX.Jobs
-end
-
-function ESX.GetUsableItems()
-  local Usables = {}
-  for k in pairs(Core.UsableItemsCallbacks) do
-    Usables[k] = true
-  end
-  return Usables
-end
-
-function ESX.CreatePickup(type, name, count, label, playerId, components, tintIndex)
-  local pickupId = (Core.PickupId == 65635 and 0 or Core.PickupId + 1)
-  local xPlayer = ESX.Players[playerId]
-  local coords = xPlayer.getCoords()
-
-  Core.Pickups[pickupId] = {type = type, name = name, count = count, label = label, coords = coords}
-
-  if type == 'item_weapon' then
-    Core.Pickups[pickupId].components = components
-    Core.Pickups[pickupId].tintIndex = tintIndex
-  end
-
-  TriggerClientEvent('esx:createPickup', -1, pickupId, label, coords, type, name, components, tintIndex)
-  Core.PickupId = pickupId
 end
 
 function ESX.DoesJobExist(job, grade)
@@ -406,17 +366,4 @@ function ESX.DoesJobExist(job, grade)
   end
 
   return false
-end
-
-function ESX.generateVariable(length)
-	local res = ""
-	for i = 1, length do
-        local chance = math.random(0, 1)
-        if chance == 0 then
-		    res = res .. string.char(math.random(97, 122))
-        elseif chance == 1 then
-            res = res .. tostring(math.random(0, 9))
-        end  
-	end
-	return res
 end

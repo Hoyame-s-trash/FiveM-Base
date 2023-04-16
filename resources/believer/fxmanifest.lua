@@ -1,15 +1,18 @@
 fx_version "adamant"
+
 game "gta5"
 
-lua54 "yes"
-version "1.9.0"
+description "Believer"
 
-ui_page 'html/index.html'
+lua54 "yes"
+version "1.9.4"
+
+ui_page "html/index.html"
 
 files {
 	"imports.lua",
 	"locale.js",
-    'html/**',
+    "html/**",
 
 }
 
@@ -28,17 +31,18 @@ server_scripts {
 	"@oxmysql/lib/MySQL.lua",
 	"config.logs.lua",
 	"server/common.lua",
+	"server/modules/callback.lua",
 	"server/classes/player.lua",
 	"server/functions.lua",
 	"server/onesync.lua",
 	"server/paycheck.lua",
-	"server/main.lua",
-	"server/cron.lua",
 
-	"common/modules/math.lua",
-	"common/modules/table.lua",
+	"server/main.lua",
+
+	"common/modules/*.lua",
 	"common/functions.lua",
-	
+	"server/modules/actions.lua",
+
 	"modules/**/server/objects/*.lua",
     "modules/**/server/*.lua",
 }
@@ -47,15 +51,18 @@ client_scripts {
 	"client/common.lua",
 	"client/functions.lua",
 	"client/wrapper.lua",
-	"client/main.lua",
+	"client/modules/callback.lua",
 
+	"client/main.lua",
+	
+	"common/modules/*.lua",
+	"common/functions.lua",
+
+	"common/functions.lua",
+	"client/modules/actions.lua",
 	"client/modules/death.lua",
 	"client/modules/scaleform.lua",
 	"client/modules/streaming.lua",
-
-	"common/modules/math.lua",
-	"common/modules/table.lua",
-	"common/functions.lua",
 
 	"dependencies/init.lua",
     "dependencies/menu/RageUI.lua",
@@ -67,8 +74,7 @@ client_scripts {
 }
 
 dependencies {
-	"/server:5949",
-	"/onesync",
+	"/native:0x6AE51D4B",
 	"oxmysql",
 	"spawnmanager",
 }

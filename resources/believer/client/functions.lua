@@ -2,10 +2,6 @@ ESX = {}
 Core = {}
 ESX.PlayerData = {}
 ESX.PlayerLoaded = false
-Core.CurrentRequestId = 0
-Core.ServerCallbacks = {}
-Core.TimeoutCallbacks = {}
-Core.Input = {}
 
 ESX.Game = {}
 ESX.Game.Utils = {}
@@ -15,18 +11,6 @@ ESX.Scaleform.Utils = {}
 
 ESX.Streaming = {}
 
-function ESX.SetTimeout(msec, cb)
-    table.insert(Core.TimeoutCallbacks, {
-        time = GetGameTimer() + msec,
-        cb = cb
-    })
-    return #Core.TimeoutCallbacks
-end
-
-function ESX.ClearTimeout(i)
-    Core.TimeoutCallbacks[i] = nil
-end
-
 function ESX.IsPlayerLoaded()
     return ESX.PlayerLoaded
 end
@@ -35,38 +19,10 @@ function ESX.GetPlayerData()
     return ESX.PlayerData
 end
 
-function ESX.SearchInventory(items, count)
-    if type(items) == 'string' then
-        items = {items}
-    end
-
-    local returnData = {}
-    local itemCount = #items
-
-    for i = 1, itemCount do
-        local itemName = items[i]
-        returnData[itemName] = count and 0
-
-        for _, item in pairs(ESX.PlayerData.inventory) do
-            if item.name == itemName then
-                if count then
-                    returnData[itemName] = returnData[itemName] + item.count
-                else
-                    returnData[itemName] = item
-                end
-            end
-        end
-    end
-
-    if next(returnData) then
-        return itemCount == 1 and returnData[items[1]] or returnData
-    end
-end
-
 function ESX.SetPlayerData(key, val)
     local current = ESX.PlayerData[key]
     ESX.PlayerData[key] = val
-    if key ~= 'inventory' and key ~= 'loadout' then
+    if key ~= 'inventory' then
         if type(val) == 'table' or val ~= current then
             TriggerEvent('esx:setPlayerData', key, val, current)
         end
@@ -85,17 +41,6 @@ function ESX.ShowNotification(msg, options)
 
 	return exports.notification:Send(notif)
 end
-
-function ESX.UpdateNotification(uuid, msg, options)
-	local notif = {
-		message = msg,
-	}
-	if options and type(options) == 'table' then
-		options.message = options.message ~= nil and options.message or msg
-		notif = options
-	end
-	return exports.notification:Update(uuid, notif)
-end
     
 function ESX.ShowAdvancedNotification(sender, subject, msg, textureDict, options)
 	local notif = {
@@ -113,28 +58,6 @@ function ESX.ShowAdvancedNotification(sender, subject, msg, textureDict, options
 	end
 
 	return exports.notification:SendAdvanced(notif)
-end
-
-function ESX.UpdateAdvancedNotification(uuid, sender, subject, msg, textureDict, options)
-	local notif = {
-		message = msg,
-		title = sender,
-		subject = subject,
-		icon = textureDict,
-	}
-	if options and type(options) == 'table' then
-		options.message = options.message ~= nil and options.message or msg
-		options.title = options.title ~= nil and options.title or sender
-		options.subject = options.subject ~= nil and options.subject or subject
-		options.icon = options.icon ~= nil and options.icon or textureDict
-		notif = options
-	end
-
-	return exports.notification:Update(uuid, notif)
-end
-
-function ESX.RemoveNotification(uuid)
-	return exports.notification:Remove(uuid)
 end
 
 function ESX.ShowHelpNotification(msg, thisFrame, beep, duration)
@@ -175,14 +98,6 @@ ESX.HashString = function(str)
     input_map = gsub(input_map, "FFFFFFFF", "")
 
     return input_map
-end
-
-function ESX.TriggerServerCallback(name, cb, ...)
-    local Invoke = GetInvokingResource() or "unknown"
-    Core.ServerCallbacks[Core.CurrentRequestId] = cb
-
-    TriggerServerEvent('esx:triggerServerCallback', name, Core.CurrentRequestId,Invoke, ...)
-    Core.CurrentRequestId = Core.CurrentRequestId < 65535 and Core.CurrentRequestId + 1 or 0
 end
 
 function ESX.Game.GetPedMugshot(ped, transparent)
@@ -264,6 +179,17 @@ function ESX.Game.SpawnVehicle(vehicle, coords, heading, cb, networked)
     local model = type(vehicle) == 'number' and vehicle or joaat(vehicle)
     local vector = type(coords) == "vector3" and coords or vec(coords.x, coords.y, coords.z)
     networked = networked == nil and true or networked
+
+    local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+    if not vector or not playerCoords then 
+        return
+    end
+    local dist = #(playerCoords - vector)
+    if dist > 424 then -- Onesync infinity Range (https://docs.fivem.net/docs/scripting-reference/onesync/)
+        local executingResource = GetInvokingResource() or "Unknown"
+        return print(("[^1ERROR^7] Resource ^5%s^7 Tried to spawn vehicle on the client but the position is too far away (Out of onesync range)."):format(executing_resource))
+    end
+
     CreateThread(function()
         ESX.Streaming.RequestModel(model)
 
@@ -306,10 +232,15 @@ function ESX.Game.GetObjects() -- Leave the function for compatibility
 end
 
 function ESX.Game.GetPeds(onlyOtherPeds)
-    local peds, myPed, pool = {}, ESX.PlayerData.ped, GetGamePool('CPed')
+    local myPed, pool = ESX.PlayerData.ped, GetGamePool('CPed')
 
+    if not onlyOtherPeds then
+        return pool
+    end
+
+    local peds = {}
     for i = 1, #pool do
-        if ((onlyOtherPeds and pool[i] ~= myPed) or not onlyOtherPeds) then
+        if pool[i] ~= myPed then
             peds[#peds + 1] = pool[i]
         end
     end
@@ -435,14 +366,6 @@ function ESX.Game.GetVehicleInDirection()
     return nil
 end
 
-function ESX.Trim(value)
-	if value then
-		return (string.gsub(value, "^%s*(.-)%s*$", "%1"))
-	else
-		return nil
-	end
-end
-
 function ESX.Game.GetVehicleProperties(vehicle)
     if not DoesEntityExist(vehicle) then
         return
@@ -451,6 +374,8 @@ function ESX.Game.GetVehicleProperties(vehicle)
     local colorPrimary, colorSecondary = GetVehicleColours(vehicle)
     local pearlescentColor, wheelColor = GetVehicleExtraColours(vehicle)
     local hasCustomPrimaryColor = GetIsVehiclePrimaryColourCustom(vehicle)
+    local dashboardColor = GetVehicleDashboardColor(vehicle)
+    local interiorColor = GetVehicleInteriorColour(vehicle)
     local customPrimaryColor = nil
     if hasCustomPrimaryColor then
         customPrimaryColor = {GetVehicleCustomPrimaryColour(vehicle)}
@@ -523,6 +448,9 @@ function ESX.Game.GetVehicleProperties(vehicle)
 
         pearlescentColor = pearlescentColor,
         wheelColor = wheelColor,
+        
+        dashboardColor = dashboardColor,
+        interiorColor = interiorColor,
 
         wheels = GetVehicleWheelType(vehicle),
         windowTint = GetVehicleWindowTint(vehicle),
@@ -635,6 +563,15 @@ function ESX.Game.SetVehicleProperties(vehicle, props)
     if props.pearlescentColor ~= nil then
         SetVehicleExtraColours(vehicle, props.pearlescentColor, wheelColor)
     end
+
+    if props.interiorColor ~= nil then
+        SetVehicleInteriorColor(vehicle, props.interiorColor)
+    end
+
+    if props.dashboardColor ~= nil then
+        SetVehicleDashboardColor(vehicle, props.dashboardColor)
+    end
+
     if props.wheelColor ~= nil then
         SetVehicleExtraColours(vehicle, props.pearlescentColor or pearlescentColor, props.wheelColor)
     end
@@ -834,44 +771,6 @@ function ESX.Game.SetVehicleProperties(vehicle, props)
     end
 end
 
-function ESX.Game.Utils.DrawText3D(coords, text, size, font)
-    local vector = type(coords) == "vector3" and coords or vec(coords.x, coords.y, coords.z)
-
-    local camCoords = GetFinalRenderedCamCoord()
-    local distance = #(vector - camCoords)
-
-    if not size then
-        size = 1
-    end
-    if not font then
-        font = 0
-    end
-
-    local scale = (size / distance) * 2
-    local fov = (1 / GetGameplayCamFov()) * 100
-    scale = scale * fov
-
-    SetTextScale(0.0 * scale, 0.55 * scale)
-    SetTextFont(font)
-    SetTextProportional(1)
-    SetTextColour(255, 255, 255, 215)
-    BeginTextCommandDisplayText('STRING')
-    SetTextCentre(true)
-    AddTextComponentSubstringPlayerName(text)
-    SetDrawOrigin(vector.xyz, 0)
-    EndTextCommandDisplayText(0.0, 0.0)
-    ClearDrawOrigin()
-end
-
-RegisterNetEvent('esx:serverCallback', function(requestId,invoker, ...)
-    if Core.ServerCallbacks[requestId] then
-        Core.ServerCallbacks[requestId](...)
-        Core.ServerCallbacks[requestId] = nil
-    else 
-        print('[^1ERROR^7] Server Callback with requestId ^5'.. requestId ..'^7 Was Called by ^5'.. invoker .. '^7 but does not exist.')
-    end
-end)
-
 RegisterNetEvent('esx:showNotification')
 AddEventHandler('esx:showNotification', function(msg, options)
     ESX.ShowNotification(msg, options)
@@ -887,84 +786,25 @@ AddEventHandler('esx:showHelpNotification', function(msg, thisFrame, beep, durat
     ESX.ShowHelpNotification(msg, thisFrame, beep, duration)
 end)
 
--- SetTimeout
-CreateThread(function()
-    while true do
-        local sleep = 100
-        if #Core.TimeoutCallbacks > 0 then
-            local currTime = GetGameTimer()
-            sleep = 0
-            for i = 1, #Core.TimeoutCallbacks, 1 do
-                if currTime >= Core.TimeoutCallbacks[i].time then
-                    Core.TimeoutCallbacks[i].cb()
-                    Core.TimeoutCallbacks[i] = nil
-                end
-            end
-        end
-        Wait(sleep)
-    end
-end)
+---@param model number|string
+---@return string
+function ESX.GetVehicleType(model)
+    model = type(model) == 'string' and joaat(model) or model
 
-function ESX.GetTableValue(tbl, value, k)
-    if not tbl or not value or type(tbl) ~= "table" then return end
-	for _,v in pairs(tbl) do
-		if k and v[k] == value or v == value then 
-            return true, _ 
-        end
-	end
-end
-
-function ESX.SetupInstructionalButtons(buttons)
-	local scaleform = RequestScaleformMovie("instructional_buttons")
-	while not HasScaleformMovieLoaded(scaleform) do
-		Citizen.Wait(0)
+	if model == `submersible` or model == `submersible2` then
+        return 'submarine'
 	end
 
-    DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 0, 0)
+	local vehicleType = GetVehicleClassFromName(model)
+	local types = {
+		[8] = "bike",
+		[11] = "trailer",
+		[13] = "bike",
+		[14] = "boat",
+		[15] = "heli",
+		[16] = "plane",
+		[21] = "train",
+	}
 
-	PushScaleformMovieFunction(scaleform, "CLEAR_ALL")
-	PopScaleformMovieFunctionVoid()
-
-	PushScaleformMovieFunction(scaleform, "SET_CLEAR_SPACE")
-	PushScaleformMovieFunctionParameterInt(200)
-	PopScaleformMovieFunctionVoid()
-
-	local i = 0
-	for _, button in pairs(buttons) do
-		PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
-		PushScaleformMovieFunctionParameterInt(i)
-		PushScaleformMovieMethodParameterButtonName(GetControlInstructionalButton(2, button.key, true))
-		BeginTextCommandScaleformString("STRING")
-		AddTextComponentScaleform(button.label)
-		EndTextCommandScaleformString()
-		PopScaleformMovieFunctionVoid()
-		i = i + 1
-	end
-
-	PushScaleformMovieFunction(scaleform, "DRAW_INSTRUCTIONAL_BUTTONS")
-	PopScaleformMovieFunctionVoid()
-
-	PushScaleformMovieFunction(scaleform, "SET_BACKGROUND_COLOUR")
-	PushScaleformMovieFunctionParameterInt(0)
-	PushScaleformMovieFunctionParameterInt(0)
-	PushScaleformMovieFunctionParameterInt(0)
-	PushScaleformMovieFunctionParameterInt(70)
-	PopScaleformMovieFunctionVoid()
-
-	return scaleform
-end
-
-function ESX.GetClosestVehicleToPlayer(coords, radius, includeFilter, excludeFilter, driveableOnly)
-	local vehicle = ESX.Game.GetClosestVehicle(coords, includeFilter, excludeFilter, driveableOnly)
-	if not DoesEntityExist(vehicle) then
-		return 0
-	end
-	local playerCoords = GetEntityCoords(PlayerPedId())
-	local vehicleCoords = GetEntityCoords(vehicle)
-	local distance = #(playerCoords - vehicleCoords)
-	if distance > radius then
-		return 0
-	end
-
-	return vehicle
+    return types[vehicleType] or "automobile"
 end
