@@ -524,6 +524,15 @@ ScriptShared.Items:Add("money", {
     category = "Argent"
 })
 
+ScriptShared.Items:Add("black_money", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "Argent sale",
+    weight = 0.0,
+    category = "Argent"
+})
+
 ScriptShared.Items:Add("handcuffs", {
     stackable = true,
     deletable = true,

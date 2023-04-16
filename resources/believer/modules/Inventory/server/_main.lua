@@ -53,6 +53,9 @@ RegisterNetEvent("Inventory:ITEM_MOVE_TO_SLOT", function(d)
     local toSlot <const> = d.toSlot
     local quantity = d.quantity
 
+    local playerSelected <const> = ESX.GetPlayerFromId(source)
+    if (not playerSelected) then return end
+
     local grabbed_inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = fromUniqueID })
     local to_inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = toUniqueID })
     if not (grabbed_inventory and to_inventory) then return end
@@ -77,6 +80,7 @@ RegisterNetEvent("Inventory:ITEM_MOVE_TO_SLOT", function(d)
         local addedResult = nil
         if to_inventory.type == "dropped_grid" then
             local pX <const>, pY <const>, pZ <const> = table.unpack(GetEntityCoords(GetPlayerPed(source)))
+            print("Debug 1")
             addedResult = to_inventory:addItem({
                 name = item.name,
                 quantity = quantity,
@@ -97,6 +101,11 @@ RegisterNetEvent("Inventory:ITEM_MOVE_TO_SLOT", function(d)
 
         if addedResult.success then
             grabbed_inventory:removeItemBy(quantity, { slot = fromSlot })
+            if (item.name == "money") then
+                playerSelected.addAccountMoney(item.name, quantity)
+            elseif (item.name == "black_money") then
+                playerSelected.addAccountMoney(item.name, quantity)
+            end
         end
     end
 end)
@@ -247,6 +256,8 @@ RegisterNetEvent("Inventory:BUY_FROM_SHOP", function(data)
         return
     end
 
+    print("Debug 3")
+
     local addedResult = inventory:addItem({
         name = shop_item.name,
         meta = shop_item.meta,
@@ -269,6 +280,9 @@ RegisterNetEvent("Inventory:GIVE_ITEM_TO_TARGET", function(data)
     local aPlayer <const> = ESX.GetPlayerFromId(source)
     if not aPlayer then return end
 
+    local targetSelected <const> = ESX.GetPlayerFromId(serverId)
+    if (not targetSelected) then return end
+
     local player_inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ source = source })
     local target_inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ source = serverId })
     if not (player_inventory and target_inventory) then return end
@@ -281,11 +295,13 @@ RegisterNetEvent("Inventory:GIVE_ITEM_TO_TARGET", function(data)
     end
 
     if not target_inventory:canCarryWeight(item.name, quantity) then
-        aPlayer.showNotification("Target player inventory does not have enough space!")
+        aPlayer.showNotification("~r~La personne n'a pas assez de place.")
         return
     end
 
     local no_ref <const> = json.decode(json.encode(item))
+
+    print("Debug 4")
 
     local addedResult = target_inventory:addItem({
         meta = no_ref.meta,
@@ -294,6 +310,14 @@ RegisterNetEvent("Inventory:GIVE_ITEM_TO_TARGET", function(data)
     })
     if addedResult.success then
         player_inventory:removeItemBy(quantity, { itemHash = itemHash })
+
+        if (no_ref.name == "money") then
+            aPlayer.removeAccountMoney(no_ref.name, quantity)
+            targetSelected.addAccountMoney(no_ref.name, quantity)
+        elseif (no_ref.name == "black_money") then
+            aPlayer.removeAccountMoney(no_ref.name, quantity)
+            targetSelected.addAccountMoney(no_ref.name, quantity)
+        end
     end
 end)
 
@@ -317,7 +341,7 @@ RegisterNetEvent("Inventory:DROP_ITEM_ON_GROUND", function(data)
     end
 
     if inventory.type == "dropped_grid" then
-        aPlayer.showNotification("Where exactly do you want to drop the item?")
+        aPlayer.showNotification("~r~Vous ne pouvez pas jeter un objet sur le sol.")
         return
     end
 
@@ -327,6 +351,8 @@ RegisterNetEvent("Inventory:DROP_ITEM_ON_GROUND", function(data)
     if not close_drop_grid then return end
 
     local no_ref <const> = json.decode(json.encode(item))
+
+    print("Debug 5")
 
     local addedResult <const> = close_drop_grid:addItem({
         name = no_ref.name,
@@ -341,6 +367,12 @@ RegisterNetEvent("Inventory:DROP_ITEM_ON_GROUND", function(data)
         close_drop_grid:createObjectIfNotExist(addedResult.item)
 
         inventory:removeItemBy(quantity, { itemHash = no_ref.itemHash })
+
+        if (no_ref.name == "money") then
+            aPlayer.removeAccountMoney(no_ref.name, quantity)
+        elseif (no_ref.name == "black_money") then
+            aPlayer.removeAccountMoney(no_ref.name, quantity)
+        end
 
         -- Add as observer, if he is not one. (It will openup the dropped grid)
         if not close_drop_grid:hasObserver(source) then
@@ -559,6 +591,8 @@ RegisterNetEvent("Inventory:ITEM_REMOVE_ATTACHMENT_WEAPON", function(d)
     local attachment <const> = from_item.meta.attachments[fromAttIndex]
     if not attachment then return end
 
+    print("Debug 6")
+
     local response = to_inventory:addItem({
         name = attachment,
         toSlot = toSlot
@@ -585,72 +619,6 @@ RegisterCommand("frisk", function(source, args)
     if not target_inv then return end
     target_inv:open(source)
 end)
-
-
-RegisterCommand("inv_weapon", function(source)
-    local inv = ScriptServer.Managers.Inventory:GetInventory({ source = source })
-    if not inv then return end
-
-    inv:addItem({
-        name = "pistol",
-        quantity = 1,
-    })
-    inv:addItem({
-        name = "bat"
-    })
-    inv:addItem({
-        name = "grenade",
-        quantity = 5
-    })
-    inv:addItem({
-        name = "fertilizer"
-    })
-    inv:addItem({
-        name = "petrolcan",
-        quantity = 100
-    })
-    inv:addItem({
-        name = "9mm_rounds",
-        quantity = 30
-    })
-end, false)
-
-RegisterCommand("inv_random", function(source)
-    local inv = ScriptServer.Managers.Inventory:GetInventory({ source = source })
-    if not inv then return end
-
-    local filteredItems = {}
-    for k, v in pairs(ScriptShared.Items.Registered) do
-        filteredItems[#filteredItems + 1] = k
-    end
-
-    if #filteredItems < 1 then return end
-
-    for i = 1, 3, 1 do
-        local randItem = filteredItems[math.random(1, #filteredItems)]
-        local amount = math.random(1, 10)
-        inv:addItem({
-            name = randItem,
-            quantity = amount
-        })
-    end
-end, false)
-
-RegisterCommand("loot_1", function(source)
-    local inv = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = "random-loot-1" }) --[[@as StashInventory]]
-    if not inv then
-        inv = ScriptServer.Classes.StashInventory.new({
-            isPublic = true,
-            isPermanent = true,
-            inventoryName = "Loot Box",
-            maxWeight = 100,
-            slotsAmount = 15,
-            uniqueID = "random-loot-1"
-        })
-    end
-    print(inv)
-    inv:open(source)
-end, false)
 
 local Module = {}
 ---@type { [string]: DroppedInventory }
@@ -1004,6 +972,7 @@ end
 function Module:setItemQuantity(name, quantity)
     local items = self:getItemsBy({ name = name })
     if #items < 1 then
+        print("Debug 7")
         self:addItem({
             name = name,
             quantity = quantity
@@ -1016,6 +985,8 @@ function Module:setItemQuantity(name, quantity)
         for i = 1, #items, 1 do
             self:removeItemBy(items[i].quantity, { name = items[i].name }) 
         end
+
+        print("Debug 8")
 
         self:addItem({
             name = name,
@@ -2230,7 +2201,8 @@ exports("GetRegisteredItems", function()
 end)
 
 local accountsAsItems = {
-    ["money"] = true
+    ["money"] = true,
+    ["black_money"] = true,
 }
 
 local function Init()
@@ -2249,74 +2221,6 @@ local function Init()
     RegisterNetEvent("esx:playerLoaded", function(playerId, xPlayer, isNew)
         loadEsxPlayerInventory(xPlayer)
     end)
-
-    local convertStarted = false
-    local function Converter()
-        if convertStarted then
-            print("Convert already started.. Please wait...")
-            return
-        end
-
-        convertStarted = true
-
-        print("Started converting User inventories...")
-
-        local users <const> = exports["oxmysql"]:query_async(
-            "SELECT identifier, inventory, accounts FROM users")
-        if not users then return end
-
-        local usersTotal <const> = #users
-
-        print(string.format("Converting %d ESX User inventories...", usersTotal))
-
-        for i = 1, usersTotal do
-            local value <const> = users[i]
-            local items <const> = value.inventory and json.decode(value.inventory) or {}
-            local accounts <const> = value.accounts and json.decode(value.accounts) or {}
-            local identifier <const> = value.identifier
-
-            local baseInventory <const> = ScriptServer.Classes.BaseInventory.new(
-                {
-                    inventoryName = "Temporary",
-                    maxWeight = CONFIG.PLAYER_INVENTORY_DEFAULTS.MAX_WEIGHT,
-                    slotsAmount = CONFIG.PLAYER_INVENTORY_DEFAULTS.SLOTS,
-                    uniqueID = identifier
-                }
-            )
-
-            for k, v in pairs(items) do
-                local iData <const> = ScriptShared.Items:Get(k)
-                if iData then
-                    baseInventory:addItem({
-                        name = k,
-                        quantity = v
-                    })
-                end
-            end
-
-            for k, v in pairs(accounts) do
-                if accountsAsItems[k] then
-                    local iData = ScriptShared.Items:Get(k)
-                    if iData then
-                        baseInventory:addItem({
-                            name = k,
-                            quantity = v
-                        })
-                    end
-                end
-            end
-
-            baseInventory:save()
-
-            -- Delete it from the cache.
-            ScriptServer.Managers.Inventory.Inventories[identifier] = nil
-        end
-
-        print("Successfully converted User inventories.")
-        convertStarted = false
-    end
-
-    RegisterCommand("Convert_ESX", Converter, true)
 end
 
 Init()

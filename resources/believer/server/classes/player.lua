@@ -174,6 +174,10 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 
 				self.triggerEvent('esx:setAccountMoney', account)
 				TriggerEvent('esx:setAccountMoney', self.source, accountName, money, reason)
+				if (accountName == "money") then
+					print("setItem quantity")
+					exports["believer"]:SetItemQuantity(self.source, accountName, money)
+				end
 			else 
 				print(('[^1ERROR^7] Tried To Set Invalid Account ^5%s^0 For Player ^5%s^0!'):format(accountName, self.playerId))
 			end
@@ -196,6 +200,10 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 
 				self.triggerEvent('esx:setAccountMoney', account)
 				TriggerEvent('esx:addAccountMoney', self.source, accountName, money, reason)
+				if (accountName == "money") then
+					print("addAccount Money")
+					exports["believer"]:AddItem(self.source, accountName, money)
+				end
 			else 
 				print(('[^1ERROR^7] Tried To Set Add To Invalid Account ^5%s^0 For Player ^5%s^0!'):format(accountName, self.playerId))
 			end
@@ -219,6 +227,12 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 
 				self.triggerEvent('esx:setAccountMoney', account)
 				TriggerEvent('esx:removeAccountMoney', self.source, accountName, money, reason)
+				if (accountName == "money") then
+					print("Remove Account Money")
+					exports["believer"]:RemoveItemBy(self.source, money, {
+						name = accountName,
+					})
+				end
 			else 
 				print(('[^1ERROR^7] Tried To Set Add To Invalid Account ^5%s^0 For Player ^5%s^0!'):format(accountName, self.playerId))
 			end

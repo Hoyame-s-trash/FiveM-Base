@@ -45,9 +45,8 @@ Citizen.CreateThread(function()
         data = playerData.id
     })
 
-    while (playerData == nil) do
-        Citizen.Wait(0)
-        playerData = ESX.GetPlayerData()
+    while (playerData.accounts == nil) do
+        Citizen.Wait(50)
     end
 
     for _, account in pairs(playerData.accounts) do 

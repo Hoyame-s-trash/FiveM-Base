@@ -1188,4 +1188,39 @@ GM:newThread(function()
 
         TriggerClientEvent(jobName..":openMenu", playerSelected.source)
     end)
+
+    GM.Command:register({
+        name = "giveMoney",
+        label = "Donner de l'argent",
+        description = "Permet de donner de l'argent à un joueur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local accountName = args[2]
+            if (not accountName) then return end
+
+            local amount = tonumber(args[3])
+            if (not amount) then return end
+
+            targetSelected.addAccountMoney(accountName, amount)
+            print("VOUS AVEZ DONNE "..amount.." "..accountName.." A "..targetSelected.getName()..".")
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            local accountName = args[2]
+            if (not accountName) then return end
+
+            local amount = tonumber(args[3])
+            if (not amount) then return end
+
+            targetSelected.addAccountMoney(accountName, amount)
+            playerSelected.showNotification("~g~Vous avez donné "..amount.." "..accountName.." à "..targetSelected.getName()..".")
+        end
+    end)
 end)
