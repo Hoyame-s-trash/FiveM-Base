@@ -9,7 +9,7 @@ function StartPayCheck()
 
         if salary > 0 then
           if job == 'unemployed' then -- unemployed
-            xPlayer.addAccountMoney('bank', salary, "Welfare Check")
+            xPlayer.addAccountMoney('bank', salary, "Welfare Check", true)
             TriggerClientEvent('esx:showAdvancedNotification', player, TranslateCap('bank'), TranslateCap('received_paycheck'), TranslateCap('received_help', salary),
               'CHAR_BANK_MAZE', 9)
           elseif Config.EnableSocietyPayouts then -- possibly a society
@@ -17,7 +17,7 @@ function StartPayCheck()
               if society ~= nil then -- verified society
                 TriggerEvent('esx_addonaccount:getSharedAccount', society.account, function(account)
                   if account.money >= salary then -- does the society money to pay its employees?
-                    xPlayer.addAccountMoney('bank', salary, "Paycheck")
+                    xPlayer.addAccountMoney('bank', salary, "Paycheck", true)
                     account.removeMoney(salary)
 
                     TriggerClientEvent('esx:showAdvancedNotification', player, TranslateCap('bank'), TranslateCap('received_paycheck'),
@@ -27,13 +27,13 @@ function StartPayCheck()
                   end
                 end)
               else -- not a society
-                xPlayer.addAccountMoney('bank', salary, "Paycheck")
+                xPlayer.addAccountMoney('bank', salary, "Paycheck", true)
                 TriggerClientEvent('esx:showAdvancedNotification', player, TranslateCap('bank'), TranslateCap('received_paycheck'), TranslateCap('received_salary', salary),
                   'CHAR_BANK_MAZE', 9)
               end
             end)
           else -- generic job
-            xPlayer.addAccountMoney('bank', salary, "Paycheck")
+            xPlayer.addAccountMoney('bank', salary, "Paycheck", true)
             TriggerClientEvent('esx:showAdvancedNotification', player, TranslateCap('bank'), TranslateCap('received_paycheck'), TranslateCap('received_salary', salary),
               'CHAR_BANK_MAZE', 9)
           end

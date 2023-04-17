@@ -162,3 +162,5 @@ GM.Police.QuitJob = {
         label = "Menottes",
     },
 }
+
+GM.Police.callDelete = 10 -- Automatic delete of the call after x minutes

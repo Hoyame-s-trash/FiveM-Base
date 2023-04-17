@@ -90,14 +90,14 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 		return self.getAccount('money').money
 	end
 
-	function self.addMoney(money, reason)
+	function self.addMoney(money, inventory)
 		money = ESX.Math.Round(money)
-		self.addAccountMoney('money', money, reason)
+		self.addAccountMoney('money', money, inventory)
 	end
 
-	function self.removeMoney(money, reason)
+	function self.removeMoney(money, inventory)
 		money = ESX.Math.Round(money)
-		self.removeAccountMoney('money', money, reason)
+		self.removeAccountMoney('money', money, inventory)
 	end
 
 	function self.getIdentifier()
@@ -159,8 +159,7 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 		Player(self.source).state:set("name", self.name, true)
 	end
 
-	function self.setAccountMoney(accountName, money, reason)
-		reason = reason or 'unknown'
+	function self.setAccountMoney(accountName, money, inventory)
 		if not tonumber(money) then 
 			print(('[^1ERROR^7] Tried To Set Account ^5%s^0 For Player ^5%s^0 To An Invalid Number -> ^5%s^7'):format(accountName, self.playerId, money))
 			return
@@ -173,7 +172,7 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 				self.accounts[account.index].money = money
 
 				self.triggerEvent('esx:setAccountMoney', account)
-				TriggerEvent('esx:setAccountMoney', self.source, accountName, money, reason)
+				TriggerEvent('esx:setAccountMoney', self.source, accountName, money)
 				if (accountName == "money") then
 					exports["believer"]:SetItemQuantity(self.source, accountName, money)
 				elseif (accountName == "black_money") then
@@ -187,8 +186,7 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 		end
 	end
 
-	function self.addAccountMoney(accountName, money, reason)
-		reason = reason or 'Unknown'
+	function self.addAccountMoney(accountName, money, inventory)
 		if not tonumber(money) then 
 			print(('[^1ERROR^7] Tried To Set Account ^5%s^0 For Player ^5%s^0 To An Invalid Number -> ^5%s^7'):format(accountName, self.playerId, money))
 			return
@@ -200,7 +198,7 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 				self.accounts[account.index].money += money
 
 				self.triggerEvent('esx:setAccountMoney', account)
-				TriggerEvent('esx:addAccountMoney', self.source, accountName, money, reason)
+				TriggerEvent('esx:addAccountMoney', self.source, accountName, money)
 				if (accountName == "money") then
 					exports["believer"]:AddItem(self.source, accountName, money)
 				elseif (accountName == "black_money") then
@@ -214,8 +212,7 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 		end
 	end
 
-	function self.removeAccountMoney(accountName, money, reason)
-		reason = reason or 'Unknown'
+	function self.removeAccountMoney(accountName, money, inventory)
 		if not tonumber(money) then 
 			print(('[^1ERROR^7] Tried To Set Account ^5%s^0 For Player ^5%s^0 To An Invalid Number -> ^5%s^7'):format(accountName, self.playerId, money))
 			return
@@ -228,15 +225,17 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 				self.accounts[account.index].money -= money
 
 				self.triggerEvent('esx:setAccountMoney', account)
-				TriggerEvent('esx:removeAccountMoney', self.source, accountName, money, reason)
-				if (accountName == "money") then
-					exports["believer"]:RemoveItemBy(self.source, money, {
-						name = accountName,
-					})
-				elseif (accountName == "black_money") then
-					exports["believer"]:RemoveItemBy(self.source, money, {
-						name = accountName,
-					})
+				TriggerEvent('esx:removeAccountMoney', self.source, accountName, money)
+				if (inventory) then
+					if (accountName == "money") then
+						exports["believer"]:RemoveItemBy(self.source, money, {
+							name = accountName,
+						})
+					elseif (accountName == "black_money") then
+						exports["believer"]:RemoveItemBy(self.source, money, {
+							name = accountName,
+						})
+					end
 				end
 			else 
 				print(('[^1ERROR^7] Tried To Set Add To Invalid Account ^5%s^0 For Player ^5%s^0!'):format(accountName, self.playerId))

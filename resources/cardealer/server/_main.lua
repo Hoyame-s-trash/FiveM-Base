@@ -130,7 +130,7 @@ RegisterServerEvent("Cardealer:buyVehicle", function(vehicle)
                 end)
                 --return
             --elseif (playerSelected.getAccount("bank") >= Config.Vehicles.Car[vehicle.type][i].price) then
-                --playerSelected.removeAccountMoney("bank", Config.Vehicles.Car[vehicle.type][i].price)
+                --playerSelected.removeAccountMoney("bank", Config.Vehicles.Car[vehicle.type][i].price, true)
                 
                 --return
             --else

@@ -54,7 +54,7 @@ RegisterServerEvent("Shop:buyItem", function(shopId, itemId, itemPrice)
         playerSelected.removeMoney(itemPrice)
         playerSelected.addInventoryItem(itemSelected.name, 1)
     elseif playerBank >= itemPrice then
-        playerSelected.removeAccountMoney("bank", itemPrice)
+        playerSelected.removeAccountMoney("bank", itemPrice, true)
         playerSelected.addInventoryItem(itemSelected.name, 1)
     else
         playerSelected.showNotification("~r~Vous n'avez pas assez d'argent.")

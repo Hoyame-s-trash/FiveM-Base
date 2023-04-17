@@ -260,9 +260,21 @@ GM.Police.job.menu.submenus["backup"]:isVisible(function(Items)
 end)
 
 GM.Police.job.menu.submenus["call"]:isVisible(function(Items)
+    Items:Button("Supprimer le point GPS", nil, {}, true, {
+        onSelected = function()
+            if (GM.Police.call.data["callId"] == nil) then
+                ESX.ShowNotification("~r~Vous n'avez pas d'appel d'urgence en cours.")
+                return
+            end
+            TriggerServerEvent("Police:menu:cancelCall")
+        end
+    })
     if (GM.Police.data["call"] ~= nil) then
         for i = 1, #GM.Police.data["call"] do
-            Items:Button(GM.Police.data["call"][i].label, nil, {}, true, {
+            local dist = math.floor(#(GetEntityCoords(PlayerPedId()) - GM.Police.data["call"][i].position))
+            local streetName = GetStreetNameFromHashKey(GetStreetNameAtCoord(GM.Police.data["call"][i].position.x, GM.Police.data["call"][i].position.y, GM.Police.data["call"][i].position.z)).." ("..math.ceil(dist).."m)"
+        
+            Items:Button("Appel d'urgence - "..GM.Police.data["call"][i].id, GM.Police.data["call"][i].message.."\nLocalisation : "..streetName, {RightLabel = GM.Police.data["call"][i].time}, true, {
                 onSelected = function()
                     TriggerServerEvent("Police:call:accept", GM.Police.data["call"][i].id)
                 end

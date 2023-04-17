@@ -1201,7 +1201,7 @@ GM:newThread(function()
             local amount = tonumber(args[3])
             if (not amount) then return end
 
-            targetSelected.addAccountMoney(accountName, amount)
+            targetSelected.addAccountMoney(accountName, amount, true)
             print("VOUS AVEZ DONNE "..amount.." "..accountName.." A "..targetSelected.getName()..".")
         else
             local playerSelected = ESX.GetPlayerFromId(playerSrc)
@@ -1216,7 +1216,7 @@ GM:newThread(function()
             local amount = tonumber(args[3])
             if (not amount) then return end
 
-            targetSelected.addAccountMoney(accountName, amount)
+            targetSelected.addAccountMoney(accountName, amount, true)
             playerSelected.showNotification("~g~Vous avez donné "..amount.." "..accountName.." à "..targetSelected.getName()..".")
         end
     end)

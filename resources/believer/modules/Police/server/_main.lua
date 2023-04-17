@@ -375,15 +375,30 @@ RegisterServerEvent("Police:menu:backup", function(backupName)
                 if (not callId) then return end
 
                 GM.Police.registeredCalls["list"][tonumber(callId)] = {
+                    source = playerSelected.source,
                     id = callId,
                     name = backup.name,
                     label = backup.label,
                     message = backup.message,
                     position = playerSelected.getCoords(true),
-                    time = os.time(),
+                    time = os.date("%H:%M"),
                     playerName = playerSelected.getName(),
                     taken = {},
                 }
+
+                SetTimeout(GM.Police.callDelete * 60000, function()
+                    if (GM.Police.registeredCalls["list"][tonumber(callId)]) then
+                        GM.Police.registeredCalls["list"][tonumber(callId)] = nil
+                    end
+                    if (GM.Police.registeredBlips["calls"][callId]) then
+                        GM.Police.registeredBlips["calls"][callId]:delete()
+                        GM.Police.registeredBlips["calls"][callId] = nil
+                    end
+
+                    for playerSrc, _ in pairs(GM.Service["Enterprise_list"]["police"]) do
+                        TriggerClientEvent("Police:removeValue", playerSrc, "call", callId)
+                    end
+                end)
 
                 GM.Police.registeredBlips["calls"][callId] = GM.Blip:add(GM.Police.registeredCalls["list"][tonumber(callId)].position, {
                     sprite = 1,
@@ -485,6 +500,8 @@ RegisterServerEvent("Police:call:finish", function(callId)
     if (GM.Police.registeredBlips["calls"][callId] ~= nil) then
         GM.Police.registeredBlips["calls"][callId]:allowedPlayer(playerSelected.source, false)
     end
+
+    TriggerClientEvent("Police:removeValue", playerSelected.source, "callId")
 end)
 
 RegisterServerEvent("Police:menu:quitJob", function()
@@ -531,4 +548,64 @@ RegisterServerEvent("Police:menu:requestCalls", function()
     end
 
     TriggerClientEvent("Police:updateValue", playerSelected.source, "call", GM.Police.registeredCalls["list"])
+end)
+
+RegisterServerEvent("Police:call:accept", function(callId)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getJob().name ~= "police") then
+        playerSelected.showNotification("~r~Vous n'êtes pas policier.")
+        return
+    end
+
+    if (GM.Police.registeredCalls["list"][tonumber(callId)] ~= nil) then
+
+        if (GM.Police.registeredCalls["list"][tonumber(callId)].source == playerSelected.source) then
+            playerSelected.showNotification("~r~Vous ne pouvez pas prendre votre propre appel.")
+            return
+        end
+
+        if (GM.Police.registeredCalls["list"][tonumber(callId)].taken == nil) then
+            GM.Police.registeredCalls["list"][tonumber(callId)].taken = {}
+        end
+
+        if (GM.Police.registeredCalls["list"][tonumber(callId)].taken[playerSelected.source] == nil) then
+            table.insert(GM.Police.registeredCalls["list"][tonumber(callId)].taken, {
+                source = playerSelected.source,
+                name = playerSelected.getName(),
+            })
+        end
+
+        if (GM.Police.registeredCalls["accepted"][playerSelected.source] ~= nil) then
+            if (GM.Police.registeredCalls["list"][tonumber(callId)].taken[playerSelected.source] ~= nil) then
+                GM.Police.registeredCalls["list"][tonumber(callId)].taken[playerSelected.source] = nil
+                for playerSrc, _ in pairs(GM.Service["Enterprise_list"]["police"]) do
+                    TriggerClientEvent("Police:updateValue", playerSrc, "call", callId, GM.Police.registeredCalls["list"][tonumber(callId)])
+                end
+            end
+            GM.Police.registeredBlips["calls"][GM.Police.registeredCalls["accepted"][playerSelected.source]]:allowedPlayer(playerSelected.source, false)
+        end
+        
+        GM.Police.registeredBlips["calls"][callId]:allowedPlayer(playerSelected.source)
+        GM.Police.registeredCalls["accepted"][playerSelected.source] = callId
+
+        TriggerClientEvent("Police:call:onAccept", playerSelected.source, {
+            onActive = true,
+            callId = callId,
+            position = GM.Police.registeredCalls["list"][tonumber(callId)].position,
+        })
+
+        for playerSrc, _ in pairs(GM.Service["Enterprise_list"]["police"]) do
+            local policePlayer = ESX.GetPlayerFromId(playerSrc)
+            if (policePlayer) then
+                if (policePlayer.source ~= playerSelected.source) then
+                    TriggerClientEvent("esx:showNotification", policePlayer.source, "L'appel à été pris par ~g~"..playerSelected.getName().."~s~.")
+                end
+            end
+        end
+    end
 end)

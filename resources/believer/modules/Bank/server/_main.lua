@@ -16,7 +16,7 @@ AddEventHandler('bluestark_bank:Deposit', function(amount)
 	end
 
 	playerSelected.removeMoney(amount)
-	playerSelected.addAccountMoney('bank', tonumber(amount))
+	playerSelected.addAccountMoney('bank', tonumber(amount), true)
 	playerSelected.showNotification("Vous avez déposé un montant de ~b~"..tonumber(amount).."$.")
 end)
 
@@ -44,7 +44,7 @@ AddEventHandler('bluestark_bank:Withdraw', function(amount)
 		return
 	end
 
-	playerSelected.removeAccountMoney('bank', amount)
-	playerSelected.addMoney(amount)
+	playerSelected.removeAccountMoney('bank', amount, true)
+	playerSelected.addAccountMoney("money", amount, true)
 	playerSelected.showNotification("Vous avez retiré un montant de ~b~"..tonumber(amount).."$.")
 end) 
