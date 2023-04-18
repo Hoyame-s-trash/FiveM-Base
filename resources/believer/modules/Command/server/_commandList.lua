@@ -1220,4 +1220,59 @@ GM:newThread(function()
             playerSelected.showNotification("~g~Vous avez donné "..amount.." "..accountName.." à "..targetSelected.getName()..".")
         end
     end)
+
+    GM.Command:register({
+        name = "clearInventory",
+        label = "Vider l'inventaire",
+        description = "Permet de vider l'inventaire d'un joueur",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            exports["believer"]:Clear(targetSelected.source)
+            print("VOUS AVEZ CLEAR L'INVENTAIRE DE A "..targetSelected.getName()..".")
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local targetSelected = ESX.GetPlayerFromId(args[1])
+            if (not targetSelected) then return end
+
+            exports["believer"]:Clear(targetSelected.source)
+            playerSelected.showNotification("~g~Vous avez clear l'inventaire à "..targetSelected.getName()..".")
+        end
+    end)
+
+    GM.Command:register({
+        name = "players",
+        label = "Liste des joueurs",
+        description = "Permet d'afficher la liste des joueurs",
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            local playerCount = 0
+            local players = ESX.GetPlayers()
+            for i = 1, #players do
+                local player = ESX.GetPlayerFromId(players[i])
+                if (player) then
+                    playerCount = playerCount + 1
+                end
+            end
+            print("NOMBRE DE JOUEURS : ", playerCount)
+        else
+            local playerSelected = ESX.GetPlayerFromId(playerSrc)
+            if (not playerSelected) then return end
+
+            local playerCount = 0
+
+            local players = ESX.GetPlayers()
+            for i = 1, #players do
+                local player = ESX.GetPlayerFromId(players[i])
+                if (player) then
+                    playerCount = playerCount + 1
+                end
+            end
+            playerSelected.showNotification("~b~Nombre de joueurs : "..playerCount..".")
+        end
+    end)
 end)
