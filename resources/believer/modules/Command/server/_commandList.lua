@@ -1220,4 +1220,20 @@ GM:newThread(function()
             playerSelected.showNotification("~g~Vous avez donné "..amount.." "..accountName.." à "..targetSelected.getName()..".")
         end
     end)
+
+    GM.Command:register({
+        name = "personnalMenu",
+        label = "Menu personnel",
+        description = "Permet d'ouvrir le menu personnel",
+        keys = { "keyboard", "F5"}
+    }, function(playerSrc, args)
+        if (playerSrc == 0) then
+            return
+        end
+
+        local playerSelected = ESX.GetPlayerFromId(playerSrc)
+        if (not playerSelected) then return end
+
+        TriggerClientEvent("Personnal:openMenu", playerSelected.source)
+    end)
 end)

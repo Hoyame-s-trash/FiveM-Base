@@ -1,5 +1,3 @@
-GM.Admin = GM.Admin or {}
-
 GM.Admin = {
     menu = {
         submenus = {}

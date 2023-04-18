@@ -24,6 +24,9 @@ GM.Police.registeredCalls = {}
 GM.Police.registeredCalls["list"] = {}
 GM.Police.registeredCalls["accepted"] = {}
 
+GM.Police.handcuffs = {}
+GM.Police.handcuffs["list"] = {}
+
 GM:newThread(function()
     while (GM.Police.Locker == nil) do
         Wait(100)
@@ -608,4 +611,99 @@ RegisterServerEvent("Police:call:accept", function(callId)
             end
         end
     end
+end)
+
+RegisterServerEvent("Police:menu:status", function(statusName)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getJob().name ~= "police") then
+        playerSelected.showNotification("~r~Vous n'êtes pas policier.")
+        return
+    end
+
+    for i = 1, #GM.Police.Menu.status do
+        local status = GM.Police.Menu.status[i]
+        if (status.name == statusName) then
+            for playerSrc, _ in pairs(GM.Service["Enterprise_list"]["police"]) do
+                local policePlayer = ESX.GetPlayerFromId(playerSrc)
+                if (policePlayer) then
+                    if (policePlayer.source ~= playerSelected.source) then
+                        TriggerClientEvent("esx:showNotification", policePlayer.source, "~b~POLICE~s~\n"..playerSelected.getName().." : "..status.label)
+                    end
+                end
+            end
+        end
+    end
+end)
+
+RegisterServerEvent("Police:menu:interaction:amende", function(billReason, billAmount)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getJob().name ~= "police") then
+        playerSelected.showNotification("~r~Vous n'êtes pas policier.")
+        return
+    end
+
+    -- Todo check this
+end)
+
+RegisterServerEvent("Police:item:handcuffs", function(targetId)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local playerPosition = playerSelected.getCoords(true)
+
+    if (playerSelected.getJob().name ~= "police") then
+        playerSelected.showNotification("~r~Vous n'êtes pas policier.")
+        return
+    end
+
+    local targetSelected = ESX.GetPlayerFromId(targetId)
+    if (not targetSelected) then return end
+
+    local targetPosition = targetSelected.getCoords(true)
+
+    if (#(playerPosition - targetPosition) > 3.0) then
+        playerSelected.showNotification("~r~Vous êtes trop loin de la personne.")
+        return
+    end
+
+    local itemQuantity = exports["believer"]:GetItemQuantityBy(playerSelected.source, {
+        name = "handcuffs",
+    })
+
+    if (itemQuantity <= 0) then
+        playerSelected.showNotification("~r~Vous n'avez pas de menottes.")
+        return
+    end
+
+    if (GM.Police.handcuffs["list"][targetSelected.source] ~= nil) then
+        targetSelected.showNotification("~b~Vous avez été libéré des menottes.")
+        playerSelected.showNotification("~b~Vous avez libéré la personne.")
+        TriggerClientEvent("Police:item:handcuffs:animationUnused", playerSelected.source)
+        TriggerClientEvent("Police:removeValue", targetSelected.source, "handcuffs")
+        TriggerClientEvent("Police:item:handcuffs:unUsed", targetSelected.source)
+        GM.Police.handcuffs["list"][targetSelected.source] = nil
+        return
+    end
+
+    GM.Police.handcuffs["list"][targetSelected.source] = true
+
+    targetSelected.showNotification("~b~Vous avez été menotté.")
+    playerSelected.showNotification("~b~Vous avez menotté la personne.")
+
+    TriggerClientEvent("Police:item:handcuffs:animationUse", playerSelected.source)
+    TriggerClientEvent("Police:updateValue", targetSelected.source, "handcuffs", true)
+    TriggerClientEvent("Police:item:handcuffs:onUse", targetSelected.source)
 end)

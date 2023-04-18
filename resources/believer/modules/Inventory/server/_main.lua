@@ -449,8 +449,12 @@ RegisterNetEvent("Inventory:USE_ITEM", function(data)
         exports[resource][func](source, item)
     end
 
-    if (item.data.server and item.data.server.event) then
-        TriggerEvent(item.data.server.event, source, item)
+    if (item.data.usable and item.data.usable.client_event) then
+        TriggerClientEvent(item.data.usable.client_event, source, item)
+    end
+
+    if (item.data.usable and item.data.usable.server_event) then
+        TriggerEvent(item.data.usable.server_event, source, item)
     end
 
     if item.data.server and type(item.data.server.onUseDeleteAmount) == "number" and item.data.server.onUseDeleteAmount > 0 then

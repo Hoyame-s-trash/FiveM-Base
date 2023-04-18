@@ -153,6 +153,13 @@ GM.Police.Menu = {
             grade = 0,
             message = "Message de backup 1",
         },
+    },
+    status = {
+        {
+            name = "taken_service",
+            label = "Prise de service",
+            grade = 0,
+        },
     }
 }
 

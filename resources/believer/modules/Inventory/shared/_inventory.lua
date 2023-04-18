@@ -541,9 +541,10 @@ ScriptShared.Items:Add("handcuffs", {
     weight = 1.0,
     usable = true,
     category = "Utilisable",
-    server = {
-        event = "Police:Handcuff",
-        onUseDeleteAmount = 1
+    usable = {
+        server_event = false,
+        client_event = "Police:item:handcuffs",
+        onUseDeleteAmount = 0
     }
 })
 

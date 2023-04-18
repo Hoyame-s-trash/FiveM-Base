@@ -200,7 +200,11 @@ end
 
 GM.Police.job.menu.submenus["call"] = RageUI.CreateSubMenu(GM.Police.job.menu.main, "", "Historique des appels")
 
+GM.Police.job.menu.submenus["status"] = RageUI.CreateSubMenu(GM.Police.job.menu.main, "", "Status")
+
 GM.Police.job.menu.submenus["backup"] = RageUI.CreateSubMenu(GM.Police.job.menu.main, "", "Renforts")
+
+GM.Police.job.menu.submenus["interaction"] = RageUI.CreateSubMenu(GM.Police.job.menu.main, "", "Interaction")
 
 GM.Police.job.menu.main:isVisible(function(Items)
     Items:Button("Historique des appels", nil, {}, true,{
@@ -212,7 +216,7 @@ GM.Police.job.menu.main:isVisible(function(Items)
         onSelected = function()
             TriggerServerEvent("Police:menu:requestCalls")
         end
-    })
+    }, GM.Police.job.menu.submenus["status"])
     Items:Button("Objets", nil, {}, true,{
         onSelected = function()
             TriggerServerEvent("Police:menu:requestCalls")
@@ -227,7 +231,7 @@ GM.Police.job.menu.main:isVisible(function(Items)
         onSelected = function()
             TriggerServerEvent("Police:menu:requestCalls")
         end
-    })
+    }, GM.Police.job.menu.submenus["interaction"])
     Items:Button("~r~Démissionner", nil, {}, true,{
         onSelected = function()
             local input = exports["input"]:openInput({
@@ -243,6 +247,38 @@ GM.Police.job.menu.main:isVisible(function(Items)
         end
     })
     Items:Button("Renforts", nil, {}, true,{}, GM.Police.job.menu.submenus["backup"])
+end)
+
+GM.Police.job.menu.submenus["status"]:isVisible(function(Items)
+    if (GM.Police.Menu.status ~= nil) then
+        for i = 1, #GM.Police.Menu.status do
+            if (ESX.PlayerData.job.grade >= GM.Police.Menu.status[i].grade) then
+                Items:Button(GM.Police.Menu.status[i].label, nil, {}, true, {
+                    onSelected = function()
+                        TriggerServerEvent("Police:menu:status", GM.Police.Menu.status[i].name)
+                    end
+                })
+            end
+        end
+    end
+end)
+
+GM.Police.job.menu.submenus["interaction"]:isVisible(function(Items)
+    Items:Button("Mettre une amende", nil, {}, true, {
+        onSelected = function()
+            local input = exports["input"]:openInput({
+                label = "Mettre une amende",
+                submitLabel = "VALIDER",
+                placeHolders = {
+                    {label = "RAISON"},
+                    {label = "MONTANT"},
+                }
+            })
+            if (input["0"] ~= nil) then
+                TriggerServerEvent("Police:menu:interaction:amende", input["0"], input["1"])
+            end
+        end
+    })
 end)
 
 GM.Police.job.menu.submenus["backup"]:isVisible(function(Items)
@@ -325,4 +361,90 @@ RegisterNetEvent("Police:removeValue", function(POLICE_DATA, POLICE_KEY)
     else
         GM.Police.data[POLICE_DATA][POLICE_KEY] = nil
     end
+end)
+
+RegisterNetEvent("Police:item:handcuffs", function()
+    local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
+    if (closestPlayer == -1 or closestDistance > 3.0) then
+        return ESX.ShowNotification("~r~Aucune personne à proximité.")
+    else
+        TriggerServerEvent("Police:item:handcuffs", GetPlayerServerId(closestPlayer))
+    end
+end)
+
+RegisterNetEvent("Police:item:handcuffs:onUse", function()
+    RequestAnimDict('mp_arresting')
+    while (not HasAnimDictLoaded('mp_arresting')) do
+        Wait(100)
+    end
+    TaskPlayAnim(PlayerPedId(), 'mp_arresting', 'idle', 8.0, -8, -1, 49, 0, 0, 0, 0)
+
+    SetEnableHandcuffs(PlayerPedId(), true)
+    DisablePlayerFiring(PlayerPedId(), true)
+    SetCurrentPedWeapon(PlayerPedId(), GetHashKey('WEAPON_UNARMED'), true)
+    SetPedCanPlayGestureAnims(PlayerPedId(), false)
+
+    local plyCoords = GetEntityCoords(PlayerPedId(), false)
+    HandCuffObj = CreateObject(GetHashKey("p_cs_cuffs_02_s"), plyCoords.x, plyCoords.y, plyCoords.z, 1, 1, 1)
+    AttachEntityToEntity(HandCuffObj, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), -0.04, 0.06, 0.02, -90.0, -25.0, 80.0, 1, 0, 0, 0, 0, 1)
+
+    while GM.Police.data["handcuffs"] do
+        DisableControlAction(0, 69, true)
+        DisableControlAction(0, 92, true)
+        DisableControlAction(0, 114, true)
+        DisableControlAction(0, 140, true)
+        DisableControlAction(0, 141, true)
+        DisableControlAction(0, 142, true)
+        DisableControlAction(0, 257, true)
+        DisableControlAction(0, 263, true)
+        DisableControlAction(0, 264, true)
+        DisableControlAction(0, 24, true)
+        DisableControlAction(0, 25, true)
+        DisableControlAction(0, 21, true)
+        DisableControlAction(0, 22, true)
+        DisableControlAction(0, 288, true)
+        DisableControlAction(0, 289, true)
+        DisableControlAction(0, 170, true)
+        DisableControlAction(0, 166, true)
+        DisableControlAction(0, 167, true)
+        DisableControlAction(0, 168, true)
+        DisableControlAction(0, 57, true)
+        DisableControlAction(0, 37, true)
+        DisableControlAction(0, 0, true)
+        DisableControlAction(0, 26, true)
+        if (not IsEntityPlayingAnim(PlayerPedId(), 'mp_arresting', 'idle', 3)) then
+            TaskPlayAnim(PlayerPedId(), 'mp_arresting', 'idle', 8.0, -8, -1, 49, 0, 0, 0, 0)
+        end
+        Wait(5)
+    end
+end)
+
+RegisterNetEvent("Police:item:handcuffs:unUsed", function()
+    ClearPedSecondaryTask(PlayerPedId())
+    DetachEntity(HandCuffObj, 1, 1)
+    DeleteObject(HandCuffObj)
+    SetEnableHandcuffs(PlayerPedId(), false)
+    DisablePlayerFiring(PlayerPedId(), false)
+    SetPedCanPlayGestureAnims(PlayerPedId(), true)
+end)
+
+RegisterNetEvent("Police:item:handcuffs:animationUse", function()
+    RequestAnimDict('mp_arrest_paired') 
+    while (not HasAnimDictLoaded('mp_arrest_paired')) do 
+        Wait(50)
+    end
+    TaskPlayAnim(PlayerPedId(), 'mp_arrest_paired', 'cop_p2_back_right', 8.0, -8, 3750, 2, 0, 0, 0, 0)
+end)
+
+RegisterNetEvent("Police:item:handcuffs:animationUnused", function()
+    RequestAnimDict('mp_arresting') 
+    while (not HasAnimDictLoaded('mp_arresting')) do 
+        Wait(50)
+    end
+    TaskAnim(PlayerPedId(), 'mp_arresting', 'a_uncuff', 8.0, -8, 3750, 2, 0, 0, 0, 0)
+    Wait(GetAnimDuration("mp_arresting", "a_uncuff") * 400)
+    ClearPedTasks(PlayerPedId())
+    SetPedCanRagdollFromPlayerImpact(PlayerPedId(), false)
+    SetPedKeepTask(PlayerPedId(), false)
+    SetBlockingOfNonTemporaryEvents(PlayerPedId(), false)
 end)
