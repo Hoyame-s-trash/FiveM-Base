@@ -441,7 +441,7 @@ RegisterNetEvent("Police:item:handcuffs:animationUnused", function()
     while (not HasAnimDictLoaded('mp_arresting')) do 
         Wait(50)
     end
-    TaskAnim(PlayerPedId(), 'mp_arresting', 'a_uncuff', 8.0, -8, 3750, 2, 0, 0, 0, 0)
+    TaskPlayAnim(PlayerPedId(), 'mp_arresting', 'a_uncuff', 8.0, -8, 3750, 2, 0, 0, 0, 0)
     Wait(GetAnimDuration("mp_arresting", "a_uncuff") * 400)
     ClearPedTasks(PlayerPedId())
     SetPedCanRagdollFromPlayerImpact(PlayerPedId(), false)
