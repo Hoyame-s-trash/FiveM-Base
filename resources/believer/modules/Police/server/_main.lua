@@ -1,5 +1,3 @@
-GM.Police = GM.Police or {}
-
 GM.Police.registeredZones = {}
 GM.Police.registeredZones["lockers"] = {}
 GM.Police.registeredZones["garages"] = {}
@@ -51,7 +49,6 @@ GM:newThread(function()
                     slotsAmount = 30,
                     uniqueID = "police_locker_"..playerSelected.identifier.."_"..i,
                 })
-
                 exports["believer"]:OpenStash(playerSelected.source, "police_locker_"..playerSelected.identifier.."_"..i)
             else
                 exports["believer"]:OpenStash(playerSelected.source, "police_locker_"..playerSelected.identifier.."_"..i)

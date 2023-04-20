@@ -129,8 +129,8 @@ RegisterNetEvent("Inventory:ADD_NOTE_ITEM", function(data)
     local uniqueID <const> = data.uniqueID
     local newNote <const> = data.newNote
 
-    local aPlayer <const> = ESX.GetPlayerFromId(source)
-    if not aPlayer then return end
+    local playerSelected <const> = ESX.GetPlayerFromId(source)
+    if not playerSelected then return end
 
     local inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID })
     if not inventory then return end
@@ -146,7 +146,7 @@ RegisterNetEvent("Inventory:ADD_NOTE_ITEM", function(data)
     end
 
     inventory:OnItemUpdated(item)
-    aPlayer.showNotification("Item note modified successfully!")
+    playerSelected.showNotification("Item note modified successfully!")
 end)
 RegisterNetEvent("Inventory:RENAME_ITEM", function(data)
     local source <const> = source
@@ -154,8 +154,8 @@ RegisterNetEvent("Inventory:RENAME_ITEM", function(data)
     local uniqueID <const> = data.uniqueID
     local newName <const> = data.newName
 
-    local aPlayer <const> = ESX.GetPlayerFromId(source)
-    if not aPlayer then return end
+    local playerSelected <const> = ESX.GetPlayerFromId(source)
+    if not playerSelected then return end
 
     local inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID })
     if not inventory then return end
@@ -171,7 +171,7 @@ RegisterNetEvent("Inventory:RENAME_ITEM", function(data)
     end
 
     inventory:OnItemUpdated(item)
-    aPlayer.showNotification("Item renamed successfully!")
+    playerSelected.showNotification("Item renamed successfully!")
 end)
 RegisterNetEvent("Inventory:OPEN_VEHICLE_TRUNK_INVENTORY", function(plate, modelHash)
     local source <const> = source
@@ -211,15 +211,6 @@ RegisterNetEvent("Inventory:OPEN_VEHICLE_GLOVEBOX_INVENTORY", function(plate, mo
     glovebox_inventory:open(source)
 end)
 
-RegisterNetEvent("Inventory:OPEN_NEAR_SHOP", function(shopId)
-    local source <const> = source
-
-    local shop = ScriptServer.Managers.Shops:GetShop(shopId)
-    if not shop then return end
-
-    shop:openShop(source)
-end)
-
 RegisterNetEvent("Inventory:OPEN_NEAR_FACTION_SAFE", function(faction)
     local source <const> = source
 
@@ -236,6 +227,9 @@ RegisterNetEvent("Inventory:BUY_FROM_SHOP", function(data)
     local toSlot <const> = data.toSlot
     local quantity = data.quantity
 
+    local playerSelected <const> = ESX.GetPlayerFromId(source)
+    if not playerSelected then return end
+
     local inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ source = source })
     if not inventory then return end
 
@@ -245,19 +239,30 @@ RegisterNetEvent("Inventory:BUY_FROM_SHOP", function(data)
     local shop_item <const> = shop:GetShopItemOnSlot(fromSlot)
     if not shop_item then return end
 
+    if (shop_item.meta.job) then
+        if (playerSelected.job.name ~= shop_item.meta.job) then
+            playerSelected.showNotification("~r~Vous n'avez pas le job requis pour acheter cet objet.")
+            return
+        end
+    end
+
+    if (shop_item.meta.grade) then
+        if (playerSelected.job.grade < shop_item.meta.grade) then
+            playerSelected.showNotification("~r~Vous n'avez pas le grade requis pour acheter cet objet.")
+            return
+        end
+    end
+
     local iData <const> = ScriptShared.Items:Get(shop_item.name)
     if not iData then return end
 
     if type(quantity) ~= "number" or quantity < 1 then quantity = 1 end
     if not iData.stackable then quantity = 1 end
 
-    local aPlayer <const> = ESX.GetPlayerFromId(source)
-    if not aPlayer then return end
-
     local finalPrice = shop_item.price * quantity
 
-    if aPlayer.getMoney() < finalPrice then
-        aPlayer.showNotification("warning", "Not enough money!")
+    if playerSelected.getMoney() < finalPrice then
+        playerSelected.showNotification("warning", "Not enough money!")
         return
     end
 
@@ -268,7 +273,7 @@ RegisterNetEvent("Inventory:BUY_FROM_SHOP", function(data)
         toSlot = toSlot
     })
     if addedResult.success then
-        aPlayer.removeMoney(finalPrice)
+        playerSelected.removeMoney(finalPrice)
     end
 end)
 
@@ -280,8 +285,8 @@ RegisterNetEvent("Inventory:GIVE_ITEM_TO_TARGET", function(data)
 
     if source == serverId then return end
 
-    local aPlayer <const> = ESX.GetPlayerFromId(source)
-    if not aPlayer then return end
+    local playerSelected <const> = ESX.GetPlayerFromId(source)
+    if not playerSelected then return end
 
     local targetSelected <const> = ESX.GetPlayerFromId(serverId)
     if (not targetSelected) then return end
@@ -298,7 +303,7 @@ RegisterNetEvent("Inventory:GIVE_ITEM_TO_TARGET", function(data)
     end
 
     if not target_inventory:canCarryWeight(item.name, quantity) then
-        aPlayer.showNotification("~r~La personne n'a pas assez de place.")
+        playerSelected.showNotification("~r~La personne n'a pas assez de place.")
         return
     end
 
@@ -313,10 +318,10 @@ RegisterNetEvent("Inventory:GIVE_ITEM_TO_TARGET", function(data)
         player_inventory:removeItemBy(quantity, { itemHash = itemHash })
 
         if (no_ref.name == "money") then
-            aPlayer.removeAccountMoney(no_ref.name, quantity)
+            playerSelected.removeAccountMoney(no_ref.name, quantity)
             targetSelected.addAccountMoney(no_ref.name, quantity)
         elseif (no_ref.name == "black_money") then
-            aPlayer.removeAccountMoney(no_ref.name, quantity)
+            playerSelected.removeAccountMoney(no_ref.name, quantity)
             targetSelected.addAccountMoney(no_ref.name, quantity)
         end
     end
@@ -328,8 +333,8 @@ RegisterNetEvent("Inventory:DROP_ITEM_ON_GROUND", function(data)
     local itemHash <const> = data.itemHash
     local quantity = data.quantity
 
-    local aPlayer <const> = ESX.GetPlayerFromId(source)
-    if not aPlayer then return end
+    local playerSelected <const> = ESX.GetPlayerFromId(source)
+    if not playerSelected then return end
 
     local inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID })
     if not inventory then return end
@@ -342,7 +347,7 @@ RegisterNetEvent("Inventory:DROP_ITEM_ON_GROUND", function(data)
     end
 
     if inventory.type == "dropped_grid" then
-        aPlayer.showNotification("~r~Vous ne pouvez pas jeter un objet déjà sur le sol.")
+        playerSelected.showNotification("~r~Vous ne pouvez pas jeter un objet déjà sur le sol.")
         return
     end
 
@@ -368,9 +373,9 @@ RegisterNetEvent("Inventory:DROP_ITEM_ON_GROUND", function(data)
         inventory:removeItemBy(quantity, { itemHash = no_ref.itemHash })
 
         if (no_ref.name == "money") then
-            aPlayer.removeAccountMoney(no_ref.name, quantity)
+            playerSelected.removeAccountMoney(no_ref.name, quantity)
         elseif (no_ref.name == "black_money") then
-            aPlayer.removeAccountMoney(no_ref.name, quantity)
+            playerSelected.removeAccountMoney(no_ref.name, quantity)
         end
 
         -- Add as observer, if he is not one. (It will openup the dropped grid)
@@ -505,8 +510,8 @@ RegisterNetEvent("Inventory:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     local draggedItemhash <const> = d.draggedItemhash
     local toItemHash <const> = d.toItemHash
 
-    local aPlayer <const> = ESX.GetPlayerFromId(source)
-    if not aPlayer then return end
+    local playerSelected <const> = ESX.GetPlayerFromId(source)
+    if not playerSelected then return end
 
     local from_inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = fromUniqueID })
     local to_inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = toUniqueID })
@@ -517,7 +522,7 @@ RegisterNetEvent("Inventory:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     if not (draggedItem and to_item) then return end
 
     if to_item.data.weaponHash == nil then
-        aPlayer.showNotification("This is not a weapon!")
+        playerSelected.showNotification("This is not a weapon!")
         return
     end
 
@@ -538,7 +543,7 @@ RegisterNetEvent("Inventory:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     -- -- end
 
     if not canAddAttachment then
-        aPlayer.showNotification("warning", "You can not use this attachment on this weapon!")
+        playerSelected.showNotification("warning", "You can not use this attachment on this weapon!")
         return
     end
 
@@ -547,7 +552,7 @@ RegisterNetEvent("Inventory:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     end
 
     if #to_item.meta.attachments >= 5 then
-        aPlayer.showNotification("info", "You can not add more attachment to this weapon!")
+        playerSelected.showNotification("info", "You can not add more attachment to this weapon!")
         return
     end
 
@@ -559,7 +564,7 @@ RegisterNetEvent("Inventory:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     end
 
     if hasThisAttachment then
-        aPlayer.showNotification("warning", "You already has this kind of attachment on this weapon!")
+        playerSelected.showNotification("warning", "You already has this kind of attachment on this weapon!")
         return
     end
 
@@ -747,10 +752,10 @@ function Module:GetInventory(data)
     end
 
     if type(data.source) == "number" then
-        local aPlayer <const> = ESX.GetPlayerFromId(data.source)
-        if not aPlayer then return end
+        local playerSelected <const> = ESX.GetPlayerFromId(data.source)
+        if not playerSelected then return end
 
-        local identifier <const> = aPlayer.getIdentifier()
+        local identifier <const> = playerSelected.getIdentifier()
         return type(self.Inventories[identifier]) == "table" and self.Inventories[identifier] or nil
     end
 end
@@ -1539,10 +1544,10 @@ end
 -- end
 
 -- function Module:isFactionMember(source)
---     local aPlayer <const> = ESX.GetPlayerFromId(source)
---     if not aPlayer then return end
+--     local playerSelected <const> = ESX.GetPlayerFromId(source)
+--     if not playerSelected then return end
 
---     return aPlayer.getJobName() == self.faction
+--     return playerSelected.getJobName() == self.faction
 -- end
 
 -- function Module:open(source)
@@ -1643,11 +1648,11 @@ Module.new = function(data)
     self.source = data.source
     self.usedWeaponItemHash = nil
 
-    local aPlayer = ESX.GetPlayerFromId(self.source)
-    if aPlayer then
+    local playerSelected = ESX.GetPlayerFromId(self.source)
+    if playerSelected then
         TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", self.source, {
             event = "SET_PLAYER_HEADER",
-            playerHeader = string.format("%s (%d)", aPlayer.getName(), self.source)
+            playerHeader = string.format("%s (%d)", playerSelected.getName(), self.source)
         })
     end
 
@@ -1817,16 +1822,16 @@ end
 function Module:hasPermission(source)
     if self.isPublic then return true end
 
-    local aPlayer <const> = ESX.GetPlayerFromId(source)
-    if not aPlayer then return end
+    local playerSelected <const> = ESX.GetPlayerFromId(source)
+    if not playerSelected then return end
 
     if type(self.ownerLicense) == "string" then
-        return aPlayer.getIdentifier() == self.ownerLicense
+        return playerSelected.getIdentifier() == self.ownerLicense
     end
 
     if type(self.groups) == "table" and #self.groups > 0 then
-        local playerFaction = aPlayer.getJobName()
-        local playerFactionGrade = aPlayer.getJobGrade()
+        local playerFaction = playerSelected.getJobName()
+        local playerFactionGrade = playerSelected.getJobGrade()
 
         for k, v in pairs(self.groups) do
             if playerFaction == k and playerFactionGrade >= v then
@@ -1920,120 +1925,71 @@ function Module:close(source)
     })
 end
 
--- local Module <const> = {}
--- ---@type { [string]: ShopClass }
--- Module.Shops = {}
+local Module <const> = {}
+---@type { [string]: ShopClass }
+Module.Shops = {}
 
--- ScriptServer.Managers.Shops = Module
+ScriptServer.Managers.Shops = Module
 
--- function Module:GetShop(shopID)
---     return self.Shops[shopID] or nil
--- end
+function Module:GetShop(shopID)
+    return self.Shops[shopID] or nil
+end
 
--- ---@class ShopClass:ShopConstructor
--- ---@field blips ServerBlipClass[]
--- ---@field peds ServerPedClass[]
--- ---@field actionshapes ServerActionshapeClass[]
--- local Module <const> = {}
--- Module.__index = Module
+---@class ShopClass:ShopConstructor
+---@field blips ServerBlipClass[]
+---@field peds ServerPedClass[]
+---@field actionshapes ServerActionshapeClass[]
+local Module <const> = {}
+Module.__index = Module
 
--- ScriptServer.Classes.Shop = Module
+ScriptServer.Classes.Shop = Module
 
--- ---@class ShopConstructor
--- ---@field shopId string
--- ---@field items ShopItem[]
--- ---@field shopName string
+---@class ShopConstructor
+---@field shopId string
+---@field items ShopItem[]
+---@field shopName string
 
--- ---@param allData ShopStaticData
--- Module.new = function(id, allData)
---     local self = setmetatable({}, Module)
+---@param allData ShopStaticData
+Module.new = function(id, allData)
+    local self = setmetatable({}, Module)
 
---     self.shopName = allData.shopName
---     self.shopId = id
---     self.items = {}
---     self.blips = {}
---     self.peds = {}
---     self.actionshapes = {}
+    self.shopName = allData.shopName
+    self.shopId = id
+    self.items = {}
 
---     for i = 1, #allData.locations do
---         self.blips[#self.blips + 1] = AquiverServerLibrary.Classes.Blips({
---             x = allData.locations[i].x,
---             y = allData.locations[i].y,
---             z = allData.locations[i].z,
---             color = allData.blip.colour,
---             sprite = allData.blip.sprite,
---             scale = allData.blip.scale,
---             display = 4,
---             name = self.shopName,
---             shortRange = false,
---             resource = GetCurrentResourceName()
---         })
+    for i = 1, #allData.items do
+        local v = allData.items[i]
+        local iData = ScriptShared.Items:Get(v.name)
+        if iData then
+            self.items[#self.items + 1] = {
+                data = iData,
+                meta = type(v.meta) == "table" and v.meta or type(iData.defaultMeta) == "table" and iData.defaultMeta or
+                    {},
+                name = v.name,
+                price = v.price
+            }
+        end
+    end
 
---         self.actionshapes[#self.actionshapes + 1] = AquiverServerLibrary.Classes.Actionshapes({
---             color = { r = 50, g = 155, b = 155, a = 155 },
---             range = 2.0,
---             sprite = 1,
---             x = allData.locations[i].x,
---             y = allData.locations[i].y,
---             z = allData.locations[i].z,
---             variables = {
---                 shopId = self.shopId
---             },
---             resource = GetCurrentResourceName()
---         })
---     end
+    ScriptServer.Managers.Shops.Shops[self.shopId] = self
 
---     for i = 1, #allData.peds do
---         self.peds[#self.peds + 1] = AquiverServerLibrary.Classes.Peds({
---             x = allData.peds[i].coords.x,
---             y = allData.peds[i].coords.y,
---             z = allData.peds[i].coords.z,
---             heading = allData.peds[i].heading,
---             model = allData.peds[i].modelName,
---             name = "~y~Shop",
---             questionMark = true,
---             dimension = 0,
---             resource = GetCurrentResourceName()
---         })
---     end
+    print(string.format("Created new shop: %s", self.shopId))
 
---     for i = 1, #allData.items do
---         local v = allData.items[i]
---         local iData = ScriptShared.Items:Get(v.name)
---         if iData then
---             self.items[#self.items + 1] = {
---                 data = iData,
---                 meta = type(v.meta) == "table" and v.meta or type(iData.defaultMeta) == "table" and iData.defaultMeta or
---                     {},
---                 name = v.name,
---                 price = v.price
---             }
---         end
---     end
+    return self
+end
 
---     ScriptServer.Managers.Shops.Shops[self.shopId] = self
+function Module:openShop(source)
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
+        event = "OPEN_SHOP",
+        items = self.items,
+        shopId = self.shopId,
+        shopName = self.shopName
+    })
+end
 
---     print(string.format("Created new shop: %s", self.shopId))
-
---     return self
--- end
-
--- function Module:openShop(source)
---     TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
---         event = "OPEN_SHOP",
---         items = self.items,
---         shopId = self.shopId,
---         shopName = self.shopName
---     })
--- end
-
--- function Module:GetShopItemOnSlot(slot)
---     return self.items[slot] or nil
--- end
-
--- for k, v in pairs(ScriptShared.Shops) do
---     ScriptServer.Classes.Shop.new(k, v)
--- end
+function Module:GetShopItemOnSlot(slot)
+    return self.items[slot] or nil
+end
 
 local function getInventory(inv)
     if type(inv) == "number" then

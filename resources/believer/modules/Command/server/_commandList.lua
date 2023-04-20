@@ -43,17 +43,21 @@ GM:newThread(function()
                 return
             end
 
-            if (GM.Death["calls_list"][targetSelected.source] ~= nil) then
-                if (GM.Death["calls_list"][targetSelected.source].taken_src) then
-                    TriggerClientEvent("esx:showNotification", GM.Death["calls_list"][targetSelected.source].taken_src, "~r~L'appel en cours à été annulé le patient à été réanimer par un staff.")
+            if (GM.Ambulance.registeredCalls["victim"][targetSelected.source] ~= nil) then
+                if (GM.Ambulance.registeredCalls["list"][tonumber(GM.Ambulance.registeredCalls["victim"][targetSelected.source])]) then
+                    if (GM.Ambulance.registeredCalls["list"][tonumber(GM.Ambulance.registeredCalls["victim"][targetSelected.source])].takenSrc) then
+                        TriggerClientEvent("esx:showNotification", GM.Ambulance.registeredCalls["list"][tonumber(GM.Ambulance.registeredCalls["victim"][targetSelected.source])].takenSrc, "~r~L'appel en cours à été annulé le patient à été réanimer par un staff.")
+                        TriggerClientEvent("Ambulance:removeValue", GM.Ambulance.registeredCalls["list"][tonumber(GM.Ambulance.registeredCalls["victim"][targetSelected.source])].takenSrc, "callId")
+                    end
                 end
-                GM.Death["calls_list"][targetSelected.source] = nil
         
                 local ambulanceList = GM.Service:getPeopleService("ambulance")
             
                 for ambulanceSrc, _ in pairs(ambulanceList) do
-                    TriggerClientEvent("Ambulance:removeValue", ambulanceSrc, "calls", targetSelected.source)
+                    TriggerClientEvent("Ambulance:removeValue", ambulanceSrc, "call", GM.Ambulance.registeredCalls["victim"][targetSelected.source])
                 end
+
+                GM.Ambulance.registeredCalls["victim"][targetSelected.source] = nil
             end
         
             if (GM.Death["dead_list"][targetSelected.source] ~= nil) then
@@ -70,6 +74,11 @@ GM:newThread(function()
             local playerSelected = ESX.GetPlayerFromId(playerSrc)
             if (not playerSelected) then return end
 
+            if (GM.Admin.inAdmin[playerSelected.source] == nil) then
+                playerSelected.showNotification("~r~Vous n'êtes pas en mode admin !")
+                return
+            end
+
             if (not args[1]) then
                 args[1] = playerSrc
             end
@@ -82,17 +91,21 @@ GM:newThread(function()
                 return
             end
 
-            if (GM.Death["calls_list"][targetSelected.source] ~= nil) then
-                if (GM.Death["calls_list"][targetSelected.source].taken_src) then
-                    TriggerClientEvent("esx:showNotification", GM.Death["calls_list"][targetSelected.source].taken_src, "~r~L'appel en cours à été annulé le patient à été réanimer par un staff.")
+            if (GM.Ambulance.registeredCalls["victim"][targetSelected.source] ~= nil) then
+                if (GM.Ambulance.registeredCalls["list"][tonumber(GM.Ambulance.registeredCalls["victim"][targetSelected.source])]) then
+                    if (GM.Ambulance.registeredCalls["list"][tonumber(GM.Ambulance.registeredCalls["victim"][targetSelected.source])].takenSrc) then
+                        TriggerClientEvent("esx:showNotification", GM.Ambulance.registeredCalls["list"][tonumber(GM.Ambulance.registeredCalls["victim"][targetSelected.source])].takenSrc, "~r~L'appel en cours à été annulé le patient à été réanimer par un staff.")
+                        TriggerClientEvent("Ambulance:removeValue", GM.Ambulance.registeredCalls["list"][tonumber(GM.Ambulance.registeredCalls["victim"][targetSelected.source])].takenSrc, "callId")
+                    end
                 end
-                GM.Death["calls_list"][targetSelected.source] = nil
         
                 local ambulanceList = GM.Service:getPeopleService("ambulance")
             
                 for ambulanceSrc, _ in pairs(ambulanceList) do
-                    TriggerClientEvent("Ambulance:removeValue", ambulanceSrc, "calls", targetSelected.source)
+                    TriggerClientEvent("Ambulance:removeValue", ambulanceSrc, "call", GM.Ambulance.registeredCalls["victim"][targetSelected.source])
                 end
+
+                GM.Ambulance.registeredCalls["victim"][targetSelected.source] = nil
             end
         
             if (GM.Death["dead_list"][targetSelected.source] ~= nil) then
@@ -307,8 +320,15 @@ GM:newThread(function()
         label = "Faire apparaître un véhicule",
         description = "Permet de faire apparaître un véhicule",
     }, function(playerSrc, args)
+        if (playerSrc == 0) then return end
+
         local playerSelected = ESX.GetPlayerFromId(playerSrc)
         if (not playerSelected) then return end
+
+        if (GM.Admin.inAdmin[playerSelected.source] == nil) then
+            playerSelected.showNotification("~r~Vous n'êtes pas en mode admin !")
+            return
+        end
 
         local vehicleName = args[1]
         local upgrades = {
@@ -347,8 +367,15 @@ GM:newThread(function()
         label = "Supprimer le véhicule",
         description = "Permet de supprimer des véhicules",
     }, function(playerSrc, args)
+        if (playerSrc == 0) then return end
+
         local playerSelected = ESX.GetPlayerFromId(playerSrc)
         if (not playerSelected) then return end
+
+        if (GM.Admin.inAdmin[playerSelected.source] == nil) then
+            playerSelected.showNotification("~r~Vous n'êtes pas en mode admin !")
+            return
+        end
 
         local playerPed = playerSelected.getPed()
         if (not playerPed) then return end

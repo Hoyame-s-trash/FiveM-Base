@@ -15,7 +15,7 @@ RegisterNUICallback('respawn', function ()
 end)
 
 RegisterNUICallback('sendDispatch', function()
-    TriggerServerEvent("Ambulance:sendDistressSignal")
+    TriggerServerEvent("Ambulance:sendCall")
 end)
 
 RegisterNetEvent("Dead:openUI")

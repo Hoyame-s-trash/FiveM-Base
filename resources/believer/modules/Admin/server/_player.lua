@@ -24,7 +24,7 @@ RegisterServerEvent("Admin:teleportWaypoint", function()
 
     if (playerSelected.getGroup() == "user") then return end
 
-    TriggerClientEvent("esx:tpm", playerSrc)
+    TriggerClientEvent("esx:tpm", playerSelected.source)
 end)
 
 GM.Admin.Weapon = {}

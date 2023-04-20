@@ -270,22 +270,18 @@ AddEventHandler("esx:tpm", function()
 
 	local blipMarker = GetFirstBlipInfoId(8)
 	if not DoesBlipExist(blipMarker) then
-		ESX.ShowNotification(TranslateCap('tpm_nowaypoint'), true, false, 140)
-		return 'marker'
+		ESX.ShowNotification("~r~Vous n'avez pas de marqueur sur la carte.")
 	end
 
-	-- Fade screen to hide how clients get teleported.
 	DoScreenFadeOut(650)
 	while not IsScreenFadedOut() do
 		Wait(0)
 	end
 
-	local ped, coords = ESX.PlayerData.ped, GetBlipInfoIdCoord(blipMarker)
+	local ped, coords = PlayerPedId(), GetBlipInfoIdCoord(blipMarker)
 	local vehicle = GetVehiclePedIsIn(ped, false)
 	local oldCoords = GetEntityCoords(ped)
 
-	-- Unpack coords instead of having to unpack them while iterating.
-	-- 825.0 seems to be the max a player can reach while 0.0 being the lowest.
 	local x, y, groundZ, Z_START = coords['x'], coords['y'], 850.0, 950.0
 	local found = false
 	FreezeEntityPosition(vehicle > 0 and vehicle or ped, true)
@@ -315,7 +311,6 @@ AddEventHandler("esx:tpm", function()
 			Wait(0)
 		end
 
-		-- Get ground coord. As mentioned in the natives, this only works if the client is in render distance.
 		found, groundZ = GetGroundZFor_3dCoord(x, y, z, false)
 		if found then
 			Wait(0)
@@ -325,20 +320,16 @@ AddEventHandler("esx:tpm", function()
 		Wait(0)
 	end
 
-	-- Remove black screen once the loop has ended.
 	DoScreenFadeIn(650)
 	FreezeEntityPosition(vehicle > 0 and vehicle or ped, false)
 
 	if not found then
-		-- If we can't find the coords, set the coords to the old ones.
-		-- We don't unpack them before since they aren't in a loop and only called once.
 		SetPedCoordsKeepVehicle(ped, oldCoords['x'], oldCoords['y'], oldCoords['z'] - 1.0)
-		ESX.ShowNotification(TranslateCap('tpm_success'), true, false, 140)
+		ESX.ShowNotification("~b~Vous avez été téléporté à l'endroit où vous étiez avant le téléport.")
 	end
 
-	-- If Z coord was found, set coords in found coords.
 	SetPedCoordsKeepVehicle(ped, x, y, groundZ)
-	ESX.ShowNotification(TranslateCap('tpm_success'), true, false, 140)
+	ESX.ShowNotification("~b~Vous avez été téléporté avec succès.")
 end)
 
 RegisterNetEvent("esx:killPlayer")

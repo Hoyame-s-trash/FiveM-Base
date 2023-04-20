@@ -738,3 +738,10 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
 
     deferrals.done();
 end)
+
+AddEventHandler("playerDropped", function(reason)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    print("RAISON DE LA DECONNEXION", reason)
+end)

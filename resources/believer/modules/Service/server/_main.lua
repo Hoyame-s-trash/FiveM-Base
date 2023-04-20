@@ -60,11 +60,30 @@ AddEventHandler("playerDropped", function(reason)
             GM.Service["Player_list"][playerSrc] = nil
         else
             if (GM.Service["Crash_list"][playerSelected.getIdentifier()] == nil) then
-                GM.Service["Crash_list"][playerSelected.getIdentifier()] = true
+                GM.Service["Crash_list"][playerSelected.getIdentifier()] = {}
             end
         end
     end
 end)
 
--- Todo make a script that save player state when crashed and restore the player when it's connected again.
+AddEventHandler("esx:playerLoaded", function(playerSrc)
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
 
+    local playerJob = playerSelected.job.name
+
+    if (GM.Service["Enterprise_list"][playerJob] == nil) then
+        GM.Service["Enterprise_list"][playerJob] = {}
+    end
+
+    GM.Service["Player_list"][playerSelected.source] = true
+    GM.Service["Enterprise_list"][playerJob][playerSelected.source] = true
+    playerSelected.showNotification("~g~Vous avez pris votre service.")
+
+    if (GM.Service["Crash_list"][playerSelected.getIdentifier()]) then
+        playerSelected.showNotification("~b~Vous avez été déconnecté en service (crash client), vous êtes donc toujours en service.")
+        GM.Service["Player_list"][playerSrc] = true
+        GM.Service["Enterprise_list"][playerJob][playerSrc] = true
+        GM.Service["Crash_list"][playerSelected.getIdentifier()] = nil
+    end
+end)
