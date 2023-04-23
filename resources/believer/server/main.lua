@@ -3,7 +3,7 @@ SetGameType('ESX Legacy')
 
 local oneSyncState = GetConvar('onesync', 'off')
 local newPlayer = 'INSERT INTO `users` SET `accounts` = ?, `identifier` = ?, `first_connection` = ?'
-local loadPlayer = 'SELECT `accounts`, `job`, `job_grade`, `position`, `skin`, `metadata`, `firstname`, `lastname`, `dateofbirth`, `sex`, `height`'
+local loadPlayer = 'SELECT `accounts`, `job`, `job_grade`, `position`, `skin`, `metadata`, `firstname`, `lastname`, `dateofbirth`, `sex`, `height`, `is_dead`'
 
 loadPlayer = loadPlayer .. ' FROM `users` WHERE identifier = ?'
 
@@ -55,10 +55,8 @@ function onPlayerJoined(playerId)
     end
       local result = MySQL.scalar.await('SELECT 1 FROM users WHERE identifier = ?', {identifier})
       if result then
-        print("LOAD PLAYER", identifier)
         loadESXPlayer(identifier, playerId, false)
       else
-        print("CREATE PLAYER", identifier)
         createESXPlayer(identifier, playerId)
       end
   else

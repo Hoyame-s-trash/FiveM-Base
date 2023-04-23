@@ -126,6 +126,10 @@ RegisterNUICallback('zoom', function(data)
     zoomToSlot(data.slot)
 end)
 
+RegisterNUICallback("error", function()
+    ESX.ShowNotification("~r~Vous n'avez pas correctement rempli votre identité.")
+end)
+
 function zoomToSlot(slot)
     local coords = GetEntityCoords(PlayerPedId())
 

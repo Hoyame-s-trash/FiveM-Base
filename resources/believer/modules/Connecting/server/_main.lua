@@ -730,9 +730,13 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
                 return
             end
         else
-            deferrals.done("Vous êtes déjà connecté sur le serveur\nCode d'erreur : 1.")
-            CancelEvent()
-            return
+            if (ESX.IsPlayerConnected(playerIdentifier)) then
+                deferrals.done("Vous êtes déjà connecté sur le serveur\nCode d'erreur : 1.")
+                CancelEvent()
+                return
+            else
+                print("DEBUG CONNECTING CRASH DETECTED")
+            end
         end
     end
 

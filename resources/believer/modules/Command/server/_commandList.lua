@@ -984,6 +984,10 @@ GM:newThread(function()
         SetEntityCoords(targetSelected.getPed(), -3.0983, 523.4305, 173.6271)
         SetEntityHeading(targetSelected.getPed(), 81.0245)
 
+        while #(targetSelected.getCoords(true) - vector3(-3.0983, 523.4305, 173.6271)) > 2.0 do
+            Wait(50)
+        end
+
         TriggerClientEvent("Creator:openMenu", targetSelected.source)
         playerSelected.showNotification("~g~Vous avez ouvert le menu de création de personnage de "..targetSelected.getName()..".")
     end)

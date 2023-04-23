@@ -1,6 +1,6 @@
 Config_charcreator = {}
 
-Config_charcreator.spawnpoint = {x = -1037.6654, y = -2737.5117, z = 20.1693, h = 333.1182}
+Config_charcreator.spawnpoint = {x = -168.1314239502, y = -298.81719970703, z = 39.733299255371, h = 277.79}
 
 Config_charcreator.categories = {
     ['identity'] = {
@@ -27,21 +27,6 @@ Config_charcreator.categories = {
         icon = 'game-icons:beard',
         components = {'beard_1', 'beard_2', 'beard_3'}
     },
-    ["clothes"] = {
-        icon = 'mdi:hanger',
-        components = {
-            'tshirt_1', 
-            'tshirt_2', 
-            'torso_1',
-            'torso_2',
-            'arms',
-            'arms_2',
-            'pants_1',
-            'pants_2',
-            'shoes_1',
-            'shoes_2',
-        }
-    }
 }
 
 Config_charcreator.refreshComponent = {

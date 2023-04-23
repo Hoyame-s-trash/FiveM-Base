@@ -16,7 +16,6 @@ local SettingsList = {
 }
 
 function Items:ListAdvanced(Label, Items, Index, Description, Style, Enabled, Actions, Submenu)
-
     ---@type table
     local CurrentMenu = RageUI.CurrentMenu;
 
@@ -44,8 +43,13 @@ function Items:ListAdvanced(Label, Items, Index, Description, Style, Enabled, Ac
                 if CurrentMenu.EnableMouse == true and (CurrentMenu.CursorStyle == 0) or (CurrentMenu.CursorStyle == 1) then
                     Hovered = RageUI.ItemsMouseBounds(CurrentMenu, Selected, Option, SettingsButton);
                 end
-
                 local MaxItems = #Items
+                local canSwap = true
+
+                if (json.encode(Items) == "[]") then
+                    Items = {0}
+                    canSwap = false
+                end
 
                 local ListText = (type(Items[Index]) == "table") and string.format("← %s/"..MaxItems.." →", Items[Index].Name) or string.format("← %s/"..MaxItems.." →", Items[Index]) or "NIL"
 
@@ -124,25 +128,29 @@ function Items:ListAdvanced(Label, Items, Index, Description, Style, Enabled, Ac
                 RageUI.ItemsDescription(CurrentMenu, Description, Selected);
 
                 if Selected and (CurrentMenu.Controls.Left.Active or (CurrentMenu.Controls.Click.Active and LeftArrowHovered)) and not (CurrentMenu.Controls.Right.Active or (CurrentMenu.Controls.Click.Active and RightArrowHovered)) then
-                    Index = Index - 1
-                    if Index < 0 then
-                        Index = #Items
+                    if (canSwap) then
+                        Index = Index - 1
+                        if Index < 1 then
+                            Index = #Items
+                        end
+                        if (Actions.onListChange ~= nil) then
+                            Actions.onListChange(Index, Items[Index]);
+                        end
+                        local Audio = RageUI.Settings.Audio
+                        RageUI.PlaySound(Audio[Audio.Use].LeftRight.audioName, Audio[Audio.Use].LeftRight.audioRef)
                     end
-                    if (Actions.onListChange ~= nil) then
-                        Actions.onListChange(Index, Items[Index]);
-                    end
-                    local Audio = RageUI.Settings.Audio
-                    RageUI.PlaySound(Audio[Audio.Use].LeftRight.audioName, Audio[Audio.Use].LeftRight.audioRef)
                 elseif Selected and (CurrentMenu.Controls.Right.Active or (CurrentMenu.Controls.Click.Active and RightArrowHovered)) and not (CurrentMenu.Controls.Left.Active or (CurrentMenu.Controls.Click.Active and LeftArrowHovered)) then
-                    Index = Index + 1
-                    if Index > #Items then
-                        Index = 0
+                    if (canSwap) then
+                        Index = Index + 1
+                        if Index > #Items then
+                            Index = 1
+                        end
+                        if (Actions.onListChange ~= nil) then
+                            Actions.onListChange(Index, Items[Index]);
+                        end
+                        local Audio = RageUI.Settings.Audio
+                        RageUI.PlaySound(Audio[Audio.Use].LeftRight.audioName, Audio[Audio.Use].LeftRight.audioRef)
                     end
-                    if (Actions.onListChange ~= nil) then
-                        Actions.onListChange(Index, Items[Index]);
-                    end
-                    local Audio = RageUI.Settings.Audio
-                    RageUI.PlaySound(Audio[Audio.Use].LeftRight.audioName, Audio[Audio.Use].LeftRight.audioRef)
                 end
 
                 if Selected and (CurrentMenu.Controls.Select.Active or ((Hovered and CurrentMenu.Controls.Click.Active) and (not LeftArrowHovered and not RightArrowHovered))) then

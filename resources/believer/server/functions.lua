@@ -149,12 +149,13 @@ function Core.SavePlayer(xPlayer, cb)
     xPlayer.job.name,
     xPlayer.job.grade,
     json.encode(xPlayer.getCoords()),
+    xPlayer.getDead(),
     json.encode(xPlayer.getMeta()),
     xPlayer.identifier
   }
 
   MySQL.prepare(
-    'UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `position` = ?, `metadata` = ? WHERE `identifier` = ?',
+    'UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `position` = ?, `is_dead` = ?,  `metadata` = ? WHERE `identifier` = ?',
     parameters,
     function(affectedRows)
       if affectedRows == 1 then
@@ -183,13 +184,14 @@ function Core.SavePlayers(cb)
       xPlayer.job.name,
       xPlayer.job.grade,
       json.encode(xPlayer.getCoords()),
+      xPlayer.getDead(),
       json.encode(xPlayer.getMeta()),
       xPlayer.identifier
     }
   end
 
   MySQL.prepare(
-    "UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `position` = ?, `metadata` = ? WHERE `identifier` = ?",
+    "UPDATE `users` SET `accounts` = ?, `job` = ?, `job_grade` = ?, `position` = ?, `is_dead` = ?, `metadata` = ? WHERE `identifier` = ?",
     parameters, 
     function(results)
       if not results then
@@ -227,6 +229,15 @@ end
 
 function ESX.GetPlayerFromIdentifier(identifier)
   return Core.playersByIdentifier[identifier]
+end
+
+function ESX.IsPlayerConnected(identifier)
+  if (Core.playersByIdentifier[identifier] == nil) then
+    return false
+  end
+
+  local player = Core.playersByIdentifier[identifier]
+  return GetPlayerPed(player.source) or false
 end
 
 function ESX.GetIdentifier(playerId, type)

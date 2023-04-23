@@ -7,14 +7,26 @@ RegisterServerEvent("Creator:save", function(firstName, lastName, dateOfBirth, s
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
 
-    MySQL.update.await('UPDATE users SET firstname = ?, lastname = ?, dateofbirth = ?, sex = ?, height = ? WHERE identifier = ?',
-        {
+    if (playerSelected.get("first_connection") == true) then
+        playerSelected.showNotification("~b~Bienvenue sur BlueStark\nSi vous avez la moindre question n'hésitez pas à nous contacter sur notre discord: https://discord.gg/bluestark")
+    end
+
+    if (playerSelected.get("creator") == true) then 
+        MySQL.update('UPDATE users SET firstname = ?, lastname = ?, dateofbirth = ?, sex = ?, height = ? WHERE identifier = ?', {
             firstName, 
-            lastname, 
+            lastName, 
             dateOfBirth, 
             sexe, 
             height, 
             playerSelected.getIdentifier()
-        }
-    )
+        }, function()
+            playerSelected.set("creator", false)
+            playerSelected.set("firstname", firstName)
+            playerSelected.set("lastname", lastName)
+            playerSelected.set("dateofbirth", dateOfBirth)
+            playerSelected.set("sex", sexe)
+            playerSelected.set("height", height)
+            
+        end)
+    end
 end)
