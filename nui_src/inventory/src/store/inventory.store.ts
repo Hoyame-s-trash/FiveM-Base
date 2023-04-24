@@ -83,7 +83,7 @@ export const useInventoryStore = defineStore("InventoryStore", () => {
                                 weight: 0.5,
                                 label: "Hennessy",
                                 description: "Nagyon jó ital",
-                                category : "Item",
+                                category: "Item",
                             }
                         },
                         {
@@ -151,7 +151,7 @@ export const useInventoryStore = defineStore("InventoryStore", () => {
                         meta: {
                             durability: 35,
                             serial: "0000-1111-2222",
-                            note: "Random Note"
+                            note: "Exemple de note"
                         },
                         name: "gold",
                         quantity: 15,
@@ -167,9 +167,9 @@ export const useInventoryStore = defineStore("InventoryStore", () => {
                     },
                     {
                         meta: {
-                            durability: 75,
+                            durability: 80,
                             serial: "0000-1111-2222",
-                            note: "Random Note",
+                            note: "Exemple de note",
                             attachments: [
                                 "at_suppressor_light"
                             ]

@@ -1,6 +1,6 @@
-CONFIG = {}
+GM.Inventory = {}
 
-CONFIG.IS_VEHICLE_EXIST = function(plate)
+GM.Inventory.IS_VEHICLE_EXIST = function(plate)
     -- You should have to add your mysql table here and query with mysql to see if its exist or not.
     -- EXAMPLE:
     -- return exports["oxmysql"]:single_async("SELECT * FROM vehicles WHERE plate = ?", { plate }) ~= nil
@@ -8,46 +8,58 @@ CONFIG.IS_VEHICLE_EXIST = function(plate)
     return true
 end
 
-CONFIG.NEARBY_PLAYER_RANGE = 5.0
-CONFIG.NEARBY_PLAYERS_SHOW_NAMES = false
+GM.Inventory.NEARBY_PLAYER_RANGE = 5.0
+GM.Inventory.NEARBY_PLAYERS_SHOW_NAMES = true
 
-CONFIG.PLAYER_INVENTORY_DEFAULTS = {
-    SLOTS = 60,
+GM.Inventory.PLAYER_INVENTORY_DEFAULTS = {
+    SLOTS = 40,
     MAX_WEIGHT = 100
 }
 
-CONFIG.DROPPED_ITEMS = {
+GM.Inventory.DROPPED_ITEMS = {
     REMAIN_ON_GROUND = 86400, -- (os.time() + REMAIN_ON_GROUND)
     GRID_RANGE = 5.0,
     GRID_MAX_WEIGHT = 1000.0,
     GRID_SLOTS = 20,
-    DEFAULT_DROPPED_MODEL = `prop_cs_box_clothes`
+    DEFAULT_DROPPED_MODEL = `ba_prop_battle_ps_box_01`
 }
 
-CONFIG.SHOP_OPEN_RANGE = 3.0
+GM.Inventory.SHOP_OPEN_RANGE = 3.0
 
-CONFIG.SAVE_INVENTORIES_MS = 60000 * 30   -- (30 minutes by default)
-CONFIG.FACTION_CREATE_SAFE_OBJECTS = true -- (If disabled then the safe objects will not be created on the clients.)
-CONFIG.FACTION_SAFE_OPEN_RANGE = 3.0
-CONFIG.FACTION_SAFE_OBJECT_MODEL = "p_v_43_safe_s"
-CONFIG.FACTION_INVENTORIES = {
-    ["police"] = {
+GM.Inventory.SAVE_INVENTORIES_MS = 60000 * 30   -- (30 minutes by default)
+GM.Inventory.FACTION_CREATE_SAFE_OBJECTS = true -- (If disabled then the safe objects will not be created on the clients.)
+GM.Inventory.FACTION_SAFE_OPEN_RANGE = 3.0
+GM.Inventory.FACTION_SAFE_OBJECT_MODEL = "p_v_43_safe_s"
+GM.Inventory.FACTION_INVENTORIES = {
+    -- ["police"] = {
+    --     header = "Police Safe",
+    --     x = 1137,
+    --     y = -645,
+    --     z = 56.75,
+    --     heading = 60.0,
+    --     slotsAmount = 40,
+    --     maxWeight = 2000
+    -- }
+}
+
+if _G.APIShared.GM.Inventory.AQUIVER_TEST_SERVER then
+    GM.Inventory.FACTION_INVENTORIES["police"] = {
         header = "Police Safe",
-        x = 1137,
-        y = -645,
-        z = 56.75,
-        heading = 60.0,
+        x = -46.47,
+        y = 213.13,
+        z = 106.55,
+        heading = 162.4,
         slotsAmount = 40,
         maxWeight = 2000
     }
-}
+end
 
 -- Ammo will apply with different item as bullet to these weapons. (You have to register the ammo also as item.)
-CONFIG.AMMO_WEAPONS = {
+GM.Inventory.AMMO_WEAPONS = {
     [`weapon_pistol`] = "9mm_rounds",
     -- Add your weapons here.
 }
-CONFIG.MELEE_WEAPONS = {
+GM.Inventory.MELEE_WEAPONS = {
     [`weapon_dagger`] = true,
     [`weapon_bat`] = true,
     [`weapon_bottle`] = true,
@@ -67,7 +79,7 @@ CONFIG.MELEE_WEAPONS = {
     [`weapon_stone_hatchet`] = true
 }
 -- Ammo will apply as stack count to these weapons. (So these weapons should be stackable most of the cases.)
-CONFIG.THROWABLE_WEAPONS = {
+GM.Inventory.THROWABLE_WEAPONS = {
     [`weapon_grenade`] = true,
     [`weapon_bzgas`] = true,
     [`weapon_molotov`] = true,
@@ -79,20 +91,20 @@ CONFIG.THROWABLE_WEAPONS = {
     [`weapon_smokegrenade`] = true,
     [`weapon_flare`] = true
 }
-CONFIG.MISC_WEAPONS = {
+GM.Inventory.MISC_WEAPONS = {
     [`weapon_petrolcan`] = true,
     [`weapon_fireextinguisher`] = true,
     [`weapon_hazardcan`] = true,
     [`weapon_fertilizercan`] = true
 }
 
-CONFIG.NO_AUTO_RELOAD = true                                    -- (Do not reload the weapon automatically)
-CONFIG.NO_AUTOSWAP_ON_EMPTY = true                              -- (Do not swap to empty hand when the bullet rans out)
-CONFIG.REDUCE_WEAPON_DURABILITY_CHANCE = 80
-CONFIG.REDUCE_WEAPON_DURABILITY_AMOUNT = { MIN = 25, MAX = 50 } -- This will be divided with /100, so 0.25 and 0.5
-CONFIG.DELETE_WEAPON_ON_DURABILITY_ZERO = false                 -- (Delete the item if the durability reached zero)
+GM.Inventory.NO_AUTO_RELOAD = true                                    -- (Do not reload the weapon automatically)
+GM.Inventory.NO_AUTOSWAP_ON_EMPTY = true                              -- (Do not swap to empty hand when the bullet rans out)
+GM.Inventory.REDUCE_WEAPON_DURABILITY_CHANCE = 80
+GM.Inventory.REDUCE_WEAPON_DURABILITY_AMOUNT = { MIN = 25, MAX = 50 } -- This will be divided with /100, so 0.25 and 0.5
+GM.Inventory.DELETE_WEAPON_ON_DURABILITY_ZERO = false                 -- (Delete the item if the durability reached zero)
 
-CONFIG.WEAPON_COMPONENTS = {
+GM.Inventory.WEAPON_COMPONENTS = {
     ["at_flashlight"] = {
         `COMPONENT_AT_AR_FLSH`,
         `COMPONENT_AT_AR_FLSH_REH`,
@@ -441,48 +453,48 @@ CONFIG.WEAPON_COMPONENTS = {
     }
 }
 
-CONFIG.VEHICLE_SIZES = {
+GM.Inventory.VEHICLE_SIZES = {
     DEFAULT_TRUNK_SLOT = 20,
     DEFAULT_TRUNK_WEIGHT = 50.0,
     DEFAULT_GLOVEBOX_SLOT = 10,
     DEFAULT_GLOVEBOX_WEIGHT = 10.0,
-    DATA = { -- CONFIG COFFRE VEHICLES
+    DATA = {
         [`infernus`] = {
             TRUNK = { SLOT = 10, WEIGHT = 35.0 },
             GLOVEBOX = { SLOT = 7, WEIGHT = 15.0 }
         }
     },
     getTrunkSlots = function(modelHash)
-        local ref = CONFIG.VEHICLE_SIZES.DATA[modelHash]
+        local ref = GM.Inventory.VEHICLE_SIZES.DATA[modelHash]
         return (ref and ref.TRUNK and type(ref.TRUNK.SLOT) == "number")
             and
             ref.TRUNK.SLOT
             or
-            CONFIG.VEHICLE_SIZES.DEFAULT_TRUNK_SLOT
+            GM.Inventory.VEHICLE_SIZES.DEFAULT_TRUNK_SLOT
     end,
     getTrunkMaxWeight = function(modelHash)
-        local ref = CONFIG.VEHICLE_SIZES.DATA[modelHash]
+        local ref = GM.Inventory.VEHICLE_SIZES.DATA[modelHash]
         return (ref and ref.TRUNK and type(ref.TRUNK.WEIGHT) == "number")
             and
             ref.TRUNK.WEIGHT
             or
-            CONFIG.VEHICLE_SIZES.DEFAULT_TRUNK_WEIGHT
+            GM.Inventory.VEHICLE_SIZES.DEFAULT_TRUNK_WEIGHT
     end,
     getGloveboxSlots = function(modelHash)
-        local ref = CONFIG.VEHICLE_SIZES.DATA[modelHash]
+        local ref = GM.Inventory.VEHICLE_SIZES.DATA[modelHash]
         return (ref and ref.GLOVEBOX and type(ref.GLOVEBOX.SLOT) == "number")
             and
             ref.GLOVEBOX.SLOT
             or
-            CONFIG.VEHICLE_SIZES.DEFAULT_GLOVEBOX_SLOT
+            GM.Inventory.VEHICLE_SIZES.DEFAULT_GLOVEBOX_SLOT
     end,
     getGloveboxMaxWeight = function(modelHash)
-        local ref = CONFIG.VEHICLE_SIZES.DATA[modelHash]
+        local ref = GM.Inventory.VEHICLE_SIZES.DATA[modelHash]
         return (ref and ref.GLOVEBOX and type(ref.GLOVEBOX.WEIGHT) == "number")
             and
             ref.GLOVEBOX.WEIGHT
             or
-            CONFIG.VEHICLE_SIZES.DEFAULT_GLOVEBOX_WEIGHT
+            GM.Inventory.VEHICLE_SIZES.DEFAULT_GLOVEBOX_WEIGHT
     end
 }
 
@@ -503,9 +515,6 @@ ScriptShared.Items = Module
 
 ---@param name string
 function Module:Get(name)
-    if (not self.Registered[name]) then
-        print(("[^1WARNING^0] Inventory ITEM doens't exist : ^5%s^7"):format(name))
-    end
     return self.Registered[name]
 end
 
@@ -519,61 +528,624 @@ ScriptShared.Items:Add("money", {
     stackable = true,
     deletable = true,
     tradable = true,
-    label = "Espèces",
+    label = "Money",
     weight = 0.0,
-    category = "Argent"
+    category = "Currency"
 })
-
-ScriptShared.Items:Add("black_money", {
+ScriptShared.Items:Add("gold", {
     stackable = true,
     deletable = true,
     tradable = true,
-    label = "Argent sale",
-    weight = 0.0,
-    category = "Argent"
-})
-
-ScriptShared.Items:Add("handcuffs", {
-    stackable = true,
-    deletable = true,
-    tradable = true,
-    label = "Menottes",
-    weight = 1.0,
+    label = "Gold",
+    weight = 1.5,
     usable = true,
-    category = "Utilisable",
-    usable = {
-        server_event = false,
-        client_event = "Police:item:handcuffs",
-        onUseDeleteAmount = 0
+    category = "Raw material",
+    server = {
+        export = "av_inventory_2_remastered.test",
+        onUseDeleteAmount = 1
     }
 })
-
-ScriptShared.Items:Add("bandage", {
+ScriptShared.Items:Add("cognac", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = "Hennessy Cognac",
+    weight = 0.75,
+    droppedModel = `prop_cs_script_bottle`,
+    category = "Drink"
+})
+ScriptShared.Items:Add("hotdog", {
     stackable = true,
     deletable = true,
     tradable = true,
-    label = "Bandage",
-    weight = 1.0,
-    usable = true,
-    category = "Médical",
-    usable = {
-        server_event = "Ambulance:item:bandage",
-        client_event = false,
-        onUseDeleteAmount = 0
-    }
+    label = "Hot-Dog",
+    weight = 0.25,
+    category = "Food"
 })
-
-ScriptShared.Items:Add("medikit", {
+ScriptShared.Items:Add("hamburger", {
     stackable = true,
     deletable = true,
     tradable = true,
-    label = "Bandage",
-    weight = 1.0,
+    label = "Hamburger",
+    weight = 0.25,
+    category = "Food"
+})
+ScriptShared.Items:Add("ironingot", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "Iron Ingot",
+    weight = 0.75,
+    category = "Raw material"
+})
+ScriptShared.Items:Add("reddiamond", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "Red Diamond",
+    weight = 0.1,
+    category = "Raw material"
+})
+ScriptShared.Items:Add("apple", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "Apple",
+    weight = 0.25,
+    category = "Fruit"
+})
+
+ScriptShared.Items:Add("pistol", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = "Pistol",
+    weaponHash = `WEAPON_PISTOL`,
     usable = true,
-    category = "Médical",
-    usable = {
-        server_event = "Ambulance:item:medikit",
-        client_event = false,
-        onUseDeleteAmount = 0
+    weight = 1.0,
+    category = "Weapon",
+    generateSerial = true,
+    defaultMeta = {
+        durability = 100
+    },
+    allowedAttachments = {
+        "at_flashlight",
+        "at_suppressor_light"
     }
 })
+ScriptShared.Items:Add("bat", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = "Bat",
+    weaponHash = `WEAPON_BAT`,
+    usable = true,
+    weight = 1.0,
+    category = "Weapon",
+    defaultMeta = {
+        durability = 100
+    }
+})
+ScriptShared.Items:Add("grenade", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "Grenade",
+    weaponHash = `WEAPON_GRENADE`,
+    usable = true,
+    weight = 1.0,
+    category = "Weapon",
+    generateSerial = true
+})
+ScriptShared.Items:Add("petrolcan", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "Petrol Can",
+    weaponHash = `WEAPON_PETROLCAN`,
+    usable = true,
+    weight = 0.1,
+    category = "Weapon"
+})
+ScriptShared.Items:Add("9mm_rounds", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "9mm rounds.",
+    weight = 0.05,
+    category = "Ammo"
+})
+ScriptShared.Items:Add("at_flashlight", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = "Flashlight",
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_suppressor_light", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Suppressor (Light)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_suppressor_heavy", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Suppressor (Heavy)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_grip", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Grip',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_barrel", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Barrel',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_clip_extended_pistol", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Extended Clip (Pistol)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_clip_extended_smg", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Extended Clip (SMG)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_clip_extended_shotgun", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Extended Clip (Shotgun)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_clip_extended_rifle", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Extended Clip (Rifle)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_clip_extended_mg", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Extended Clip (LMG)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_clip_extended_sniper", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Extended Clip (SR)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_clip_drum_smg", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Drum clip (SMG)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_clip_drum_shotgun", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Drum clip (Shotgun)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_clip_drum_rifle", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Drum clip (Rifle)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_compensator", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Compensator',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_scope_macro", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Scope (Macro)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_scope_small", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Scope (Small)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_scope_medium", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Scope (Medium)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_scope_large", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Scope (Large)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_scope_advanced", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Scope (Advanced)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_scope_nv", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Scope (Night Vision)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_scope_thermal", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Scope (Thermal)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_scope_holo", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Scope (Holo)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_muzzle_flat", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Muzzle (Flat)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_muzzle_tactical", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Muzzle (Tactical)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_muzzle_fat", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Muzzle (Fat)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_muzzle_precision", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Muzzle (Precision)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_muzzle_heavy", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Muzzle (Heavy)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_muzzle_slanted", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Muzzle (Slanted)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_muzzle_split", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Muzzle (Split)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_muzzle_squared", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Muzzle (Squared)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_muzzle_bell", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Muzzle (Bell)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_luxe", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Luxe)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_wood", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Wood)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_metal", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Metal)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_pearl", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Pearl)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_camo", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Camo)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_brushstroke", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Brushstroke)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_woodland", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Woodland)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_skull", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Skull)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_sessanta", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Sessanta)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_perseus", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Perseus)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_leopard", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Leopard)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_zebra", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Zebra)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_geometric", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Geometric)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_boom", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Boom)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+ScriptShared.Items:Add("at_skin_patriotic", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Weapon Skin (Patriotic)',
+    weight = 1.0,
+    category = "Weapon attachment"
+})
+
+---@class ShopStaticData
+---@field shopName string
+---@field items ShopItem[]
+---@field blip? { sprite: number; colour:number; scale:number; }
+---@field locations { x: number; y:number; z:number; }[]
+---@field peds? { modelName: string; scenario?:string; coords: vector3; heading:number; }[]
+
+---@type { [string]: ShopStaticData }
+local Module <const> = {
+    -- ["General"] = {
+    --     shopName = "General Shop",
+    --     items = {
+    --         { name = "gold",   price = 200 },
+    --         { name = "cognac", price = 100 }
+    --     },
+    --     blip = {
+    --         sprite = 52,
+    --         colour = 69,
+    --         scale = 0.8
+    --     },
+    --     locations = {
+    --         vector3(223.832962, -792.619751, 30.695190)
+    --     },
+    --     peds = {
+    --         {
+    --             modelName = "mp_m_shopkeep_01",
+    --             scenario = 'WORLD_HUMAN_AA_COFFEE',
+    --             coords = vec3(223.832962, -792.619751, 31.0),
+    --             heading = 270.311,
+    --         },
+    --     }
+    -- }
+}
+
+if _G.APIShared.GM.Inventory.AQUIVER_TEST_SERVER then
+    Module["General"] = {
+        shopName = "Test Server Shop (General)",
+        items = {
+            { name = "money",      price = 1 },
+            { name = "gold",       price = 155 },
+            { name = "cognac",     price = 25 },
+            { name = "apple",      price = 45 },
+            { name = "hotdog",     price = 65 },
+            { name = "hamburger",  price = 75 },
+            { name = "ironingot",  price = 100 },
+            { name = "reddiamond", price = 120000 }
+        },
+        blip = {
+            sprite = 52,
+            colour = 69,
+            scale = 0.8
+        },
+        locations = {
+            vector3(-60.20, 217.59, 106.55)
+        },
+        peds = {
+            {
+                modelName = "a_m_m_soucent_01",
+                scenario = 'WORLD_HUMAN_AA_COFFEE',
+                coords = vec3(-60.20, 217.59, 106.55),
+                heading = 328.3,
+            },
+        }
+    }
+    Module["Weapon"] = {
+        shopName = "Test Server Shop (Weapons)",
+        items = {
+            { name = "pistol",                  price = 1000 },
+            { name = "bat",                     price = 500 },
+            { name = "grenade",                 price = 50 },
+            { name = "9mm_rounds",              price = 5 },
+            { name = "at_flashlight",           price = 5 },
+            { name = "at_clip_extended_pistol", price = 5 },
+            { name = "at_skin_luxe",            price = 5 },
+            { name = "at_skin_metal",           price = 5 },
+            { name = "at_suppressor_light",     price = 5 },
+            { name = "at_suppressor_heavy",     price = 5 }
+        },
+        blip = {
+            sprite = 52,
+            colour = 69,
+            scale = 0.8
+        },
+        locations = {
+            vector3(-53.38, 214.75, 106.55)
+        },
+        peds = {
+            {
+                modelName = "a_m_m_soucent_01",
+                scenario = 'WORLD_HUMAN_AA_COFFEE',
+                coords = vec3(-53.38, 214.75, 106.55),
+                heading = 340.8,
+            },
+        }
+    }
+end
+
+ScriptShared.Shops = Module
+
+--- Export function to register an item data from another resource.
+---@param name string Example: 'gold'
+---@param d RegisteredItemData
+exports("registerItem", function(name, d)
+    ScriptShared.Items:Add(name, d)
+end)
+
+--- Export function to create a shop from another resource.
+---@param id string Example: 'General'
+---@param shopData ShopStaticData
+exports("createShop", function(id, shopData)
+    Module[id] = shopData
+
+    -- If its server create the shop.
+    if IsDuplicityVersion() then
+        ScriptServer.Classes.Shop.new(id, shopData)
+    end
+end)

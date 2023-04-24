@@ -1,7 +1,7 @@
 <template>
     <DndProvider :backend="TouchBackend" :options="{
-        enableMouseEvents: true
-    }">
+            enableMouseEvents: true
+        }">
         <Dragged />
 
         <div class="center-div">
@@ -10,9 +10,9 @@
 
         <div class="center-div" @click="contextMenuStore.Close" v-if="inventoryStore.interfaceOpened">
 
-            <div class="inventory-background" :style="{
+            <!-- <div class="inventory-background" :style="{
                 backgroundImage: `url(inventory-background.png)`
-            }"></div>
+            }"></div> -->
 
             <div class="inventory-container left">
                 <Inventory v-if="inventoryStore.playerInventory" :is-local="true"
@@ -117,7 +117,7 @@ const openedCount = computed(() => {
         }
 
         &.active {
-            background-color: rgba(0, 225, 255, 0.555);
+            background-color: rgba(21, 165, 248, 0.61);
         }
     }
 }

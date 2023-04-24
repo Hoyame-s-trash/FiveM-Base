@@ -7,9 +7,9 @@
                 background: settingsStore.Settings.weight_bar_background
             }">
                 <div class="weight-bar-inside" :style="{
-                    width: (currentWeight / inventory.maxWeight) * 100 + '%',
-                    background: settingsStore.Settings.weight_bar_color
-                }"></div>
+                        width: (currentWeight / inventory.maxWeight) * 100 + '%',
+                        background: settingsStore.Settings.weight_bar_color
+                    }"></div>
             </div>
         </div>
     </div>
@@ -134,14 +134,14 @@ $textstroke: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
                 bottom: 20%;
                 width: 100%;
                 height: 0.6vw;
-                border-radius: 0.25vw;
-                border: 0.05vw solid grey;
+                border-radius: .25vw;
+                border: .1vw solid grey;
                 background-color: rgba(220, 220, 220, .65);
 
                 .weight-bar-inside {
                     height: 100%;
                     width: 20%;
-                    background: rgb(144, 238, 144);
+                    background: rgba(21, 165, 248, 0.61);
                     border-radius: inherit;
                 }
             }

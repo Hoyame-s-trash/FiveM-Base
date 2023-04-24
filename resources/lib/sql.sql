@@ -7,17 +7,20 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE TABLE IF NOT EXISTS `inventory_items` (
-  `uniqueID` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `items` longtext NOT NULL,
-  `originX` float DEFAULT NULL,
-  `originY` float DEFAULT NULL,
-  `originZ` float DEFAULT NULL,
-  `expires` bigint DEFAULT NULL,
-  PRIMARY KEY (`uniqueID`),
-  KEY `type` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS `avp_lib_objects` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `model` varchar(256) DEFAULT NULL,
+  `x` float DEFAULT NULL,
+  `y` float DEFAULT NULL,
+  `z` float DEFAULT NULL,
+  `rx` float DEFAULT NULL,
+  `ry` float DEFAULT NULL,
+  `rz` float DEFAULT NULL,
+  `dimension` int DEFAULT NULL,
+  `resource` varchar(128) DEFAULT NULL,
+  `variables` longtext,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

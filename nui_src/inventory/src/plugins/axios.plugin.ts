@@ -2,5 +2,5 @@ import axios from "axios";
 
 export const AxiosInstance = axios.create({
     // @ts-ignore
-    baseURL: typeof GetParentResourceName === "function" ? `https://${GetParentResourceName()}/` : `https://avp_inv/`
+    baseURL: typeof GetParentResourceName === "function" ? `https://${GetParentResourceName()}/` : `https://believer/`
 })

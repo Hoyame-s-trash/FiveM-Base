@@ -123,7 +123,7 @@ const [___, drop_Give] = useDrop<I_DragSource, void>(() => {
         &.use {
             height: 4vw;
             width: 7vw;
-            border-bottom: 0.2vw groove rgb(0, 225, 255);
+            border-bottom: 0.2vw groove rgb(21, 165, 248);
         }
 
         &.throw,

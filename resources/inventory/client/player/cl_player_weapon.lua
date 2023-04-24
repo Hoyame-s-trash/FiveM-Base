@@ -6,8 +6,8 @@ Weapons.usedWeaponItemHash = nil
 ---@type number | nil
 Weapons.floodProtect = GetGameTimer()
 
-SetWeaponsNoAutoswap(CONFIG.NO_AUTOSWAP_ON_EMPTY)
-SetWeaponsNoAutoreload(CONFIG.NO_AUTO_RELOAD)
+SetWeaponsNoAutoswap(GM.Inventory.NO_AUTOSWAP_ON_EMPTY)
+SetWeaponsNoAutoreload(GM.Inventory.NO_AUTO_RELOAD)
 
 Citizen.CreateThread(function()
     while true do
@@ -17,7 +17,7 @@ Citizen.CreateThread(function()
 end)
 
 local function findAmmoType(weaponHash)
-    for k, v in pairs(CONFIG.AMMO_WEAPONS) do
+    for k, v in pairs(GM.Inventory.AMMO_WEAPONS) do
         if k == weaponHash then
             return v
         end
@@ -71,16 +71,16 @@ function Weapons:SetArmedState(state)
                     local currentWeapon = GetSelectedPedWeapon(playerPed)
 
                     if IsPedShooting(playerPed) then
-                        if CONFIG.MISC_WEAPONS[currentWeapon] and self.floodProtect < GetGameTimer() then
+                        if GM.Inventory.MISC_WEAPONS[currentWeapon] and self.floodProtect < GetGameTimer() then
                             TriggerServerEvent("avp_inv:REDUCE_WEAPON_AMMO")
                             self.floodProtect = GetGameTimer() + 200
-                        elseif CONFIG.AMMO_WEAPONS[currentWeapon] then
+                        elseif GM.Inventory.AMMO_WEAPONS[currentWeapon] then
                             TriggerServerEvent("avp_inv:REDUCE_WEAPON_DURABILITY")
                             TriggerServerEvent('avp_inv:REDUCE_WEAPON_AMMO')
-                        elseif CONFIG.THROWABLE_WEAPONS[currentWeapon] then
+                        elseif GM.Inventory.THROWABLE_WEAPONS[currentWeapon] then
                             TriggerServerEvent('avp_inv:REDUCE_WEAPON_AMMO')
                         end
-                    elseif IsControlJustReleased(0, 24) and IsPedPerformingMeleeAction(playerPed) and CONFIG.MELEE_WEAPONS[currentWeapon] and self.floodProtect < GetGameTimer() then
+                    elseif IsControlJustReleased(0, 24) and IsPedPerformingMeleeAction(playerPed) and GM.Inventory.MELEE_WEAPONS[currentWeapon] and self.floodProtect < GetGameTimer() then
                         TriggerServerEvent("avp_inv:REDUCE_WEAPON_DURABILITY")
                         self.floodProtect = GetGameTimer() + 200
                     end
@@ -109,7 +109,7 @@ function Weapons:UpdateAmmoCountInWearedWeapon()
 
     local ammoCount = nil
 
-    if CONFIG.AMMO_WEAPONS[currentWeapon] then
+    if GM.Inventory.AMMO_WEAPONS[currentWeapon] then
         local ammoType = findAmmoType(currentWeapon)
         if ammoType then
             ammoCount = ScriptClient.Player.Inventory:GetItemQuantityBy({ name = ammoType })
@@ -130,12 +130,12 @@ function Weapons:UpdateWeapon(item)
     local currentWeapon = GetSelectedPedWeapon(playerPed)
     if not currentWeapon then return end
 
-    if CONFIG.MISC_WEAPONS[currentWeapon] then
+    if GM.Inventory.MISC_WEAPONS[currentWeapon] then
         local weaponItem = ScriptClient.Player.Inventory:GetItemBy({ itemHash = self.usedWeaponItemHash })
         if weaponItem then
             SetPedInfiniteAmmo(playerPed, weaponItem.quantity > 0, currentWeapon)
         end
-    elseif CONFIG.THROWABLE_WEAPONS[currentWeapon] then
+    elseif GM.Inventory.THROWABLE_WEAPONS[currentWeapon] then
         local weaponItem = ScriptClient.Player.Inventory:GetItemBy({ itemHash = self.usedWeaponItemHash })
         if weaponItem then
             SetPedAmmo(playerPed, currentWeapon, weaponItem.quantity)
@@ -152,7 +152,7 @@ function Weapons:RecreateWeaponObject(item)
     if type(item.meta.attachments) == "table" then
         for i = 1, #item.meta.attachments do
             local attItemName = item.meta.attachments[i]
-            local rockstarAtts = CONFIG.WEAPON_COMPONENTS[attItemName]
+            local rockstarAtts = GM.Inventory.WEAPON_COMPONENTS[attItemName]
             if type(rockstarAtts) == "table" then
                 for j = 1, #rockstarAtts do
                     local componentName = rockstarAtts[j]
