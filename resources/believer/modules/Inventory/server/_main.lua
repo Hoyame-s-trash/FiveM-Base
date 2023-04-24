@@ -23,30 +23,19 @@ AddEventHandler("onServerResourceStart", function(resourceName)
     end
 end)
 
--- Default playerDropped event did not work as intended, because the library deleted the player sooner.
-_G.APIShared.EventHandler:AddEvent("onPlayerQuit", function(player)
-    local identifier = player:getIdentifier()
+AddEventHandler("playerDropped", function()
+    local playerSrc = source
+    if (not playerSrc) then return end
 
-    local inventory = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = identifier })
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    local inventory = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = playerSelected.source })
     if not inventory then return end
 
     inventory:save()
     inventory:destroy()
 end)
-
--- AddEventHandler("playerDropped", function()
---     local playerSrc = source
---     if (not playerSrc) then return end
-
---     local playerSelected = ESX.GetPlayerFromId(playerSrc)
---     if (not playerSelected) then return end
-
---     local inventory = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = playerSelected.source })
---     if not inventory then return end
-
---     inventory:save()
---     inventory:destroy()
--- end)
 
 AddEventHandler("onResourceStop", function(resourceName)
     if ScriptServer.resourceName ~= resourceName then return end
@@ -61,7 +50,7 @@ end
 
 Citizen.SetTimeout(GM.Inventory.SAVE_INVENTORIES_MS, SaveInventoriesInterval)
 
-RegisterNetEvent("avp_inv:ITEM_MOVE_TO_SLOT", function(d)
+RegisterNetEvent("Inventory:ITEM_MOVE_TO_SLOT", function(d)
     local source <const> = source
     local fromUniqueID <const> = d.fromUniqueID
     local fromSlot <const> = d.fromSlot
@@ -69,7 +58,7 @@ RegisterNetEvent("avp_inv:ITEM_MOVE_TO_SLOT", function(d)
     local toSlot <const> = d.toSlot
     local quantity = d.quantity
 
-    local player <const> = _G.APIServer.Managers.PlayerManager:getPlayer(source)
+    local player <const> = ESX.GetPlayerFromId(source)
     if not player then return end
 
     local grabbed_inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = fromUniqueID })
@@ -96,7 +85,7 @@ RegisterNetEvent("avp_inv:ITEM_MOVE_TO_SLOT", function(d)
         local addedResult = nil
 
         if not item.data.tradable then
-            player:notification("info", "Item is not tradable!")
+            player.showInventoryNotification("info", "L'item n'est pas échangeable !")
             return
         end
 
@@ -118,6 +107,17 @@ RegisterNetEvent("avp_inv:ITEM_MOVE_TO_SLOT", function(d)
                 meta = item.meta,
                 toSlot = toSlot
             })
+            if (item.name == "money") then
+                playerSelected.addAccountMoney(item.name, quantity)
+                to_inventory:removeItemBy(quantity, {
+                    name = "money",
+                })
+            elseif (item.name == "black_money") then
+                playerSelected.addAccountMoney(item.name, quantity)
+                to_inventory:removeItemBy(quantity, {
+                    name = "black_money",
+                })
+            end
         end
 
         if addedResult.success then
@@ -125,7 +125,7 @@ RegisterNetEvent("avp_inv:ITEM_MOVE_TO_SLOT", function(d)
         end
     end
 end)
-RegisterNetEvent("avp_inv:CLOSE_SECOND_INVENTORY", function(uniqueID)
+RegisterNetEvent("Inventory:CLOSE_SECOND_INVENTORY", function(uniqueID)
     local source <const> = source
     local inv <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID }) --[[@as unknown]]
     if not inv then return end
@@ -134,13 +134,13 @@ RegisterNetEvent("avp_inv:CLOSE_SECOND_INVENTORY", function(uniqueID)
         inv:close(source)
     end
 end)
-RegisterNetEvent("avp_inv:ADD_NOTE_ITEM", function(data)
+RegisterNetEvent("Inventory:ADD_NOTE_ITEM", function(data)
     local source <const>   = source
     local itemHash <const> = data.itemHash
     local uniqueID <const> = data.uniqueID
     local newNote <const>  = data.newNote
 
-    local player <const>   = _G.APIServer.Managers.PlayerManager:getPlayer(source)
+    local player <const>   = ESX.GetPlayerFromId(source)
     if not player then return end
 
     local inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID })
@@ -157,15 +157,15 @@ RegisterNetEvent("avp_inv:ADD_NOTE_ITEM", function(data)
     end
 
     inventory:OnItemUpdated(item)
-    player:notification("success", "Item note modified successfully!")
+    player.showInventoryNotification("success", "Note d'information modifiée avec succès !")
 end)
-RegisterNetEvent("avp_inv:RENAME_ITEM", function(data)
+RegisterNetEvent("Inventory:RENAME_ITEM", function(data)
     local source <const>   = source
     local itemHash <const> = data.itemHash
     local uniqueID <const> = data.uniqueID
     local newName <const>  = data.newName
 
-    local player <const>   = _G.APIServer.Managers.PlayerManager:getPlayer(source)
+    local player <const>   = ESX.GetPlayerFromId(source)
     if not player then return end
 
     local inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID })
@@ -182,10 +182,10 @@ RegisterNetEvent("avp_inv:RENAME_ITEM", function(data)
     end
 
     inventory:OnItemUpdated(item)
-    player:notification("success", "Item renamed successfully!")
+    player.showInventoryNotification("success", "L'item a été renommé avec succès !")
 end)
 
-RegisterNetEvent("avp_inv:OPEN_NEAR_SHOPS", function()
+RegisterNetEvent("Inventory:OPEN_NEAR_SHOPS", function()
     local playerId = source
 
     local playerPed = GetPlayerPed(playerId)
@@ -206,7 +206,7 @@ RegisterNetEvent("avp_inv:OPEN_NEAR_SHOPS", function()
     end
 end)
 
-RegisterNetEvent("avp_inv:OPEN_NEAR_TRUNKS", function(vehicleNetIds)
+RegisterNetEvent("Inventory:OPEN_NEAR_TRUNKS", function(vehicleNetIds)
     local playerId = source
 
     local playerPed = GetPlayerPed(playerId)
@@ -237,7 +237,7 @@ RegisterNetEvent("avp_inv:OPEN_NEAR_TRUNKS", function(vehicleNetIds)
     end
 end)
 
-RegisterNetEvent("avp_inv:OPEN_VEHICLE_GLOVEBOX_INVENTORY", function()
+RegisterNetEvent("Inventory:OPEN_VEHICLE_GLOVEBOX_INVENTORY", function()
     local playerId = source
 
     local playerPed = GetPlayerPed(playerId)
@@ -264,7 +264,7 @@ RegisterNetEvent("avp_inv:OPEN_VEHICLE_GLOVEBOX_INVENTORY", function()
     glovebox_inventory:open(playerId)
 end)
 
-RegisterNetEvent("avp_inv:OPEN_NEAR_FACTION_SAFES", function()
+RegisterNetEvent("Inventory:OPEN_NEAR_FACTION_SAFES", function()
     local playerId = source
 
     local playerPed = GetPlayerPed(playerId)
@@ -282,15 +282,15 @@ RegisterNetEvent("avp_inv:OPEN_NEAR_FACTION_SAFES", function()
     end
 end)
 
-RegisterNetEvent("avp_inv:onInventoryOpen", function()
+RegisterNetEvent("Inventory:onInventoryOpen", function()
     local playerId = source
 end)
 
-RegisterNetEvent("avp_inv:onInventoryClose", function()
+RegisterNetEvent("Inventory:onInventoryClose", function()
     local playerId = source
 end)
 
-RegisterNetEvent("avp_inv:BUY_FROM_SHOP", function(data)
+RegisterNetEvent("Inventory:BUY_FROM_SHOP", function(data)
     local source <const> = source
     local shopId <const> = data.shopId
     local fromSlot <const> = data.fromSlot
@@ -312,13 +312,13 @@ RegisterNetEvent("avp_inv:BUY_FROM_SHOP", function(data)
     if type(quantity) ~= "number" or quantity < 1 then quantity = 1 end
     if not iData.stackable then quantity = 1 end
 
-    local player <const> = _G.APIServer.Managers.PlayerManager:getPlayer(source)
+    local player <const> = ESX.GetPlayerFromId(source)
     if not player then return end
 
     local finalPrice = shop_item.price * quantity
 
     if player:getMoney() < finalPrice then
-        player:notification("warning", "Not enough money!")
+        player.showInventoryNotification("warning", "Vous n'avez pas assez d'argent !")
         return
     end
 
@@ -329,11 +329,11 @@ RegisterNetEvent("avp_inv:BUY_FROM_SHOP", function(data)
         toSlot = toSlot
     })
     if addedResult.success then
-        player:removeMoney(finalPrice)
+        playerSelected.removeMoney(finalPrice)
     end
 end)
 
-RegisterNetEvent("avp_inv:GIVE_ITEM_TO_TARGET", function(data)
+RegisterNetEvent("Inventory:GIVE_ITEM_TO_TARGET", function(data)
     local source <const> = source
     local itemHash <const> = data.itemHash
     local serverId <const> = data.serverId
@@ -341,7 +341,7 @@ RegisterNetEvent("avp_inv:GIVE_ITEM_TO_TARGET", function(data)
 
     if source == serverId then return end
 
-    local player <const> = _G.APIServer.Managers.PlayerManager:getPlayer(source)
+    local player <const> = ESX.GetPlayerFromId(source)
     if not player then return end
 
     local player_inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ source = source })
@@ -352,7 +352,7 @@ RegisterNetEvent("avp_inv:GIVE_ITEM_TO_TARGET", function(data)
     if not item then return end
 
     if not item.data.tradable then
-        player:notification("info", "Item is not tradable!")
+        player.showInventoryNotification("info", "L'item n'est pas échangeable !")
         return
     end
 
@@ -361,11 +361,11 @@ RegisterNetEvent("avp_inv:GIVE_ITEM_TO_TARGET", function(data)
     end
 
     if not target_inventory:canCarryWeight(item.name, quantity) then
-        player:notification("info", "Target player inventory does not have enough space!")
+        player.showInventoryNotification("info", "L'inventaire du joueur cible n'a pas assez d'espace !")
         return
     end
 
-    local no_ref <const> = _G.APIShared:dereference(item)
+    local no_ref <const> = json.decode(json.encode(item))
 
     local addedResult = target_inventory:addItem({
         meta = no_ref.meta,
@@ -374,16 +374,24 @@ RegisterNetEvent("avp_inv:GIVE_ITEM_TO_TARGET", function(data)
     })
     if addedResult.success then
         player_inventory:removeItemBy(quantity, { itemHash = itemHash })
+
+        if (no_ref.name == "money") then
+            playerSelected.removeAccountMoney(no_ref.name, quantity)
+            targetSelected.addAccountMoney(no_ref.name, quantity)
+        elseif (no_ref.name == "black_money") then
+            playerSelected.removeAccountMoney(no_ref.name, quantity)
+            targetSelected.addAccountMoney(no_ref.name, quantity)
+        end
     end
 end)
 
-RegisterNetEvent("avp_inv:DROP_ITEM_ON_GROUND", function(data)
+RegisterNetEvent("Inventory:DROP_ITEM_ON_GROUND", function(data)
     local source <const> = source
     local uniqueID <const> = data.uniqueID
     local itemHash <const> = data.itemHash
     local quantity = data.quantity
 
-    local player <const> = _G.APIServer.Managers.PlayerManager:getPlayer(source)
+    local player <const> = ESX.GetPlayerFromId(source)
     if not player then return end
 
     local inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID })
@@ -397,7 +405,7 @@ RegisterNetEvent("avp_inv:DROP_ITEM_ON_GROUND", function(data)
     end
 
     if inventory.type == "dropped_grid" then
-        player:notification("error", "Where exactly do you want to drop the item?")
+        player.showInventoryNotification("error", "Où voulez-vous déposer l'objet exactement ?")
         return
     end
 
@@ -406,7 +414,7 @@ RegisterNetEvent("avp_inv:DROP_ITEM_ON_GROUND", function(data)
     local close_drop_grid <const> = ScriptServer.Managers.Dropped:createOrGetGrid(pX, pY, pZ)
     if not close_drop_grid then return end
 
-    local no_ref <const> = _G.APIShared:dereference(item)
+    local no_ref <const> = json.decode(json.encode(item))
 
     local addedResult <const> = close_drop_grid:addItem({
         name = no_ref.name,
@@ -422,6 +430,12 @@ RegisterNetEvent("avp_inv:DROP_ITEM_ON_GROUND", function(data)
 
         inventory:removeItemBy(quantity, { itemHash = no_ref.itemHash })
 
+        if (no_ref.name == "money") then
+            playerSelected.removeAccountMoney(no_ref.name, quantity)
+        elseif (no_ref.name == "black_money") then
+            playerSelected.removeAccountMoney(no_ref.name, quantity)
+        end
+
         -- Add as observer, if he is not one. (It will openup the dropped grid)
         if not close_drop_grid:hasObserver(source) then
             close_drop_grid:open(source)
@@ -429,7 +443,7 @@ RegisterNetEvent("avp_inv:DROP_ITEM_ON_GROUND", function(data)
     end
 end)
 
-RegisterNetEvent("avp_inv:OPEN_NEAR_DROPPED_GRID", function()
+RegisterNetEvent("Inventory:OPEN_NEAR_DROPPED_GRID", function()
     local source <const> = source
     local pX <const>, pY <const>, pZ <const> = table.unpack(GetEntityCoords(GetPlayerPed(source)))
     local close_drop_grid <const> = ScriptServer.Managers.Dropped:gridAt(pX, pY, pZ)
@@ -437,7 +451,7 @@ RegisterNetEvent("avp_inv:OPEN_NEAR_DROPPED_GRID", function()
     close_drop_grid:open(source)
 end)
 
-RegisterNetEvent("avp_inv:REDUCE_WEAPON_AMMO", function()
+RegisterNetEvent("Inventory:REDUCE_WEAPON_AMMO", function()
     local source <const> = source
     local inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ source = source }) --[[@as PlayerInventory]]
     if not inventory then return end
@@ -469,7 +483,7 @@ RegisterNetEvent("baseevents:onPlayerDied", function()
     end
 end)
 
-RegisterNetEvent("avp_inv:USE_ITEM", function(data)
+RegisterNetEvent("Inventory:USE_ITEM", function(data)
     local source <const> = source
     local itemHash <const> = data.itemHash
     local uniqueID <const> = data.uniqueID
@@ -496,14 +510,22 @@ RegisterNetEvent("avp_inv:USE_ITEM", function(data)
         local func <const> = parts[2]
 
         exports[resource][func](source, item)
+    end
 
-        if type(item.data.server.onUseDeleteAmount) == "number" and item.data.server.onUseDeleteAmount > 0 then
-            inventory:removeItemBy(item.data.server.onUseDeleteAmount, { itemHash = itemHash })
-        end
+    if (item.data.event and item.data.event.client_event) then
+        TriggerClientEvent(item.data.usable.client_event, source, item)
+    end
+
+    if (item.data.event and item.data.event.server_event) then
+        TriggerEvent(item.data.event.server_event, source, item)
+    end
+
+    if item.data.event and type(item.data.server.onUseDeleteAmount) == "number" and item.data.server.onUseDeleteAmount > 0 then
+        inventory:removeItemBy(item.data.server.onUseDeleteAmount, { itemHash = itemHash })
     end
 end)
 
-RegisterNetEvent("avp_inv:USE_SLOT", function(slot)
+RegisterNetEvent("Inventory:USE_SLOT", function(slot)
     local source <const> = source
     local inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ source = source })
     if not inventory then return end
@@ -534,19 +556,19 @@ RegisterNetEvent("avp_inv:USE_SLOT", function(slot)
     end
 end)
 
-RegisterNetEvent("avp_inv:OPEN_STASH", function(uniqueID)
+RegisterNetEvent("Inventory:OPEN_STASH", function(uniqueID)
     local source <const> = source
     exports[ScriptServer.resourceName]:OpenStash(source, uniqueID)
 end)
 
-RegisterNetEvent("avp_inv:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
+RegisterNetEvent("Inventory:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     local source <const> = source
     local fromUniqueID <const> = d.fromUniqueID
     local toUniqueID <const> = d.toUniqueID
     local draggedItemhash <const> = d.draggedItemhash
     local toItemHash <const> = d.toItemHash
 
-    local player <const> = _G.APIServer.Managers.PlayerManager:getPlayer(source)
+    local player <const> = ESX.GetPlayerFromId(source)
     if not player then return end
 
     local from_inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = fromUniqueID })
@@ -558,7 +580,7 @@ RegisterNetEvent("avp_inv:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     if not (draggedItem and to_item) then return end
 
     if to_item.data.weaponHash == nil then
-        player:notification("error", "This is not a weapon!")
+        player.showInventoryNotification("error", "Il ne s'agit pas d'une arme !")
         return
     end
 
@@ -579,7 +601,7 @@ RegisterNetEvent("avp_inv:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     -- -- end
 
     if not canAddAttachment then
-        player:notification("warning", "You can not use this attachment on this weapon!")
+        player.showInventoryNotification("warning", "Vous ne pouvez pas utiliser cet accessoire sur cette arme !")
         return
     end
 
@@ -588,7 +610,7 @@ RegisterNetEvent("avp_inv:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     end
 
     if #to_item.meta.attachments >= 5 then
-        player:notification("info", "You can not add more attachment to this weapon!")
+        player.showInventoryNotification("info", "Vous ne pouvez pas ajouter plus d'accessoires à cette arme !")
         return
     end
 
@@ -600,7 +622,7 @@ RegisterNetEvent("avp_inv:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     end
 
     if hasThisAttachment then
-        player:notification("warning", "You already has this kind of attachment on this weapon!")
+        player.showInventoryNotification("warning", "Vous avez déjà ce type d'attachement sur cette arme !")
         return
     end
 
@@ -609,11 +631,11 @@ RegisterNetEvent("avp_inv:ITEM_ADD_ATTACHMENT_WEAPON", function(d)
     from_inventory:removeItemBy(nil, { itemHash = draggedItemhash })
 
     if to_inventory.type == "player" then
-        TriggerClientEvent("avp_inv:UpdateWeaponAttachments", to_inventory.source, to_item)
+        TriggerClientEvent("Inventory:UpdateWeaponAttachments", to_inventory.source, to_item)
     end
 end)
 
-RegisterNetEvent("avp_inv:ITEM_REMOVE_ATTACHMENT_WEAPON", function(d)
+RegisterNetEvent("Inventory:ITEM_REMOVE_ATTACHMENT_WEAPON", function(d)
     local source <const> = source
     local fromUniqueID <const> = d.fromUniqueID
     local fromItemHash <const> = d.fromItemHash
@@ -644,11 +666,11 @@ RegisterNetEvent("avp_inv:ITEM_REMOVE_ATTACHMENT_WEAPON", function(d)
         to_inventory:OnItemUpdated(from_item)
 
         if to_inventory.type == "player" then
-            TriggerClientEvent("avp_inv:UpdateWeaponAttachments", to_inventory.source, from_item)
+            TriggerClientEvent("Inventory:UpdateWeaponAttachments", to_inventory.source, from_item)
         end
     end
 end)
-RegisterNetEvent("avp_inv:REDUCE_WEAPON_DURABILITY", function()
+RegisterNetEvent("Inventory:REDUCE_WEAPON_DURABILITY", function()
     local source <const> = source
     local player_inventory <const> = ScriptServer.Managers.Inventory:GetInventory({ source = source }) --[[@as PlayerInventory]]
     if not player_inventory then return end
@@ -781,7 +803,7 @@ function Module:GetInventory(data)
     end
 
     if type(data.source) == "number" then
-        local player <const> = _G.APIServer.Managers.PlayerManager:getPlayer(data.source)
+        local player <const> = ESX.GetPlayerFromId(data.source)
         if not player then return end
 
         local identifier <const> = player:getIdentifier()
@@ -868,7 +890,7 @@ function Module:addObserver(source)
 
     self.observers[source] = true
 
-    TriggerEvent("avp_inv:onObserverAdded", self.uniqueID, source)
+    TriggerEvent("Inventory:onObserverAdded", self.uniqueID, source)
 end
 
 function Module:removeObserver(source)
@@ -876,7 +898,7 @@ function Module:removeObserver(source)
 
     self.observers[source] = nil
 
-    TriggerEvent("avp_inv:onObserverRemoved", self.uniqueID, source)
+    TriggerEvent("Inventory:onObserverRemoved", self.uniqueID, source)
 end
 
 function Module:hasObserver(source)
@@ -1159,7 +1181,7 @@ function Module:removeItemBy(quantity, findBy)
         local v = self.items[i]
         local checker <const> = self:findByChecker(v, findBy)
         if checker then
-            local no_ref <const> = _G.APIShared:dereference(v)
+            local no_ref <const> = json.decode(json.encode(v))
 
             if v.data.stackable then
                 if v.quantity >= quantity then
@@ -1201,19 +1223,19 @@ end
 ---@param item InventoryItem
 function Module:OnItemRemoved(item)
     for observerSource in pairs(self.observers) do
-        TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", observerSource, {
+        TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", observerSource, {
             event = "REMOVE_INVENTORY_ITEM",
             uniqueID = self.uniqueID,
             itemHash = item.itemHash
         })
     end
-    TriggerEvent("avp_inv:onItemRemoved", self.uniqueID, item)
+    TriggerEvent("Inventory:onItemRemoved", self.uniqueID, item)
 end
 
 ---@param item InventoryItem
 function Module:OnItemUpdated(item)
     for observerSource in pairs(self.observers) do
-        TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", observerSource, {
+        TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", observerSource, {
             event = "UPDATE_INVENTORY_ITEM",
             uniqueID = self.uniqueID,
             itemHash = item.itemHash,
@@ -1225,14 +1247,14 @@ end
 ---@param item InventoryItem
 function Module:OnItemAdded(item)
     for observerSource in pairs(self.observers) do
-        TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", observerSource, {
+        TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", observerSource, {
             event = "UPDATE_INVENTORY_ITEM",
             uniqueID = self.uniqueID,
             itemHash = item.itemHash,
             item = item
         })
     end
-    TriggerEvent("avp_inv:onItemAdded", self.uniqueID, item)
+    TriggerEvent("Inventory:onItemAdded", self.uniqueID, item)
 end
 
 --- Only checks the inventory weight is okey to add the item or not.
@@ -1380,7 +1402,7 @@ function Module:open(source)
 
     self:addObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "ADD_OPENED_INVENTORY",
         uniqueID = self.uniqueID,
         items = self.items,
@@ -1395,7 +1417,7 @@ function Module:close(source)
 
     self:removeObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "REMOVE_OPENED_INVENTORY",
         uniqueID = self.uniqueID
     })
@@ -1555,22 +1577,22 @@ Module.new = function(data)
     self.safeCoords = data.safeCoords
     self.safeHeading = data.safeHeading
 
-    self.safeHandle = _G.APIServer.Managers.ObjectManager:createObject({
-        dimension = 0,
-        model = GM.Inventory.FACTION_SAFE_OBJECT_MODEL,
-        rx = 0.0,
-        ry = 0.0,
-        rz = self.safeHeading,
-        x = self.safeCoords.x,
-        y = self.safeCoords.y,
-        z = self.safeCoords.z
-    })
+    -- self.safeHandle = createObject({
+    --     dimension = 0,
+    --     model = GM.Inventory.FACTION_SAFE_OBJECT_MODEL,
+    --     rx = 0.0,
+    --     ry = 0.0,
+    --     rz = self.safeHeading,
+    --     x = self.safeCoords.x,
+    --     y = self.safeCoords.y,
+    --     z = self.safeCoords.z
+    -- })
 
     return self
 end
 
 function Module:isFactionMember(source)
-    local player <const> = _G.APIServer.Managers.PlayerManager:getPlayer(source)
+    local player <const> = ESX.GetPlayerFromId(source)
     if not player then return end
 
     return player:getJobName() == self.faction
@@ -1582,7 +1604,7 @@ function Module:open(source)
 
     self:addObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "ADD_OPENED_INVENTORY",
         uniqueID = self.uniqueID,
         items = self.items,
@@ -1597,7 +1619,7 @@ function Module:close(source)
 
     self:removeObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "REMOVE_OPENED_INVENTORY",
         uniqueID = self.uniqueID
     })
@@ -1631,7 +1653,7 @@ function Module:open(source)
 
     self:addObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "ADD_OPENED_INVENTORY",
         uniqueID = self.uniqueID,
         items = self.items,
@@ -1646,7 +1668,7 @@ function Module:close(source)
 
     self:removeObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "REMOVE_OPENED_INVENTORY",
         uniqueID = self.uniqueID
     })
@@ -1674,15 +1696,15 @@ Module.new = function(data)
     self.source = data.source
     self.usedWeaponItemHash = nil
 
-    local player <const> = _G.APIServer.Managers.PlayerManager:getPlayer(source)
+    local player <const> = ESX.GetPlayerFromId(source)
     if player then
-        TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", self.source, {
+        TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", self.source, {
             event = "SET_PLAYER_HEADER",
             playerHeader = string.format("%s (%d)", player:getName(), self.source)
         })
     end
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", self.source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", self.source, {
         event = "ADD_OPENED_INVENTORY",
         uniqueID = self.uniqueID,
         items = self.items,
@@ -1693,7 +1715,7 @@ Module.new = function(data)
     })
 
     self:addObserver(self.source)
-    TriggerClientEvent("avp_inv:setPlayerInventoryItems", self.source, self.items)
+    TriggerClientEvent("Inventory:setPlayerInventoryItems", self.source, self.items)
 
     return self
 end
@@ -1702,10 +1724,10 @@ end
 function Module:OnItemUpdated(item)
     self.__index.OnItemUpdated(self, item)
 
-    TriggerClientEvent("avp_inv:onPlayerItemUpdated", self.source, item)
+    TriggerClientEvent("Inventory:onPlayerItemUpdated", self.source, item)
 
     if self.usedWeaponItemHash == item.itemHash then
-        TriggerClientEvent("avp_inv:updateCurrentWeapon", self.source, item)
+        TriggerClientEvent("Inventory:updateCurrentWeapon", self.source, item)
     end
 end
 
@@ -1713,14 +1735,14 @@ end
 function Module:OnItemAdded(item)
     self.__index.OnItemAdded(self, item)
 
-    TriggerClientEvent("avp_inv:onPlayerItemAdded", self.source, item)
+    TriggerClientEvent("Inventory:onPlayerItemAdded", self.source, item)
 end
 
 ---@param item InventoryItem
 function Module:OnItemRemoved(item)
     self.__index.OnItemRemoved(self, item)
 
-    TriggerClientEvent("avp_inv:onPlayerItemRemoved", self.source, item)
+    TriggerClientEvent("Inventory:onPlayerItemRemoved", self.source, item)
 
     if self.usedWeaponItemHash == item.itemHash then
         self:DisarmWeapon()
@@ -1733,7 +1755,7 @@ function Module:open(source)
 
     self:addObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "ADD_OPENED_INVENTORY",
         uniqueID = self.uniqueID,
         items = self.items,
@@ -1750,7 +1772,7 @@ function Module:close(source)
 
     self:removeObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "REMOVE_OPENED_INVENTORY",
         uniqueID = self.uniqueID
     })
@@ -1770,12 +1792,12 @@ function Module:EquipWeapon(item)
     if type(item.meta.durability) == "number" and item.meta.durability < 1 then return end
 
     self.usedWeaponItemHash = item.itemHash
-    TriggerClientEvent("avp_inv:equipWeapon", self.source, item)
+    TriggerClientEvent("Inventory:equipWeapon", self.source, item)
 end
 
 function Module:DisarmWeapon()
     self.usedWeaponItemHash = nil
-    TriggerClientEvent("avp_inv:disarmWeapon", self.source)
+    TriggerClientEvent("Inventory:disarmWeapon", self.source)
 end
 
 function Module:ReduceWeaponDurability()
@@ -1848,7 +1870,7 @@ end
 function Module:hasPermission(source)
     if self.isPublic then return true end
 
-    local player <const> = _G.APIServer.Managers.PlayerManager:getPlayer(source)
+    local player <const> = ESX.GetPlayerFromId(source)
     if not player then return end
 
     if type(self.ownerLicense) == "string" then
@@ -1875,7 +1897,7 @@ function Module:open(source)
 
     self:addObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "ADD_OPENED_INVENTORY",
         uniqueID = self.uniqueID,
         items = self.items,
@@ -1890,7 +1912,7 @@ function Module:close(source)
 
     self:removeObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "REMOVE_OPENED_INVENTORY",
         uniqueID = self.uniqueID
     })
@@ -1930,7 +1952,7 @@ function Module:open(source)
 
     self:addObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "ADD_OPENED_INVENTORY",
         uniqueID = self.uniqueID,
         items = self.items,
@@ -1945,7 +1967,7 @@ function Module:close(source)
 
     self:removeObserver(source)
 
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "REMOVE_OPENED_INVENTORY",
         uniqueID = self.uniqueID
     })
@@ -1981,32 +2003,6 @@ Module.new = function(id, allData)
     self.shopName = allData.shopName
     self.shopId = id
     self.items = {}
-    self.blips = {}
-    self.peds = {}
-
-    for i = 1, #allData.locations do
-        self.blips[#self.blips + 1] = _G.APIServer.Managers.BlipManager:createBlip({
-            pos = allData.locations[i],
-            color = allData.blip.colour,
-            sprite = allData.blip.sprite,
-            scale = allData.blip.scale,
-            display = 4,
-            name = self.shopName,
-            shortRange = false
-        })
-    end
-
-    for i = 1, #allData.peds do
-        self.peds[#self.peds + 1] = _G.APIServer.Managers.PedManager:createPed({
-            pos = allData.peds[i].coords,
-            heading = allData.peds[i].heading,
-            model = allData.peds[i].modelName,
-            name = self.shopName,
-            questionMark = true,
-            dimension = 0,
-            scenario = allData.peds[i].scenario
-        })
-    end
 
     for i = 1, #allData.items do
         local v = allData.items[i]
@@ -2030,7 +2026,7 @@ Module.new = function(id, allData)
 end
 
 function Module:openShop(source)
-    TriggerClientEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", source, {
+    TriggerClientEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", source, {
         event = "OPEN_SHOP",
         items = self.items,
         shopId = self.shopId,
@@ -2046,22 +2042,12 @@ for k, v in pairs(ScriptShared.Shops) do
     ScriptServer.Classes.Shop.new(k, v)
 end
 
-local accountsAsItems = {
-    ["money"] = true
-}
-
 local function Init()
-    while GetResourceState("believer") == "starting" do
-        Citizen.Wait(500)
-    end
-
-    if GetResourceState("believer") ~= "started" then return end
-
     print("^1ESX framework recognized.")
 
     local function loadEsxPlayerInventory(xPlayer)
         ScriptServer.Classes.PlayerInventory.new({
-            inventoryName = "Player Stash",
+            inventoryName = "INVENTAIRE",
             maxWeight = GM.Inventory.PLAYER_INVENTORY_DEFAULTS.MAX_WEIGHT,
             slotsAmount = GM.Inventory.PLAYER_INVENTORY_DEFAULTS.SLOTS,
             source = xPlayer.source,
@@ -2086,13 +2072,26 @@ local function Init()
 
     RegisterNetEvent("esx:playerLoaded", function(playerId, xPlayer, isNew)
         loadEsxPlayerInventory(xPlayer)
+
+        for k, v in pairs(xPlayer.accounts) do
+            if (v.name ~= "bank") then
+                local currentMoney = exports["believer"]:GetItemQuantityBy(playerId, {
+                  name = v.name,
+                })
+                if (v.money == 0) then
+                    exports["believer"]:RemoveItemBy(playerId, currentMoney, {
+                        name = v.name,
+                    })
+                else
+                    exports["believer"]:SetItemQuantity(playerId, v.name, v.money)
+                end
+            end
+        end
     end)
 end
 
 Init()
 
--- This file is just for dev purposes.
--- Disable it in the fxmanifest.lua file! Do not load this if you are not testing around things.
 
 RegisterCommand("frisk", function(source, args)
     local targetID = tonumber(args[1])

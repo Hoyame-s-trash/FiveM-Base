@@ -43,8 +43,6 @@ server_scripts {
 	"common/functions.lua",
 	"server/modules/actions.lua",
 
-	'@lib/compiled/exports/server.lua',
-
 	"modules/**/server/objects/*.lua",
     "modules/**/server/*.lua",
 }
@@ -70,8 +68,6 @@ client_scripts {
     "dependencies/menu/RageUI.lua",
     "dependencies/components/*.lua",
     "dependencies/menu/**/*.lua",
-
-	'@lib/compiled/exports/client.lua',
 
     "modules/**/client/objects/*.lua",
     "modules/**/client/*.lua",

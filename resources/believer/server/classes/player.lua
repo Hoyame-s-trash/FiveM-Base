@@ -375,6 +375,14 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 		self.triggerEvent('esx:showNotification', msg, options)
 	end
 
+	function self.showInventoryNotification(type, msg)
+		self.triggerEvent("Inventory:SEND_NOTIFICATION", {
+			event = "SEND_NOTIFICATION",
+			type = type,
+			message = msg
+		})
+	end
+
 	function self.showHelpNotification(msg, thisFrame, beep, duration)
 		self.triggerEvent('esx:showHelpNotification', msg, thisFrame, beep, duration)
 	end

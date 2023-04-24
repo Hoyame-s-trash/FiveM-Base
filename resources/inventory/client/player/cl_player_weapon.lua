@@ -72,16 +72,16 @@ function Weapons:SetArmedState(state)
 
                     if IsPedShooting(playerPed) then
                         if GM.Inventory.MISC_WEAPONS[currentWeapon] and self.floodProtect < GetGameTimer() then
-                            TriggerServerEvent("avp_inv:REDUCE_WEAPON_AMMO")
+                            TriggerServerEvent("Inventory:REDUCE_WEAPON_AMMO")
                             self.floodProtect = GetGameTimer() + 200
                         elseif GM.Inventory.AMMO_WEAPONS[currentWeapon] then
-                            TriggerServerEvent("avp_inv:REDUCE_WEAPON_DURABILITY")
-                            TriggerServerEvent('avp_inv:REDUCE_WEAPON_AMMO')
+                            TriggerServerEvent("Inventory:REDUCE_WEAPON_DURABILITY")
+                            TriggerServerEvent('Inventory:REDUCE_WEAPON_AMMO')
                         elseif GM.Inventory.THROWABLE_WEAPONS[currentWeapon] then
-                            TriggerServerEvent('avp_inv:REDUCE_WEAPON_AMMO')
+                            TriggerServerEvent('Inventory:REDUCE_WEAPON_AMMO')
                         end
                     elseif IsControlJustReleased(0, 24) and IsPedPerformingMeleeAction(playerPed) and GM.Inventory.MELEE_WEAPONS[currentWeapon] and self.floodProtect < GetGameTimer() then
-                        TriggerServerEvent("avp_inv:REDUCE_WEAPON_DURABILITY")
+                        TriggerServerEvent("Inventory:REDUCE_WEAPON_DURABILITY")
                         self.floodProtect = GetGameTimer() + 200
                     end
 
@@ -192,27 +192,27 @@ function Weapons:Disarm()
 end
 
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:equipWeapon", function(item)
+RegisterNetEvent("Inventory:equipWeapon", function(item)
     Weapons:Equip(item)
 end)
-RegisterNetEvent("avp_inv:disarmWeapon", function()
+RegisterNetEvent("Inventory:disarmWeapon", function()
     Weapons:Disarm()
 end)
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:updateCurrentWeapon", function(item)
+RegisterNetEvent("Inventory:updateCurrentWeapon", function(item)
     Weapons:UpdateWeapon(item)
 end)
-RegisterNetEvent("avp_inv:onPlayerItemUpdated", function(item)
+RegisterNetEvent("Inventory:onPlayerItemUpdated", function(item)
     Weapons:UpdateAmmoCountInWearedWeapon()
 end)
-RegisterNetEvent("avp_inv:onPlayerItemRemoved", function(item)
+RegisterNetEvent("Inventory:onPlayerItemRemoved", function(item)
     Weapons:UpdateAmmoCountInWearedWeapon()
 end)
-RegisterNetEvent("avp_inv:onPlayerItemAdded", function(item)
+RegisterNetEvent("Inventory:onPlayerItemAdded", function(item)
     Weapons:UpdateAmmoCountInWearedWeapon()
 end)
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:UpdateWeaponAttachments", function(item)
+RegisterNetEvent("Inventory:UpdateWeaponAttachments", function(item)
     Weapons:RecreateWeaponObject(item)
 end)
 

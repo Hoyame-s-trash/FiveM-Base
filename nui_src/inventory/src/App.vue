@@ -45,6 +45,8 @@
             <Settings />
         </div>
     </DndProvider>
+    <NotificationComponent />
+    <HelpComponent />
 </template>
 
 <script lang="ts" setup>
@@ -64,6 +66,8 @@ import { DndProvider } from 'vue3-dnd';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import eventPlugin from './plugins/event.plugin';
 import { computed } from '@vue/reactivity';
+import NotificationComponent from './components/NotificationComponent.vue';
+import HelpComponent from "./components/HelpComponent.vue";
 
 const contextMenuStore = useContextMenuStore();
 const inventoryStore = useInventoryStore();

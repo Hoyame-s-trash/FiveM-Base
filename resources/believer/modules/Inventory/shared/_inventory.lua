@@ -42,17 +42,15 @@ GM.Inventory.FACTION_INVENTORIES = {
     -- }
 }
 
-if _G.APIShared.GM.Inventory.AQUIVER_TEST_SERVER then
-    GM.Inventory.FACTION_INVENTORIES["police"] = {
-        header = "Police Safe",
-        x = -46.47,
-        y = 213.13,
-        z = 106.55,
-        heading = 162.4,
-        slotsAmount = 40,
-        maxWeight = 2000
-    }
-end
+GM.Inventory.FACTION_INVENTORIES["police"] = {
+    header = "Police Safe",
+    x = -46.47,
+    y = 213.13,
+    z = 106.55,
+    heading = 162.4,
+    slotsAmount = 40,
+    maxWeight = 2000
+}
 
 -- Ammo will apply with different item as bullet to these weapons. (You have to register the ammo also as item.)
 GM.Inventory.AMMO_WEAPONS = {
@@ -515,6 +513,9 @@ ScriptShared.Items = Module
 
 ---@param name string
 function Module:Get(name)
+    if (not self.Registered[name]) then
+        print(("[^1WARNING^0] Inventory ITEM doens't exist : ^5%s^7"):format(name))
+    end
     return self.Registered[name]
 end
 
@@ -528,509 +529,572 @@ ScriptShared.Items:Add("money", {
     stackable = true,
     deletable = true,
     tradable = true,
-    label = "Money",
+    label = "Espèces",
     weight = 0.0,
-    category = "Currency"
-})
-ScriptShared.Items:Add("gold", {
-    stackable = true,
-    deletable = true,
-    tradable = true,
-    label = "Gold",
-    weight = 1.5,
-    usable = true,
-    category = "Raw material",
-    server = {
-        export = "av_inventory_2_remastered.test",
-        onUseDeleteAmount = 1
-    }
-})
-ScriptShared.Items:Add("cognac", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = "Hennessy Cognac",
-    weight = 0.75,
-    droppedModel = `prop_cs_script_bottle`,
-    category = "Drink"
-})
-ScriptShared.Items:Add("hotdog", {
-    stackable = true,
-    deletable = true,
-    tradable = true,
-    label = "Hot-Dog",
-    weight = 0.25,
-    category = "Food"
-})
-ScriptShared.Items:Add("hamburger", {
-    stackable = true,
-    deletable = true,
-    tradable = true,
-    label = "Hamburger",
-    weight = 0.25,
-    category = "Food"
-})
-ScriptShared.Items:Add("ironingot", {
-    stackable = true,
-    deletable = true,
-    tradable = true,
-    label = "Iron Ingot",
-    weight = 0.75,
-    category = "Raw material"
-})
-ScriptShared.Items:Add("reddiamond", {
-    stackable = true,
-    deletable = true,
-    tradable = true,
-    label = "Red Diamond",
-    weight = 0.1,
-    category = "Raw material"
-})
-ScriptShared.Items:Add("apple", {
-    stackable = true,
-    deletable = true,
-    tradable = true,
-    label = "Apple",
-    weight = 0.25,
-    category = "Fruit"
+    category = "Argent"
 })
 
-ScriptShared.Items:Add("pistol", {
-    stackable = false,
+ScriptShared.Items:Add("black_money", {
+    stackable = true,
     deletable = true,
     tradable = true,
-    label = "Pistol",
-    weaponHash = `WEAPON_PISTOL`,
-    usable = true,
+    label = "Argent sale",
+    weight = 0.0,
+    category = "Argent"
+})
+
+ScriptShared.Items:Add("handcuffs", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "Menottes",
     weight = 1.0,
-    category = "Weapon",
-    generateSerial = true,
-    defaultMeta = {
-        durability = 100
-    },
-    allowedAttachments = {
-        "at_flashlight",
-        "at_suppressor_light"
+    usable = true,
+    category = "Utilisable",
+    event = {
+        server_event = false,
+        client_event = "Police:item:handcuffs",
+        onUseDeleteAmount = 0
     }
 })
-ScriptShared.Items:Add("bat", {
-    stackable = false,
+
+ScriptShared.Items:Add("bandage", {
+    stackable = true,
     deletable = true,
     tradable = true,
-    label = "Bat",
-    weaponHash = `WEAPON_BAT`,
-    usable = true,
+    label = "Bandage",
     weight = 1.0,
-    category = "Weapon",
-    defaultMeta = {
-        durability = 100
+    usable = true,
+    category = "Médical",
+    event = {
+        server_event = "Ambulance:item:bandage",
+        client_event = false,
+        onUseDeleteAmount = 0
     }
 })
-ScriptShared.Items:Add("grenade", {
+
+ScriptShared.Items:Add("medikit", {
     stackable = true,
     deletable = true,
     tradable = true,
-    label = "Grenade",
-    weaponHash = `WEAPON_GRENADE`,
+    label = "Bandage",
+    weight = 1.0,
     usable = true,
-    weight = 1.0,
-    category = "Weapon",
-    generateSerial = true
+    category = "Médical",
+    event = {
+        server_event = "Ambulance:item:medikit",
+        client_event = false,
+        onUseDeleteAmount = 0
+    }
 })
-ScriptShared.Items:Add("petrolcan", {
-    stackable = true,
-    deletable = true,
-    tradable = true,
-    label = "Petrol Can",
-    weaponHash = `WEAPON_PETROLCAN`,
-    usable = true,
-    weight = 0.1,
-    category = "Weapon"
-})
-ScriptShared.Items:Add("9mm_rounds", {
-    stackable = true,
-    deletable = true,
-    tradable = true,
-    label = "9mm rounds.",
-    weight = 0.05,
-    category = "Ammo"
-})
-ScriptShared.Items:Add("at_flashlight", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = "Flashlight",
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_suppressor_light", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Suppressor (Light)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_suppressor_heavy", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Suppressor (Heavy)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_grip", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Grip',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_barrel", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Barrel',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_clip_extended_pistol", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Extended Clip (Pistol)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_clip_extended_smg", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Extended Clip (SMG)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_clip_extended_shotgun", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Extended Clip (Shotgun)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_clip_extended_rifle", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Extended Clip (Rifle)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_clip_extended_mg", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Extended Clip (LMG)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_clip_extended_sniper", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Extended Clip (SR)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_clip_drum_smg", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Drum clip (SMG)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_clip_drum_shotgun", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Drum clip (Shotgun)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_clip_drum_rifle", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Drum clip (Rifle)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_compensator", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Compensator',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_scope_macro", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Scope (Macro)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_scope_small", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Scope (Small)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_scope_medium", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Scope (Medium)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_scope_large", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Scope (Large)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_scope_advanced", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Scope (Advanced)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_scope_nv", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Scope (Night Vision)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_scope_thermal", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Scope (Thermal)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_scope_holo", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Scope (Holo)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_muzzle_flat", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Muzzle (Flat)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_muzzle_tactical", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Muzzle (Tactical)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_muzzle_fat", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Muzzle (Fat)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_muzzle_precision", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Muzzle (Precision)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_muzzle_heavy", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Muzzle (Heavy)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_muzzle_slanted", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Muzzle (Slanted)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_muzzle_split", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Muzzle (Split)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_muzzle_squared", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Muzzle (Squared)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_muzzle_bell", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Muzzle (Bell)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_luxe", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Luxe)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_wood", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Wood)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_metal", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Metal)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_pearl", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Pearl)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_camo", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Camo)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_brushstroke", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Brushstroke)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_woodland", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Woodland)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_skull", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Skull)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_sessanta", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Sessanta)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_perseus", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Perseus)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_leopard", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Leopard)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_zebra", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Zebra)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_geometric", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Geometric)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_boom", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Boom)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
-ScriptShared.Items:Add("at_skin_patriotic", {
-    stackable = false,
-    deletable = true,
-    tradable = true,
-    label = 'Weapon Skin (Patriotic)',
-    weight = 1.0,
-    category = "Weapon attachment"
-})
+
+-- ScriptShared.Items:Add("money", {
+--     stackable = true,
+--     deletable = true,
+--     tradable = true,
+--     label = "Money",
+--     weight = 0.0,
+--     category = "Currency"
+-- })
+-- ScriptShared.Items:Add("gold", {
+--     stackable = true,
+--     deletable = true,
+--     tradable = true,
+--     label = "Gold",
+--     weight = 1.5,
+--     usable = true,
+--     category = "Raw material",
+--     server = {
+--         export = "av_inventory_2_remastered.test",
+--         onUseDeleteAmount = 1
+--     }
+-- })
+-- ScriptShared.Items:Add("cognac", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = "Hennessy Cognac",
+--     weight = 0.75,
+--     droppedModel = `prop_cs_script_bottle`,
+--     category = "Drink"
+-- })
+-- ScriptShared.Items:Add("hotdog", {
+--     stackable = true,
+--     deletable = true,
+--     tradable = true,
+--     label = "Hot-Dog",
+--     weight = 0.25,
+--     category = "Food"
+-- })
+-- ScriptShared.Items:Add("hamburger", {
+--     stackable = true,
+--     deletable = true,
+--     tradable = true,
+--     label = "Hamburger",
+--     weight = 0.25,
+--     category = "Food"
+-- })
+-- ScriptShared.Items:Add("ironingot", {
+--     stackable = true,
+--     deletable = true,
+--     tradable = true,
+--     label = "Iron Ingot",
+--     weight = 0.75,
+--     category = "Raw material"
+-- })
+-- ScriptShared.Items:Add("reddiamond", {
+--     stackable = true,
+--     deletable = true,
+--     tradable = true,
+--     label = "Red Diamond",
+--     weight = 0.1,
+--     category = "Raw material"
+-- })
+-- ScriptShared.Items:Add("apple", {
+--     stackable = true,
+--     deletable = true,
+--     tradable = true,
+--     label = "Apple",
+--     weight = 0.25,
+--     category = "Fruit"
+-- })
+
+-- ScriptShared.Items:Add("pistol", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = "Pistol",
+--     weaponHash = `WEAPON_PISTOL`,
+--     usable = true,
+--     weight = 1.0,
+--     category = "Weapon",
+--     generateSerial = true,
+--     defaultMeta = {
+--         durability = 100
+--     },
+--     allowedAttachments = {
+--         "at_flashlight",
+--         "at_suppressor_light"
+--     }
+-- })
+-- ScriptShared.Items:Add("bat", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = "Bat",
+--     weaponHash = `WEAPON_BAT`,
+--     usable = true,
+--     weight = 1.0,
+--     category = "Weapon",
+--     defaultMeta = {
+--         durability = 100
+--     }
+-- })
+-- ScriptShared.Items:Add("grenade", {
+--     stackable = true,
+--     deletable = true,
+--     tradable = true,
+--     label = "Grenade",
+--     weaponHash = `WEAPON_GRENADE`,
+--     usable = true,
+--     weight = 1.0,
+--     category = "Weapon",
+--     generateSerial = true
+-- })
+-- ScriptShared.Items:Add("petrolcan", {
+--     stackable = true,
+--     deletable = true,
+--     tradable = true,
+--     label = "Petrol Can",
+--     weaponHash = `WEAPON_PETROLCAN`,
+--     usable = true,
+--     weight = 0.1,
+--     category = "Weapon"
+-- })
+-- ScriptShared.Items:Add("9mm_rounds", {
+--     stackable = true,
+--     deletable = true,
+--     tradable = true,
+--     label = "9mm rounds.",
+--     weight = 0.05,
+--     category = "Ammo"
+-- })
+-- ScriptShared.Items:Add("at_flashlight", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = "Flashlight",
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_suppressor_light", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Suppressor (Light)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_suppressor_heavy", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Suppressor (Heavy)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_grip", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Grip',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_barrel", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Barrel',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_clip_extended_pistol", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Extended Clip (Pistol)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_clip_extended_smg", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Extended Clip (SMG)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_clip_extended_shotgun", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Extended Clip (Shotgun)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_clip_extended_rifle", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Extended Clip (Rifle)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_clip_extended_mg", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Extended Clip (LMG)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_clip_extended_sniper", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Extended Clip (SR)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_clip_drum_smg", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Drum clip (SMG)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_clip_drum_shotgun", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Drum clip (Shotgun)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_clip_drum_rifle", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Drum clip (Rifle)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_compensator", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Compensator',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_scope_macro", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Scope (Macro)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_scope_small", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Scope (Small)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_scope_medium", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Scope (Medium)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_scope_large", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Scope (Large)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_scope_advanced", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Scope (Advanced)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_scope_nv", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Scope (Night Vision)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_scope_thermal", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Scope (Thermal)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_scope_holo", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Scope (Holo)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_muzzle_flat", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Muzzle (Flat)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_muzzle_tactical", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Muzzle (Tactical)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_muzzle_fat", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Muzzle (Fat)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_muzzle_precision", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Muzzle (Precision)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_muzzle_heavy", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Muzzle (Heavy)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_muzzle_slanted", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Muzzle (Slanted)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_muzzle_split", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Muzzle (Split)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_muzzle_squared", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Muzzle (Squared)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_muzzle_bell", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Muzzle (Bell)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_luxe", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Luxe)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_wood", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Wood)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_metal", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Metal)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_pearl", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Pearl)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_camo", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Camo)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_brushstroke", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Brushstroke)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_woodland", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Woodland)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_skull", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Skull)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_sessanta", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Sessanta)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_perseus", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Perseus)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_leopard", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Leopard)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_zebra", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Zebra)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_geometric", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Geometric)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_boom", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Boom)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
+-- ScriptShared.Items:Add("at_skin_patriotic", {
+--     stackable = false,
+--     deletable = true,
+--     tradable = true,
+--     label = 'Weapon Skin (Patriotic)',
+--     weight = 1.0,
+--     category = "Weapon attachment"
+-- })
 
 ---@class ShopStaticData
 ---@field shopName string
@@ -1066,68 +1130,66 @@ local Module <const> = {
     -- }
 }
 
-if _G.APIShared.GM.Inventory.AQUIVER_TEST_SERVER then
-    Module["General"] = {
-        shopName = "Test Server Shop (General)",
-        items = {
-            { name = "money",      price = 1 },
-            { name = "gold",       price = 155 },
-            { name = "cognac",     price = 25 },
-            { name = "apple",      price = 45 },
-            { name = "hotdog",     price = 65 },
-            { name = "hamburger",  price = 75 },
-            { name = "ironingot",  price = 100 },
-            { name = "reddiamond", price = 120000 }
-        },
-        blip = {
-            sprite = 52,
-            colour = 69,
-            scale = 0.8
-        },
-        locations = {
-            vector3(-60.20, 217.59, 106.55)
-        },
-        peds = {
-            {
-                modelName = "a_m_m_soucent_01",
-                scenario = 'WORLD_HUMAN_AA_COFFEE',
-                coords = vec3(-60.20, 217.59, 106.55),
-                heading = 328.3,
-            },
-        }
-    }
-    Module["Weapon"] = {
-        shopName = "Test Server Shop (Weapons)",
-        items = {
-            { name = "pistol",                  price = 1000 },
-            { name = "bat",                     price = 500 },
-            { name = "grenade",                 price = 50 },
-            { name = "9mm_rounds",              price = 5 },
-            { name = "at_flashlight",           price = 5 },
-            { name = "at_clip_extended_pistol", price = 5 },
-            { name = "at_skin_luxe",            price = 5 },
-            { name = "at_skin_metal",           price = 5 },
-            { name = "at_suppressor_light",     price = 5 },
-            { name = "at_suppressor_heavy",     price = 5 }
-        },
-        blip = {
-            sprite = 52,
-            colour = 69,
-            scale = 0.8
-        },
-        locations = {
-            vector3(-53.38, 214.75, 106.55)
-        },
-        peds = {
-            {
-                modelName = "a_m_m_soucent_01",
-                scenario = 'WORLD_HUMAN_AA_COFFEE',
-                coords = vec3(-53.38, 214.75, 106.55),
-                heading = 340.8,
-            },
-        }
-    }
-end
+-- Module["General"] = {
+--     shopName = "Test Server Shop (General)",
+--     items = {
+--         { name = "money",      price = 1 },
+--         { name = "gold",       price = 155 },
+--         { name = "cognac",     price = 25 },
+--         { name = "apple",      price = 45 },
+--         { name = "hotdog",     price = 65 },
+--         { name = "hamburger",  price = 75 },
+--         { name = "ironingot",  price = 100 },
+--         { name = "reddiamond", price = 120000 }
+--     },
+--     blip = {
+--         sprite = 52,
+--         colour = 69,
+--         scale = 0.8
+--     },
+--     locations = {
+--         vector3(-60.20, 217.59, 106.55)
+--     },
+--     peds = {
+--         {
+--             modelName = "a_m_m_soucent_01",
+--             scenario = 'WORLD_HUMAN_AA_COFFEE',
+--             coords = vec3(-60.20, 217.59, 106.55),
+--             heading = 328.3,
+--         },
+--     }
+-- }
+-- Module["Weapon"] = {
+--     shopName = "Test Server Shop (Weapons)",
+--     items = {
+--         { name = "pistol",                  price = 1000 },
+--         { name = "bat",                     price = 500 },
+--         { name = "grenade",                 price = 50 },
+--         { name = "9mm_rounds",              price = 5 },
+--         { name = "at_flashlight",           price = 5 },
+--         { name = "at_clip_extended_pistol", price = 5 },
+--         { name = "at_skin_luxe",            price = 5 },
+--         { name = "at_skin_metal",           price = 5 },
+--         { name = "at_suppressor_light",     price = 5 },
+--         { name = "at_suppressor_heavy",     price = 5 }
+--     },
+--     blip = {
+--         sprite = 52,
+--         colour = 69,
+--         scale = 0.8
+--     },
+--     locations = {
+--         vector3(-53.38, 214.75, 106.55)
+--     },
+--     peds = {
+--         {
+--             modelName = "a_m_m_soucent_01",
+--             scenario = 'WORLD_HUMAN_AA_COFFEE',
+--             coords = vec3(-53.38, 214.75, 106.55),
+--             heading = 340.8,
+--         },
+--     }
+-- }
 
 ScriptShared.Shops = Module
 

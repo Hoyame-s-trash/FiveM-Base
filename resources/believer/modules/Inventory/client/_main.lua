@@ -9,16 +9,10 @@ ScriptClient.Player.State = LocalPlayer.state
 ScriptClient.Player.State.inventoryOpened = false
 ScriptClient.Player.State.shortkeys = true
 
-if _G.APIShared.GM.Inventory.AQUIVER_TEST_SERVER then
-    ScriptClient.Enabled = false
-
-    RegisterNetEvent("AVP_TEST_SERVER:ENABLE:AVP_INV_4", function()
-        ScriptClient.Enabled = true
-    end)
-    RegisterNetEvent("AVP_TEST_SERVER:DISABLE:AVP_INV_4", function()
-        ScriptClient.Enabled = false
-    end)
-end
+RegisterNetEvent("Inventory:SEND_NOTIFICATION")
+AddEventHandler("Inventory:SEND_NOTIFICATION", function(jsonContent)
+    SEND_NUI_MESSAGE(jsonContent)
+end)
 
 SetNuiFocusKeepInput(true)
 
@@ -41,7 +35,7 @@ Citizen.CreateThread(function()
 
     Citizen.Wait(4000)
 
-    TriggerServerEvent("avp_inv:CLIENT_LOADED")
+    TriggerServerEvent("Inventory:CLIENT_LOADED")
 end)
 
 function SEND_NUI_MESSAGE(d)
@@ -52,7 +46,7 @@ function SEND_NUI_MESSAGE(d)
     SendNUIMessage(d)
 end
 
-RegisterNetEvent("avp_inv:PLAYER_SEND_NUI_MESSAGE", SEND_NUI_MESSAGE)
+RegisterNetEvent("Inventory:PLAYER_SEND_NUI_MESSAGE", SEND_NUI_MESSAGE)
 
 RegisterNUICallback("CEF_LOADED", function(_, cb)
     ScriptClient.cefLoaded = true
@@ -69,9 +63,9 @@ RegisterNUICallback("CLIENT_SET_INTERFACE_STATE", function(d, cb)
     SetNuiFocus(state, state)
 
     if state then
-        TriggerEvent("avp_inv:onInventoryOpen")
-        TriggerServerEvent("avp_inv:onInventoryOpen")
-        TriggerServerEvent("avp_inv:OPEN_NEAR_DROPPED_GRID")
+        TriggerEvent("Inventory:onInventoryOpen")
+        TriggerServerEvent("Inventory:onInventoryOpen")
+        TriggerServerEvent("Inventory:OPEN_NEAR_DROPPED_GRID")
 
         if inventoryOpenedThreadId == nil then
             Citizen.CreateThreadNow(function(id)
@@ -86,8 +80,8 @@ RegisterNUICallback("CLIENT_SET_INTERFACE_STATE", function(d, cb)
             end)
         end
     else
-        TriggerEvent("avp_inv:onInventoryClose")
-        TriggerServerEvent("avp_inv:onInventoryClose")
+        TriggerEvent("Inventory:onInventoryClose")
+        TriggerServerEvent("Inventory:onInventoryClose")
 
         if inventoryOpenedThreadId ~= nil then
             inventoryOpenedThreadId = nil
@@ -138,36 +132,36 @@ end, false)
 RegisterKeyMapping('+SHOW_HIDE_SHORTKEY_ITEMS', 'Show/Hide Shortkey Items', 'keyboard', "tab")
 
 RegisterNUICallback("ITEM_MOVE_TO_SLOT", function(d, cb)
-    TriggerServerEvent("avp_inv:ITEM_MOVE_TO_SLOT", d)
+    TriggerServerEvent("Inventory:ITEM_MOVE_TO_SLOT", d)
     cb({})
 end)
 RegisterNUICallback("ADD_NOTE_ITEM", function(d, cb)
-    TriggerServerEvent("avp_inv:ADD_NOTE_ITEM", d)
+    TriggerServerEvent("Inventory:ADD_NOTE_ITEM", d)
     cb({})
 end)
 RegisterNUICallback("RENAME_ITEM", function(d, cb)
-    TriggerServerEvent("avp_inv:RENAME_ITEM", d)
+    TriggerServerEvent("Inventory:RENAME_ITEM", d)
     cb({})
 end)
 RegisterNUICallback("USE_ITEM", function(d, cb)
-    TriggerServerEvent("avp_inv:USE_ITEM", d)
+    TriggerServerEvent("Inventory:USE_ITEM", d)
     cb({})
 end)
 RegisterNUICallback("BUY_FROM_SHOP", function(d, cb)
-    TriggerServerEvent("avp_inv:BUY_FROM_SHOP", d)
+    TriggerServerEvent("Inventory:BUY_FROM_SHOP", d)
     cb({})
 end)
 RegisterNUICallback("ITEM_ADD_ATTACHMENT_WEAPON", function(d, cb)
-    TriggerServerEvent("avp_inv:ITEM_ADD_ATTACHMENT_WEAPON", d)
+    TriggerServerEvent("Inventory:ITEM_ADD_ATTACHMENT_WEAPON", d)
     cb({})
 end)
 RegisterNUICallback("ITEM_REMOVE_ATTACHMENT_WEAPON", function(d, cb)
-    TriggerServerEvent("avp_inv:ITEM_REMOVE_ATTACHMENT_WEAPON", d)
+    TriggerServerEvent("Inventory:ITEM_REMOVE_ATTACHMENT_WEAPON", d)
     cb({})
 end)
 RegisterNUICallback("CLOSE_SECOND_INVENTORY", function(d, cb)
     local uniqueID = d.uniqueID
-    TriggerServerEvent("avp_inv:CLOSE_SECOND_INVENTORY", uniqueID)
+    TriggerServerEvent("Inventory:CLOSE_SECOND_INVENTORY", uniqueID)
     cb({})
 end)
 RegisterNUICallback("NEARBY_GET_PLAYERS", function(_, cb)
@@ -196,17 +190,21 @@ RegisterNUICallback("NEARBY_GET_PLAYERS", function(_, cb)
     end
 
     if #nearPlayers < 1 then
-        _G.APIClient.LocalPlayer:notification("info", "No players are nearby!")
+        TriggerEvent("Inventory:SEND_NOTIFICATION", {
+			event = "SEND_NOTIFICATION",
+			type = "info",
+			message = "Aucun joueur à proximité !"
+		})
     end
 
     cb(nearPlayers)
 end)
 RegisterNUICallback("GIVE_ITEM_TO_TARGET", function(d, cb)
-    TriggerServerEvent("avp_inv:GIVE_ITEM_TO_TARGET", d)
+    TriggerServerEvent("Inventory:GIVE_ITEM_TO_TARGET", d)
     cb({})
 end)
 RegisterNUICallback("DROP_ITEM_ON_GROUND", function(d, cb)
-    TriggerServerEvent("avp_inv:DROP_ITEM_ON_GROUND", d)
+    TriggerServerEvent("Inventory:DROP_ITEM_ON_GROUND", d)
     cb({})
 end)
 
@@ -230,7 +228,7 @@ function Vehicles:openNearTrunks()
     end
 
     if #closeVehicleNetIds > 0 then
-        TriggerServerEvent("avp_inv:OPEN_NEAR_TRUNKS", closeVehicleNetIds)
+        TriggerServerEvent("Inventory:OPEN_NEAR_TRUNKS", closeVehicleNetIds)
     end
 end
 
@@ -239,12 +237,12 @@ function Vehicles:openGlovebox()
     if IsPedInAnyVehicle(playerPed, false) then
         local vehicle = GetVehiclePedIsIn(playerPed, false)
         if DoesEntityExist(vehicle) then
-            TriggerServerEvent("avp_inv:OPEN_VEHICLE_GLOVEBOX_INVENTORY")
+            TriggerServerEvent("Inventory:OPEN_VEHICLE_GLOVEBOX_INVENTORY")
         end
     end
 end
 
-AddEventHandler("avp_inv:onInventoryOpen", function()
+AddEventHandler("Inventory:onInventoryOpen", function()
     Vehicles:openGlovebox()
     Vehicles:openNearTrunks()
 end)
@@ -270,15 +268,15 @@ function Shops:openNearShops()
     end
 
     if closeToAny then
-        TriggerServerEvent("avp_inv:OPEN_NEAR_SHOPS")
+        TriggerServerEvent("Inventory:OPEN_NEAR_SHOPS")
     end
 end
 
-AddEventHandler("avp_inv:onInventoryOpen", function()
+AddEventHandler("Inventory:onInventoryOpen", function()
     Shops:openNearShops()
 end)
 
-AddEventHandler("avp_inv:onInventoryClose", function()
+AddEventHandler("Inventory:onInventoryClose", function()
 
 end)
 
@@ -301,15 +299,15 @@ function Factions:openNearSafes()
     end
 
     if closeToAny then
-        TriggerServerEvent("avp_inv:OPEN_NEAR_FACTION_SAFES")
+        TriggerServerEvent("Inventory:OPEN_NEAR_FACTION_SAFES")
     end
 end
 
-AddEventHandler("avp_inv:onInventoryOpen", function()
+AddEventHandler("Inventory:onInventoryOpen", function()
     Factions:openNearSafes()
 end)
 
-AddEventHandler("avp_inv:onInventoryClose", function()
+AddEventHandler("Inventory:onInventoryClose", function()
 
 end)
 
@@ -1590,7 +1588,7 @@ RegisterNUICallback("TAKE_OFF_DRESS", function(data, cb)
     cb({})
 end)
 
-AddEventHandler("avp_inv:onInventoryOpen", function()
+AddEventHandler("Inventory:onInventoryOpen", function()
     ResyncNUI()
 end)
 
@@ -1698,7 +1696,8 @@ function Settings:SetCharacterState(state)
 
     if ScriptClient.Player.State.inventoryOpened then
         if self.characterEnabled then
-            ScriptClient.PedScreen:Create()
+            -- Todo reactivate this
+            --ScriptClient.PedScreen:Create()
         else
             ScriptClient.PedScreen:Delete()
         end
@@ -1707,14 +1706,14 @@ function Settings:SetCharacterState(state)
     end
 end
 
-AddEventHandler("avp_inv:onInventoryOpen", function()
+AddEventHandler("Inventory:onInventoryOpen", function()
     Settings:SetBlurState(Settings.blurEnabled)
     Settings:SetRadarState(Settings.radarEnabled)
     Settings:SetScreenFxState(Settings.screenFX)
     Settings:SetCharacterState(Settings.characterEnabled)
 end)
 
-AddEventHandler("avp_inv:onInventoryClose", function()
+AddEventHandler("Inventory:onInventoryClose", function()
     Settings:SetBlurState(Settings.blurEnabled)
     Settings:SetRadarState(Settings.radarEnabled)
     Settings:SetScreenFxState(Settings.screenFX)
@@ -1742,35 +1741,35 @@ RegisterCommand('SLOT_1', function()
     if not ScriptClient.Player.State.shortkeys then return end
 
     if ScriptClient.Player.Inventory:GetItemBy({ slot = 1 }) then
-        TriggerServerEvent("avp_inv:USE_SLOT", 1)
+        TriggerServerEvent("Inventory:USE_SLOT", 1)
     end
 end, false)
 RegisterCommand('SLOT_2', function()
     if not ScriptClient.Player.State.shortkeys then return end
 
     if ScriptClient.Player.Inventory:GetItemBy({ slot = 2 }) then
-        TriggerServerEvent("avp_inv:USE_SLOT", 2)
+        TriggerServerEvent("Inventory:USE_SLOT", 2)
     end
 end, false)
 RegisterCommand('SLOT_3', function()
     if not ScriptClient.Player.State.shortkeys then return end
 
     if ScriptClient.Player.Inventory:GetItemBy({ slot = 3 }) then
-        TriggerServerEvent("avp_inv:USE_SLOT", 3)
+        TriggerServerEvent("Inventory:USE_SLOT", 3)
     end
 end, false)
 RegisterCommand('SLOT_4', function()
     if not ScriptClient.Player.State.shortkeys then return end
 
     if ScriptClient.Player.Inventory:GetItemBy({ slot = 4 }) then
-        TriggerServerEvent("avp_inv:USE_SLOT", 4)
+        TriggerServerEvent("Inventory:USE_SLOT", 4)
     end
 end, false)
 RegisterCommand('SLOT_5', function()
     if not ScriptClient.Player.State.shortkeys then return end
 
     if ScriptClient.Player.Inventory:GetItemBy({ slot = 5 }) then
-        TriggerServerEvent("avp_inv:USE_SLOT", 5)
+        TriggerServerEvent("Inventory:USE_SLOT", 5)
     end
 end, false)
 
@@ -1850,11 +1849,11 @@ function ScriptClient.Player.Inventory:GetItemQuantityBy(findBy)
 end
 
 ---@param items InventoryItem[]
-RegisterNetEvent("avp_inv:setPlayerInventoryItems", function(items)
+RegisterNetEvent("Inventory:setPlayerInventoryItems", function(items)
     ScriptClient.Player.Inventory.Items = items
 end)
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:onPlayerItemUpdated", function(item)
+RegisterNetEvent("Inventory:onPlayerItemUpdated", function(item)
     local found = false
     for i = 1, #ScriptClient.Player.Inventory.Items do
         local v = ScriptClient.Player.Inventory.Items[i]
@@ -1870,11 +1869,11 @@ RegisterNetEvent("avp_inv:onPlayerItemUpdated", function(item)
     end
 end)
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:onPlayerItemAdded", function(item)
+RegisterNetEvent("Inventory:onPlayerItemAdded", function(item)
     ScriptClient.Player.Inventory.Items[#ScriptClient.Player.Inventory.Items+1] = item
 end)
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:onPlayerItemRemoved", function(item)
+RegisterNetEvent("Inventory:onPlayerItemRemoved", function(item)
     for i = 1, #ScriptClient.Player.Inventory.Items do
         local v = ScriptClient.Player.Inventory.Items[i]
         if v.itemHash == item.itemHash then
@@ -1958,16 +1957,16 @@ function Weapons:SetArmedState(state)
 
                     if IsPedShooting(playerPed) then
                         if GM.Inventory.MISC_WEAPONS[currentWeapon] and self.floodProtect < GetGameTimer() then
-                            TriggerServerEvent("avp_inv:REDUCE_WEAPON_AMMO")
+                            TriggerServerEvent("Inventory:REDUCE_WEAPON_AMMO")
                             self.floodProtect = GetGameTimer() + 200
                         elseif GM.Inventory.AMMO_WEAPONS[currentWeapon] then
-                            TriggerServerEvent("avp_inv:REDUCE_WEAPON_DURABILITY")
-                            TriggerServerEvent('avp_inv:REDUCE_WEAPON_AMMO')
+                            TriggerServerEvent("Inventory:REDUCE_WEAPON_DURABILITY")
+                            TriggerServerEvent('Inventory:REDUCE_WEAPON_AMMO')
                         elseif GM.Inventory.THROWABLE_WEAPONS[currentWeapon] then
-                            TriggerServerEvent('avp_inv:REDUCE_WEAPON_AMMO')
+                            TriggerServerEvent('Inventory:REDUCE_WEAPON_AMMO')
                         end
                     elseif IsControlJustReleased(0, 24) and IsPedPerformingMeleeAction(playerPed) and GM.Inventory.MELEE_WEAPONS[currentWeapon] and self.floodProtect < GetGameTimer() then
-                        TriggerServerEvent("avp_inv:REDUCE_WEAPON_DURABILITY")
+                        TriggerServerEvent("Inventory:REDUCE_WEAPON_DURABILITY")
                         self.floodProtect = GetGameTimer() + 200
                     end
 
@@ -2078,27 +2077,27 @@ function Weapons:Disarm()
 end
 
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:equipWeapon", function(item)
+RegisterNetEvent("Inventory:equipWeapon", function(item)
     Weapons:Equip(item)
 end)
-RegisterNetEvent("avp_inv:disarmWeapon", function()
+RegisterNetEvent("Inventory:disarmWeapon", function()
     Weapons:Disarm()
 end)
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:updateCurrentWeapon", function(item)
+RegisterNetEvent("Inventory:updateCurrentWeapon", function(item)
     Weapons:UpdateWeapon(item)
 end)
-RegisterNetEvent("avp_inv:onPlayerItemUpdated", function(item)
+RegisterNetEvent("Inventory:onPlayerItemUpdated", function(item)
     Weapons:UpdateAmmoCountInWearedWeapon()
 end)
-RegisterNetEvent("avp_inv:onPlayerItemRemoved", function(item)
+RegisterNetEvent("Inventory:onPlayerItemRemoved", function(item)
     Weapons:UpdateAmmoCountInWearedWeapon()
 end)
-RegisterNetEvent("avp_inv:onPlayerItemAdded", function(item)
+RegisterNetEvent("Inventory:onPlayerItemAdded", function(item)
     Weapons:UpdateAmmoCountInWearedWeapon()
 end)
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:UpdateWeaponAttachments", function(item)
+RegisterNetEvent("Inventory:UpdateWeaponAttachments", function(item)
     Weapons:RecreateWeaponObject(item)
 end)
 
@@ -2143,7 +2142,7 @@ exports("GetItemQuantityBy", function(findBy)
     return ScriptClient.Player.Inventory:GetItemQuantityBy(findBy)
 end)
 exports("OpenStash", function(uniqueID)
-    TriggerServerEvent("avp_inv:OPEN_STASH", uniqueID)
+    TriggerServerEvent("Inventory:OPEN_STASH", uniqueID)
 end)
 exports("GetRegisteredItems", function()
     return ScriptShared.Items.Registered

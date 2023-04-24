@@ -11,7 +11,7 @@ exports("GetItemQuantityBy", function(findBy)
     return ScriptClient.Player.Inventory:GetItemQuantityBy(findBy)
 end)
 exports("OpenStash", function(uniqueID)
-    TriggerServerEvent("avp_inv:OPEN_STASH", uniqueID)
+    TriggerServerEvent("Inventory:OPEN_STASH", uniqueID)
 end)
 exports("GetRegisteredItems", function()
     return ScriptShared.Items.Registered

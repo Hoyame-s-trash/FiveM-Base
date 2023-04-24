@@ -68,11 +68,11 @@ function ScriptClient.Player.Inventory:GetItemQuantityBy(findBy)
 end
 
 ---@param items InventoryItem[]
-RegisterNetEvent("avp_inv:setPlayerInventoryItems", function(items)
+RegisterNetEvent("Inventory:setPlayerInventoryItems", function(items)
     ScriptClient.Player.Inventory.Items = items
 end)
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:onPlayerItemUpdated", function(item)
+RegisterNetEvent("Inventory:onPlayerItemUpdated", function(item)
     local found = false
     for i = 1, #ScriptClient.Player.Inventory.Items do
         local v = ScriptClient.Player.Inventory.Items[i]
@@ -88,11 +88,11 @@ RegisterNetEvent("avp_inv:onPlayerItemUpdated", function(item)
     end
 end)
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:onPlayerItemAdded", function(item)
+RegisterNetEvent("Inventory:onPlayerItemAdded", function(item)
     ScriptClient.Player.Inventory.Items[#ScriptClient.Player.Inventory.Items+1] = item
 end)
 ---@param item InventoryItem
-RegisterNetEvent("avp_inv:onPlayerItemRemoved", function(item)
+RegisterNetEvent("Inventory:onPlayerItemRemoved", function(item)
     for i = 1, #ScriptClient.Player.Inventory.Items do
         local v = ScriptClient.Player.Inventory.Items[i]
         if v.itemHash == item.itemHash then
