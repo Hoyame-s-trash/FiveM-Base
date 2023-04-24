@@ -3,3 +3,4 @@ cache
 resources/\[add\]/
 db
 *.bat
+nui_src/html
