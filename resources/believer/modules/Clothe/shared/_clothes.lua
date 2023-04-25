@@ -1,11 +1,11 @@
 GM.Clothes = {}
 
-GM.Clothes["shop"] = {
+GM.Clothes.List = {
     {
-        name = "shop_1",
-        label = "Magasin de vêtements",
+        name = "clothes_1",
+        shopName = "Magasin de vêtements - 1",
         helpText = "accéder au magasin de vêtements",
-        position = vector3(-158.53350830078,-296.74984741211,39.733329772949),
+        position = vector3(426.07073974609,-800.74005126953,29.493450164795),
         categories = {
             {
                 name = "torso",

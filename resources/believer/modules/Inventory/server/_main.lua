@@ -889,8 +889,6 @@ Module.new = function(data)
 
     ScriptServer.Managers.Inventory.Inventories[self.uniqueID] = self
 
-    print(string.format("Created new inventory: %s", self.uniqueID))
-
     return self
 end
 
@@ -2027,8 +2025,6 @@ Module.new = function(id, allData)
     end
 
     ScriptServer.Managers.Shops.Shops[self.shopId] = self
-
-    print(string.format("Created new shop: %s", self.shopId))
 
     return self
 end

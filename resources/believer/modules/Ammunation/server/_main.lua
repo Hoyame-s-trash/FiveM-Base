@@ -37,7 +37,7 @@ GM:newThread(function()
         GM.Ammunation.registeredBlips[ammunationId] = GM.Blip:add(ammunation.position, {
             sprite = 110,
             colour = 3,
-            name = "Ammunation - "..i,
+            name = ammunation.shopName.." - "..i,
         }, {
             isPrivate = false
         })

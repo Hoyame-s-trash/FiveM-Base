@@ -641,6 +641,20 @@ ScriptShared.Items:Add("at_suppressor_light", {
     category = "Accessoire d'arme"
 })
 
+ScriptShared.Items:Add("hamburger", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "Hamburger",
+    weight = 0.25,
+    category = "Nourriture",
+    event = {
+        server_event = "",
+        client_event = false,
+        onUseDeleteAmount = 1
+    }
+})
+
 ---@class ShopStaticData
 ---@field shopName string
 ---@field items ShopItem[]
