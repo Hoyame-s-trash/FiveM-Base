@@ -569,6 +569,20 @@ function CreateExtendedPlayer(playerId, identifier, accounts, weight, job, name,
 		return GetPlayerPed(self.source)
 	end
 
+	function self.getPedArmor()
+		return GetPedArmour(self.getPed())
+	end
+
+	function self.getPedMaxArmor()
+		return GetPlayerMaxArmour(self.source)
+	end
+
+	function self.setPedArmor(armor)
+		SetPedArmour(self.getPed(), armor)
+	end
+
+
+
 	for fnName,fn in pairs(targetOverrides) do
 		self[fnName] = fn(self)
 	end

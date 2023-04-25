@@ -513,7 +513,7 @@ RegisterNetEvent("Inventory:USE_ITEM", function(data)
     end
 
     if (item.data.event and item.data.event.client_event) then
-        TriggerClientEvent(item.data.usable.client_event, source, item)
+        TriggerClientEvent(item.data.event.client_event, source, item)
     end
 
     if (item.data.event and item.data.event.server_event) then

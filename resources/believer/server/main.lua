@@ -297,9 +297,8 @@ AddEventHandler("onResourceStop", function(rscName)
   if (rscName ~= GetCurrentResourceName()) then
       return
   end
-
+  --exports["believer"]:SaveAll()
   Core.SavePlayers()
-  exports["believer"]:SaveAll()
 end)
 
 AddEventHandler('onResourceStart', function(resourceName)
@@ -322,13 +321,13 @@ AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
     CreateThread(function()
       Wait(50000)
       Core.SavePlayers()
-      exports["believer"]:SaveAll()
+      -- Todo quit save this
     end)
   end
 end)
 
 AddEventHandler('txAdmin:events:serverShuttingDown', function()
   Core.SavePlayers()
-  exports["believer"]:SaveAll()
+  -- Todo quit save this
 end)
 
