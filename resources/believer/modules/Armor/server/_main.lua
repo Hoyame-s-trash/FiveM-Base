@@ -7,19 +7,26 @@ AddEventHandler("Armor:item:use", function(source, item)
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
 
-    print(json.encode(item))
-
     if (GM.Armor["player"][playerSelected.source] == nil) then
-        -- Todo get the durability from the item source and give armor to ped
-        print(item.meta.durability)
-        GM.Armor["player"][playerSelected.source] = true
+        GM.Armor["player"][playerSelected.source] = item.itemHash
+        playerSelected.showInventoryNotification("success", "Vous avez équipé un kevlar !")
+        playerSelected.setPedArmor(item.meta.durability)
+
+        item.meta.durability = 0
+
+        exports["believer"]:SetMetaData(playerSelected.source, { itemHash = item.itemHash }, item.meta)
     else
-        playerSelected.showInventoryNotification("warning", "Vous avez déjà un gilet par balle équipé, votre ancien gilet par balle a été retiré.")
-        local Item = exports["believer"]:GetItemBy({ name = "armor" })
-        if not Item then return end
+        if (GM.Armor["player"][playerSelected.source] == item.itemHash) then
+            item.meta.durability = playerSelected.getPedArmor()
 
-        Item.meta.durability = playerSelected.getArmor()
+            exports["believer"]:SetMetaData(playerSelected.source, { itemHash = GM.Armor["player"][playerSelected.source] }, item.meta)
+            playerSelected.setPedArmor(0)
+            playerSelected.showInventoryNotification("success", "Vous avez retiré votre kevlar !")
 
-        exports["believer"]:SetMetaData(playerSelected.source, { itemHash = Item.itemHash }, Item.meta)
+            GM.Armor["player"][playerSelected.source] = nil
+        else
+            playerSelected.showInventoryNotification("warning", "Vous avez déjà un kevlar équipé ! Changement automatique en cours ...")
+            return
+        end
     end
 end)

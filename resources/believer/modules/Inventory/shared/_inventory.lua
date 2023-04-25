@@ -580,7 +580,7 @@ ScriptShared.Items:Add("medikit", {
 })
 
 ScriptShared.Items:Add("armor", {
-    stackable = true,
+    stackable = false,
     deletable = true,
     tradable = true,
     label = "Kevlar",

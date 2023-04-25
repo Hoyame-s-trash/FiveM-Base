@@ -23,20 +23,6 @@ AddEventHandler("onServerResourceStart", function(resourceName)
     end
 end)
 
-AddEventHandler("playerDropped", function()
-    local playerSrc = source
-    if (not playerSrc) then return end
-
-    local playerSelected = ESX.GetPlayerFromId(playerSrc)
-    if (not playerSelected) then return end
-
-    local inventory = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = playerSelected.source })
-    if not inventory then return end
-
-    inventory:save()
-    inventory:destroy()
-end)
-
 AddEventHandler("onResourceStop", function(resourceName)
     if ScriptServer.resourceName ~= resourceName then return end
 
@@ -72,6 +58,7 @@ RegisterNetEvent("Inventory:ITEM_MOVE_TO_SLOT", function(d)
     if not item.data.stackable then quantity = 1 end
 
     if grabbed_inventory:isSame(to_inventory) then
+        print("debug inventory 1")
         local addedResult = grabbed_inventory:addItem({
             name = item.name,
             quantity = quantity,
@@ -83,6 +70,8 @@ RegisterNetEvent("Inventory:ITEM_MOVE_TO_SLOT", function(d)
         end
     else
         local addedResult = nil
+
+        print("debug inventory 2")
 
         if not item.data.tradable then
             player.showInventoryNotification("info", "L'item n'est pas échangeable !")
@@ -520,8 +509,8 @@ RegisterNetEvent("Inventory:USE_ITEM", function(data)
         TriggerEvent(item.data.event.server_event, source, item)
     end
 
-    if item.data.event and type(item.data.server.onUseDeleteAmount) == "number" and item.data.server.onUseDeleteAmount > 0 then
-        inventory:removeItemBy(item.data.server.onUseDeleteAmount, { itemHash = itemHash })
+    if item.data.event and type(item.data.event.onUseDeleteAmount) == "number" and item.data.event.onUseDeleteAmount > 0 then
+        inventory:removeItemBy(item.data.event.onUseDeleteAmount, { itemHash = itemHash })
     end
 end)
 
@@ -836,7 +825,7 @@ ScriptServer.Classes.BaseInventory = Module
 Module.new = function(data)
     local self = setmetatable({}, Module)
 
-    local inv_sql <const> = exports.oxmysql:single_async(
+    local inv_sql <const> = MySQL.single.await(
         "SELECT * FROM inventory_items WHERE uniqueID = ? AND type = ?",
         {
             data.uniqueID,
@@ -1320,7 +1309,7 @@ function Module:save()
         }
     end
 
-    exports.oxmysql:query_async([[
+    MySQL.query.await([[
         INSERT INTO inventory_items (uniqueID, type, items)
         VALUES (@uniqueID, @type, @items)
         ON DUPLICATE KEY UPDATE
@@ -1528,7 +1517,7 @@ function Module:save()
         }
     end
 
-    exports.oxmysql:query_async([[
+    MySQL.query.await([[
         INSERT INTO inventory_items (uniqueID, type, originX, originY, originZ, expires, items)
         VALUES (@uniqueID, @type, @originX, @originY, @originZ, @expires, @items)
         ON DUPLICATE KEY UPDATE
@@ -2043,7 +2032,6 @@ for k, v in pairs(ScriptShared.Shops) do
 end
 
 local function Init()
-    print("^1ESX framework recognized.")
 
     local function loadEsxPlayerInventory(xPlayer)
         ScriptServer.Classes.PlayerInventory.new({
@@ -2055,20 +2043,6 @@ local function Init()
             uniqueID = xPlayer.getIdentifier()
         })
     end
-
-    AddEventHandler("onServerResourceStart", function(resourceName)
-        if GetCurrentResourceName() ~= ScriptServer.resourceName then return end
-
-        Citizen.Wait(2000)
-
-        local onlinePlayers = GetPlayers()
-        for k, v in pairs(onlinePlayers) do
-            local xPlayer = ESX.GetPlayerFromId(v)
-            if xPlayer then
-                loadEsxPlayerInventory(xPlayer)
-            end
-        end
-    end)
 
     RegisterNetEvent("esx:playerLoaded", function(playerId, xPlayer, isNew)
         loadEsxPlayerInventory(xPlayer)
@@ -2317,4 +2291,29 @@ exports("GetRegisteredItem", function(itemName)
 end)
 exports("GetRegisteredItems", function()
     return ScriptShared.Items.Registered
+end)
+
+AddEventHandler("playerDropped", function()
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (GM.Armor["player"][playerSelected.source] ~= nil) then
+        local item = exports["believer"]:GetItemBy(playerSelected.source, {itemHash = GM.Armor["player"][playerSelected.source]})
+        if (item) then
+            item.meta.durability = playerSelected.getPedArmor()
+
+            exports["believer"]:SetMetaData(playerSelected.source, { itemHash = GM.Armor["player"][playerSelected.source] }, item.meta)
+            playerSelected.setPedArmor(0)
+
+            GM.Armor["player"][playerSelected.source] = nil
+            print("Armor: " .. playerSelected.name .. " (" .. playerSelected.source .. ") a quitté le serveur avec un kevlar équipé !")
+
+            exports["believer"]:Save(playerSelected.source)
+        end
+    end
+
+    exports["believer"]:Save(playerSelected.source)
 end)
