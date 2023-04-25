@@ -58,7 +58,12 @@ RegisterNetEvent("Inventory:ITEM_MOVE_TO_SLOT", function(d)
     if not item.data.stackable then quantity = 1 end
 
     if grabbed_inventory:isSame(to_inventory) then
-        print("debug inventory 1")
+        -- print(item.data.label)
+        -- if (item.meta) then
+        --     if (item.meta.customName) then
+        --         print(item.meta.customName)
+        --     end
+        -- end
         local addedResult = grabbed_inventory:addItem({
             name = item.name,
             quantity = quantity,
@@ -70,8 +75,6 @@ RegisterNetEvent("Inventory:ITEM_MOVE_TO_SLOT", function(d)
         end
     else
         local addedResult = nil
-
-        print("debug inventory 2")
 
         if not item.data.tradable then
             player.showInventoryNotification("info", "L'item n'est pas échangeable !")
@@ -2073,56 +2076,6 @@ RegisterCommand("frisk", function(source, args)
     if not target_inv then return end
     target_inv:open(source)
 end)
-
-
-RegisterCommand("inv_weapon", function(source)
-    local inv = ScriptServer.Managers.Inventory:GetInventory({ source = source })
-    if not inv then return end
-
-    inv:addItem({
-        name = "pistol",
-        quantity = 1,
-    })
-    inv:addItem({
-        name = "bat"
-    })
-    inv:addItem({
-        name = "grenade",
-        quantity = 5
-    })
-    inv:addItem({
-        name = "fertilizer"
-    })
-    inv:addItem({
-        name = "petrolcan",
-        quantity = 100
-    })
-    inv:addItem({
-        name = "9mm_rounds",
-        quantity = 30
-    })
-end, false)
-
-RegisterCommand("inv_random", function(source)
-    local inv = ScriptServer.Managers.Inventory:GetInventory({ source = source })
-    if not inv then return end
-
-    local filteredItems = {}
-    for k, v in pairs(ScriptShared.Items.Registered) do
-        filteredItems[#filteredItems + 1] = k
-    end
-
-    if #filteredItems < 1 then return end
-
-    for i = 1, 3, 1 do
-        local randItem = filteredItems[math.random(1, #filteredItems)]
-        local amount = math.random(1, 10)
-        inv:addItem({
-            name = randItem,
-            quantity = amount
-        })
-    end
-end, false)
 
 RegisterCommand("loot_1", function(source)
     local inv = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = "random-loot-1" }) --[[@as StashInventory]]
