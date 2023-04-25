@@ -3,14 +3,12 @@ GM.Ambulance.registeredZones["lockers"] = {}
 GM.Ambulance.registeredZones["garages"] = {}
 GM.Ambulance.registeredZones["duty"] = {}
 GM.Ambulance.registeredZones["wardrobe"] = {}
-GM.Ambulance.registeredZones["shop"] = {}
 
 GM.Ambulance.registeredBlips = {}
 GM.Ambulance.registeredBlips["lockers"] = {}
 GM.Ambulance.registeredBlips["garages"] = {}
 GM.Ambulance.registeredBlips["duty"] = {}
 GM.Ambulance.registeredBlips["wardrobe"] = {}
-GM.Ambulance.registeredBlips["shop"] = {}
 GM.Ambulance.registeredBlips["calls"] = {}
 
 GM.Ambulance.registeredShops = {}
@@ -26,50 +24,50 @@ GM.Ambulance.registeredCalls["list"] = {}
 GM.Ambulance.registeredCalls["accepted"] = {}
 GM.Ambulance.registeredCalls["victim"] = {}
 
-GM:newThread(function()
-    while (GM.Ambulance.Locker == nil) do
-        Wait(100)
-    end
+-- GM:newThread(function()
+--     while (GM.Ambulance.Locker == nil) do
+--         Wait(100)
+--     end
 
-    for i = 1, #GM.Ambulance.Locker do
-        local lockerId = "lockers_" .. i
-        local locker = GM.Ambulance.Locker[i]
+--     for i = 1, #GM.Ambulance.Locker do
+--         local lockerId = "lockers_" .. i
+--         local locker = GM.Ambulance.Locker[i]
 
-        GM.Ambulance.registeredZones["lockers"][lockerId] = GM.Zone.Management:create(GM.Ambulance.Locker[i], 2.0, "pour accéder à votre casier", function(playerSrc)
-            local playerSelected = ESX.GetPlayerFromId(playerSrc)
-            if (not playerSelected) then return end
+--         GM.Ambulance.registeredZones["lockers"][lockerId] = GM.Zone.Management:create(GM.Ambulance.Locker[i], 2.0, "pour accéder à votre casier", function(playerSrc)
+--             local playerSelected = ESX.GetPlayerFromId(playerSrc)
+--             if (not playerSelected) then return end
 
-            local selectedStash = exports["believer"]:GetInventory("ambulance_locker_"..playerSelected.identifier.."_"..i)
-            if (selectedStash == nil) then
-                exports["believer"]:RegisterStash({
-                    isPublic = false,
-                    isPermanent = true,
-                    ownerLicense = playerSelected.identifier,
-                    inventoryName = "Casier "..playerSelected.getName(),
-                    maxWeight = 200,
-                    slotsAmount = 30,
-                    uniqueID = "ambulance_locker_"..playerSelected.identifier.."_"..i,
-                })
-                exports["believer"]:OpenStash(playerSelected.source, "ambulance_locker_"..playerSelected.identifier.."_"..i)
-            else
-                exports["believer"]:OpenStash(playerSelected.source, "ambulance_locker_"..playerSelected.identifier.."_"..i)
-            end
-            TriggerClientEvent("Inventory:openInventory", playerSelected.source)
-        end, {
-            private = true,
-            marker = true
-        })
+--             local selectedStash = exports["believer"]:GetInventory("ambulance_locker_"..playerSelected.identifier.."_"..i)
+--             if (selectedStash == nil) then
+--                 exports["believer"]:RegisterStash({
+--                     isPublic = false,
+--                     isPermanent = true,
+--                     ownerLicense = playerSelected.identifier,
+--                     inventoryName = "Casier "..playerSelected.getName(),
+--                     maxWeight = 200,
+--                     slotsAmount = 30,
+--                     uniqueID = "ambulance_locker_"..playerSelected.identifier.."_"..i,
+--                 })
+--                 exports["believer"]:OpenStash(playerSelected.source, "ambulance_locker_"..playerSelected.identifier.."_"..i)
+--             else
+--                 exports["believer"]:OpenStash(playerSelected.source, "ambulance_locker_"..playerSelected.identifier.."_"..i)
+--             end
+--             TriggerClientEvent("Inventory:openInventory", playerSelected.source)
+--         end, {
+--             private = true,
+--             marker = true
+--         })
 
-        GM.Ambulance.registeredBlips["lockers"][lockerId] = GM.Blip:add(locker, {
-            sprite = 1,
-            colour = 3,
-            name = "Ambulance - Casier - "..i,
-            --display = 5,
-        }, {
-            isPrivate = true
-        })
-    end
-end)
+--         GM.Ambulance.registeredBlips["lockers"][lockerId] = GM.Blip:add(locker, {
+--             sprite = 1,
+--             colour = 3,
+--             name = "Ambulance - Casier - "..i,
+--             --display = 5,
+--         }, {
+--             isPrivate = true
+--         })
+--     end
+-- end)
 
 GM:newThread(function()
     while (GM.Ambulance.Garage == nil) do
@@ -117,116 +115,117 @@ GM:newThread(function()
     end
 end)
 
-GM:newThread(function()
-    while (GM.Ambulance.Duty == nil) do
-        Wait(100)
-    end
+-- GM:newThread(function()
+--     while (GM.Ambulance.Duty == nil) do
+--         Wait(100)
+--     end
     
-    for i = 1, #GM.Ambulance.Duty do
-        local dutyId = "dutys_" .. i
-        local duty = GM.Ambulance.Duty[i]
+--     for i = 1, #GM.Ambulance.Duty do
+--         local dutyId = "dutys_" .. i
+--         local duty = GM.Ambulance.Duty[i]
 
-        GM.Ambulance.registeredZones["duty"][dutyId] = GM.Zone.Management:create(duty.position, 2.0, duty.helpNotification, function(playerSrc)
-            local playerSelected = ESX.GetPlayerFromId(playerSrc)
-            if (not playerSelected) then return end
+--         GM.Ambulance.registeredZones["duty"][dutyId] = GM.Zone.Management:create(duty.position, 2.0, duty.helpNotification, function(playerSrc)
+--             local playerSelected = ESX.GetPlayerFromId(playerSrc)
+--             if (not playerSelected) then return end
 
-            TriggerEvent("Service:interact", playerSelected.source)
-        end, {
-            private = true,
-            marker = true
-        })
+--             TriggerEvent("Service:interact", playerSelected.source)
+--         end, {
+--             private = true,
+--             marker = true
+--         })
 
-        GM.Ambulance.registeredBlips["duty"][dutyId] = GM.Blip:add(duty.position, {
-            sprite = 1,
-            colour = 3,
-            name = "Ambulance - Prise de service - "..i,
-            --display = 5,
-        }, {
-            isPrivate = true
-        })
+--         GM.Ambulance.registeredBlips["duty"][dutyId] = GM.Blip:add(duty.position, {
+--             sprite = 1,
+--             colour = 3,
+--             name = "Ambulance - Prise de service - "..i,
+--             --display = 5,
+--         }, {
+--             isPrivate = true
+--         })
 
-        GM.Ambulance.registeredPeds["duty"][dutyId] = GM.Ped:create(9, duty.ped["model"], {
-            x = duty.ped["position"].x,
-            y = duty.ped["position"].y,
-            z = duty.ped["position"].z
-        }, duty.ped["heading"])
-    end
-end)
+--         GM.Ambulance.registeredPeds["duty"][dutyId] = GM.Ped:create(9, duty.ped["model"], {
+--             x = duty.ped["position"].x,
+--             y = duty.ped["position"].y,
+--             z = duty.ped["position"].z
+--         }, duty.ped["heading"])
+--     end
+-- end)
 
-GM:newThread(function()
-    while (GM.Ambulance.Wardrobe == nil) do
-        Wait(100)
-    end
+-- GM:newThread(function()
+--     while (GM.Ambulance.Wardrobe == nil) do
+--         Wait(100)
+--     end
     
-    for i = 1, #GM.Ambulance.Wardrobe do
-        local wardrobeId = "wardrobes_" .. i
-        local cloakroom = GM.Ambulance.Wardrobe[i]
+--     for i = 1, #GM.Ambulance.Wardrobe do
+--         local wardrobeId = "wardrobes_" .. i
+--         local cloakroom = GM.Ambulance.Wardrobe[i]
 
-        GM.Ambulance.registeredZones["wardrobe"][wardrobeId] = GM.Zone.Management:create(cloakroom.position, 2.0, cloakroom.helpNotification, function(playerSrc)
-            local playerSelected = ESX.GetPlayerFromId(playerSrc)
-            if (not playerSelected) then return end
+--         GM.Ambulance.registeredZones["wardrobe"][wardrobeId] = GM.Zone.Management:create(cloakroom.position, 2.0, cloakroom.helpNotification, function(playerSrc)
+--             local playerSelected = ESX.GetPlayerFromId(playerSrc)
+--             if (not playerSelected) then return end
 
-            TriggerClientEvent("Ambulance:openWardrobe", playerSelected.source, {
-                outfits = cloakroom.outfits,
-            })
-        end, {
-            private = true,
-            marker = true
-        })
+--             TriggerClientEvent("Ambulance:openWardrobe", playerSelected.source, {
+--                 outfits = cloakroom.outfits,
+--             })
+--         end, {
+--             private = true,
+--             marker = true
+--         })
 
-        GM.Ambulance.registeredBlips["wardrobe"][wardrobeId] = GM.Blip:add(cloakroom.position, {
-            sprite = 1,
-            colour = 3,
-            name = "Ambulance - Vestiaire - "..i,
-            --display = 5,
-        }, {
-            isPrivate = true
-        })
-    end
-end)
+--         GM.Ambulance.registeredBlips["wardrobe"][wardrobeId] = GM.Blip:add(cloakroom.position, {
+--             sprite = 1,
+--             colour = 3,
+--             name = "Ambulance - Vestiaire - "..i,
+--             --display = 5,
+--         }, {
+--             isPrivate = true
+--         })
+--     end
+-- end)
 
-GM:newThread(function()
-    while (GM.Ambulance.Shop == nil) do
-        Wait(100)
-    end
+-- GM:newThread(function()
+--     while (GM.Ambulance.Shop == nil) do
+--         Wait(100)
+--     end
     
-    for i = 1, #GM.Ambulance.Shop do
-        local shopId = "shops_" .. i
-        local shop = GM.Ambulance.Shop[i]
+--     for i = 1, #GM.Ambulance.Shop do
+--         local shopId = "shops_" .. i
+--         local shop = GM.Ambulance.Shop[i]
 
-        GM.Ambulance.registeredShops["inventory"][shopId] = ScriptServer.Classes.Shop.new(shopId, shop)
+--         GM.Ambulance.registeredShops["inventory"][shopId] = ScriptServer.Classes.Shop.new(shopId, shop)
 
-        GM.Ambulance.registeredZones["shop"][shopId] = GM.Zone.Management:create(shop.position, 3.0, shop.helpNotification, function(playerSrc)
-            local playerSelected = ESX.GetPlayerFromId(playerSrc)
-            if (not playerSelected) then return end
+--         GM.Ambulance.registeredZones["shop"][shopId] = GM.Zone.Management:create(shop.position, 3.0, shop.helpNotification, function(playerSrc)
+--             local playerSelected = ESX.GetPlayerFromId(playerSrc)
+--             if (not playerSelected) then return end
 
-            local shop = ScriptServer.Managers.Shops:GetShop(GM.Ambulance.registeredShops["inventory"][shopId].shopId)
-            if not shop then return end
+--             local shop = ScriptServer.Managers.Shops:GetShop(GM.Ambulance.registeredShops["inventory"][shopId].shopId)
+--             if not shop then return end
 
-            shop:openShop(playerSelected.source)
+--             shop:openShop(playerSelected.source)
 
-            TriggerClientEvent("Inventory:openInventory", playerSelected.source)
-        end, {
-            private = true,
-            marker = true
-        })
+--             TriggerClientEvent("Inventory:openInventory", playerSelected.source)
+--         end, {
+--             private = true,
+--             marker = true
+--         })
 
-        GM.Ambulance.registeredBlips["shop"][shopId] = GM.Blip:add(shop.position, {
-            sprite = 1,
-            colour = 3,
-            name = "Ambulance - Pharmacie - "..i,
-            --display = 5,
-        }, {
-            isPrivate = true
-        })
-    end
-end)
+--         GM.Ambulance.registeredBlips["shop"][shopId] = GM.Blip:add(shop.position, {
+--             sprite = 1,
+--             colour = 3,
+--             name = "Ambulance - Pharmacie - "..i,
+--             --display = 5,
+--         }, {
+--             isPrivate = true
+--         })
+--     end
+-- end)
 
 AddEventHandler("esx:playerLoaded", function(playerSrc)
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
 
     if (playerSelected.getJob().name == "ambulance") then
+
         for i = 1, #GM.Ambulance.Garage do
             local garageId = "garages_" .. i
     
@@ -235,37 +234,41 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
             GM.Ambulance.registeredBlips["garages"][garageId]:allowedPlayer(playerSelected.source)
         end
 
-        for i = 1, #GM.Ambulance.Locker do
-            local lockerId = "lockers_" .. i
+        -- for i = 1, #GM.Ambulance.Locker do
+        --     local lockerId = "lockers_" .. i
     
-            GM.Ambulance.registeredZones["lockers"][lockerId]:allowedPlayer(playerSelected.source)
+        --     GM.Ambulance.registeredZones["lockers"][lockerId]:allowedPlayer(playerSelected.source)
     
-            GM.Ambulance.registeredBlips["lockers"][lockerId]:allowedPlayer(playerSelected.source)
-        end
+        --     GM.Ambulance.registeredBlips["lockers"][lockerId]:allowedPlayer(playerSelected.source)
+        -- end
 
-        for i = 1, #GM.Ambulance.Duty do
-            local dutyId = "dutys_" .. i
+        -- for i = 1, #GM.Ambulance.Duty do
+        --     local dutyId = "dutys_" .. i
     
-            GM.Ambulance.registeredZones["duty"][dutyId]:allowedPlayer(playerSelected.source)
+        --     GM.Ambulance.registeredZones["duty"][dutyId]:allowedPlayer(playerSelected.source)
     
-            GM.Ambulance.registeredBlips["duty"][dutyId]:allowedPlayer(playerSelected.source)
-        end
+        --     GM.Ambulance.registeredBlips["duty"][dutyId]:allowedPlayer(playerSelected.source)
+        -- end
 
-        for i = 1, #GM.Ambulance.Wardrobe do
-            local wardrobeId = "wardrobes_" .. i
+        -- for i = 1, #GM.Ambulance.Wardrobe do
+        --     local wardrobeId = "wardrobes_" .. i
     
-            GM.Ambulance.registeredZones["wardrobe"][wardrobeId]:allowedPlayer(playerSelected.source)
+        --     GM.Ambulance.registeredZones["wardrobe"][wardrobeId]:allowedPlayer(playerSelected.source)
     
-            GM.Ambulance.registeredBlips["wardrobe"][wardrobeId]:allowedPlayer(playerSelected.source)
-        end
+        --     GM.Ambulance.registeredBlips["wardrobe"][wardrobeId]:allowedPlayer(playerSelected.source)
+        -- end
 
-        for i = 1, #GM.Ambulance.Shop do
-            local shopId = "shops_" .. i
-    
-            GM.Ambulance.registeredZones["shop"][shopId]:allowedPlayer(playerSelected.source)
-    
-            GM.Ambulance.registeredBlips["shop"][shopId]:allowedPlayer(playerSelected.source)
-        end
+        -- for i = 1, #GM.Ambulance.Shop do
+        --     local shopId = "shops_" .. i
+
+        --     if (GM.Ambulance.registeredZones["shop"][shopId]) then
+        --         GM.Ambulance.registeredZones["shop"][shopId]:allowedPlayer(playerSelected.source)
+        --     end
+
+        --     if (GM.Ambulance.registeredBlips["shop"][shopId]) then
+        --         GM.Ambulance.registeredBlips["shop"][shopId]:allowedPlayer(playerSelected.source)
+        --     end
+        -- end
     end
 end)
 

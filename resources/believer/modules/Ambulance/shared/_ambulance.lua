@@ -1,4 +1,4 @@
-GM.Ambulance = GM.Ambulance or {}
+GM.Ambulance = {}
 
 GM.Ambulance.Locker = {
     vector3(318.10848999023,-586.43981933594,43.26127243042),
@@ -49,7 +49,7 @@ GM.Ambulance.Wardrobe = {
     {
         name = "wardrobe_1",
         label = "Vestiaire 1",
-        position = vector3(324.51690673828,-592.33837890625,43.261276245117),
+        position = vector3(299.38003540039,-597.50799560547,43.284076690674),
         helpNotification = "pour ouvrir le vestiaire.",
         outfits = {
             {
@@ -88,30 +88,30 @@ GM.Ambulance.Wardrobe = {
     },
 }
 
-GM.Ambulance.Shop = {
-    {
-        name = "shop_1",
-        shopName = "Pharmacie 1",
-        position = vector3(355.28189086914,-580.25103759766,43.261215209961),
-        helpNotification = "pour accéder à la phamarcie.",
-        items = {
-            {
-                name = "bandage",
-                price = 30,
-                meta = {
-                    grade = 0,
-                }
-            },
-            {
-                name = "medikit",
-                price = 50,
-                meta = {
-                    grade = 0,
-                }
-            },
-        }
-    },
-}
+-- GM.Ambulance.Shop = {
+--     {
+--         name = "shop_1",
+--         shopName = "Pharmacie 1",
+--         position = vector3(306.65182495117,-601.12628173828,43.284076690674),
+--         helpNotification = "pour accéder à la phamarcie.",
+--         items = {
+--             {
+--                 name = "bandage",
+--                 price = 30,
+--                 meta = {
+--                     grade = 0,
+--                 }
+--             },
+--             {
+--                 name = "medikit",
+--                 price = 50,
+--                 meta = {
+--                     grade = 0,
+--                 }
+--             },
+--         }
+--     },
+-- }
 
 GM.Ambulance.Menu = {
     backup = {

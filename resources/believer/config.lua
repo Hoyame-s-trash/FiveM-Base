@@ -30,14 +30,14 @@ Config.EnablePVP                = true -- Allow Player to player combat
 
 Config.DistanceGive 			= 4.0 -- Max distance when giving items, weapons etc.
 
-Config.DisableHealthRegeneration  = false -- Player will no longer regenerate health
-Config.DisableVehicleRewards      = false -- Disables Player Recieving weapons from vehicles
-Config.DisableNPCDrops            = false -- stops NPCs from dropping weapons on death
-Config.DisableDispatchServices	  = false -- Disable Dispatch services
-Config.DisableScenarios			  = false -- Disable Scenarios
-Config.DisableWeaponWheel         = false -- Disables default weapon wheel
-Config.DisableAimAssist           = false -- disables AIM assist (mainly on controllers)
-Config.DisableVehicleSeatShuff	  = false -- Disables vehicle seat shuff
+Config.DisableHealthRegeneration  = true -- Player will no longer regenerate health
+Config.DisableVehicleRewards      = true -- Disables Player Recieving weapons from vehicles
+Config.DisableNPCDrops            = true -- stops NPCs from dropping weapons on death
+Config.DisableDispatchServices	  = true -- Disable Dispatch services
+Config.DisableScenarios			  = true -- Disable Scenarios
+Config.DisableWeaponWheel         = true -- Disables default weapon wheel
+Config.DisableAimAssist           = true -- disables AIM assist (mainly on controllers)
+Config.DisableVehicleSeatShuff	  = true -- Disables vehicle seat shuff
 Config.RemoveHudCommonents = {
 	[1] = false, --WANTED_STARS,
 	[2] = false, --WEAPON_ICON
@@ -62,14 +62,3 @@ Config.RemoveHudCommonents = {
 	[21] = false, --HUD_COMPONENTS
 	[22] = false, --HUD_WEAPONS
 }
-
-Config.SpawnVehMaxUpgrades = true -- admin vehicles spawn with max vehcle settings
-Config.CustomAIPlates = 'ESX.A111' -- Custom plates for AI vehicles 
--- Pattern string format
---1 will lead to a random number from 0-9.
---A will lead to a random letter from A-Z.
--- . will lead to a random letter or number, with 50% probability of being either.
---^1 will lead to a literal 1 being emitted.
---^A will lead to a literal A being emitted.
---Any other character will lead to said character being emitted.
--- A string shorter than 8 characters will be padded on the right.

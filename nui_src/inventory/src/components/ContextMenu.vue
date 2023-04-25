@@ -3,17 +3,17 @@
         leave-active-class="animate__animated animate__fadeOutDown animate__faster">
 
         <div :key="contextMenuStore.coordX" class="newtooltip-parent" :style="{
-            left: contextMenuStore.coordX + 'px',
-            top: contextMenuStore.coordY + 'px'
-        }" v-if="contextMenuStore.opened">
+                left: contextMenuStore.coordX + 'px',
+                top: contextMenuStore.coordY + 'px'
+            }" v-if="contextMenuStore.opened">
 
             <template v-if="contextMenuStore.store?.invItem">
                 <div class="newtooltip-header">
                     <div style="display:flex">
                         <div class="newtooltip-header-image-content">
                             <div class="newtooltip-header-image" :style="{
-                                backgroundImage: `url(items/${contextMenuStore.store.invItem.item.name}.png)`
-                            }"></div>
+                                    backgroundImage: `url(items/${contextMenuStore.store.invItem.item.name}.png)`
+                                }"></div>
                         </div>
                         <div class="newtooltip-header-info-content">
                             <div class="newtooltip-header-info-item-category">
@@ -30,9 +30,9 @@
                     <div class="newtooltip-durability-content"
                         v-if="typeof contextMenuStore.store.invItem.item.meta.durability == 'number'">
                         <div class="fill" :style="{
-                            width: (contextMenuStore.store.invItem.item.meta.durability / 100) * 100 + '%',
-                            backgroundColor: settingsStore.Settings.item_durability_color
-                        }"></div>
+                                    width: (contextMenuStore.store.invItem.item.meta.durability / 100) * 100 + '%',
+                                    backgroundColor: settingsStore.Settings.item_durability_color
+                                }"></div>
                     </div>
                     <div class="newtooltip-header-description-content"
                         v-if="contextMenuStore.store.invItem.item.data.description">
@@ -94,12 +94,12 @@
                     <div style="display:flex">
                         <div class="newtooltip-header-image-content">
                             <div class="newtooltip-header-image" :style="{
-                                backgroundImage: `url(items/${contextMenuStore.store.shopItem.item.name}.png)`
-                            }"></div>
+                                    backgroundImage: `url(items/${contextMenuStore.store.shopItem.item.name}.png)`
+                                }"></div>
                         </div>
                         <div class="newtooltip-header-info-content">
                             <div class="newtooltip-header-info-item-category">
-                                {{ contextMenuStore.store.shopItem.item.data.label }}
+                                {{ contextMenuStore.store.shopItem.item.data.category }}
                             </div>
                             <div class="newtooltip-header-info-item-name">
                                 {{ contextMenuStore.store.shopItem.item.data.label }}
@@ -109,9 +109,9 @@
                     <div class="newtooltip-durability-content"
                         v-if="typeof contextMenuStore.store.shopItem.item.meta.durability == 'number'">
                         <div class="fill" :style="{
-                            width: (contextMenuStore.store.shopItem.item.meta.durability / 100) * 100 + '%',
-                            backgroundColor: settingsStore.Settings.item_durability_color
-                        }"></div>
+                                width: (contextMenuStore.store.shopItem.item.meta.durability / 100) * 100 + '%',
+                                backgroundColor: settingsStore.Settings.item_durability_color
+                            }"></div>
                     </div>
                     <div class="newtooltip-header-description-content"
                         v-if="contextMenuStore.store.shopItem.item.data.description">

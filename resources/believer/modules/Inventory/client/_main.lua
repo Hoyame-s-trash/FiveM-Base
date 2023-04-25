@@ -91,6 +91,15 @@ RegisterNUICallback("CLIENT_SET_INTERFACE_STATE", function(d, cb)
     cb({})
 end)
 
+RegisterNetEvent("Inventory:openInventory", function()
+    if not ScriptClient.Enabled then return end
+
+    SEND_NUI_MESSAGE({
+        event = "SET_INTERFACE_OPEN",
+        state = not ScriptClient.Player.State.inventoryOpened
+    })
+end)
+
 RegisterCommand('OPEN_INVENTORY', function()
     if not ScriptClient.Enabled then return end
 
@@ -245,39 +254,6 @@ end
 AddEventHandler("Inventory:onInventoryOpen", function()
     Vehicles:openGlovebox()
     Vehicles:openNearTrunks()
-end)
-
-local Shops = {}
-
-function Shops:openNearShops()
-    local localPlayer = PlayerPedId()
-    local playerCoords = GetEntityCoords(localPlayer)
-
-    local closeToAny = false
-
-    for k, v in pairs(ScriptShared.Shops) do
-        for i = 1, #v.locations, 1 do
-            local shopCoords = v.locations[i]
-
-            local dist       = #(playerCoords - shopCoords)
-            if dist < GM.Inventory.SHOP_OPEN_RANGE then
-                closeToAny = true
-                break
-            end
-        end
-    end
-
-    if closeToAny then
-        TriggerServerEvent("Inventory:OPEN_NEAR_SHOPS")
-    end
-end
-
-AddEventHandler("Inventory:onInventoryOpen", function()
-    Shops:openNearShops()
-end)
-
-AddEventHandler("Inventory:onInventoryClose", function()
-
 end)
 
 local Factions = {}

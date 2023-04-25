@@ -92,6 +92,10 @@ RegisterNetEvent("Zone:add", function(zoneData)
     if (GM.Zone:getFromId(zoneData.uniqueId) ~= nil) then
         return
     end
+
+    if (zoneData.isPrivate) then
+        print("zone add client")
+    end
     
     table.insert(GM.Zone.List, zoneData)
 end)

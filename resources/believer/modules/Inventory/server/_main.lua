@@ -177,27 +177,6 @@ RegisterNetEvent("Inventory:RENAME_ITEM", function(data)
     player.showInventoryNotification("success", "L'item a été renommé avec succès !")
 end)
 
-RegisterNetEvent("Inventory:OPEN_NEAR_SHOPS", function()
-    local playerId = source
-
-    local playerPed = GetPlayerPed(playerId)
-    local playerCoords = GetEntityCoords(playerPed)
-
-    for k, v in pairs(ScriptShared.Shops) do
-        for i = 1, #v.locations do
-            local shopCoord = v.locations[i]
-            local dist = #(playerCoords - shopCoord)
-            if dist < GM.Inventory.SHOP_OPEN_RANGE then
-                local shop = ScriptServer.Managers.Shops:GetShop(k)
-                if shop then
-                    shop:openShop(playerId)
-                end
-                break -- important that this is here! not under the k,v
-            end
-        end
-    end
-end)
-
 RegisterNetEvent("Inventory:OPEN_NEAR_TRUNKS", function(vehicleNetIds)
     local playerId = source
 
@@ -211,11 +190,11 @@ RegisterNetEvent("Inventory:OPEN_NEAR_TRUNKS", function(vehicleNetIds)
             local plate = GetVehicleNumberPlateText(veh)
             if GM.Inventory.IS_VEHICLE_EXIST(plate) then
                 local modelHash = GetEntityModel(veh)
-                local uniqueID <const> = 'COFFRE -' .. plate
+                local uniqueID <const> = 'trunk-' .. plate
                 local trunk_inventory = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID }) --[[@as TrunkInventory]]
                 if not trunk_inventory then
                     trunk_inventory = ScriptServer.Classes.TrunkInventory.new({
-                        inventoryName = string.format('Trunk (%s)', plate),
+                        inventoryName = string.format('COFFRE (%s)', plate),
                         maxWeight = GM.Inventory.VEHICLE_SIZES.getTrunkMaxWeight(modelHash),
                         plate = plate,
                         slotsAmount = GM.Inventory.VEHICLE_SIZES.getTrunkSlots(modelHash),
@@ -241,11 +220,11 @@ RegisterNetEvent("Inventory:OPEN_VEHICLE_GLOVEBOX_INVENTORY", function()
 
     local modelHash = GetEntityModel(vehicle)
 
-    local uniqueID = 'BOITE A GANT-' .. plate
+    local uniqueID = 'glovebox-'..plate
     local glovebox_inventory = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID }) --[[@as GloveboxInventory]]
     if not glovebox_inventory then
         glovebox_inventory = ScriptServer.Classes.GloveboxInventory.new({
-            inventoryName = string.format('Glovebox (%s)', plate),
+            inventoryName = string.format('BOITE A GANT (%s)', plate),
             maxWeight = GM.Inventory.VEHICLE_SIZES.getGloveboxMaxWeight(modelHash),
             plate = plate,
             slotsAmount = GM.Inventory.VEHICLE_SIZES.getGloveboxSlots(modelHash),
@@ -298,6 +277,20 @@ RegisterNetEvent("Inventory:BUY_FROM_SHOP", function(data)
     local shop_item <const> = shop:GetShopItemOnSlot(fromSlot)
     if not shop_item then return end
 
+    if (shop_item.meta.job) then
+        if (playerSelected.job.name ~= shop_item.meta.job) then
+            playerSelected.showInventoryNotification("error", "Vous n'avez pas le job requis pour acheter cet objet.")
+            return
+        end
+    end
+
+    if (shop_item.meta.grade) then
+        if (playerSelected.job.grade < shop_item.meta.grade) then
+            playerSelected.showInventoryNotification("error", "Vous n'avez pas le grade requis pour acheter cet objet.")
+            return
+        end
+    end
+
     local iData <const> = ScriptShared.Items:Get(shop_item.name)
     if not iData then return end
 
@@ -321,7 +314,7 @@ RegisterNetEvent("Inventory:BUY_FROM_SHOP", function(data)
         toSlot = toSlot
     })
     if addedResult.success then
-        playerSelected.removeMoney(finalPrice)
+        player.removeMoney(finalPrice)
     end
 end)
 
@@ -365,6 +358,18 @@ RegisterNetEvent("Inventory:GIVE_ITEM_TO_TARGET", function(data)
         quantity = quantity
     })
     if addedResult.success then
+        if (GM.Armor["player"][playerSelected.source] ~= nil) then
+            if (GM.Armor["player"][playerSelected.source] == itemHash) then
+                no_ref.meta.durability = playerSelected.getPedArmor()
+    
+                exports["believer"]:SetMetaData(playerSelected.source, { itemHash = GM.Armor["player"][playerSelected.source] }, no_ref.meta)
+                playerSelected.setPedArmor(0)
+                playerSelected.showInventoryNotification("success", "Votre kevlar a été retiré !")
+    
+                GM.Armor["player"][playerSelected.source] = nil
+            end
+        end
+
         player_inventory:removeItemBy(quantity, { itemHash = itemHash })
 
         if (no_ref.name == "money") then
@@ -420,12 +425,24 @@ RegisterNetEvent("Inventory:DROP_ITEM_ON_GROUND", function(data)
     if addedResult.success then
         close_drop_grid:createObjectIfNotExist(addedResult.item)
 
+        if (GM.Armor["player"][player.source] ~= nil) then
+            if (GM.Armor["player"][player.source] == no_ref.itemHash) then
+                no_ref.meta.durability = player.getPedArmor()
+    
+                exports["believer"]:SetMetaData(player.source, { itemHash = GM.Armor["player"][player.source] }, no_ref.meta)
+                player.setPedArmor(0)
+                player.showInventoryNotification("success", "Votre kevlar a été retiré !")
+    
+                GM.Armor["player"][player.source] = nil
+            end
+        end
+
         inventory:removeItemBy(quantity, { itemHash = no_ref.itemHash })
 
         if (no_ref.name == "money") then
-            playerSelected.removeAccountMoney(no_ref.name, quantity)
+            player.removeAccountMoney(no_ref.name, quantity)
         elseif (no_ref.name == "black_money") then
-            playerSelected.removeAccountMoney(no_ref.name, quantity)
+            player.removeAccountMoney(no_ref.name, quantity)
         end
 
         -- Add as observer, if he is not one. (It will openup the dropped grid)
@@ -687,7 +704,7 @@ function Module:loadGrids()
             originY = v.originY,
             originZ = v.originZ,
             uniqueID = v.uniqueID,
-            inventoryName = 'Drop Grid',
+            inventoryName = 'PROXIMITÉ',
             slotsAmount = GM.Inventory.DROPPED_ITEMS.GRID_SLOTS,
             maxWeight = GM.Inventory.DROPPED_ITEMS.GRID_MAX_WEIGHT,
             expires = v.expires
@@ -705,7 +722,7 @@ function Module:createGrid(x, y, z)
         originY = y,
         originZ = z,
         uniqueID = "dropped_grid-" .. self:generateUnique(),
-        inventoryName = 'Drop Grid',
+        inventoryName = 'PROXIMITÉ',
         slotsAmount = GM.Inventory.DROPPED_ITEMS.GRID_SLOTS,
         maxWeight = GM.Inventory.DROPPED_ITEMS.GRID_MAX_WEIGHT,
         expires = os.time() + GM.Inventory.DROPPED_ITEMS.REMAIN_ON_GROUND
@@ -1628,7 +1645,7 @@ ScriptServer.Classes.GloveboxInventory = Module
 
 ---@param data GloveboxInventoryClassCreateInterface
 Module.new = function(data)
-    data.type = "glovebox"
+    data.type = "BOITE A GANT"
 
     local self = setmetatable(
         ScriptServer.Classes.BaseInventory.new(data),
@@ -1927,7 +1944,7 @@ ScriptServer.Classes.TrunkInventory = Module
 
 ---@param data TrunkInventoryClassCreateInterface
 Module.new = function(data)
-    data.type = "trunk"
+    data.type = "COFFRE"
 
     local self = setmetatable(
         ScriptServer.Classes.BaseInventory.new(data),
@@ -2002,8 +2019,7 @@ Module.new = function(id, allData)
         if iData then
             self.items[#self.items + 1] = {
                 data = iData,
-                meta = type(v.meta) == "table" and v.meta or type(iData.defaultMeta) == "table" and iData.defaultMeta or
-                    {},
+                meta = type(v.meta) == "table" and v.meta or type(iData.defaultMeta) == "table" and iData.defaultMeta or {},
                 name = v.name,
                 price = v.price
             }
@@ -2028,10 +2044,6 @@ end
 
 function Module:GetShopItemOnSlot(slot)
     return self.items[slot] or nil
-end
-
-for k, v in pairs(ScriptShared.Shops) do
-    ScriptServer.Classes.Shop.new(k, v)
 end
 
 local function Init()
@@ -2089,7 +2101,6 @@ RegisterCommand("loot_1", function(source)
             uniqueID = "random-loot-1"
         })
     end
-    print(inv)
     inv:open(source)
 end, false)
 
@@ -2160,6 +2171,11 @@ exports("GetWeight", function(inv)
         return inventory:getWeight()
     end
 end)
+
+exports("GetInventory", function(inv)
+    return getInventory(inv)
+end)
+
 
 exports("CanCarryItem", function(inv, itemName, quantity)
     local inventory = getInventory(inv)
@@ -2262,9 +2278,8 @@ AddEventHandler("playerDropped", function()
             playerSelected.setPedArmor(0)
 
             GM.Armor["player"][playerSelected.source] = nil
-            print("Armor: " .. playerSelected.name .. " (" .. playerSelected.source .. ") a quitté le serveur avec un kevlar équipé !")
 
-            exports["believer"]:Save(playerSelected.source)
+            -- exports["believer"]:Save(playerSelected.source)
         end
     end
 

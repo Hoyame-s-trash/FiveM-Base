@@ -167,8 +167,6 @@ AddEventHandler('esx:playerLoaded', function(xPlayer, isNew, skin)
 			SetScenarioTypeEnabled(v, false)
 		end
 	end
-
-	SetDefaultVehicleNumberPlateTextPattern(-1, Config.CustomAIPlates)
 end)
 
 RegisterNetEvent('esx:onPlayerLogout')

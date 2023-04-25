@@ -33,15 +33,15 @@ GM.Inventory.FACTION_SAFE_OBJECT_MODEL = "p_v_43_safe_s"
 GM.Inventory.FACTION_INVENTORIES = {
 }
 
-GM.Inventory.FACTION_INVENTORIES["police"] = {
-    header = "Police Safe",
-    x = -46.47,
-    y = 213.13,
-    z = 106.55,
-    heading = 162.4,
-    slotsAmount = 40,
-    maxWeight = 2000
-}
+-- GM.Inventory.FACTION_INVENTORIES["police"] = {
+--     header = "Police Safe",
+--     x = -46.47,
+--     y = 213.13,
+--     z = 106.55,
+--     heading = 162.4,
+--     slotsAmount = 40,
+--     maxWeight = 2000
+-- }
 
 -- Ammo will apply with different item as bullet to these weapons. (You have to register the ammo also as item.)
 GM.Inventory.AMMO_WEAPONS = {
@@ -597,6 +597,50 @@ ScriptShared.Items:Add("armor", {
     }
 })
 
+ScriptShared.Items:Add("pistol", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = "Pistol",
+    weaponHash = `WEAPON_PISTOL`,
+    usable = true,
+    weight = 1.0,
+    category = "Arme à feu",
+    generateSerial = true,
+    defaultMeta = {
+        durability = 100
+    },
+    allowedAttachments = {
+        "at_flashlight",
+        "at_suppressor_light"
+    }
+})
+
+ScriptShared.Items:Add("9mm_rounds", {
+    stackable = true,
+    deletable = true,
+    tradable = true,
+    label = "9mm",
+    weight = 0.05,
+    category = "Munition"
+})
+ScriptShared.Items:Add("at_flashlight", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = "Lampe torche",
+    weight = 1.0,
+    category = "Accessoire d'arme"
+})
+ScriptShared.Items:Add("at_suppressor_light", {
+    stackable = false,
+    deletable = true,
+    tradable = true,
+    label = 'Silencieux (léger)',
+    weight = 1.0,
+    category = "Accessoire d'arme"
+})
+
 ---@class ShopStaticData
 ---@field shopName string
 ---@field items ShopItem[]
@@ -606,91 +650,7 @@ ScriptShared.Items:Add("armor", {
 
 ---@type { [string]: ShopStaticData }
 local Module <const> = {
-    -- ["General"] = {
-    --     shopName = "General Shop",
-    --     items = {
-    --         { name = "gold",   price = 200 },
-    --         { name = "cognac", price = 100 }
-    --     },
-    --     blip = {
-    --         sprite = 52,
-    --         colour = 69,
-    --         scale = 0.8
-    --     },
-    --     locations = {
-    --         vector3(223.832962, -792.619751, 30.695190)
-    --     },
-    --     peds = {
-    --         {
-    --             modelName = "mp_m_shopkeep_01",
-    --             scenario = 'WORLD_HUMAN_AA_COFFEE',
-    --             coords = vec3(223.832962, -792.619751, 31.0),
-    --             heading = 270.311,
-    --         },
-    --     }
-    -- }
 }
-
--- Module["General"] = {
---     shopName = "Test Server Shop (General)",
---     items = {
---         { name = "money",      price = 1 },
---         { name = "gold",       price = 155 },
---         { name = "cognac",     price = 25 },
---         { name = "apple",      price = 45 },
---         { name = "hotdog",     price = 65 },
---         { name = "hamburger",  price = 75 },
---         { name = "ironingot",  price = 100 },
---         { name = "reddiamond", price = 120000 }
---     },
---     blip = {
---         sprite = 52,
---         colour = 69,
---         scale = 0.8
---     },
---     locations = {
---         vector3(-60.20, 217.59, 106.55)
---     },
---     peds = {
---         {
---             modelName = "a_m_m_soucent_01",
---             scenario = 'WORLD_HUMAN_AA_COFFEE',
---             coords = vec3(-60.20, 217.59, 106.55),
---             heading = 328.3,
---         },
---     }
--- }
--- Module["Weapon"] = {
---     shopName = "Test Server Shop (Weapons)",
---     items = {
---         { name = "pistol",                  price = 1000 },
---         { name = "bat",                     price = 500 },
---         { name = "grenade",                 price = 50 },
---         { name = "9mm_rounds",              price = 5 },
---         { name = "at_flashlight",           price = 5 },
---         { name = "at_clip_extended_pistol", price = 5 },
---         { name = "at_skin_luxe",            price = 5 },
---         { name = "at_skin_metal",           price = 5 },
---         { name = "at_suppressor_light",     price = 5 },
---         { name = "at_suppressor_heavy",     price = 5 }
---     },
---     blip = {
---         sprite = 52,
---         colour = 69,
---         scale = 0.8
---     },
---     locations = {
---         vector3(-53.38, 214.75, 106.55)
---     },
---     peds = {
---         {
---             modelName = "a_m_m_soucent_01",
---             scenario = 'WORLD_HUMAN_AA_COFFEE',
---             coords = vec3(-53.38, 214.75, 106.55),
---             heading = 340.8,
---         },
---     }
--- }
 
 ScriptShared.Shops = Module
 

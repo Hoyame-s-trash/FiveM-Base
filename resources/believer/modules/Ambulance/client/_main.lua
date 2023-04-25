@@ -146,48 +146,6 @@ RegisterNetEvent("Ambulance:openWardrobe", function(wardrobeData)
     GM.Ambulance.wardrobe.menu.main:toggle()
 end)
 
-GM.Ambulance.armory = {
-    menu = {
-        submenus = {}
-    },
-}
-
-GM.Ambulance.armory.menu.main = RageUI.CreateMenu("", "Armurerie Ambulance", 0, 0, "banner", "bluestark")
-GM.Ambulance.armory.menu.main["Closed"] = function()
-end
-
-GM.Ambulance.armory.menu.main:isVisible(function(Items)
-    Items:Button("~r~Rendre mon équipement", nil, {}, true,{
-        onSelected = function()
-            TriggerServerEvent("Ambulance:armory:giveBackItems")
-        end
-    })
-    Items:Button("~r~Rendre mes munitions", nil, {}, true,{
-        onSelected = function()
-            TriggerServerEvent("Ambulance:armory:giveBackMunitions")
-        end
-    })
-    if (GM.Ambulance.data["items"] ~= nil) then
-        for i = 1, #GM.Ambulance.data["items"] do
-            if (ESX.PlayerData.job.grade >= GM.Ambulance.data["items"][i].grade) then
-                Items:Button(GM.Ambulance.data["items"][i].label, nil, {RightLabel = GM.Ambulance.data["items"][i].price or ""}, true, {
-                    onSelected = function()
-                        TriggerServerEvent("Ambulance:armory:takeItem", GM.Ambulance.data["armoryId"], GM.Ambulance.data["items"][i].name)
-                    end
-                })
-            end
-        end
-    end
-end)
-
-RegisterNetEvent("Ambulance:openArmory", function(armoryData)
-    GM.Ambulance.data["armoryId"] = armoryData.armoryId
-    GM.Ambulance.data["items"] = armoryData.items
-    
-
-    GM.Ambulance.armory.menu.main:toggle()
-end)
-
 GM.Ambulance.job = {
     menu = {
         submenus = {}

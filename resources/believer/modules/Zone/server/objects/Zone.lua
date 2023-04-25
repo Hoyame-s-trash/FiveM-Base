@@ -72,6 +72,7 @@ function GM.Zone.Management:allowedPlayer(playerSrc, bool)
 
     if (not bool) then
         if (not self.allowedPlayers[playerSrc]) then
+            print("zone server allowed")
             self.allowedPlayers[playerSrc] = true
             TriggerClientEvent("Zone:add", playerSrc, self)
             return
