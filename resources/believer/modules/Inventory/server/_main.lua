@@ -211,7 +211,7 @@ RegisterNetEvent("Inventory:OPEN_NEAR_TRUNKS", function(vehicleNetIds)
             local plate = GetVehicleNumberPlateText(veh)
             if GM.Inventory.IS_VEHICLE_EXIST(plate) then
                 local modelHash = GetEntityModel(veh)
-                local uniqueID <const> = 'trunk-' .. plate
+                local uniqueID <const> = 'COFFRE -' .. plate
                 local trunk_inventory = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID }) --[[@as TrunkInventory]]
                 if not trunk_inventory then
                     trunk_inventory = ScriptServer.Classes.TrunkInventory.new({
@@ -241,7 +241,7 @@ RegisterNetEvent("Inventory:OPEN_VEHICLE_GLOVEBOX_INVENTORY", function()
 
     local modelHash = GetEntityModel(vehicle)
 
-    local uniqueID = 'glovebox-' .. plate
+    local uniqueID = 'BOITE A GANT-' .. plate
     local glovebox_inventory = ScriptServer.Managers.Inventory:GetInventory({ uniqueID = uniqueID }) --[[@as GloveboxInventory]]
     if not glovebox_inventory then
         glovebox_inventory = ScriptServer.Classes.GloveboxInventory.new({
