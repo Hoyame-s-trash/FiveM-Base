@@ -47,6 +47,7 @@
     </DndProvider>
     <NotificationComponent />
     <HelpComponent />
+    <Browser />
 </template>
 
 <script lang="ts" setup>
@@ -68,6 +69,7 @@ import eventPlugin from './plugins/event.plugin';
 import { computed } from '@vue/reactivity';
 import NotificationComponent from './components/NotificationComponent.vue';
 import HelpComponent from "./components/HelpComponent.vue";
+import Browser from "./components/Browser.vue";
 
 const contextMenuStore = useContextMenuStore();
 const inventoryStore = useInventoryStore();

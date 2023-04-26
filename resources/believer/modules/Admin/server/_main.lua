@@ -44,7 +44,7 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
 
     -- Todo get actual vip for player
 
-    GM.Admin.Players:new(playerSelected.getUniqueId(), playerSelected.source, playerSelected.getNickName(), playerSelected.get("rank_label"), 0)
+    GM.Admin.Players:new(playerSelected.getUniqueId(), playerSelected.source, playerSelected.getNickName().." | "..playerSelected.getName(), playerSelected.get("rank_label"), 0)
 end)
 
 RegisterServerEvent("Admin:updatePlayerStaff", function(boolean)

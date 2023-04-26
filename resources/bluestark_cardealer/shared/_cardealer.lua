@@ -3,8 +3,8 @@ Config = {}
 Config.Vehicles = {
     Car = {
         ["car"] = {
-            {model = "bati", label = "Bati", price = 1600, trunk = "50", category = "luxury", restricted = false},
-            {model = "zentorno", label = "Zentorno", price = 2600, trunk = "125", category = "jeep", restricted = {
+            {model = "bati", label = "Bati", price = 1600, category = "luxury"},
+            {model = "police", label = "Zentorno", price = 2600, category = "jeep", restricted = {
                 ["police"] = true,
             }},
         },

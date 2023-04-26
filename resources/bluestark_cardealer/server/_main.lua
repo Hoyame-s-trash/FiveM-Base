@@ -80,7 +80,10 @@ RegisterServerEvent("Cardealer:buyVehicle", function(vehicle)
 
     for i = 1, #Config.Vehicles.Car[vehicle.type] do
         if (Config.Vehicles.Car[vehicle.type][i].model == vehicle.model) then
-            --if (playerSelected.getMoney() >= Config.Vehicles.Car[vehicle.type][i].price) then
+            if (Config.Vehicles.Car[vehicle.type][i].restricted) then
+                
+            end
+            if (playerSelected.getMoney() >= Config.Vehicles.Car[vehicle.type][i].price) then
                 playerSelected.removeMoney(Config.Vehicles.Car[vehicle.type][i].price)
                 local plate = GeneratePlate()
 
@@ -128,16 +131,16 @@ RegisterServerEvent("Cardealer:buyVehicle", function(vehicle)
                         end
                     end)
                 end)
-                --return
-            --elseif (playerSelected.getAccount("bank") >= Config.Vehicles.Car[vehicle.type][i].price) then
-                --playerSelected.removeAccountMoney("bank", Config.Vehicles.Car[vehicle.type][i].price, true)
+                return
+            elseif (playerSelected.getAccount("bank") >= Config.Vehicles.Car[vehicle.type][i].price) then
+                playerSelected.removeAccountMoney("bank", Config.Vehicles.Car[vehicle.type][i].price, true)
                 
-                --return
-            --else
-                --playerSelected.showNotification("~r~Vous n'avez pas assez d'argent pour vous acheter ce véhicule.")
-                --TriggerClientEvent("Cardealer:closeUI", playerSrc)
-                --return
-            --end
+                return
+            else
+                playerSelected.showNotification("~r~Vous n'avez pas assez d'argent pour vous acheter ce véhicule.")
+                TriggerClientEvent("Cardealer:closeUI", playerSrc)
+                return
+            end
         end
     end
 end)

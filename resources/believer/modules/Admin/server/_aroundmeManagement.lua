@@ -199,3 +199,54 @@ RegisterServerEvent("Admin:reviveZone", function(radius)
 
     playerSelected.showNotification("~b~Les joueurs ont bien été réanimés.")
 end)
+
+RegisterServerEvent("Admin:healZone", function(radius)
+    local playerSrc = source
+    if (not playerSrc) then return end
+
+    local playerSelected = ESX.GetPlayerFromId(playerSrc)
+    if (not playerSelected) then return end
+
+    if (playerSelected.getGroup() == "user") then return end
+
+    local playerRank = GM.Ranks:getFromId(playerSelected.get("rank_id"))
+    if (not playerRank) then return end
+
+    if (not playerRank:getPermissionsValue("AROUND_ME_HEAL", playerSelected.source)) then return end
+
+    local players = GetPlayers()
+    if (not players) then return end
+
+    local myCoords = GetEntityCoords(GetPlayerPed(playerSrc))
+    if (not myCoords) then return end
+
+    if (radius == nil or radius == "") then 
+        radius = 10.0 
+    end
+
+    radius = tonumber(radius)
+
+    if (radius >= 100.0) then
+        playerSelected.showNotification("~r~Vous ne pouvez pas heal les joueurs à plus de 100m.\nRadius appliqué à 100m automatiquement.")
+        radius = 100.0
+    end
+
+    for _, targetSrc in pairs(GetPlayers()) do
+        targetSrc = tonumber(targetSrc)
+        if (GetPlayerPed(targetSrc) ~= 0) then
+            local playerCoords = GetEntityCoords(GetPlayerPed(targetSrc))
+            if (playerCoords) then
+                local distance = #(myCoords - playerCoords)
+                if (distance <= radius) then
+                    local targetSelected = ESX.GetPlayerFromId(targetSrc)
+                    if (targetSelected) then
+                        targetSelected.showNotification("~b~Vous avez été heal par un staff.")
+                        TriggerClientEvent("Ambulance:healPlayer", targetSelected.source)
+                    end
+                end
+            end
+        end
+    end
+
+    playerSelected.showNotification("~b~Les joueurs ont bien été heal.")
+end)

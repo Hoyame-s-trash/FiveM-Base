@@ -10,12 +10,12 @@ AddEventHandler('Animation:saveEmote', function(dict, anim,name, param)
     local playerSelected = ESX.GetPlayerFromId(playerSrc)
     if (not playerSelected) then return end
 
-    MySQL.query('SELECT * FROM fav_emote WHERE licence = ? AND dict = ? AND anim = ?', {playerSelected.identifier, dict, anim}, function(result)
+    MySQL.query('SELECT * FROM user_animation WHERE licence = ? AND dict = ? AND anim = ?', {playerSelected.identifier, dict, anim}, function(result)
         if (result[1] ~= nil) then
             playerSelected.showNotification("~r~Vous avez déjà cet emote enregistré sous le nom de "..anim..".")
             return
         else
-            MySQL.insert('INSERT INTO fav_emote (licence, dict, anim, param, name) VALUES (@licence, @dict, @anim, @param, @name)', {
+            MySQL.insert('INSERT INTO user_animation (licence, dict, anim, param, name) VALUES (@licence, @dict, @anim, @param, @name)', {
                 ['@licence'] = playerSelected.identifier, 
                 ['@dict'] = dict, 
                 ['@anim'] = anim, 
@@ -45,7 +45,7 @@ AddEventHandler("esx:playerLoaded", function(playerSrc)
 
     GM.Animation.Favorite[playerSelected.source] = {}
 
-    MySQL.query("SELECT * FROM fav_emote WHERE licence = @licence", {
+    MySQL.query("SELECT * FROM user_animation WHERE licence = @licence", {
         ['@licence'] = playerSelected.identifier,
     }, function(animations)
 
@@ -79,7 +79,7 @@ RegisterServerEvent("Animations:removeFavorite", function(emoteId)
         return
     end
 
-    MySQL.Async.execute("DELETE FROM fav_emote WHERE licence = @licence AND id = @id", {
+    MySQL.Async.execute("DELETE FROM user_animation WHERE licence = @licence AND id = @id", {
         ['@licence'] = playerSelected.identifier,
         ['@id'] = emoteId
     }, function()
@@ -103,7 +103,7 @@ RegisterServerEvent("Animation:renameFavorite", function(emoteId, newName)
 
     GM.Animation.Favorite[playerSelected.source][emoteId].name = newName
 
-    MySQL.Async.execute("UPDATE fav_emote SET name = @name WHERE licence = @licence AND id = @id", {
+    MySQL.Async.execute("UPDATE user_animation SET name = @name WHERE licence = @licence AND id = @id", {
         ['@licence'] = playerSelected.identifier,
         ['@id'] = emoteId,
         ['@name'] = GM.Animation.Favorite[playerSelected.source][emoteId].name

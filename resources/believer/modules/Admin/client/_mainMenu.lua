@@ -15,9 +15,6 @@ GM.Admin = {
 }
 
 GM.Admin.menu.main = RageUI.CreateMenu("", "Administration", 0, 0, "banner", "bluestark")
-GM.Admin.menu.main["Closed"] = function()
-    -- Todo event when menu closed
-end
 
 GM.Admin.menu.main:isVisible(function(Items)
     if (GM.Admin.inAdmin == true) then
@@ -69,7 +66,10 @@ GM.Admin.menu.main:isVisible(function(Items)
         Items:Button("Préférences", nil, {}, GM.Admin.inAdmin, {}, GM.Admin.menu.submenus["preferences"])
         Items:Button("Ouvrir le wiki", nil, {}, GM.Admin.inAdmin, {
             onSelected = function()
-                -- Todo open wiki in browser
+                SEND_NUI_MESSAGE({
+                    event = "BROWSER_OPEN",
+                    url = "https://wiki.bluestark.fr/"
+                })
             end
         })
     end

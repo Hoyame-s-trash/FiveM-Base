@@ -136,6 +136,12 @@ AddEventHandler("Ambulance:revivePlayer", function()
     end)
 end)
 
+RegisterNetEvent("Ambulance:healPlayer", function()
+    SetEntityHealth(PlayerPedId(), GetEntityMaxHealth(PlayerPedId()))
+    TriggerEvent('esx_status:set', 'hunger', 1000000)
+    TriggerEvent('esx_status:set', 'thirst', 1000000)
+end)
+
 RegisterNetEvent("Ambulance:suicide", function()
     SetEntityHealth(PlayerPedId(), 0)
 end)

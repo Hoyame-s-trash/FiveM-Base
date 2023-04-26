@@ -57,17 +57,23 @@ GM.Admin.menu.submenus["around_me"]:isVisible(function(Items)
     })
     Items:Button("Heal zone", nil, {}, GM.Admin.inAdmin, {
         onSelected = function()
-            -- Todo event this button
+            local input = exports["input"]:openInput({
+                label = "Heal zone",
+                submitLabel = "HEAL",
+                placeHolders = {
+                    {label = "RADIUS"},
+                }
+            })
+
+            TriggerServerEvent("Admin:healZone", input["0"])
         end
     })
-    Items:Button("Give arme event", nil, {}, GM.Admin.inAdmin, {
-        onSelected = function()
-            -- Todo event this button
-        end
-    })
-    Items:Button("Supprimer arme event", nil, {}, GM.Admin.inAdmin, {
-        onSelected = function()
-            -- Todo event this button
-        end
-    })
+    -- Items:Button("Give arme event", nil, {}, GM.Admin.inAdmin, {
+    --     onSelected = function()
+    --     end
+    -- })
+    -- Items:Button("Supprimer arme event", nil, {}, GM.Admin.inAdmin, {
+    --     onSelected = function()
+    --     end
+    -- })
 end)

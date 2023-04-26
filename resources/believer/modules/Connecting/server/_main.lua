@@ -248,77 +248,74 @@ AddEventHandler("playerConnecting", function(_, _, deferrals)
     end 
 
     if (GM.Maintenance.Enable == true) then
-        -- Todo check with admin system if player is admin
-        --if (GM.Whitelist.List[playerIdentifier] == nil) then
-            local MAINTENANCE_CARD = {
-                type = "AdaptiveCard",
-                ["$schema"] = "http://adaptivecards.io/schemas/adaptive-card.json",
-                version = "1.5",
-                body = {
-                    {
-                        type = "Container",
-                        items = {
-                            {
-                                type = "ColumnSet",
-                                columns = {
-                                    {
-                                        type = "Column",
-                                        width = "auto",
-                                        items = {
-                                            {
-                                                type = "Image",
-                                                url = "https://media.discordapp.net/attachments/1028726669554499644/1060615573656055858/STATIC.png?width=671&height=671",
-                                                spacing = "None",
-                                                size = "Small",
-                                                style = "Person"
-                                            }
-                                        },
-                                        spacing = "None"
+        local MAINTENANCE_CARD = {
+            type = "AdaptiveCard",
+            ["$schema"] = "http://adaptivecards.io/schemas/adaptive-card.json",
+            version = "1.5",
+            body = {
+                {
+                    type = "Container",
+                    items = {
+                        {
+                            type = "ColumnSet",
+                            columns = {
+                                {
+                                    type = "Column",
+                                    width = "auto",
+                                    items = {
+                                        {
+                                            type = "Image",
+                                            url = "https://media.discordapp.net/attachments/1028726669554499644/1060615573656055858/STATIC.png?width=671&height=671",
+                                            spacing = "None",
+                                            size = "Small",
+                                            style = "Person"
+                                        }
                                     },
-                                    {
-                                        type = "Column",
-                                        width = "stretch",
-                                        items = {
-                                            {
-                                                type = "TextBlock",
-                                                text = "BlueStark",
-                                                wrap = true,
-                                                spacing = "None",
-                                                horizontalAlignment = "Left"
-                                            },
-                                            {
-                                                type = "TextBlock",
-                                                text = "discord.gg/bluestark",
-                                                spacing = "None",
-                                                wrap = true,
-                                                isSubtle = true
-                                            }
+                                    spacing = "None"
+                                },
+                                {
+                                    type = "Column",
+                                    width = "stretch",
+                                    items = {
+                                        {
+                                            type = "TextBlock",
+                                            text = "BlueStark",
+                                            wrap = true,
+                                            spacing = "None",
+                                            horizontalAlignment = "Left"
+                                        },
+                                        {
+                                            type = "TextBlock",
+                                            text = "discord.gg/bluestark",
+                                            spacing = "None",
+                                            wrap = true,
+                                            isSubtle = true
                                         }
                                     }
                                 }
                             }
-                        },
-                        spacing = "None",
-                        horizontalAlignment = "Left",
-                        verticalContentAlignment = "Top"
-                    },
-                    {
-                        type = "Container",
-                        items = {
-                            {
-                                type = "TextBlock",
-                                wrap = true,
-                                text = "Le serveur est en maintenance, vous ne pouvez pas vous connecter.",
-                            }
                         }
                     },
-                }
+                    spacing = "None",
+                    horizontalAlignment = "Left",
+                    verticalContentAlignment = "Top"
+                },
+                {
+                    type = "Container",
+                    items = {
+                        {
+                            type = "TextBlock",
+                            wrap = true,
+                            text = "Le serveur est en maintenance, vous ne pouvez pas vous connecter.",
+                        }
+                    }
+                },
             }
+        }
 
-            deferrals.presentCard(MAINTENANCE_CARD)
-            return
-            CancelEvent()
-        --end
+        deferrals.presentCard(MAINTENANCE_CARD)
+        return
+        CancelEvent()
     end
 
     local playerIdentifiers = GM.Connecting:getIdentifiers(playerSrc)

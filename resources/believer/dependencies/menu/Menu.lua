@@ -397,25 +397,19 @@ end
 
 function UIMenu:open()
     CreateThread(function()
-        if RageUI.GetCurrentMenu() == nil 
-        -- Todo check is player is dead
-            and not IsPauseMenuActive()
-        then
-            --if player:canOpenMenu() then
-                SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
-                --OPEN
-                local Audio = RageUI.Settings.Audio
-                RageUI.PlaySound(Audio[Audio.Use].Select.audioName, Audio[Audio.Use].Select.audioRef)
-                RageUI.Visible(self, true)
-                CreateThread(function()
-                    while RageUI.CurrentMenu ~= nil do
-                        RageUI.DisableControlsOnMenu()
-                        RageUI.IsVisible(self)
-                        self:getSubMenus()
-                        Wait(1)
-                    end
-                end)
-            --end
+        if RageUI.GetCurrentMenu() == nil and not IsPauseMenuActive() then
+            SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
+            local Audio = RageUI.Settings.Audio
+            RageUI.PlaySound(Audio[Audio.Use].Select.audioName, Audio[Audio.Use].Select.audioRef)
+            RageUI.Visible(self, true)
+            CreateThread(function()
+                while RageUI.CurrentMenu ~= nil do
+                    RageUI.DisableControlsOnMenu()
+                    RageUI.IsVisible(self)
+                    self:getSubMenus()
+                    Wait(1)
+                end
+            end)
         end
     end)
 end
@@ -449,7 +443,6 @@ function UIMenu:toggle()
             RageUI.PlaySound(Audio[Audio.Use].Back.audioName, Audio[Audio.Use].Back.audioRef)
             RageUI.GetCurrentMenu():close()
         else
-            -- Todo check is player is dead
             self:open()
         end
     end)

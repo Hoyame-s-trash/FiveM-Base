@@ -183,6 +183,12 @@ GM.Admin.Permissions = {
         error = "~r~Vous n'avez pas la permission de réanimer des joueurs (zone).",
         value = false
     },
+    ["AROUND_ME_HEAL"] = {
+        label = "Heal des joueurs (zone)",
+        description = "Permet de heal des joueurs (zone)",
+        error = "~r~Vous n'avez pas la permission de heal des joueurs (zone).",
+        value = false
+    },
     -- VEHICLES
     ["VEHICLES_REPAIR"] = {
         label = "Réparer un véhicule",
